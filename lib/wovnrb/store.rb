@@ -3,7 +3,6 @@ require 'net/http'
 require 'socket'
 require 'cgi'
 require 'Logger' unless defined?(Logger)
-require 'pry'
 
 module Wovnrb
 
@@ -129,7 +128,6 @@ module Wovnrb
     def get_values(url)
       url = url.gsub(/\/$/, '')
       redis_key = 'WOVN:BACKEND:STORAGE:' + url + ':' + settings['user_token']
-      settings['backend_host'] = 'localhost'
       cli = Redis.new(host: settings['backend_host'], port: settings['backend_port'])
 
       begin
@@ -141,12 +139,12 @@ module Wovnrb
         vals = {}
       end
       if vals['expired'] || vals.empty?
-        host = 'j.dev-wovn.io'
+        host = 'j.wovn.io'
         post_data = "{\"user_token\":\"#{settings['user_token']}\", \"url\":\"#{CGI.escape(url)}\"}"
         headers = "Host: #{host}\r\nContent-Type: application/json;charset=UTF-8\r\nContent-Length: #{post_data.bytesize}\r\nConnection: close\r\n\r\n"
-        # s = TCPSocket.new(host, 3000)
-        # s.puts "POST /pages/cache_backend HTTP/1.1\r\n#{headers}#{post_data}"
-        # s.close
+        s = TCPSocket.new(host, 80)
+        s.puts "POST /pages/cache_backend HTTP/1.1\r\n#{headers}#{post_data}"
+        s.close
       end
       # handle this on the widget
       #if vals.empty?
