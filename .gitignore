@@ -1,0 +1,19 @@
+/.bundle/
+<<<<<<< HEAD
+/vendor
+=======
+/vendor/bundle/
+>>>>>>> 78ccf8410c19bdee508e96a2386a5273abfad0ba
+/.yardoc
+/Gemfile.lock
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
+*.bundle
+*.so
+*.o
+*.a
+mkmf.log

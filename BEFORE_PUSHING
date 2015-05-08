@@ -1,0 +1,7 @@
+before pushing this gem, do the following
+
+**If the extension code has changed, delete dom_wrap.cxx and run the following line from the ext/wovnio directory
+swig -c++ -ruby dom.i
+
+**If on local, run the following command as well
+bundle exec rake compile
