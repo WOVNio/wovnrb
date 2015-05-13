@@ -19,6 +19,7 @@ module Wovnrb
       @unmasked_url = "#{@protocol}://#{@unmasked_host}#{@unmasked_pathname}"
       @host = @env['HTTP_HOST']
       @pathname, @query = @env['REQUEST_URI'].split('?')
+      @query = @query || ''
       if settings['query'].length > 0
         query_vals = []
         settings['query'].each do |qv|
