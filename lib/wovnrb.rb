@@ -1,7 +1,7 @@
 require 'wovnrb/store'
 require 'wovnrb/headers'
 require 'wovnrb/lang'
-require 'wovnrb/dom'
+require 'dom'
 require 'json'
 
 require 'wovnrb/railtie' if defined?(Rails)
@@ -18,27 +18,26 @@ module Wovnrb
 
     def call(env)
       @env = env
-      masked_headers = Headers.new(env, STORE.get_settings)
-      #masked_headers.url_pattern = STORE.get_settings[:url_pattern]
-      lang = masked_headers.lang
+      headers = Headers.new(env, STORE.get_settings)
+      lang = headers.lang
 
       # pass to application
-      status, res_headers, body = @app.call(masked_headers.request_out)
+      status, res_headers, body = @app.call(headers.request_out)
 
       if res_headers["Content-Type"] =~ /html/ && !body[0].nil?
 # Can we make this request beforehand?
-        values = STORE.get_values(masked_headers.url)
+        values = STORE.get_values(headers.url)
         url = {
-                :protocol => masked_headers.protocol, 
-                :host => masked_headers.host, 
-                :pathname => masked_headers.pathname
+                :protocol => headers.protocol, 
+                :host => headers.host, 
+                :pathname => headers.pathname
               }
         switch_lang(body, values, url, lang) unless status.to_s =~ /^1|302/ || lang === DEFAULT_LANG
         #d = Dom.new(storage.get_values, body, lang)
         #body[0] = transform_body(body, lang)
       end
 
-      masked_headers.response_out(res_headers)
+      headers.out(res_headers)
       [status, res_headers, body]
       #[status, res_headers, d.transform()]
     end
@@ -95,6 +94,7 @@ module Wovnrb
       def_lang = 'en'
       text_index = values['text_vals']
       src_index = values['img_vals'] || {}
+      img_src_prefix = values['img_src_prefix'] || ''
       string_index = {}
       #values.each do |v|
       #  src_data = v['src_body'].strip
@@ -133,7 +133,7 @@ module Wovnrb
             end
           
             if src_index[src] && src_index[src][lang]
-              node.attribute('src').value = storage_driver.image_src(src_index[src][lang][0]['data'])
+              node.attribute('src').value = "#{img_src_prefix}#{src_index[src][lang][0]['data']}"
             end
           end
         end

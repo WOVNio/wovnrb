@@ -1,4 +1,4 @@
 require 'mkmf'
 
 
-create_makefile 'dom/dom'
+create_makefile 'dom'

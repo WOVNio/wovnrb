@@ -19,8 +19,8 @@ Gem::Specification.new do |spec|
   spec.files         = files
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
-  #spec.require_paths = ["lib"]
-  spec.require_paths = ["lib", "ext"]
+  spec.require_paths = ["lib"]
+  #spec.require_paths = ["lib", "ext"]
   #spec.extensions    = spec.files.grep(%r{/extconf\.rb$})
   spec.extensions    = %w[ext/dom/extconf.rb]
   #spec.extensions    = spec.files.grep(%r{/extconf\.rb$})
@@ -39,6 +39,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pry-nav"
   #spec.add_development_dependency "rice"
   spec.add_development_dependency "rake-compiler"
+  spec.add_development_dependency "geminabox"
 
 end
 

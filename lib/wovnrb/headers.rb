@@ -18,16 +18,33 @@ module Wovnrb
       @unmasked_pathname += '/' unless @pathname =~ /\/$/ || @pathname =~ /\/[^\/.]+\.[^\/.]+$/
       @unmasked_url = "#{@protocol}://#{@unmasked_host}#{@unmasked_pathname}"
       @host = @env['HTTP_HOST']
-      @pathname = @env['REQUEST_PATH']
-      @pathname += '/' unless @pathname =~ /\/$/ || @pathname =~ /\/[^\/.]+\.[^\/.]+$/
-      @url = "#{@protocol}://#{@host}#{@pathname}"
-      @url_pattern = settings[:url_pattern]
+      @pathname, @query = @env['REQUEST_URI'].split('?')
+      if settings['query'].length > 0
+        query_vals = []
+        settings['query'].each do |qv|
+          rx = Regexp.new("(^|&)(?<query_val>#{qv}[^&]+)(&|$)")
+          m = @query.match(rx)
+          if m && m[:query_val]
+            query_vals.push(m[:query_val])
+          end
+        end
+        if query_vals.length > 0
+          @query = "?#{query_vals.sort.join('&')}"
+        else
+          @query = ''
+        end
+      else
+        @query = ''
+      end
+      @pathname = @pathname.gsub(/\/$/, '')
+      @url = "#{@protocol}://#{@host}#{@pathname}#{@query}"
+      @url_pattern_reg = settings['url_pattern_reg']
     end
 
     def lang
       if @lang.nil?
-        rp = Regexp.new(@url_pattern)
-        match = "#{@env['SERVER_NAME']}#{@env['REQUEST_PATH']}".match(rp)
+        rp = Regexp.new(@url_pattern_reg)
+        match = "#{@env['SERVER_NAME']}#{@env['REQUEST_URI']}".match(rp)
         if match && match[:lang] && Lang::LANG[match[:lang]]
           @lang = match[:lang]
         else
@@ -44,7 +61,7 @@ module Wovnrb
     def request_out(def_lang=DEFAULT_LANG)
       out = @env
       # get subdomain -> match group 1
-      rp = Regexp.new(@url_pattern)
+      rp = Regexp.new(@url_pattern_reg)
       #match = out["SERVER_NAME"].match(rp)
       #match = out["SERVER_NAME"].match(/^([^.]+)\.[^.]+\./)
       @changed_vals = {"HTTP_HOST" => out["HTTP_HOST"],
@@ -59,7 +76,7 @@ module Wovnrb
       out
     end
 
-    def response_out(headers)
+    def out(headers)
       if headers.has_key?("Location")
         headers["Location"] = headers["Location"].sub(/\/\/[^\/]+\//, "//#{@changed_vals['HTTP_HOST']}/")
       end
