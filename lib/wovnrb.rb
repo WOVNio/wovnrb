@@ -19,7 +19,12 @@ module Wovnrb
     def call(env)
       @env = env
       headers = Headers.new(env, STORE.get_settings)
-      lang = headers.lang
+      if headers.browser_lang == headers.path_lang
+        lang = headers.lang
+      else
+        redirect_headers = headers.redirect
+        return [307, redirect_headers, ['']]
+      end
 
       # pass to application
       status, res_headers, body = @app.call(headers.request_out)

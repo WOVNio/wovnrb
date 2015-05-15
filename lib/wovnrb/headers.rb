@@ -43,6 +43,10 @@ module Wovnrb
     end
 
     def lang
+      self.path_lang
+    end
+
+    def path_lang
       if @lang.nil?
         rp = Regexp.new(@url_pattern_reg)
         match = "#{@env['SERVER_NAME']}#{@env['REQUEST_URI']}".match(rp)
@@ -53,6 +57,69 @@ module Wovnrb
         end
       end
       return @lang
+    end
+
+    def browser_lang
+      if @browser_lang.nil?
+        match = @env['HTTP_COOKIE'].match(/wovn_selected_lang\s*=\s*(?<lang>[^ ;]+)/)
+        if match && match[:lang] && Lang::LANG[match[:lang]]
+          @browser_lang = match[:lang]
+          return match[:lang]
+        else
+          accept_langs = @env['HTTP_ACCEPT_LANGUAGE'].split(/[,;]/)
+          accept_langs.each do |l|
+            if Lang::LANG[l]
+              @browser_lang = l
+              return l
+            end
+          end
+          @browser_lang = self.path_lang
+        end
+      end
+      return @browser_lang
+    end
+
+    def redirect(lang=self.browser_lang)
+      @env['location'] = self.redirect_location(lang)
+      @env['content-length'] = 0
+      return @env
+    end
+
+    def redirect_location(lang)
+      case STORE.get_settings['url_pattern_name']
+      when 'query'
+        if @env['REQUEST_URI'] !~ /\?/
+          location = "#{@env['HTTP_HOST']}#{@env['REQUEST_URI']}?wovn=#{lang}"
+        elsif @env['REQUEST_URI'] !~ /(\?|&)wovn=/
+          location = "#{@env['HTTP_HOST']}#{@env['REQUEST_URI']}&wovn=#{lang}"
+        else
+          location = "#{@env['HTTP_HOST']}#{@env['REQUEST_URI']}".sub(/wovn=[^&]*/, "wovn=#{lang}")
+        end
+        return location
+      when 'path'
+        rp = Regexp.new(@url_pattern_reg)
+        location = "#{@env['HTTP_HOST']}#{@env['REQUEST_URI']}"
+        match = location.match(rp)
+        if match && match[:lang] && Lang::LANG[match[:lang]]
+          location = location[0, match.offset(:lang)[0]] + location[match.offset(:lang)[1], location.length]
+          location.insert!(match.offset(:lang)[0], lang)
+          return "#{@env['rack.url_scheme']}://#{location}"
+        else
+          return "#{@env['rack.url_scheme']}://#{@env['HTTP_HOST']}/#{lang}#{@env['REQUEST_URI']}"
+        end
+     #when 'subdomain'
+      else
+        rp = Regexp.new(@url_pattern_reg)
+        location = "#{@env['HTTP_HOST']}#{@env['REQUEST_URI']}"
+        match = location.match(rp)
+        if match && match[:lang] && Lang::LANG[match[:lang]]
+          location = location[0, match.offset(:lang)[0]] + location[match.offset(:lang)[1], location.length]
+          location.insert!(match.offset(:lang)[0], lang)
+          return "#{@env['rack.url_scheme']}://#{location}"
+        else
+          return "#{@env['rack.url_scheme']}://#{lang}.#{location}"
+        end
+      end
     end
 
     def settings(settings)
