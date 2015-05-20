@@ -1,14 +1,13 @@
 require 'wovnrb/store'
 require 'wovnrb/headers'
 require 'wovnrb/lang'
-require 'dom'
+#require 'dom'
 require 'json'
 
 require 'wovnrb/railtie' if defined?(Rails)
 
 module Wovnrb
 
-  DEFAULT_LANG = 'en'
   STORE = Store.new
   
   class Interceptor
@@ -19,12 +18,15 @@ module Wovnrb
     def call(env)
       @env = env
       headers = Headers.new(env, STORE.get_settings)
-      if headers.browser_lang == headers.path_lang
-        lang = headers.lang
-      else
-        redirect_headers = headers.redirect
+      if (headers.path_lang != '' && !STORE.get_settings['supported_langs'].include?(headers.path_lang)) || headers.path_lang == STORE.get_settings['default_lang']
+        redirect_headers = headers.redirect(STORE.get_settings['default_lang'])
+        redirect_headers['set-cookie'] = "wovn_selected_lang=#{STORE.get_settings['default_lang']};"
+        return [307, redirect_headers, ['']]
+      elsif headers.path_lang == '' && (headers.browser_lang != STORE.get_settings['default_lang'] && STORE.get_settings['supported_langs'].include?(headers.browser_lang))
+        redirect_headers = headers.redirect(headers.browser_lang)
         return [307, redirect_headers, ['']]
       end
+      lang = headers.lang
 
       # pass to application
       status, res_headers, body = @app.call(headers.request_out)
@@ -37,7 +39,7 @@ module Wovnrb
                 :host => headers.host, 
                 :pathname => headers.pathname
               }
-        switch_lang(body, values, url, lang) unless status.to_s =~ /^1|302/ || lang === DEFAULT_LANG
+        switch_lang(body, values, url, lang) unless status.to_s =~ /^1|302/ || lang === STORE.get_settings['default_lang']
         #d = Dom.new(storage.get_values, body, lang)
       end
 
@@ -47,7 +49,7 @@ module Wovnrb
     end
 
 
-    def switch_lang(body, values, url, lang=DEFAULT_LANG)
+    def switch_lang(body, values, url, lang=STORE.get_settings['default_lang'])
       return if values.size == 0
       def_lang = 'en'
       text_index = values['text_vals']

@@ -16,16 +16,22 @@ Gem::Specification.new do |spec|
 
   files = `git ls-files -z`.split("\x0")
   files.delete('BEFORE_PUSHING')
+  files.delete("ext/dom/dom.cpp")
+  files.delete("ext/dom/dom.h")
+  files.delete("ext/dom/dom.i")
+  files.delete("ext/dom/dom_wrap.cxx")
+  files.delete("ext/dom/extconf.rb")
   spec.files         = files
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
   #spec.require_paths = ["lib", "ext"]
   #spec.extensions    = spec.files.grep(%r{/extconf\.rb$})
-  spec.extensions    = %w[ext/dom/extconf.rb]
+  #spec.extensions    = %w[ext/dom/extconf.rb]
   #spec.extensions    = spec.files.grep(%r{/extconf\.rb$})
 
   spec.add_dependency "nokogiri", "1.6.1"
+  spec.add_dependency "nokogumbo"
   spec.add_dependency "redis"
 
   spec.add_development_dependency "bundler", "~> 1.7"
