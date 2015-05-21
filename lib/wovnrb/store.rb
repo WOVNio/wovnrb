@@ -23,10 +23,19 @@ module Wovnrb
           'default_lang' => 'en',
           'supported_langs' => ['en'],
         }
-      if Rails.configuration.respond_to? :wovnrb
-        @settings.merge!(Rails.configuration.wovnrb.stringify_keys)
+      # When Store is initialized, the Rails.configuration object is not yet initialized
+      @config_loaded = false
+    end
+
+    def settings
+      if !@config_loaded
+        if Rails.configuration.respond_to? :wovnrb
+          @settings.merge!(Rails.configuration.wovnrb.stringify_keys)
+        end
+        refresh_settings
+        @config_loaded = true
       end
-      refresh_settings
+      @settings
     end
 
     def refresh_settings

@@ -19,7 +19,7 @@ module Wovnrb
       @env = env
       STORE.refresh_settings
       headers = Headers.new(env, STORE.settings)
-      if (headers.path_lang != '' && !STORE.settings['supported_langs'].include?(headers.path_lang)) || headers.path_lang == STORE.settings['default_lang']
+      if ((headers.path_lang != '' && !STORE.settings['supported_langs'].include?(headers.path_lang)) || headers.path_lang == STORE.settings['default_lang'])
         redirect_headers = headers.redirect(STORE.settings['default_lang'])
         redirect_headers['set-cookie'] = "wovn_selected_lang=#{STORE.settings['default_lang']};"
         return [307, redirect_headers, ['']]
@@ -32,8 +32,10 @@ module Wovnrb
       # pass to application
       status, res_headers, body = @app.call(headers.request_out)
 
+binding.pry
       if res_headers["Content-Type"] =~ /html/ && !body[0].nil?
 # Can we make this request beforehand?
+        binding.pry
         values = STORE.get_values(headers.redis_url)
         url = {
                 :protocol => headers.protocol, 

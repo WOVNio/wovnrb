@@ -17,10 +17,11 @@ module Wovnrb
       @unmasked_pathname = @env['REQUEST_URI'].split('?')[0]
       @unmasked_pathname += '/' unless @unmasked_pathname =~ /\/$/ || @unmasked_pathname =~ /\/[^\/.]+\.[^\/.]+$/
       @unmasked_url = "#{@protocol}://#{@unmasked_host}#{@unmasked_pathname}"
-      @host = @env['HTTP_HOST']
+      @host = remove_lang(@env['HTTP_HOST'], self.lang)
       @pathname, @query = @env['REQUEST_URI'].split('?')
+      @pathname = remove_lang(@pathname, self.lang)
       @query = @query || ''
-      @url = remove_lang("#{@host}#{@pathname}#{(@query.length > 0 ? '?' : '') + @query}", self.path_lang)
+      @url = "#{@host}#{@pathname}#{(@query.length > 0 ? '?' : '') + remove_lang(@query, self.lang)}"
       if settings['query'].length > 0
         query_vals = []
         settings['query'].each do |qv|
@@ -36,8 +37,9 @@ module Wovnrb
       else
         @query = ''
       end
+      @query = remove_lang(@query, self.lang)
       @pathname = @pathname.gsub(/\/$/, '')
-      @redis_url = remove_lang("#{@host}#{@pathname}#{@query}", self.path_lang)
+      @redis_url = "#{@host}#{@pathname}#{@query}"
     end
 
     def lang
