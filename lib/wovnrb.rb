@@ -85,11 +85,11 @@ module Wovnrb
           end
         end
         # INSERTS
-        insert_node = Nokogiri::XML::Node.new('script', d)
-        insert_node['type'] = 'text/javascript'
-        insert_node.content = "window.wovn_backend = function() { return {'currentLang': '#{lang}'}; };"
-        parent_node = d.at_css('head') || d.at_css('body') || d.at_css('html')
-        parent_node.add_child(insert_node)
+        #insert_node = Nokogiri::XML::Node.new('script', d)
+        #insert_node['type'] = 'text/javascript'
+        #insert_node.content = "window.wovn_backend = function() { return {'currentLang': '#{lang}'}; };"
+        #parent_node = d.at_css('head') || d.at_css('body') || d.at_css('html')
+        #parent_node.add_child(insert_node)
 
 # If dev can't be used on production gem 
         d.xpath('//script').each do |script_node|
