@@ -51,10 +51,9 @@ module Wovnrb
 
 
     def switch_lang(body, values, url, lang=STORE.settings['default_lang'])
-      #return if values.size == 0
+      return if values.size == 0
       def_lang = 'en'
-      #text_index = values['text_vals']
-      text_index = {}
+      text_index = values['text_vals']
       src_index = values['img_vals'] || {}
       img_src_prefix = values['img_src_prefix'] || ''
       string_index = {}
@@ -93,6 +92,11 @@ module Wovnrb
         parent_node = d.at_css('head') || d.at_css('body') || d.at_css('html')
         parent_node.add_child(insert_node)
 
+        d.xpath('//script').each do |script_node|
+          if script_node['src'].include?('//j.wovn.io/')
+            script_node.remove
+          end
+        end
         insert_node = Nokogiri::XML::Node.new('script', d)
         insert_node['src'] = '//j.wovn.io/0'
         insert_node['data-wovnio'] = "key=#{STORE.settings['user_token']}&backend=true"
