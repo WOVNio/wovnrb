@@ -103,7 +103,7 @@ module Wovnrb
         # do this so that there will be a closing tag (better compatibility with browsers)
         insert_node.content = ' '
         parent_node = d.at_css('head') || d.at_css('body') || d.at_css('html')
-        parent_node.children.first.add_previous_sibling(insert_node)
+        parent_node.prepend_child(insert_node)
 
         d.to_html
       end
