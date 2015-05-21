@@ -4,6 +4,8 @@ require 'net/http'
 module Wovnrb
 
   class Store
+    attr_reader :settings
+
 
     def initialize
       @settings = 
@@ -21,46 +23,46 @@ module Wovnrb
           'default_lang' => 'en',
           'supported_langs' => ['en'],
         }
-      @config_loaded = false
+      if Rails.configuration.respond_to? :wovnrb
+        @settings.merge!(Rails.configuration.wovnrb.stringify_keys)
+      end
+      refresh_settings
     end
 
-    def get_settings
-      if !@config_loaded
-        if Rails.configuration.respond_to? :wovnrb
-          @settings.merge!(Rails.configuration.wovnrb.stringify_keys)
-        end
-        user_token = @settings['user_token']
-        #user_token = 'lYWQ9'
-        redis_key = 'WOVN:BACKEND:SETTING::' + user_token
-        cli = Redis.new(host: @settings['backend_host'], port: @settings['backend_port'])
-        begin
-          vals = cli.hgetall(redis_key) || {}
-        rescue
-          vals = {}
-        end
-        if vals.has_key?('query')
-          vals['query'] = JSON.parse(vals['query'])
-        end
-        @settings.merge!(vals)
-        @settings['backend_port'] = @settings['backend_port'].to_s
-        @settings['default_lang'] = Lang.get_code(@settings['default_lang'])
-        if !vals.has_key?('supported_langs')
-          @settings['supported_langs'] = [@settings['default_lang']]
-        end
-        @config_loaded = true
-        if @settings['url_pattern_name'] == 'path'
-          @settings['url_pattern_reg'] = "/(?<lang>[^/.?]+)"
-        end
-        # JUST FOR TESTING!!!!
-        @settings['supported_langs'] = ['ja', 'en', 'fr']
-        # ^^^^^^^^^ TESTING ^^^^^^^^^
+    def refresh_settings
+# add timer so this only accesses redis once every 5 minutes etc
+      user_token = @settings['user_token']
+      #user_token = 'lYWQ9'
+      redis_key = 'WOVN:BACKEND:SETTING::' + user_token
+      cli = Redis.new(host: @settings['backend_host'], port: @settings['backend_port'])
+      begin
+        vals = cli.hgetall(redis_key) || {}
+      rescue
+        vals = {}
       end
+      if vals.has_key?('query')
+        vals['query'] = JSON.parse(vals['query'])
+      end
+      @settings.merge!(vals)
+      @settings['backend_port'] = @settings['backend_port'].to_s
+      @settings['default_lang'] = Lang.get_code(@settings['default_lang'])
+      if !vals.has_key?('supported_langs')
+        @settings['supported_langs'] = [@settings['default_lang']]
+      end
+      if @settings['url_pattern_name'] == 'path'
+        @settings['url_pattern_reg'] = "/(?<lang>[^/.?]+)"
+      elsif @settings['url_pattern_name'] == 'query'
+        @settings['url_pattern_reg'] = '((\?.*&)|\?)wovn=(?<lang>[^&]+)(&|$)'
+      end
+      # JUST FOR TESTING!!!!
+      @settings['supported_langs'] = ['ja', 'en', 'fr']
+      # ^^^^^^^^^ TESTING ^^^^^^^^^
       @settings
     end
 
     def get_values(url)
       #url = 'http://wovn.io'
-      user_token = self.get_settings['user_token']
+      user_token = @settings['user_token']
       #user_token = 'lYWQ9'
       redis_key = 'WOVN:BACKEND:STORAGE:' + url.gsub(/\/$/, '') + ':' + user_token
       vals = request_values(redis_key)

@@ -17,12 +17,13 @@ module Wovnrb
 
     def call(env)
       @env = env
-      headers = Headers.new(env, STORE.get_settings)
-      if (headers.path_lang != '' && !STORE.get_settings['supported_langs'].include?(headers.path_lang)) || headers.path_lang == STORE.get_settings['default_lang']
-        redirect_headers = headers.redirect(STORE.get_settings['default_lang'])
-        redirect_headers['set-cookie'] = "wovn_selected_lang=#{STORE.get_settings['default_lang']};"
+      STORE.refresh_settings
+      headers = Headers.new(env, STORE.settings)
+      if (headers.path_lang != '' && !STORE.settings['supported_langs'].include?(headers.path_lang)) || headers.path_lang == STORE.settings['default_lang']
+        redirect_headers = headers.redirect(STORE.settings['default_lang'])
+        redirect_headers['set-cookie'] = "wovn_selected_lang=#{STORE.settings['default_lang']};"
         return [307, redirect_headers, ['']]
-      elsif headers.path_lang == '' && (headers.browser_lang != STORE.get_settings['default_lang'] && STORE.get_settings['supported_langs'].include?(headers.browser_lang))
+      elsif headers.path_lang == '' && (headers.browser_lang != STORE.settings['default_lang'] && STORE.settings['supported_langs'].include?(headers.browser_lang))
         redirect_headers = headers.redirect(headers.browser_lang)
         return [307, redirect_headers, ['']]
       end
@@ -33,13 +34,13 @@ module Wovnrb
 
       if res_headers["Content-Type"] =~ /html/ && !body[0].nil?
 # Can we make this request beforehand?
-        values = STORE.get_values(headers.url)
+        values = STORE.get_values(headers.redis_url)
         url = {
                 :protocol => headers.protocol, 
                 :host => headers.host, 
                 :pathname => headers.pathname
               }
-        switch_lang(body, values, url, lang) unless status.to_s =~ /^1|302/ || lang === STORE.get_settings['default_lang']
+        switch_lang(body, values, url, lang) unless status.to_s =~ /^1|302/ || lang === STORE.settings['default_lang']
         #d = Dom.new(storage.get_values, body, lang)
       end
 
@@ -49,7 +50,7 @@ module Wovnrb
     end
 
 
-    def switch_lang(body, values, url, lang=STORE.get_settings['default_lang'])
+    def switch_lang(body, values, url, lang=STORE.settings['default_lang'])
       return if values.size == 0
       def_lang = 'en'
       text_index = values['text_vals']

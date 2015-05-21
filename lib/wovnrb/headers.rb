@@ -8,6 +8,7 @@ module Wovnrb
     attr_reader :host
     attr_reader :unmasked_pathname
     attr_reader :pathname
+    attr_reader :redis_url
 
     def initialize(env, settings)
       @env = env
@@ -19,6 +20,7 @@ module Wovnrb
       @host = @env['HTTP_HOST']
       @pathname, @query = @env['REQUEST_URI'].split('?')
       @query = @query || ''
+      @url = remove_lang("#{@host}#{@pathname}#{(@query.length > 0 ? '?' : '') + @query}", self.path_lang)
       if settings['query'].length > 0
         query_vals = []
         settings['query'].each do |qv|
@@ -30,23 +32,21 @@ module Wovnrb
         end
         if query_vals.length > 0
           @query = "?#{query_vals.sort.join('&')}"
-        else
-          @query = ''
         end
       else
         @query = ''
       end
       @pathname = @pathname.gsub(/\/$/, '')
-      @url = remove_lang("#{@host}#{@pathname}#{@query}", lang)
+      @redis_url = remove_lang("#{@host}#{@pathname}#{@query}", self.path_lang)
     end
 
     def lang
-      (self.path_lang && self.path_lang.length > 0) ? self.path_lang : STORE.get_settings['default_lang']
+      (self.path_lang && self.path_lang.length > 0) ? self.path_lang : STORE.settings['default_lang']
     end
 
     def path_lang
       if @path_lang.nil?
-        rp = Regexp.new(STORE.get_settings['url_pattern_reg'])
+        rp = Regexp.new(STORE.settings['url_pattern_reg'])
         match = "#{@env['SERVER_NAME']}#{@env['REQUEST_URI']}".match(rp)
         if match && match[:lang] && Lang::LANG[match[:lang]]
           @path_lang = match[:lang]
@@ -63,14 +63,15 @@ module Wovnrb
         if match && match[:lang] && Lang::LANG[match[:lang]]
           @browser_lang = match[:lang]
         else
+# IS THIS RIGHT?
+          @browser_lang = ''#self.path_lang
           accept_langs = (@env['HTTP_ACCEPT_LANGUAGE'] || '').split(/[,;]/)
           accept_langs.each do |l|
             if Lang::LANG[l]
               @browser_lang = l
-              return l
+              break
             end
           end
-          @browser_lang = self.path_lang
         end
       end
       return @browser_lang
@@ -84,94 +85,73 @@ module Wovnrb
     end
 
     def redirect_location(lang)
-      if lang == STORE.get_settings['default_lang']
-        return remove_lang("#{@env['HTTP_HOST']}#{@env['REQUEST_URI']}", lang)
+      if lang == STORE.settings['default_lang']
+# IS THIS RIGHT??
+        return "#{self.protocol}://#{self.url}"
+        #return remove_lang("#{@env['HTTP_HOST']}#{@env['REQUEST_URI']}", lang)
       else
-        case STORE.get_settings['url_pattern_name']
+        location = self.url
+        case STORE.settings['url_pattern_name']
         when 'query'
-          if @env['REQUEST_URI'] !~ /\?/
-            location = "#{@env['HTTP_HOST']}#{@env['REQUEST_URI']}?wovn=#{lang}"
-          elsif @env['REQUEST_URI'] !~ /(\?|&)wovn=/
-            location = "#{@env['HTTP_HOST']}#{@env['REQUEST_URI']}&wovn=#{lang}"
-          else
-            location = "#{@env['HTTP_HOST']}#{@env['REQUEST_URI']}".sub(/wovn=[^&]*/, "wovn=#{lang}")
+          if location !~ /\?/
+            location = "#{location}?wovn=#{lang}"
+          else @env['REQUEST_URI'] !~ /(\?|&)wovn=/
+            location = "#{location}&wovn=#{lang}"
           end
-          return location
-        when 'path'
-          rp = Regexp.new(STORE.get_settings['url_pattern_reg'])
-          location = "#{@env['HTTP_HOST']}#{@env['REQUEST_URI']}"
-          match = location.match(rp)
-          if match && match[:lang] && Lang::LANG[match[:lang]]
-            location = location[0, match.offset(:lang)[0]] + location[match.offset(:lang)[1], location.length]
-            location.insert!(match.offset(:lang)[0], lang)
-            return "#{@env['rack.url_scheme']}://#{location}"
-          else
-            return "#{@env['rack.url_scheme']}://#{@env['HTTP_HOST']}/#{lang}#{@env['REQUEST_URI']}"
-          end
-       #when 'subdomain'
+        when 'subdomain'
+          location = "#{lang}.#{location}"
+       #when 'path'
         else
-          rp = Regexp.new(STORE.get_settings['url_pattern_reg'])
-          location = "#{@env['HTTP_HOST']}#{@env['REQUEST_URI']}"
-          match = location.match(rp)
-          if match && match[:lang] && Lang::LANG[match[:lang]]
-            location = location[0, match.offset(:lang)[0]] + location[match.offset(:lang)[1], location.length]
-            location.insert!(match.offset(:lang)[0], lang)
-            return "#{@env['rack.url_scheme']}://#{location}"
-          else
-            return "#{@env['rack.url_scheme']}://#{lang}.#{location}"
-          end
+          location = location.sub(/(\/|$)/, "/#{lang}/");
         end
+        return "#{self.protocol}://#{location}"
       end
     end
 
-    def settings(settings)
-      @settings = settings
-    end
-
-    def request_out(def_lang=STORE.get_settings['default_lang'])
-      if self.lang
-        case STORE.get_settings['url_pattern_name']
-        when 'query'
-          @env['REQUEST_URI'] = remove_lang(@env['REQUEST_URI'])
-          if @env.has_key?('QUERY_STRING')
-            @env['QUERY_STRING'] = remove_lang(@env['QUERY_STRING'])
-          end
-          if @env.has_key?('ORIGINAL_FULLPATH')
-            @env['ORIGINAL_FULLPATH'] = remove_lang(@env['ORIGINAL_FULLPATH'])
-          end
-        when 'path'
-          @env['REQUEST_URI'] = remove_lang(@env['REQUEST_URI'])
-          @env['REQUEST_PATH'] = remove_lang(@env['REQUEST_PATH'])
-          @env['PATH_INFO'] = remove_lang(@env['PATH_INFO'])
-          if @env.has_key?('ORIGINAL_FULLPATH')
-            @env['ORIGINAL_FULLPATH'] = remove_lang(@env['ORIGINAL_FULLPATH'])
-          end
-       #when 'subomain'
-        else
-          @env["HTTP_HOST"] = remove_lang(@env["HTTP_HOST"])
+    def request_out(def_lang=STORE.settings['default_lang'])
+      case STORE.settings['url_pattern_name']
+      when 'query'
+        @env['REQUEST_URI'] = remove_lang(@env['REQUEST_URI'])
+        if @env.has_key?('QUERY_STRING')
+          @env['QUERY_STRING'] = remove_lang(@env['QUERY_STRING'])
+        end
+        if @env.has_key?('ORIGINAL_FULLPATH')
+          @env['ORIGINAL_FULLPATH'] = remove_lang(@env['ORIGINAL_FULLPATH'])
+        end
+      when 'subdomain'
+        @env["HTTP_HOST"] = remove_lang(@env["HTTP_HOST"])
+        @env["SERVER_NAME"] = remove_lang(@env["SERVER_NAME"])
+        if @env.has_key?('HTTP_REFERER')
           @env["HTTP_REFERER"] = remove_lang(@env["HTTP_REFERER"])
-          @env["SERVER_NAME"] = remove_lang(@env["SERVER_NAME"])
+        end
+     #when 'path'
+      else
+        @env['REQUEST_URI'] = remove_lang(@env['REQUEST_URI'])
+        @env['REQUEST_PATH'] = remove_lang(@env['REQUEST_PATH'])
+        @env['PATH_INFO'] = remove_lang(@env['PATH_INFO'])
+        if @env.has_key?('ORIGINAL_FULLPATH')
+          @env['ORIGINAL_FULLPATH'] = remove_lang(@env['ORIGINAL_FULLPATH'])
         end
       end
       @env
     end
 
     def remove_lang(uri, lang=self.path_lang)
-        rp = Regexp.new(STORE.get_settings['url_pattern_reg'])
-        case STORE.get_settings['url_pattern_name']
-        when 'query'
-          return uri.sub(/wovn=#{lang}(&|$)/, '\1')
-        when 'path'
-          return uri.sub(/\/#{lang}(\/|$)/, '/')
-       #when 'subomain'
-        else
-          return uri.sub("//#{lang}.", '//')
-        end
+      case STORE.settings['url_pattern_name']
+      when 'query'
+        return uri.sub(/(^|\?|&)wovn=#{lang}(&|$)/, '\1')
+      when 'subdomain'
+        rp = Regexp.new('(^|(//))' + lang + '\.')
+        return uri.sub(rp, '\1')
+     #when 'path'
+      else
+        return uri.sub(/\/#{lang}(\/|$)/, '/')
+      end
     end
 
     def out(headers)
       if headers.has_key?("Location")
-        case STORE.get_settings['url_pattern_name']
+        case STORE.settings['url_pattern_name']
         when 'query'
           if headers["Location"] =~ /\?/
             headers["Location"] += "&"
@@ -179,11 +159,11 @@ module Wovnrb
             headers["Location"] += "?"
           end
           headers['Location'] += "wovn=#{self.lang}"
-        when 'path'
-          headers["Location"] = headers['Location'].sub(/(\/\/[^\/]+)/, '\1/' + self.lang)
-       #when 'subdomain'
-        else
+        when 'subdomain'
           headers["Location"] = headers["Location"].sub(/\/\/([^.]+)/, '//' + self.lang + '.\1')
+       #when 'path'
+        else
+          headers["Location"] = headers['Location'].sub(/(\/\/[^\/]+)/, '\1/' + self.lang)
         end
       end
       headers
