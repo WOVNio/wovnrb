@@ -59,8 +59,9 @@ module Wovnrb
       body.map! do |b|
         d = Nokogiri::HTML5(b)
         d.xpath('//text()').each do |node|
-          if text_index[node.content] && text_index[node.content][lang]
-            node.content = text_index[node.content][lang][0]['data']
+          node_text = node.content.strip
+          if text_index[node_text] && text_index[node_text][lang]
+            node.content = node.content.gsub(/^(\s*)[\S\s]*(\s*)$/, '\1' + text_index[node_text][lang][0]['data'] + '\2')
           end
         end
         d.xpath('//img').each do |node|
