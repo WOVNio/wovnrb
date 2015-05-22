@@ -66,7 +66,7 @@ module Wovnrb
           @browser_lang = match[:lang]
         else
 # IS THIS RIGHT?
-          @browser_lang = ''#self.path_lang
+          @browser_lang = ''
           accept_langs = (@env['HTTP_ACCEPT_LANGUAGE'] || '').split(/[,;]/)
           accept_langs.each do |l|
             if Lang::LANG[l]
@@ -141,7 +141,7 @@ module Wovnrb
     def remove_lang(uri, lang=self.path_lang)
       case STORE.settings['url_pattern_name']
       when 'query'
-        return uri.sub(/(^|\?|&)wovn=#{lang}(&|$)/, '\1')
+        return uri.sub(/(^|\?|&)wovn=#{lang}(&|$)/, '\1').gsub(/(\?|&)$/, '')
       when 'subdomain'
         rp = Regexp.new('(^|(//))' + lang + '\.')
         return uri.sub(rp, '\1')

@@ -99,7 +99,7 @@ module Wovnrb
         end
         insert_node = Nokogiri::XML::Node.new('script', d)
         insert_node['src'] = '//j.wovn.io/0'
-        insert_node['data-wovnio'] = "key=#{STORE.settings['user_token']}&backend=true&currentLang=#{lang}"
+        insert_node['data-wovnio'] = "key=#{STORE.settings['user_token']}&backend=true&currentLang=#{lang}&urlPattern=#{STORE.settings['url_pattern_name']}"
         # do this so that there will be a closing tag (better compatibility with browsers)
         insert_node.content = ' '
         parent_node = d.at_css('head') || d.at_css('body') || d.at_css('html')
