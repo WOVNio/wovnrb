@@ -28,6 +28,7 @@ module Wovnrb
       'th' => {name: 'ภาษาไทย',           code: 'th',     en: 'Thai'},
       'hi' => {name: 'हिन्दी',               code: 'hi',     en: 'Hindi'},
       'tr' => {name: 'Türkçe',            code: 'tr',     en: 'Turkish'},
+      'uk' => {name: 'Українська',        code: 'uk',     en: 'Ukrainian'},
       'vi' => {name: 'Tiếng Việt',        code: 'vi',     en: 'Vietnamese'},
 
 =begin

@@ -1,9 +1,17 @@
 #require "bundler/gem_tasks"
-require 'rake/extensiontask'
+#require 'rake/extensiontask'
+require 'rake/testtask'
 
-Rake::ExtensionTask.new 'dom' do |ext|
-  ext.lib_dir = 'lib/wovnrb'
+Rake::TestTask.new do |t|
+  t.libs << 'test'
 end
+
+desc 'Run tests'
+task :default => :test
+
+#Rake::ExtensionTask.new 'dom' do |ext|
+#  ext.lib_dir = 'lib/wovnrb'
+#end
 
 #gemspec = Gem::Specification.load('wovnrb.gemspec')
 #Rake::ExtensionTask.new do |ext|
@@ -15,3 +23,4 @@ end
 #end
 #
 #task :default => [:compile]
+
