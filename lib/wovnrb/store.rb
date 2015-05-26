@@ -29,7 +29,7 @@ module Wovnrb
 
     def settings
       if !@config_loaded
-        if Rails.configuration.respond_to? :wovnrb
+        if Object.const_defined?('Rails') && Rails.configuration.respond_to?(:wovnrb)
           @settings.merge!(Rails.configuration.wovnrb.stringify_keys)
         end
         refresh_settings
