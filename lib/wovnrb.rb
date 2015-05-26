@@ -16,7 +16,6 @@ module Wovnrb
     end
 
     def call(env)
-    binding.pry
       @env = env
       STORE.refresh_settings
       headers = Headers.new(env, STORE.settings)

@@ -1,11 +1,12 @@
 require 'wovnrb'
-require 'test/unit'
-require 'test/unit/notify'
+#require 'test/unit'
+#require 'test/unit/notify'
+require 'minitest/autorun'
 
-class TestLang < Test::Unit::TestCase
+class TestLang < Minitest::Test
 
   def test_langs_exist
-    assert_not_nil(Wovnrb::Lang::LANG)
+    refute_nil(Wovnrb::Lang::LANG)
   end
 
   def test_keys_exist

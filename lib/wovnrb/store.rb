@@ -12,9 +12,9 @@ module Wovnrb
         {
           'user_token' => '',
           # 'url_pattern_name' => 'query'
-          # 'url_pattern' => "?.*wovn=(?<lang>[^&]+)(&|$)",
+          # 'url_pattern_reg' => "?.*wovn=(?<lang>[^&]+)(&|$)",
           'url_pattern_name' => 'path',
-          'url_pattern' => "/(?<lang>[^/.?]+)",
+          'url_pattern_reg' => "/(?<lang>[^/.?]+)",
           #'url_pattern_name' => 'subdomain',
           #'url_pattern_reg' => "^(?<lang>[^.]+)\.",
           'query' => [],
@@ -52,6 +52,9 @@ module Wovnrb
       if vals.has_key?('query')
         vals['query'] = JSON.parse(vals['query'])
       end
+      if vals.has_key?('supported_langs')
+        vals['supported_langs'] = JSON.parse(vals['supported_langs'])
+      end
       @settings.merge!(vals)
       @settings['backend_port'] = @settings['backend_port'].to_s
       @settings['default_lang'] = Lang.get_code(@settings['default_lang'])
@@ -63,9 +66,6 @@ module Wovnrb
       elsif @settings['url_pattern_name'] == 'query'
         @settings['url_pattern_reg'] = '((\?.*&)|\?)wovn=(?<lang>[^&]+)(&|$)'
       end
-      # JUST FOR TESTING!!!!
-      @settings['supported_langs'] = ['ja', 'en', 'fr']
-      # ^^^^^^^^^ TESTING ^^^^^^^^^
       @settings
     end
 
