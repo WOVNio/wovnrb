@@ -40,7 +40,7 @@ module Wovnrb
                 :host => headers.host, 
                 :pathname => headers.pathname
               }
-        switch_lang(body, values, url, lang) unless status.to_s =~ /^1|302/ || lang === STORE.settings['default_lang']
+        switch_lang(body, values, url, lang) unless status.to_s =~ /^1|302/
         #d = Dom.new(storage.get_values, body, lang)
       end
 
@@ -60,7 +60,8 @@ module Wovnrb
         d = Nokogiri::HTML5(b)
         d.xpath('//text()').each do |node|
           node_text = node.content.strip
-          if text_index[node_text] && text_index[node_text][lang]
+# shouldn't need size check, but for now...
+          if text_index[node_text] && text_index[node_text][lang] && text_index[node_text][lang].size > 0
             node.content = node.content.gsub(/^(\s*)[\S\s]*(\s*)$/, '\1' + text_index[node_text][lang][0]['data'] + '\2')
           end
         end
@@ -80,7 +81,8 @@ module Wovnrb
               end
             end
           
-            if src_index[src] && src_index[src][lang]
+# shouldn't need size check, but for now...
+            if src_index[src] && src_index[src][lang] && src_index[src][lang].size > 0
               node.attribute('src').value = "#{img_src_prefix}#{src_index[src][lang][0]['data']}"
             end
           end
@@ -104,7 +106,7 @@ module Wovnrb
         # do this so that there will be a closing tag (better compatibility with browsers)
         insert_node.content = ' '
         parent_node = d.at_css('head') || d.at_css('body') || d.at_css('html')
-        parent_node.prepend_child(insert_node)
+        parent_node.children.first.add_previous_sibling(insert_node)
 
         d.to_html
       end

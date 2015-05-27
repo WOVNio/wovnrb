@@ -6,10 +6,10 @@ require 'wovnrb/version'
 Gem::Specification.new do |spec|
   spec.name          = "wovnrb"
   spec.version       = Wovnrb::VERSION
-  spec.authors       = ["Jeff Sandford"]
-  spec.email         = ["jeff@minimaltech.co"]
-  spec.summary       = %q{This does nothing yet.}
-  spec.description   = %q{Work in progress yall.}
+  spec.authors       = ["Jeff Sandford", "Antoine David"]
+  spec.email         = ["jeff@wovn.io"]
+  spec.summary       = %q{Gem for WOVN.io}
+  spec.description   = %q{ALPHA VERSION, not in a useable form.}
   spec.homepage      = ""
   spec.license       = "MIT"
 
