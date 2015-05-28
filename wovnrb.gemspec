@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
   #spec.extensions    = %w[ext/dom/extconf.rb]
   #spec.extensions    = spec.files.grep(%r{/extconf\.rb$})
 
-  spec.add_dependency "nokogumbo"
+  spec.add_dependency "nokogumbo", "1.3.0"
   spec.add_dependency "redis"
 
   spec.add_development_dependency "bundler", "~> 1.7"

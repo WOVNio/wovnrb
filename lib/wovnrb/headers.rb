@@ -14,6 +14,7 @@ module Wovnrb
       @env = env
       @protocol = @env['rack.url_scheme']
       @unmasked_host = @env['HTTP_HOST']
+      @env['REQUEST_URI'] = @env['PATH_INFO'] + (@env['QUERY_STRING'].size == 0 ? '' : "?#{@env['QUERY_STRING']}") unless @env['REQUEST_URI']
       @unmasked_pathname = @env['REQUEST_URI'].split('?')[0]
       @unmasked_pathname += '/' unless @unmasked_pathname =~ /\/$/ || @unmasked_pathname =~ /\/[^\/.]+\.[^\/.]+$/
       @unmasked_url = "#{@protocol}://#{@unmasked_host}#{@unmasked_pathname}"
@@ -129,7 +130,9 @@ module Wovnrb
      #when 'path'
       else
         @env['REQUEST_URI'] = remove_lang(@env['REQUEST_URI'])
-        @env['REQUEST_PATH'] = remove_lang(@env['REQUEST_PATH'])
+        if @env.has_key?('REQUEST_PATH')
+          @env['REQUEST_PATH'] = remove_lang(@env['REQUEST_PATH'])
+        end
         @env['PATH_INFO'] = remove_lang(@env['PATH_INFO'])
         if @env.has_key?('ORIGINAL_FULLPATH')
           @env['ORIGINAL_FULLPATH'] = remove_lang(@env['ORIGINAL_FULLPATH'])
