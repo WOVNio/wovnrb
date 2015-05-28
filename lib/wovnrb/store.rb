@@ -76,8 +76,8 @@ module Wovnrb
       redis_key = 'WOVN:BACKEND:STORAGE:' + url.gsub(/\/$/, '') + ':' + user_token
       vals = request_values(redis_key)
       if vals.empty?
-        #uri = URI.parse('http://wovn.io/[USER_ID]/[PAGE_ID]')
-        #Net::HTTP.get(uri)
+        uri = URI.parse('http://api.wovn.io/v0/page/add')
+        Net::HTTP.post_form(uri, :user_token => user_token, :secret_key => @settings['secret_key'], :url => url)
       end
       vals
       #f = File.open('./values/values', 'r')
