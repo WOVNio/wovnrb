@@ -14,7 +14,9 @@ module Wovnrb
       @env = env
       @protocol = @env['rack.url_scheme']
       @unmasked_host = @env['HTTP_HOST']
-      @env['REQUEST_URI'] = @env['PATH_INFO'] + (@env['QUERY_STRING'].size == 0 ? '' : "?#{@env['QUERY_STRING']}") unless @env['REQUEST_URI']
+      unless @env.has_key?('REQUEST_URI')
+        @env['REQUEST_URI'] = @env['PATH_INFO'] + (@env['QUERY_STRING'].size == 0 ? '' : "?#{@env['QUERY_STRING']}")
+      end
       @unmasked_pathname = @env['REQUEST_URI'].split('?')[0]
       @unmasked_pathname += '/' unless @unmasked_pathname =~ /\/$/ || @unmasked_pathname =~ /\/[^\/.]+\.[^\/.]+$/
       @unmasked_url = "#{@protocol}://#{@unmasked_host}#{@unmasked_pathname}"
@@ -114,13 +116,9 @@ module Wovnrb
     def request_out(def_lang=STORE.settings['default_lang'])
       case STORE.settings['url_pattern_name']
       when 'query'
-        @env['REQUEST_URI'] = remove_lang(@env['REQUEST_URI'])
-        if @env.has_key?('QUERY_STRING')
-          @env['QUERY_STRING'] = remove_lang(@env['QUERY_STRING'])
-        end
-        if @env.has_key?('ORIGINAL_FULLPATH')
-          @env['ORIGINAL_FULLPATH'] = remove_lang(@env['ORIGINAL_FULLPATH'])
-        end
+        @env['REQUEST_URI'] = remove_lang(@env['REQUEST_URI']) if @env.has_key?('REQUEST_URI')
+        @env['QUERY_STRING'] = remove_lang(@env['QUERY_STRING']) if @env.has_key?('QUERY_STRING')
+        @env['ORIGINAL_FULLPATH'] = remove_lang(@env['ORIGINAL_FULLPATH']) if @env.has_key?('ORIGINAL_FULLPATH')
       when 'subdomain'
         @env["HTTP_HOST"] = remove_lang(@env["HTTP_HOST"])
         @env["SERVER_NAME"] = remove_lang(@env["SERVER_NAME"])
