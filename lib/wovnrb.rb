@@ -19,14 +19,14 @@ module Wovnrb
       @env = env
       STORE.refresh_settings
       headers = Headers.new(env, STORE.settings)
-      if ((headers.path_lang != '' && !STORE.settings['supported_langs'].include?(headers.path_lang)) || headers.path_lang == STORE.settings['default_lang'])
-        redirect_headers = headers.redirect(STORE.settings['default_lang'])
-        redirect_headers['set-cookie'] = "wovn_selected_lang=#{STORE.settings['default_lang']};"
-        return [307, redirect_headers, ['']]
-      elsif headers.path_lang == '' && (headers.browser_lang != STORE.settings['default_lang'] && STORE.settings['supported_langs'].include?(headers.browser_lang))
-        redirect_headers = headers.redirect(headers.browser_lang)
-        return [307, redirect_headers, ['']]
-      end
+#      if ((headers.path_lang != '' && !STORE.settings['supported_langs'].include?(headers.path_lang)) || headers.path_lang == STORE.settings['default_lang'])
+#        redirect_headers = headers.redirect(STORE.settings['default_lang'])
+#        redirect_headers['set-cookie'] = "wovn_selected_lang=#{STORE.settings['default_lang']};"
+#        return [307, redirect_headers, ['']]
+#      elsif headers.path_lang == '' && (headers.browser_lang != STORE.settings['default_lang'] && STORE.settings['supported_langs'].include?(headers.browser_lang))
+#        redirect_headers = headers.redirect(headers.browser_lang)
+#        return [307, redirect_headers, ['']]
+#      end
       lang = headers.lang
 
       # pass to application
