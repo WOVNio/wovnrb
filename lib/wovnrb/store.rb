@@ -30,6 +30,13 @@ module Wovnrb
     def settings
       if !@config_loaded
         if Object.const_defined?('Rails') && Rails.configuration.respond_to?(:wovnrb)
+          config_settings = Rails.configuration.wovnrb.stringify_keys
+          if config_settings.has_key?('url_pattern')
+            if config_settings['url_pattern'] == 'query' || config_settings['url_pattern'] == 'subdomain' || config_settings['url_pattern'] == 'path'
+              config_settings['url_pattern_name'] = config_settings['url_pattern']
+              config_settings.delete('url_pattern')
+            end
+          end
           @settings.merge!(Rails.configuration.wovnrb.stringify_keys)
         end
         refresh_settings
@@ -64,7 +71,7 @@ module Wovnrb
       if @settings['url_pattern_name'] == 'path'
         @settings['url_pattern_reg'] = "/(?<lang>[^/.?]+)"
       elsif @settings['url_pattern_name'] == 'query'
-        @settings['url_pattern_reg'] = '((\?.*&)|\?)wovn=(?<lang>[^&]+)(&|$)'
+        @settings['url_pattern_reg'] = "((\?.*&)|\?)wovn=(?<lang>[^&]+)(&|$)"
       end
       @settings
     end

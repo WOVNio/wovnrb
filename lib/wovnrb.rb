@@ -19,14 +19,19 @@ module Wovnrb
       @env = env
       STORE.refresh_settings
       headers = Headers.new(env, STORE.settings)
-      if ((headers.path_lang != '' && !STORE.settings['supported_langs'].include?(headers.path_lang)) || headers.path_lang == STORE.settings['default_lang'])
+      # redirect if the path is set to the default language (for SEO purposes)
+      if (headers.path_lang == STORE.settings['default_lang'])
         redirect_headers = headers.redirect(STORE.settings['default_lang'])
-        redirect_headers['set-cookie'] = "wovn_selected_lang=#{STORE.settings['default_lang']};"
-        return [307, redirect_headers, ['']]
-      elsif headers.path_lang == '' && (headers.browser_lang != STORE.settings['default_lang'] && STORE.settings['supported_langs'].include?(headers.browser_lang))
-        redirect_headers = headers.redirect(headers.browser_lang)
         return [307, redirect_headers, ['']]
       end
+      #if ((headers.path_lang != '' && !STORE.settings['supported_langs'].include?(headers.path_lang)) || headers.path_lang == STORE.settings['default_lang'])
+      #  redirect_headers = headers.redirect(STORE.settings['default_lang'])
+      #  redirect_headers['set-cookie'] = "wovn_selected_lang=#{STORE.settings['default_lang']};"
+      #  return [307, redirect_headers, ['']]
+      #elsif headers.path_lang == '' && (headers.browser_lang != STORE.settings['default_lang'] && STORE.settings['supported_langs'].include?(headers.browser_lang))
+      #  redirect_headers = headers.redirect(headers.browser_lang)
+      #  return [307, redirect_headers, ['']]
+      #end
       lang = headers.lang
 
       # pass to application
@@ -45,6 +50,7 @@ module Wovnrb
       end
 
       headers.out(res_headers)
+      res_headers['Content-Length'] = body.each {|b| break b.length.to_s }
       [status, res_headers, body]
       #[status, res_headers, d.transform()]
     end
@@ -58,6 +64,7 @@ module Wovnrb
       string_index = {}
       body.map! do |b|
         d = Nokogiri::HTML5(b)
+        d.encoding = "UTF-8"
         d.xpath('//text()').each do |node|
           node_text = node.content.strip
 # shouldn't need size check, but for now...
@@ -101,7 +108,7 @@ module Wovnrb
           end
         end
         insert_node = Nokogiri::XML::Node.new('script', d)
-        insert_node['src'] = '//j.wovn.io/0'
+        insert_node['src'] = '//j.dev-wovn.io:3000/0'
         insert_node['data-wovnio'] = "key=#{STORE.settings['user_token']}&backend=true&currentLang=#{lang}&urlPattern=#{STORE.settings['url_pattern_name']}"
         # do this so that there will be a closing tag (better compatibility with browsers)
         insert_node.content = ' '
@@ -112,7 +119,8 @@ module Wovnrb
           parent_node.add_child(insert_node)
         end
 
-        d.to_html
+        output = d.to_html.gsub(/href="([^"]*)"/) {|m| "href=\"#{URI.decode($1)}\""}
+        output
       end
     end
 

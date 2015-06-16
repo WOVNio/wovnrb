@@ -43,6 +43,7 @@ module Wovnrb
       @query = remove_lang(@query, self.lang)
       @pathname = @pathname.gsub(/\/$/, '')
       @redis_url = "#{@host}#{@pathname}#{@query}"
+      #binding.pry
     end
 
     def lang
