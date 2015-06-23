@@ -15,7 +15,8 @@ module Wovnrb
       @protocol = @env['rack.url_scheme']
       @unmasked_host = @env['HTTP_HOST']
       unless @env.has_key?('REQUEST_URI')
-        @env['REQUEST_URI'] = @env['PATH_INFO'] + (@env['QUERY_STRING'].size == 0 ? '' : "?#{@env['QUERY_STRING']}")
+        # Add '/' to PATH_INFO as a possible fix for pow server
+        @env['REQUEST_URI'] = (@env_['PATH_INFO'] =~ /^[^\/]/ ? '/' : '') + @env['PATH_INFO'] + (@env['QUERY_STRING'].size == 0 ? '' : "?#{@env['QUERY_STRING']}")
       end
       @unmasked_pathname = @env['REQUEST_URI'].split('?')[0]
       @unmasked_pathname += '/' unless @unmasked_pathname =~ /\/$/ || @unmasked_pathname =~ /\/[^\/.]+\.[^\/.]+$/

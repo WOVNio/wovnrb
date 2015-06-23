@@ -50,7 +50,7 @@ module Wovnrb
       end
 
       headers.out(res_headers)
-      res_headers['Content-Length'] = body.each {|b| break b.length.to_s }
+#      res_headers['Content-Length'] = body.each {|b| break b.length.to_s }
       [status, res_headers, body]
       #[status, res_headers, d.transform()]
     end
@@ -108,7 +108,7 @@ module Wovnrb
           end
         end
         insert_node = Nokogiri::XML::Node.new('script', d)
-        insert_node['src'] = '//j.dev-wovn.io:3000/0'
+        insert_node['src'] = '//j.wovn.io/0'
         insert_node['data-wovnio'] = "key=#{STORE.settings['user_token']}&backend=true&currentLang=#{lang}&urlPattern=#{STORE.settings['url_pattern_name']}"
         # do this so that there will be a closing tag (better compatibility with browsers)
         insert_node.content = ' '
@@ -120,6 +120,10 @@ module Wovnrb
         end
 
         output = d.to_html.gsub(/href="([^"]*)"/) {|m| "href=\"#{URI.decode($1)}\""}
+        # RAILS
+        if Object.const_defined?('ActionView') && ActionView.const_defined?('OutputBuffer')
+          output = ActionView::OutputBuffer.new(output)
+        end
         output
       end
     end
