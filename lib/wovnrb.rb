@@ -16,6 +16,9 @@ module Wovnrb
     end
 
     def call(env)
+      #Rails.logger.error("++++++++++++++++++++++++++ENV++++++++++++++++++++++++")
+      #Rails.logger.error(env)
+      #Rails.logger.error("++++++++++++++++++++++++++ENV++++++++++++++++++++++++")
       @env = env
       STORE.refresh_settings
       headers = Headers.new(env, STORE.settings)
@@ -36,6 +39,7 @@ module Wovnrb
 
       # pass to application
       status, res_headers, body = @app.call(headers.request_out)
+      #binding.pry if res_headers["Content-Type"] =~ /html/ && !body[0].nil?
 
       if res_headers["Content-Type"] =~ /html/ && !body[0].nil?
 # Can we make this request beforehand?
@@ -47,10 +51,15 @@ module Wovnrb
               }
         switch_lang(body, values, url, lang) unless status.to_s =~ /^1|302/
         #d = Dom.new(storage.get_values, body, lang)
+        #res_headers["Content-Length"] = body.each.first.length.to_s
+        content_length = 0
+        body.each { |b| content_length += b.respond_to?(:length) ? b.length : 0 }
+        res_headers["Content-Length"] = content_length.to_s
       end
 
       headers.out(res_headers)
 #      res_headers['Content-Length'] = body.each {|b| break b.length.to_s }
+      #binding.pry if res_headers["Content-Type"] =~ /html/ && !body[0].nil?
       [status, res_headers, body]
       #[status, res_headers, d.transform()]
     end
@@ -109,7 +118,7 @@ module Wovnrb
         end
         insert_node = Nokogiri::XML::Node.new('script', d)
         insert_node['src'] = '//j.wovn.io/0'
-        insert_node['data-wovnio'] = "key=#{STORE.settings['user_token']}&backend=true&currentLang=#{lang}&urlPattern=#{STORE.settings['url_pattern_name']}"
+        insert_node['data-wovnio'] = "key=#{STORE.settings['user_token']}&backend=true&currentLang=#{lang}&defaultLang=#{STORE.settings['default_lang']}&urlPattern=#{STORE.settings['url_pattern_name']}"
         # do this so that there will be a closing tag (better compatibility with browsers)
         insert_node.content = ' '
         parent_node = d.at_css('head') || d.at_css('body') || d.at_css('html')
