@@ -17,9 +17,6 @@ module Wovnrb
     end
 
     def call(env)
-      #Rails.logger.error("++++++++++++++++++++++++++ENV++++++++++++++++++++++++")
-      #Rails.logger.error(env)
-      #Rails.logger.error("++++++++++++++++++++++++++ENV++++++++++++++++++++++++")
       @env = env
       STORE.refresh_settings
       headers = Headers.new(env, STORE.settings)
@@ -28,29 +25,19 @@ module Wovnrb
         redirect_headers = headers.redirect(STORE.settings['default_lang'])
         return [307, redirect_headers, ['']]
       end
-      #if ((headers.path_lang != '' && !STORE.settings['supported_langs'].include?(headers.path_lang)) || headers.path_lang == STORE.settings['default_lang'])
-      #  redirect_headers = headers.redirect(STORE.settings['default_lang'])
-      #  redirect_headers['set-cookie'] = "wovn_selected_lang=#{STORE.settings['default_lang']};"
-      #  return [307, redirect_headers, ['']]
-      #elsif headers.path_lang == '' && (headers.browser_lang != STORE.settings['default_lang'] && STORE.settings['supported_langs'].include?(headers.browser_lang))
-      #  redirect_headers = headers.redirect(headers.browser_lang)
-      #  return [307, redirect_headers, ['']]
-      #end
       lang = headers.lang
 
       # pass to application
       status, res_headers, body = @app.call(headers.request_out)
-      #binding.pry if res_headers["Content-Type"] =~ /html/ && !body[0].nil?
 
       if res_headers["Content-Type"] =~ /html/ && !body[0].nil?
-# Can we make this request beforehand?
         values = STORE.get_values(headers.redis_url)
         url = {
                 :protocol => headers.protocol, 
                 :host => headers.host, 
                 :pathname => headers.pathname
               }
-        body = switch_lang(body, values, url, lang) unless status.to_s =~ /^1|302/
+        body = switch_lang(body, values, url, lang, headers) unless status.to_s =~ /^1|302/
 
         content_length = 0
         body.each { |b| content_length += b.respond_to?(:bytesize) ? b.bytesize : 0 }
@@ -60,15 +47,12 @@ module Wovnrb
       end
 
       headers.out(res_headers)
-#      res_headers['Content-Length'] = body.each {|b| break b.length.to_s }
-      #binding.pry if res_headers["Content-Type"] =~ /html/ && !body[0].nil?
       [status, res_headers, body]
       #[status, res_headers, d.transform()]
     end
 
 
-    def switch_lang(body, values, url, lang=STORE.settings['default_lang'])
-      def_lang = 'en'
+    def switch_lang(body, values, url, lang=STORE.settings['default_lang'], headers)
       text_index = values['text_vals'] || {}
       src_index = values['img_vals'] || {}
       img_src_prefix = values['img_src_prefix'] || ''
@@ -76,6 +60,7 @@ module Wovnrb
       body.map! do |b|
         d = Nokogiri::HTML5(b)
         d.encoding = "UTF-8"
+        # swap text
         d.xpath('//text()').each do |node|
           node_text = node.content.strip
 # shouldn't need size check, but for now...
@@ -83,6 +68,17 @@ module Wovnrb
             node.content = node.content.gsub(/^(\s*)[\S\s]*(\s*)$/, '\1' + text_index[node_text][lang][0]['data'] + '\2')
           end
         end
+        # swap meta tag values
+        d.xpath('//meta').select{ |t|
+          (t.get_attribute('name') || t.get_attribute('property') || '') =~ /^(description|keywords|og:title|og:description)$/
+        }.each do |node|
+          node_content = node.get_attribute('content').strip
+# shouldn't need size check, but for now...
+          if text_index[node_content] && text_index[node_content][lang] && text_index[node_content][lang].size > 0
+            node.set_attribute('content', node_content.gsub(/^(\s*)[\S\s]*(\s*)$/, '\1' + text_index[node_content][lang][0]['data'] + '\2'))
+          end
+        end
+        # swap img srcs
         d.xpath('//img').each do |node|
           # use regular expressions to support case insensitivity (right?)
           if node.to_html =~ /src=['"][^'"]*['"]/i
@@ -105,36 +101,45 @@ module Wovnrb
             end
           end
         end
-        # INSERTS
-        #insert_node = Nokogiri::XML::Node.new('script', d)
-        #insert_node['type'] = 'text/javascript'
-        #insert_node.content = "window.wovn_backend = function() { return {'currentLang': '#{lang}'}; };"
-        #parent_node = d.at_css('head') || d.at_css('body') || d.at_css('html')
-        #parent_node.add_child(insert_node)
 
-# If dev can't be used on production gem 
+        # REMOVE WIDGET
         d.xpath('//script').each do |script_node|
           if script_node['src'] && script_node['src'].include?('//j.wovn.io/')
             script_node.remove
           end
         end
+
+        # PARENT NODE FOR INSERTS
+        parent_node = d.at_css('head') || d.at_css('body') || d.at_css('html')
+
+        # INSERT BACKEND WIDGET
         insert_node = Nokogiri::XML::Node.new('script', d)
         insert_node['src'] = '//j.wovn.io/0'
         insert_node['data-wovnio'] = "key=#{STORE.settings['user_token']}&backend=true&currentLang=#{lang}&defaultLang=#{STORE.settings['default_lang']}&urlPattern=#{STORE.settings['url_pattern_name']}"
         # do this so that there will be a closing tag (better compatibility with browsers)
         insert_node.content = ' '
-        parent_node = d.at_css('head') || d.at_css('body') || d.at_css('html')
         if parent_node.children.size > 0
           parent_node.children.first.add_previous_sibling(insert_node)
         else
           parent_node.add_child(insert_node)
         end
 
+        # INSERT LANGUAGE METALINKS
+        published_langs = STORE.settings['supported_langs'] || []
+        published_langs.each do |l|
+          insert_node = Nokogiri::XML::Node.new('link', d)
+          insert_node['rel'] = 'alternate'
+          insert_node['hreflang'] = l
+          insert_node['href'] = headers.redirect_location(l)
+          parent_node.add_child(insert_node)
+        end
+
+        # set lang property on HTML tag
+        if d.at_css('html') || d.at_css('HTML')
+          (d.at_css('html') || d.at_css('HTML')).set_attribute('lang', lang)
+        end
+
         output = d.to_html.gsub(/href="([^"]*)"/) {|m| "href=\"#{URI.decode($1)}\""}
-        # RAILS
-        #if Object.const_defined?('ActionView') && ActionView.const_defined?('OutputBuffer')
-        #  output = ActionView::OutputBuffer.new(output)
-        #end
         output
       end
       body
