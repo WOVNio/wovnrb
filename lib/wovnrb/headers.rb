@@ -16,7 +16,7 @@ module Wovnrb
       @unmasked_host = @env['HTTP_HOST']
       unless @env.has_key?('REQUEST_URI')
         # Add '/' to PATH_INFO as a possible fix for pow server
-        @env['REQUEST_URI'] = (@env_['PATH_INFO'] =~ /^[^\/]/ ? '/' : '') + @env['PATH_INFO'] + (@env['QUERY_STRING'].size == 0 ? '' : "?#{@env['QUERY_STRING']}")
+        @env['REQUEST_URI'] = (@env['PATH_INFO'] =~ /^[^\/]/ ? '/' : '') + @env['PATH_INFO'] + (@env['QUERY_STRING'].size == 0 ? '' : "?#{@env['QUERY_STRING']}")
       end
       # REQUEST_URI is expected to not contain the server name
       # heroku contains http://...

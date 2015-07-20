@@ -1,6 +1,7 @@
 require 'wovnrb/store'
 require 'wovnrb/headers'
 require 'wovnrb/lang'
+require 'nokogumbo'
 #require 'dom'
 require 'json'
 
@@ -49,12 +50,13 @@ module Wovnrb
                 :host => headers.host, 
                 :pathname => headers.pathname
               }
-        switch_lang(body, values, url, lang) unless status.to_s =~ /^1|302/
-        #d = Dom.new(storage.get_values, body, lang)
-        #res_headers["Content-Length"] = body.each.first.length.to_s
+        body = switch_lang(body, values, url, lang) unless status.to_s =~ /^1|302/
+
         content_length = 0
-        body.each { |b| content_length += b.respond_to?(:length) ? b.length : 0 }
+        body.each { |b| content_length += b.respond_to?(:bytesize) ? b.bytesize : 0 }
         res_headers["Content-Length"] = content_length.to_s
+
+        body.close if body.respond_to?(:close)
       end
 
       headers.out(res_headers)
@@ -84,7 +86,7 @@ module Wovnrb
         d.xpath('//img').each do |node|
           # use regular expressions to support case insensitivity (right?)
           if node.to_html =~ /src=['"][^'"]*['"]/i
-            src = node.to_html.match(/src=['"]([^&'"]*)['"]/i)[1]
+            src = node.to_html.match(/src=['"]([^'"]*)['"]/i)[1]
 # THIS SRC CORRECTION DOES NOT HANDLE ONE IMPORTANT CASE
 # 1) "../path/with/ellipse"
             # if this is not an absolute src
@@ -130,11 +132,12 @@ module Wovnrb
 
         output = d.to_html.gsub(/href="([^"]*)"/) {|m| "href=\"#{URI.decode($1)}\""}
         # RAILS
-        if Object.const_defined?('ActionView') && ActionView.const_defined?('OutputBuffer')
-          output = ActionView::OutputBuffer.new(output)
-        end
+        #if Object.const_defined?('ActionView') && ActionView.const_defined?('OutputBuffer')
+        #  output = ActionView::OutputBuffer.new(output)
+        #end
         output
       end
+      body
     end
 
   end
