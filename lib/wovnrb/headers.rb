@@ -1,3 +1,4 @@
+require 'pry'
 module Wovnrb
 
   class Headers
@@ -49,7 +50,6 @@ module Wovnrb
       @query = remove_lang(@query, self.lang)
       @pathname = @pathname.gsub(/\/$/, '')
       @redis_url = "#{@host}#{@pathname}#{@query}"
-      #binding.pry
     end
 
     def lang
@@ -103,7 +103,7 @@ module Wovnrb
         #return remove_lang("#{@env['HTTP_HOST']}#{@env['REQUEST_URI']}", lang)
       else
         location = self.url
-        case STORE.settings['url_pattern_name']
+        case STORE.settings['url_pattern']
         when 'query'
           if location !~ /\?/
             location = "#{location}?wovn=#{lang}"
@@ -121,7 +121,7 @@ module Wovnrb
     end
 
     def request_out(def_lang=STORE.settings['default_lang'])
-      case STORE.settings['url_pattern_name']
+      case STORE.settings['url_pattern']
       when 'query'
         @env['REQUEST_URI'] = remove_lang(@env['REQUEST_URI']) if @env.has_key?('REQUEST_URI')
         @env['QUERY_STRING'] = remove_lang(@env['QUERY_STRING']) if @env.has_key?('QUERY_STRING')
@@ -147,7 +147,7 @@ module Wovnrb
     end
 
     def remove_lang(uri, lang=self.path_lang)
-      case STORE.settings['url_pattern_name']
+      case STORE.settings['url_pattern']
       when 'query'
         return uri.sub(/(^|\?|&)wovn=#{lang}(&|$)/, '\1').gsub(/(\?|&)$/, '')
       when 'subdomain'
@@ -161,7 +161,7 @@ module Wovnrb
 
     def out(headers)
       if headers.has_key?("Location")
-        case STORE.settings['url_pattern_name']
+        case STORE.settings['url_pattern']
         when 'query'
           if headers["Location"] =~ /\?/
             headers["Location"] += "&"

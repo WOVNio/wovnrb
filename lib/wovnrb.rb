@@ -17,8 +17,10 @@ module Wovnrb
     end
 
     def call(env)
+      unless STORE.valid_settings?
+        return @app.call(env)
+      end
       @env = env
-      STORE.refresh_settings
       headers = Headers.new(env, STORE.settings)
       # redirect if the path is set to the default language (for SEO purposes)
       if (headers.path_lang == STORE.settings['default_lang'])
@@ -31,6 +33,7 @@ module Wovnrb
       status, res_headers, body = @app.call(headers.request_out)
 
       if res_headers["Content-Type"] =~ /html/ && !body[0].nil?
+
         values = STORE.get_values(headers.redis_url)
         url = {
                 :protocol => headers.protocol, 
@@ -115,7 +118,7 @@ module Wovnrb
         # INSERT BACKEND WIDGET
         insert_node = Nokogiri::XML::Node.new('script', d)
         insert_node['src'] = '//j.wovn.io/0'
-        insert_node['data-wovnio'] = "key=#{STORE.settings['user_token']}&backend=true&currentLang=#{lang}&defaultLang=#{STORE.settings['default_lang']}&urlPattern=#{STORE.settings['url_pattern_name']}"
+        insert_node['data-wovnio'] = "key=#{STORE.settings['user_token']}&backend=true&currentLang=#{lang}&defaultLang=#{STORE.settings['default_lang']}&urlPattern=#{STORE.settings['url_pattern']}"
         # do this so that there will be a closing tag (better compatibility with browsers)
         insert_node.content = ' '
         if parent_node.children.size > 0
@@ -124,8 +127,9 @@ module Wovnrb
           parent_node.add_child(insert_node)
         end
 
+        
         # INSERT LANGUAGE METALINKS
-        published_langs = STORE.settings['supported_langs'] || []
+        published_langs = get_langs(values)
         published_langs.each do |l|
           insert_node = Nokogiri::XML::Node.new('link', d)
           insert_node['rel'] = 'alternate'
@@ -143,6 +147,17 @@ module Wovnrb
         output
       end
       body
+    end
+
+    # this clearly needs to be refactored. I'm thinking maybe a Value service? (STORE.values.get_langs)
+    def get_langs(values)
+      langs = Set.new
+      (values['text_vals'] || {}).merge(values['img_vals'] || {}).each do |key, index|
+        index.each do |l, val|
+            langs.add(l)
+        end
+      end
+      langs
     end
 
   end

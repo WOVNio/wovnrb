@@ -11,11 +11,12 @@ module Wovnrb
       @settings = 
         {
           'user_token' => '',
-          # 'url_pattern_name' => 'query'
+          'secret_key' => '',
+          # 'url_pattern' => 'query'
           # 'url_pattern_reg' => "?.*wovn=(?<lang>[^&]+)(&|$)",
-          'url_pattern_name' => 'path',
+          'url_pattern' => 'path',
           'url_pattern_reg' => "/(?<lang>[^/.?]+)",
-          #'url_pattern_name' => 'subdomain',
+          #'url_pattern' => 'subdomain',
           #'url_pattern_reg' => "^(?<lang>[^.]+)\.",
           'query' => [],
           'backend_host' => 'rs1.wovn.io',
@@ -27,19 +28,55 @@ module Wovnrb
       @config_loaded = false
     end
 
+    def valid_settings?
+      if !settings.has_key?('user_token') || settings['user_token'].length < 5 || settings['user_token'].length > 6
+        return false
+      elsif !settings.has_key?('secret_key') || settings['secret_key'].length == 0 #|| settings['secret_key'].length < 5 || settings['secret_key'].length > 6
+        return false
+      elsif !settings.has_key?('url_pattern') || settings['url_pattern'].length == 0
+        return false
+      elsif !settings.has_key?('query') || !settings['query'].kind_of?(Array)
+        return false
+      elsif !settings.has_key?('backend_host') || settings['backend_host'].length == 0
+        return false
+      elsif !settings.has_key?('backend_port') || settings['backend_port'].length == 0
+        return false
+      elsif !settings.has_key?('default_lang') || settings['default_lang'].length == 0
+        return false
+      elsif !settings.has_key?('supported_langs') || !settings['supported_langs'].kind_of?(Array) || settings['supported_langs'].size < 1
+        return false
+      else
+        return true
+      end
+    end
+
     def settings
       if !@config_loaded
+        # get Rails config.wovnrb
         if Object.const_defined?('Rails') && Rails.configuration.respond_to?(:wovnrb)
           config_settings = Rails.configuration.wovnrb.stringify_keys
           if config_settings.has_key?('url_pattern')
             if config_settings['url_pattern'] == 'query' || config_settings['url_pattern'] == 'subdomain' || config_settings['url_pattern'] == 'path'
-              config_settings['url_pattern_name'] = config_settings['url_pattern']
+              config_settings['url_pattern'] = config_settings['url_pattern']
               config_settings.delete('url_pattern')
             end
           end
           @settings.merge!(Rails.configuration.wovnrb.stringify_keys)
         end
-        refresh_settings
+
+        # fix settings object
+        @settings['backend_port'] = @settings['backend_port'].to_s
+        @settings['default_lang'] = Lang.get_code(@settings['default_lang'])
+        if !@settings.has_key?('supported_langs')
+          @settings['supported_langs'] = [@settings['default_lang']]
+        end
+        if @settings['url_pattern'] == 'path'
+          @settings['url_pattern_reg'] = "/(?<lang>[^/.?]+)"
+        elsif @settings['url_pattern'] == 'query'
+          @settings['url_pattern_reg'] = "((\\?.*&)|\\?)wovn=(?<lang>[^&]+)(&|$)"
+        elsif @settings['url_pattern'] == 'subdomain'
+          @settings['url_pattern_reg'] = "^(?<lang>[^.]+)\."
+        end
         @config_loaded = true
       end
       @settings
@@ -68,9 +105,9 @@ module Wovnrb
       if !vals.has_key?('supported_langs')
         @settings['supported_langs'] = [@settings['default_lang']]
       end
-      if @settings['url_pattern_name'] == 'path'
+      if @settings['url_pattern'] == 'path'
         @settings['url_pattern_reg'] = "/(?<lang>[^/.?]+)"
-      elsif @settings['url_pattern_name'] == 'query'
+      elsif @settings['url_pattern'] == 'query'
         @settings['url_pattern_reg'] = "((\\?.*&)|\\?)wovn=(?<lang>[^&]+)(&|$)"
       end
       @settings
