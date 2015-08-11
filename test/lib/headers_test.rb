@@ -1,50 +1,24 @@
-require 'wovnrb'
+require 'wovnrb/headers'
 require 'minitest/autorun'
 require 'pry'
 
-class TestHeaders < Minitest::Test
+class HeadersTest < Minitest::Test
 
   def test_initialize
     h = Wovnrb::Headers.new(get_env, get_settings)
     refute_nil(h)
   end
 
-  def test_initialize_with_simple_url
-    h = Wovnrb::Headers.new(get_env('url' => 'https://wovn.io'), get_settings)
+  def test_initialize_env
+    env = get_env
+    h = Wovnrb::Headers.new(env, {})
+    binding.pry
     #assert_equal(''
   end
 
-  def test_keys_exist
-    Wovnrb::Lang::LANG.each do |k, l|
-      assert(l.has_key?(:name))
-      assert(l.has_key?(:code))
-      assert(l.has_key?(:en))
-      assert_equal(k, l[:code])
-    end
-  end
-
-  def test_get_code_with_valid_code
-    assert_equal('ms', Wovnrb::Lang.get_code('ms'))
-  end
-
-  def test_get_code_with_valid_english_name
-    assert_equal('pt', Wovnrb::Lang.get_code('Portuguese'))
-  end
-
-  def test_get_code_with_valid_native_name
-    assert_equal('hi', Wovnrb::Lang.get_code('हिन्दी'))
-  end
-
-  def test_get_code_with_invalid_name
-    assert_equal(nil, Wovnrb::Lang.get_code('WOVN4LYFE'))
-  end
-
-  def test_get_code_with_empty_string
-    assert_equal(nil, Wovnrb::Lang.get_code(''))
-  end
-
-  def test_get_code_with_nil
-    assert_equal(nil, Wovnrb::Lang.get_code(nil))
+  def test_initialize_with_simple_url
+    h = Wovnrb::Headers.new(get_env('url' => 'https://wovn.io'), get_settings)
+    #assert_equal(''
   end
 
   def get_settings(options={})

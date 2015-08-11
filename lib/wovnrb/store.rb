@@ -1,11 +1,11 @@
 require 'redis'
 require 'net/http'
+require 'Logger'
 
 module Wovnrb
 
   class Store
     attr_reader :settings
-
 
     def initialize
       @settings = 
@@ -23,33 +23,64 @@ module Wovnrb
           'backend_port' => '6379',
           'default_lang' => 'en',
           'supported_langs' => ['en'],
+          'test_mode' => false,
+          'test_url' => '',
         }
       # When Store is initialized, the Rails.configuration object is not yet initialized
       @config_loaded = false
     end
 
+    # Returns true or false based on whether the settings are valid or not, logs any invalid settings to ../error.log
+    #
+    # @return [Boolean] Returns true if the settings are valid, and false if they are not
     def valid_settings?
+      valid = true
+      errors = [];
       if !settings.has_key?('user_token') || settings['user_token'].length < 5 || settings['user_token'].length > 6
-        return false
-      elsif !settings.has_key?('secret_key') || settings['secret_key'].length == 0 #|| settings['secret_key'].length < 5 || settings['secret_key'].length > 6
-        return false
-      elsif !settings.has_key?('url_pattern') || settings['url_pattern'].length == 0
-        return false
-      elsif !settings.has_key?('query') || !settings['query'].kind_of?(Array)
-        return false
-      elsif !settings.has_key?('backend_host') || settings['backend_host'].length == 0
-        return false
-      elsif !settings.has_key?('backend_port') || settings['backend_port'].length == 0
-        return false
-      elsif !settings.has_key?('default_lang') || settings['default_lang'].length == 0
-        return false
-      elsif !settings.has_key?('supported_langs') || !settings['supported_langs'].kind_of?(Array) || settings['supported_langs'].size < 1
-        return false
-      else
-        return true
+        valid = false
+        errors.push("User token #{settings['user_token']} is not valid.");
       end
+      if !settings.has_key?('secret_key') || settings['secret_key'].length == 0 #|| settings['secret_key'].length < 5 || settings['secret_key'].length > 6
+        valid = false
+        errors.push("Secret key #{settings['secret_key']} is not valid.");
+      end
+      if !settings.has_key?('url_pattern') || settings['url_pattern'].length == 0
+        valid = false
+        errors.push("Url pattern #{settings['url_pattern']} is not valid.");
+      end
+      if !settings.has_key?('query') || !settings['query'].kind_of?(Array)
+        valid = false
+        errors.push("query config #{settings['query']} is not valid.");
+      end
+      if !settings.has_key?('backend_host') || settings['backend_host'].length == 0
+        valid = false
+        errors.push("Backend host is not configured.");
+      end
+      if !settings.has_key?('backend_port') || settings['backend_port'].length == 0
+        valid = false
+        errors.push("Backend port is not configured.");
+      end
+      if !settings.has_key?('default_lang') || settings['default_lang'].length == 0
+        valid = false
+        errors.push("Default lang #{settings['default_lang']} is not valid.");
+      end
+      if !settings.has_key?('supported_langs') || !settings['supported_langs'].kind_of?(Array) || settings['supported_langs'].size < 1
+        valid = false
+        errors.push("Supported langs configuration is not valid.");
+      end
+      # log errors
+      if errors.length > 0
+        logger = Logger.new('../error.log')
+        errors.each do |e|
+          logger.error(e)
+        end
+      end
+      return valid
     end
 
+    # Returns the settings object, pulling from Rails config the first time this is called
+    #
+    # @return [Hash] The settings which are pulled from the config file given by the user and filled in by defaults
     def settings
       if !@config_loaded
         # get Rails config.wovnrb
@@ -77,70 +108,37 @@ module Wovnrb
         elsif @settings['url_pattern'] == 'subdomain'
           @settings['url_pattern_reg'] = "^(?<lang>[^.]+)\."
         end
+        if @settings['test_mode'] != true || @settings['test_mode'] != 'on'
+          @settings['test_mode'] = false
+        else
+          @settings['test_mode'] = true
+        end
+
         @config_loaded = true
       end
       @settings
     end
 
-    def refresh_settings
-# add timer so this only accesses redis once every 5 minutes etc
-      user_token = @settings['user_token']
-      #user_token = 'lYWQ9'
-      redis_key = 'WOVN:BACKEND:SETTING::' + user_token
-      cli = Redis.new(host: @settings['backend_host'], port: @settings['backend_port'])
-      begin
-        vals = cli.hgetall(redis_key) || {}
-      rescue
-        vals = {}
-      end
-      if vals.has_key?('query')
-        vals['query'] = JSON.parse(vals['query'])
-      end
-      if vals.has_key?('supported_langs')
-        vals['supported_langs'] = JSON.parse(vals['supported_langs'])
-      end
-      @settings.merge!(vals)
-      @settings['backend_port'] = @settings['backend_port'].to_s
-      @settings['default_lang'] = Lang.get_code(@settings['default_lang'])
-      if !vals.has_key?('supported_langs')
-        @settings['supported_langs'] = [@settings['default_lang']]
-      end
-      if @settings['url_pattern'] == 'path'
-        @settings['url_pattern_reg'] = "/(?<lang>[^/.?]+)"
-      elsif @settings['url_pattern'] == 'query'
-        @settings['url_pattern_reg'] = "((\\?.*&)|\\?)wovn=(?<lang>[^&]+)(&|$)"
-      end
-      @settings
-    end
-
+    # Get the values for the passed in url
+    #
+    # @param url [String] The url to get the values for
+    # @return [Hash] The values Hash for the passed in url
     def get_values(url)
-      #url = 'http://wovn.io'
-      user_token = @settings['user_token']
-      #user_token = 'lYWQ9'
-      redis_key = 'WOVN:BACKEND:STORAGE:' + url.gsub(/\/$/, '') + ':' + user_token
-      vals = request_values(redis_key)
-      if vals.empty?
-        uri = URI.parse('http://api.wovn.io/v0/page/add')
-        Net::HTTP.post_form(uri, :user_token => user_token, :secret_key => @settings['secret_key'], :url => url)
-      end
-      vals
-      #f = File.open('./values/values', 'r')
-      #return JSON.parse(f.read)
-      #f.close
-    end
-
-    def request_values(key)
-    Rails.logger.info("*******************************************************")
-    Rails.logger.info(key)
-      cli = Redis.new(host: @settings['backend_host'], port: @settings['backend_port'])
-    Rails.logger.info(@settings['backend_host'])
-    Rails.logger.info(@settings['backend_port'])
+      redis_key = 'WOVN:BACKEND:STORAGE:' + url.gsub(/\/$/, '') + ':' + settings['user_token']
+      cli = Redis.new(host: settings['backend_host'], port: settings['backend_port'])
       begin
-        vals = cli.get(key) || '{}'
-        vals = JSON.parse(vals)
+        vals = cli.get(redis_key) || '{}'
       rescue
+        logger = Logger.new('../error.log')
+        logger.error("Redis GET request failed with the following parameters:\nhost: #{settings['backend_host']}\nport: #{settings['backend_port']}\nkey: #{redis_key}")
         vals = {}
       end
+      # handle this on the widget
+      #if vals.empty?
+      #  uri = URI.parse('http://api.wovn.io/v0/page/add')
+      #  Net::HTTP.post_form(uri, :user_token => user_token, :secret_key => @settings['secret_key'], :url => url)
+      #end
+      JSON.parse(vals)
     end
 
   end

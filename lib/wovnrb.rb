@@ -22,12 +22,15 @@ module Wovnrb
       end
       @env = env
       headers = Headers.new(env, STORE.settings)
+      if STORE.settings.test_mode && STORE.settings.test_url != headers.url
+        return @app.call(env)
+      end
       # redirect if the path is set to the default language (for SEO purposes)
       if (headers.path_lang == STORE.settings['default_lang'])
         redirect_headers = headers.redirect(STORE.settings['default_lang'])
         return [307, redirect_headers, ['']]
       end
-      lang = headers.lang
+      lang = headers.lang_code
 
       # pass to application
       status, res_headers, body = @app.call(headers.request_out)

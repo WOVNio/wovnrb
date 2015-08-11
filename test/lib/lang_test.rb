@@ -1,9 +1,7 @@
-require 'wovnrb'
-#require 'test/unit'
-#require 'test/unit/notify'
+require 'wovnrb/lang'
 require 'minitest/autorun'
 
-class TestLang < Minitest::Test
+class LangTest < Minitest::Test
 
   def test_langs_exist
     refute_nil(Wovnrb::Lang::LANG)
