@@ -67,11 +67,14 @@ module Wovnrb
         d = Nokogiri::HTML5(b)
         d.encoding = "UTF-8"
         # swap text
+        noMatchedValues = []
         d.xpath('//text()').each do |node|
           node_text = node.content.strip
 # shouldn't need size check, but for now...
           if text_index[node_text] && text_index[node_text][lang] && text_index[node_text][lang].size > 0
             node.content = node.content.gsub(/^(\s*)[\S\s]*(\s*)$/, '\1' + text_index[node_text][lang][0]['data'] + '\2')
+          else
+            noMatchedValues.push(node_text)
           end
         end
         # swap meta tag values
@@ -82,9 +85,12 @@ module Wovnrb
 # shouldn't need size check, but for now...
           if text_index[node_content] && text_index[node_content][lang] && text_index[node_content][lang].size > 0
             node.set_attribute('content', node_content.gsub(/^(\s*)[\S\s]*(\s*)$/, '\1' + text_index[node_content][lang][0]['data'] + '\2'))
+          else
+            noMatchedValues.push(node_text)
           end
         end
         # swap img srcs
+        noMatchedImages = []
         d.xpath('//img').each do |node|
           # use regular expressions to support case insensitivity (right?)
           if node.to_html =~ /src=['"][^'"]*['"]/i
@@ -104,6 +110,8 @@ module Wovnrb
 # shouldn't need size check, but for now...
             if src_index[src] && src_index[src][lang] && src_index[src][lang].size > 0
               node.attribute('src').value = "#{img_src_prefix}#{src_index[src][lang][0]['data']}"
+            else
+              noMatchedImages.push(src)
             end
           end
         end
@@ -122,8 +130,8 @@ module Wovnrb
         insert_node = Nokogiri::XML::Node.new('script', d)
         insert_node['src'] = '//j.wovn.io/0'
         insert_node['data-wovnio'] = "key=#{STORE.settings['user_token']}&backend=true&currentLang=#{lang}&defaultLang=#{STORE.settings['default_lang']}&urlPattern=#{STORE.settings['url_pattern']}"
-        # do this so that there will be a closing tag (better compatibility with browsers)
-        insert_node.content = ' '
+        # for browser compatibility, content must at least contain a blank space (so that there will be a closing tag)
+        insert_node.content = JSON.generate({:text_src => noMatchedValues, :img_src => noMatchedImages})
         if parent_node.children.size > 0
           parent_node.children.first.add_previous_sibling(insert_node)
         else
