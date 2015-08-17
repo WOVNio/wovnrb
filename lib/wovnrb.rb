@@ -86,7 +86,7 @@ module Wovnrb
           if text_index[node_content] && text_index[node_content][lang] && text_index[node_content][lang].size > 0
             node.set_attribute('content', node_content.gsub(/^(\s*)[\S\s]*(\s*)$/, '\1' + text_index[node_content][lang][0]['data'] + '\2'))
           else
-            noMatchedValues.push(node_text)
+            noMatchedValues.push(node_content)
           end
         end
         # swap img srcs
@@ -131,7 +131,8 @@ module Wovnrb
         insert_node['src'] = '//j.wovn.io/0'
         insert_node['data-wovnio'] = "key=#{STORE.settings['user_token']}&backend=true&currentLang=#{lang}&defaultLang=#{STORE.settings['default_lang']}&urlPattern=#{STORE.settings['url_pattern']}"
         # for browser compatibility, content must at least contain a blank space (so that there will be a closing tag)
-        insert_node.content = JSON.generate({:text_src => noMatchedValues, :img_src => noMatchedImages})
+        script_content = {:text_src => noMatchedValues, :img_src => noMatchedImages}
+        insert_node.content = script_content.to_json
         if parent_node.children.size > 0
           parent_node.children.first.add_previous_sibling(insert_node)
         else
