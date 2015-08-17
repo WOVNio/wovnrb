@@ -1,6 +1,6 @@
 require 'redis'
 require 'net/http'
-require 'Logger'
+require 'Logger' unless defined?(Logger)
 
 module Wovnrb
 
@@ -70,7 +70,7 @@ module Wovnrb
       end
       # log errors
       if errors.length > 0
-        logger = Logger.new('../error.log')
+        logger = Logger.new('log/error.log')
         errors.each do |e|
           logger.error(e)
         end
