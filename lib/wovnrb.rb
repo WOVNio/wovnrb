@@ -73,7 +73,7 @@ module Wovnrb
 # shouldn't need size check, but for now...
           if text_index[node_text] && text_index[node_text][lang] && text_index[node_text][lang].size > 0
             node.content = node.content.gsub(/^(\s*)[\S\s]*(\s*)$/, '\1' + text_index[node_text][lang][0]['data'] + '\2')
-          else
+          else if node_text !~ /^\s*$/
             noMatchedValues.push(node_text)
           end
         end
@@ -85,7 +85,7 @@ module Wovnrb
 # shouldn't need size check, but for now...
           if text_index[node_content] && text_index[node_content][lang] && text_index[node_content][lang].size > 0
             node.set_attribute('content', node_content.gsub(/^(\s*)[\S\s]*(\s*)$/, '\1' + text_index[node_content][lang][0]['data'] + '\2'))
-          else
+          else if node_content !~ /^\s*$/
             noMatchedValues.push(node_content)
           end
         end
@@ -110,7 +110,7 @@ module Wovnrb
 # shouldn't need size check, but for now...
             if src_index[src] && src_index[src][lang] && src_index[src][lang].size > 0
               node.attribute('src').value = "#{img_src_prefix}#{src_index[src][lang][0]['data']}"
-            else
+            else if src !~ /^\s*$/
               noMatchedImages.push(src)
             end
           end
@@ -131,8 +131,8 @@ module Wovnrb
         insert_node['src'] = '//j.wovn.io/0'
         insert_node['data-wovnio'] = "key=#{STORE.settings['user_token']}&backend=true&currentLang=#{lang}&defaultLang=#{STORE.settings['default_lang']}&urlPattern=#{STORE.settings['url_pattern']}"
         # for browser compatibility, content must at least contain a blank space (so that there will be a closing tag)
-        noMatchedValues = filterVals(noMatchedValues)
-        noMatchedImages = filterImgs(noMatchedImages)
+        #noMatchedValues = filterVals(noMatchedValues)
+        #noMatchedImages = filterImgs(noMatchedImages)
         script_content = {:text_src => noMatchedValues, :img_src => noMatchedImages}
         insert_node.content = script_content.to_json
         if parent_node.children.size > 0
@@ -163,17 +163,17 @@ module Wovnrb
       body
     end
 
-    def filterVals(vals)
-      vals.reject do |v|
-        
-      end
-    end
-
-    def filterImgs(srcs)
-      srcs.reject do |v|
-        s =~ /\s+/
-      end
-    end
+#    def filterVals(vals)
+#      vals.reject do |v|
+#        
+#      end
+#    end
+#
+#    def filterImgs(srcs)
+#      srcs.reject do |v|
+#        s =~ /\s+/
+#      end
+#    end
 
     # this clearly needs to be refactored. I'm thinking maybe a Value service? (STORE.values.get_langs)
     def get_langs(values)
