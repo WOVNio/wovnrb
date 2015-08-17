@@ -131,6 +131,8 @@ module Wovnrb
         insert_node['src'] = '//j.wovn.io/0'
         insert_node['data-wovnio'] = "key=#{STORE.settings['user_token']}&backend=true&currentLang=#{lang}&defaultLang=#{STORE.settings['default_lang']}&urlPattern=#{STORE.settings['url_pattern']}"
         # for browser compatibility, content must at least contain a blank space (so that there will be a closing tag)
+        noMatchedValues = filterVals(noMatchedValues)
+        noMatchedImages = filterImgs(noMatchedImages)
         script_content = {:text_src => noMatchedValues, :img_src => noMatchedImages}
         insert_node.content = script_content.to_json
         if parent_node.children.size > 0
@@ -159,6 +161,18 @@ module Wovnrb
         output
       end
       body
+    end
+
+    def filterVals(vals)
+      vals.reject do |v|
+        
+      end
+    end
+
+    def filterImgs(srcs)
+      srcs.reject do |v|
+        s =~ /\s+/
+      end
     end
 
     # this clearly needs to be refactored. I'm thinking maybe a Value service? (STORE.values.get_langs)
