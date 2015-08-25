@@ -11,8 +11,7 @@ class HeadersTest < Minitest::Test
 
   def test_initialize_env
     env = get_env
-    h = Wovnrb::Headers.new(env, {})
-    binding.pry
+    #h = Wovnrb::Headers.new(env, {})
     #assert_equal(''
   end
 
