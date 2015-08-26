@@ -9,21 +9,72 @@ class HeadersTest < Minitest::Test
     refute_nil(h)
   end
 
-  def test_initialize_env
-    env = get_env
-    #h = Wovnrb::Headers.new(env, {})
-    #assert_equal(''
-  end
+  # def test_initialize_env
+  #   env = get_env
+  #   h = Wovnrb::Headers.new(env, {})
+  #   binding.pry
+  #   #assert_equal(''
+  # end
 
   def test_initialize_with_simple_url
     h = Wovnrb::Headers.new(get_env('url' => 'https://wovn.io'), get_settings)
-    #assert_equal(''
+    assert_equal('wovn.io/', h.url)
+  end
+
+  def test_initialize_with_query_language
+    h = Wovnrb::Headers.new(get_env('url' => 'https://wovn.io/?wovn=en'), get_settings('url_pattern' => 'query'))
+    assert_equal('wovn.io/?', h.url)
+  end
+
+  def test_initialize_with_query_language_without_slash
+    h = Wovnrb::Headers.new(get_env('url' => 'https://wovn.io?wovn=en'), get_settings('url_pattern' => 'query'))
+    assert_equal('wovn.io/?', h.url)
+  end
+
+  def test_initialize_with_path_language
+    h = Wovnrb::Headers.new(get_env('url' => 'https://wovn.io/en'), get_settings)
+    assert_equal('wovn.io/', h.url)
+  end
+
+  def test_initialize_with_domain_language
+    h = Wovnrb::Headers.new(get_env('url' => 'https://en.wovn.io/'), get_settings('url_pattern' => 'subdomain'))
+    assert_equal('wovn.io/', h.url)
+  end
+
+  def test_initialize_with_path_language_with_query
+    h = Wovnrb::Headers.new(get_env('url' => 'https://wovn.io/en/?wovn=zh-CHS'), get_settings)
+    assert_equal('wovn.io/?wovn=zh-CHS', h.url)
+  end
+
+  def test_initialize_with_domain_language_with_query
+    h = Wovnrb::Headers.new(get_env('url' => 'https://en.wovn.io/?wovn=zh-CHS'), get_settings('url_pattern' => 'subdomain'))
+    assert_equal('wovn.io/?wovn=zh-CHS', h.url)
+  end
+
+  def test_initialize_with_path_language_with_query_without_slash
+    h = Wovnrb::Headers.new(get_env('url' => 'https://wovn.io/en?wovn=zh-CHS'), get_settings)
+    assert_equal('wovn.io/?wovn=zh-CHS', h.url)
+  end
+
+  def test_initialize_with_domain_language_with_query_without_slash
+    h = Wovnrb::Headers.new(get_env('url' => 'https://en.wovn.io?wovn=zh-CHS'), get_settings('url_pattern' => 'subdomain'))
+    assert_equal('wovn.io/?wovn=zh-CHS', h.url)
+  end
+
+  def test_get_settings_valid
+    # TODO: check if get_settings is valid (store.rb, valid_settings)
+    # s = Wovnrb::Store.new
+    # settings = get_settings
+    
+    # settings_stub = stub
+    # settings_stub.expects(:has_key).with(:user_token).returns(settings["user_token"])
+    # s.valid_settings?
   end
 
   def get_settings(options={})
     settings = {}
     settings['user_token'] = 'OHYx9'
-    settings['url_pattern_name'] = 'path'
+    settings['url_pattern'] = 'path'
     settings['url_pattern_reg'] = "/(?<lang>[^/.?]+)"
     settings['query'] = []
     settings['backend_host'] = 'localhost'
@@ -31,7 +82,6 @@ class HeadersTest < Minitest::Test
     settings['default_lang'] = 'en'
     settings['supported_langs'] = []
     settings['secret_key'] = ''
-
     return settings.merge(options)
   end
 
