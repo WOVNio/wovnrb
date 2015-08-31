@@ -59,7 +59,7 @@ module Wovnrb
       return nil if lang_name.nil?
       return lang_name if LANG[lang_name]
       LANG.each do |k, l|
-        if lang_name.downcase == l[:name].downcase || lang_name.downcase == l[:en].downcase
+        if lang_name.downcase == l[:name].downcase || lang_name.downcase == l[:en].downcase || lang_name.downcase == l[:code].downcase
           return l[:code]
         end
       end
