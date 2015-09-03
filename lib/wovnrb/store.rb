@@ -1,5 +1,7 @@
 require 'redis'
 require 'net/http'
+require 'socket'
+require 'cgi'
 require 'Logger' unless defined?(Logger)
 
 module Wovnrb
@@ -124,21 +126,31 @@ module Wovnrb
     # @param url [String] The url to get the values for
     # @return [Hash] The values Hash for the passed in url
     def get_values(url)
-      redis_key = 'WOVN:BACKEND:STORAGE:' + url.gsub(/\/$/, '') + ':' + settings['user_token']
+      url = url.gsub(/\/$/, '')
+      redis_key = 'WOVN:BACKEND:STORAGE:' + url + ':' + settings['user_token']
       cli = Redis.new(host: settings['backend_host'], port: settings['backend_port'])
       begin
         vals = cli.get(redis_key) || '{}'
+        vals = JSON.parse(vals)
       rescue
         logger = Logger.new('../error.log')
         logger.error("Redis GET request failed with the following parameters:\nhost: #{settings['backend_host']}\nport: #{settings['backend_port']}\nkey: #{redis_key}")
         vals = {}
+      end
+      if vals['expired'] || vals.empty?
+        host = 'j.wovn.io'
+        post_data = "{\"user_token\":\"#{settings['user_token']}\", \"url\":\"#{CGI.escape(url)}\"}"
+        headers = "Host: #{host}\r\nContent-Type: application/json;charset=UTF-8\r\nContent-Length: #{post_data.bytesize}\r\nConnection: close\r\n\r\n"
+        s = TCPSocket.new(host, 80)
+        s.puts "POST /pages/cache_backend HTTP/1.1\r\n#{headers}#{post_data}"
+        s.close
       end
       # handle this on the widget
       #if vals.empty?
       #  uri = URI.parse('http://api.wovn.io/v0/page/add')
       #  Net::HTTP.post_form(uri, :user_token => user_token, :secret_key => @settings['secret_key'], :url => url)
       #end
-      JSON.parse(vals)
+      vals
     end
 
   end
