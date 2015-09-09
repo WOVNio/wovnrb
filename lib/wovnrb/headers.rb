@@ -163,7 +163,8 @@ module Wovnrb
     end
 
     def out(headers)
-      if headers.has_key?("Location")
+      r = Regexp.new("//" + @host)
+      if headers.has_key?("Location") && headers["Location"] =~ r
         case @settings['url_pattern']
         when 'query'
           if headers["Location"] =~ /\?/

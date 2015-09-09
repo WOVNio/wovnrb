@@ -35,7 +35,7 @@ module Wovnrb
       # pass to application
       status, res_headers, body = @app.call(headers.request_out)
 
-      if res_headers["Content-Type"] =~ /html/ && !body[0].nil?
+      if res_headers["Content-Type"] =~ /html/# && !body[0].nil?
 
         values = STORE.get_values(headers.redis_url)
         url = {
@@ -63,7 +63,8 @@ module Wovnrb
       src_index = values['img_vals'] || {}
       img_src_prefix = values['img_src_prefix'] || ''
       string_index = {}
-      body.map! do |b|
+      new_body = []
+      body.each do |b|
         d = Nokogiri::HTML5(b)
         d.encoding = "UTF-8"
         # swap text
@@ -147,9 +148,10 @@ module Wovnrb
         end
 
         output = d.to_html.gsub(/href="([^"]*)"/) {|m| "href=\"#{URI.decode($1)}\""}
-        output
+        new_body.push(output)
       end
-      body
+      new_body
+      #body
     end
 
     # this clearly needs to be refactored. I'm thinking maybe a Value service? (STORE.values.get_langs)
