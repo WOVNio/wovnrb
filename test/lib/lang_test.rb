@@ -20,6 +20,10 @@ class LangTest < Minitest::Test
     assert_equal('ms', Wovnrb::Lang.get_code('ms'))
   end
 
+  def test_get_code_with_capital_letters
+    assert_equal('zh-CHT', Wovnrb::Lang.get_code('zh-cht'))
+  end
+
   def test_get_code_with_valid_english_name
     assert_equal('pt', Wovnrb::Lang.get_code('Portuguese'))
   end
