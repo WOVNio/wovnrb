@@ -59,6 +59,7 @@ module Wovnrb
 
 
     def switch_lang(body, values, url, lang=STORE.settings['default_lang'], headers)
+      lang = Lang.get_code(lang)
       text_index = values['text_vals'] || {}
       src_index = values['img_vals'] || {}
       img_src_prefix = values['img_src_prefix'] || ''
