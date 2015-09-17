@@ -131,7 +131,6 @@ module Wovnrb
       redis_key = 'WOVN:BACKEND:STORAGE:' + url + ':' + settings['user_token']
       settings['backend_host'] = 'localhost'
       cli = Redis.new(host: settings['backend_host'], port: settings['backend_port'])
-      binding.pry
       begin
         vals = cli.get(redis_key) || '{}'
         vals = JSON.parse(vals)
