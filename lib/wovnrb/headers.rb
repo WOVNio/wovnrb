@@ -64,7 +64,7 @@ module Wovnrb
         rp = Regexp.new(@settings['url_pattern_reg'])
         match = "#{@env['SERVER_NAME']}#{@env['REQUEST_URI']}".match(rp)
         if match && match[:lang] && Lang.get_lang(match[:lang])
-          @path_lang = match[:lang]
+          @path_lang = Lang.get_code(match[:lang])
         else
           @path_lang = ''
         end
