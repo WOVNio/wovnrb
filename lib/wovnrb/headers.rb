@@ -63,8 +63,8 @@ module Wovnrb
       if @path_lang.nil?
         rp = Regexp.new(@settings['url_pattern_reg'])
         match = "#{@env['SERVER_NAME']}#{@env['REQUEST_URI']}".match(rp)
-        if match && match[:lang] && Lang::LANG[match[:lang]]
-          @path_lang = match[:lang]
+        if match && match[:lang] && Lang.get_lang(match[:lang])
+          @path_lang = Lang.get_code(match[:lang])
         else
           @path_lang = ''
         end
@@ -75,14 +75,14 @@ module Wovnrb
     def browser_lang
       if @browser_lang.nil?
         match = (@env['HTTP_COOKIE'] || '').match(/wovn_selected_lang\s*=\s*(?<lang>[^;\s]+)/)
-        if match && match[:lang] && Lang::LANG[match[:lang]]
+        if match && match[:lang] && Lang.get_lang(match[:lang])
           @browser_lang = match[:lang]
         else
 # IS THIS RIGHT?
           @browser_lang = ''
           accept_langs = (@env['HTTP_ACCEPT_LANGUAGE'] || '').split(/[,;]/)
           accept_langs.each do |l|
-            if Lang::LANG[l]
+            if Lang.get_lang(l)
               @browser_lang = l
               break
             end
@@ -114,7 +114,7 @@ module Wovnrb
             location = "#{location}&wovn=#{lang}"
           end
         when 'subdomain'
-          location = "#{lang}.#{location}"
+          location = "#{lang.downcase}.#{location}"
        #when 'path'
         else
           location = location.sub(/(\/|$)/, "/#{lang}/");

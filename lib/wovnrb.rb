@@ -59,6 +59,7 @@ module Wovnrb
 
 
     def switch_lang(body, values, url, lang=STORE.settings['default_lang'], headers)
+      lang = Lang.get_code(lang)
       text_index = values['text_vals'] || {}
       src_index = values['img_vals'] || {}
       img_src_prefix = values['img_src_prefix'] || ''
@@ -122,7 +123,8 @@ module Wovnrb
         # INSERT BACKEND WIDGET
         insert_node = Nokogiri::XML::Node.new('script', d)
         insert_node['src'] = '//j.wovn.io/0'
-        insert_node['data-wovnio'] = "key=#{STORE.settings['user_token']}&backend=true&currentLang=#{lang}&defaultLang=#{STORE.settings['default_lang']}&urlPattern=#{STORE.settings['url_pattern']}"
+        version = defined?(VERSION) ? VERSION : ''
+        insert_node['data-wovnio'] = "key=#{STORE.settings['user_token']}&backend=true&currentLang=#{lang}&defaultLang=#{STORE.settings['default_lang']}&urlPattern=#{STORE.settings['url_pattern']}&version=#{version}"
         # do this so that there will be a closing tag (better compatibility with browsers)
         insert_node.content = ' '
         if parent_node.children.size > 0

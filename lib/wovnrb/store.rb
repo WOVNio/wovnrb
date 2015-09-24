@@ -129,6 +129,7 @@ module Wovnrb
       url = url.gsub(/\/$/, '')
       redis_key = 'WOVN:BACKEND:STORAGE:' + url + ':' + settings['user_token']
       cli = Redis.new(host: settings['backend_host'], port: settings['backend_port'])
+
       begin
         vals = cli.get(redis_key) || '{}'
         vals = JSON.parse(vals)
@@ -139,7 +140,7 @@ module Wovnrb
       end
       if vals['expired'] || vals.empty?
         host = 'j.wovn.io'
-        post_data = "{\"user_token\":\"#{settings['user_token']}\", \"url\":\"#{CGI.escape(url)}\"}"
+        post_data = "{\"user_token\":\"#{settings['user_token']}\", \"url\":#{url.to_json}}"
         headers = "Host: #{host}\r\nContent-Type: application/json;charset=UTF-8\r\nContent-Length: #{post_data.bytesize}\r\nConnection: close\r\n\r\n"
         s = TCPSocket.new(host, 80)
         s.puts "POST /pages/cache_backend HTTP/1.1\r\n#{headers}#{post_data}"

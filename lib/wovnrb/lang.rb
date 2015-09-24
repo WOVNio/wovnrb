@@ -66,5 +66,10 @@ module Wovnrb
       return nil
     end
 
+    def self.get_lang(lang)
+      lang_code = get_code(lang)
+      return LANG[lang_code]
+    end
+
   end
 end
