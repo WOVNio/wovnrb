@@ -55,6 +55,45 @@ module Wovnrb
       #[status, res_headers, d.transform()]
     end
 
+    def add_lang_code(href, pattern, lang, headers)
+      # absolute links 
+      new_href = href
+      if href && href =~ /^https?:\/\//i
+        uri = URI(href)
+        # only add lang if it's an internal link 
+        if uri.host === headers.host
+          case pattern
+          when 'subdomain'
+            new_href = href.sub(/(:\/\/)([^\.]*)/,'\1' + lang + '.' + '\2' )
+          when 'query'
+            new_href = href =~ /\?/ ? href + '&wovn=' + lang : href + '?wovn=' + lang 
+          else # path
+            new_href = href.sub(/([^\.]*\.[^\/]*)(\/|$)/, '\1/' + lang + '/')
+          end
+        end
+      elsif href
+        case pattern
+        when 'subdomain'
+          lang_url = headers.protocol + '://' + lang + '.' + headers.host 
+          if href =~ /^\//
+            new_href = lang_url + href
+          else
+            current_dir = headers.pathname.sub(/[^\/]*\.[^\.]{2,6}$/, '')
+            new_href = lang_url + current_dir + href
+          end
+        when 'query'
+          new_href = href =~ /\?/ ? href + '&wovn=' + lang : href + '?wovn=' + lang 
+        else # path
+          if href =~ /^\//
+            new_href = '/' + lang + href
+          else
+            current_dir = headers.pathname.sub(/[^\/]*\.[^\.]{2,6}$/, '')
+            new_href = '/' + lang + current_dir + href
+          end
+        end
+      end
+      new_href
+    end
 
     def switch_lang(body, values, url, lang=STORE.settings['default_lang'], headers)
       lang = Lang.get_code(lang)
@@ -66,6 +105,16 @@ module Wovnrb
       body.each do |b|
         d = Nokogiri::HTML5(b)
         d.encoding = "UTF-8"
+
+        # add lang code to anchors href if not default lang 
+        if lang != STORE.settings['default_lang']
+          d.xpath('//a').each do |a|
+            href = a.get_attribute('href')
+            new_href = add_lang_code(href, STORE.settings['url_pattern'], lang, headers)
+            a.set_attribute('href', new_href)
+          end
+        end
+
         # swap text
         d.xpath('//text()').each do |node|
           node_text = node.content.strip
