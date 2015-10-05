@@ -48,8 +48,6 @@ module Wovnrb
         content_length = 0
         body.each { |b| content_length += b.respond_to?(:bytesize) ? b.bytesize : 0 }
         res_headers["Content-Length"] = content_length.to_s
-
-        body.close if body.respond_to?(:close)
       end
 
       headers.out(res_headers)
@@ -152,6 +150,7 @@ module Wovnrb
         output = d.to_html.gsub(/href="([^"]*)"/) {|m| "href=\"#{URI.decode($1)}\""}
         new_body.push(output)
       end
+      body.close if body.respond_to?(:close)
       new_body
       #body
     end
