@@ -154,7 +154,7 @@ module Wovnrb
       when 'query'
         return uri.sub(/(^|\?|&)wovn=#{lang}(&|$)/, '\1').gsub(/(\?|&)$/, '')
       when 'subdomain'
-        rp = Regexp.new('(^|(//))' + lang + '\.')
+        rp = Regexp.new('(^|(//))' + lang + '\.', 'i')
         return uri.sub(rp, '\1')
      #when 'path'
       else
