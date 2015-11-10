@@ -66,13 +66,19 @@ module Wovnrb
     def add_lang_code(href, pattern, lang, headers)
       # absolute links 
       new_href = href
-      if href && href =~ /^(https?:)\/\//i
+      if href && href =~ /^(https?:)?\/\//i
         uri = URI(href)
         # only add lang if it's an internal link 
         if uri.host === headers.host
           case pattern
           when 'subdomain'
-            new_href = href.sub(/(\/\/)([^\.]*)/,'\1' + lang + '.' + '\2' )
+            sub_d = href.match(/\/\/([^\.]*)\./)[1]
+            sub_code = Lang.get_code(sub_d)
+            if sub_code && sub_code.downcase == lang.downcase
+              new_href = href.sub(Regexp.new(lang, 'i'), lang.downcase)
+            else
+              new_href = href.sub(/(\/\/)([^\.]*)/,'\1' + lang.downcase + '.' + '\2' )
+            end
           when 'query'
             new_href = href =~ /\?/ ? href + '&wovn=' + lang : href + '?wovn=' + lang 
           else # path
@@ -82,7 +88,7 @@ module Wovnrb
       elsif href
         case pattern
         when 'subdomain'
-          lang_url = headers.protocol + '://' + lang + '.' + headers.host 
+          lang_url = headers.protocol + '://' + lang.downcase + '.' + headers.host 
           if href =~ /^\//
             new_href = lang_url + href
           else
