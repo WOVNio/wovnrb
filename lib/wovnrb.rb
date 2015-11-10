@@ -26,16 +26,24 @@ module Wovnrb
         return @app.call(env)
       end
       # redirect if the path is set to the default language (for SEO purposes)
-      if (headers.path_lang == STORE.settings['default_lang'])
-        redirect_headers = headers.redirect(STORE.settings['default_lang'])
-        return [307, redirect_headers, ['']]
-      end
+      #if (headers.path_lang == STORE.settings['default_lang'])
+      #  redirect_headers = headers.redirect(STORE.settings['default_lang'])
+      #  return [307, redirect_headers, ['']]
+      #end
       lang = headers.lang_code
 
       # pass to application
       status, res_headers, body = @app.call(headers.request_out)
 
       if res_headers["Content-Type"] =~ /html/# && !body[0].nil?
+      puts ""
+      puts ""
+      puts "WOVNRB LOGGING"
+      puts "H-PATHLANG: " + headers.path_lang
+      puts "DEF_LANG: " + STORE.settings['default_lang']
+      puts "WOVNRB LOGGING"
+      puts ""
+      puts ""
 
         values = STORE.get_values(headers.redis_url)
         url = {
@@ -58,13 +66,13 @@ module Wovnrb
     def add_lang_code(href, pattern, lang, headers)
       # absolute links 
       new_href = href
-      if href && href =~ /^https?:\/\//i
+      if href && href =~ /^(https?:)\/\//i
         uri = URI(href)
         # only add lang if it's an internal link 
         if uri.host === headers.host
           case pattern
           when 'subdomain'
-            new_href = href.sub(/(:\/\/)([^\.]*)/,'\1' + lang + '.' + '\2' )
+            new_href = href.sub(/(\/\/)([^\.]*)/,'\1' + lang + '.' + '\2' )
           when 'query'
             new_href = href =~ /\?/ ? href + '&wovn=' + lang : href + '?wovn=' + lang 
           else # path
@@ -169,7 +177,7 @@ module Wovnrb
 
         # INSERT BACKEND WIDGET
         insert_node = Nokogiri::XML::Node.new('script', d)
-        insert_node['src'] = '//j.wovn.io/0'
+        insert_node['src'] = '//j.dev-wovn.io:3000/0'
         version = defined?(VERSION) ? VERSION : ''
         insert_node['data-wovnio'] = "key=#{STORE.settings['user_token']}&backend=true&currentLang=#{lang}&defaultLang=#{STORE.settings['default_lang']}&urlPattern=#{STORE.settings['url_pattern']}&version=#{version}"
         # do this so that there will be a closing tag (better compatibility with browsers)
