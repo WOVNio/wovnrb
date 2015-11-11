@@ -10,6 +10,12 @@ class WovnrbTest < Minitest::Test
     refute_nil(i)
   end
 
+  def test_add_lang_code_invalid_url
+    i = Wovnrb::Interceptor.new(get_app)
+    h = Wovnrb::Headers.new(get_env('url' => 'http://favy.tips'), get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+    assert_equal("http://www.facebook.com/sharer.php?u=http://favy.tips/topics/50&amp;amp;t=Gourmet Tofu World: Vegetarian-Friendly Japanese Food is Here!", i.add_lang_code("http://www.facebook.com/sharer.php?u=http://favy.tips/topics/50&amp;amp;t=Gourmet Tofu World: Vegetarian-Friendly Japanese Food is Here!", 'subdomain', 'zh-cht', h))
+  end
+
   # def test_call(env)
   # end
 

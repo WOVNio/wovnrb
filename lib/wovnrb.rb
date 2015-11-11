@@ -67,7 +67,13 @@ module Wovnrb
       # absolute links 
       new_href = href
       if href && href =~ /^(https?:)?\/\//i
-        uri = URI(href)
+        # in the future, perhaps validate url rather than using begin rescue
+        # "#{url =~ /\// ? 'http:' : ''}#{url}" =~ URI::regexp
+        begin
+          uri = URI(href)
+        rescue
+          return new_href
+        end
         # only add lang if it's an internal link 
         if uri.host === headers.host
           case pattern
