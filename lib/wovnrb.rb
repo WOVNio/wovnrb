@@ -10,7 +10,7 @@ require 'wovnrb/railtie' if defined?(Rails)
 module Wovnrb
 
   STORE = Store.new
-  
+
   class Interceptor
     def initialize(app)
       @app = app
@@ -35,22 +35,22 @@ module Wovnrb
       # pass to application
       status, res_headers, body = @app.call(headers.request_out)
 
-      if res_headers["Content-Type"] =~ /html/# && !body[0].nil?
-      puts ""
-      puts ""
-      puts "WOVNRB LOGGING"
-      puts "H-PATHLANG: " + headers.path_lang
-      puts "DEF_LANG: " + STORE.settings['default_lang']
-      puts "WOVNRB LOGGING"
-      puts ""
-      puts ""
+      if res_headers["Content-Type"] =~ /html/ # && !body[0].nil?
+        puts ""
+        puts ""
+        puts "WOVNRB LOGGING"
+        puts "H-PATHLANG: " + headers.path_lang
+        puts "DEF_LANG: " + STORE.settings['default_lang']
+        puts "WOVNRB LOGGING"
+        puts ""
+        puts ""
 
         values = STORE.get_values(headers.redis_url)
         url = {
-                :protocol => headers.protocol, 
-                :host => headers.host, 
-                :pathname => headers.pathname
-              }
+            :protocol => headers.protocol,
+            :host => headers.host,
+            :pathname => headers.pathname
+        }
         body = switch_lang(body, values, url, lang, headers) unless status.to_s =~ /^1|302/
 
         content_length = 0
@@ -77,39 +77,47 @@ module Wovnrb
         # only add lang if it's an internal link 
         if uri.host === headers.host
           case pattern
-          when 'subdomain'
-            sub_d = href.match(/\/\/([^\.]*)\./)[1]
-            sub_code = Lang.get_code(sub_d)
-            if sub_code && sub_code.downcase == lang.downcase
-              new_href = href.sub(Regexp.new(lang, 'i'), lang.downcase)
-            else
-              new_href = href.sub(/(\/\/)([^\.]*)/,'\1' + lang.downcase + '.' + '\2' )
-            end
-          when 'query'
-            new_href = href =~ /\?/ ? href + '&wovn=' + lang : href + '?wovn=' + lang 
-          else # path
-            new_href = href.sub(/([^\.]*\.[^\/]*)(\/|$)/, '\1/' + lang + '/')
+            when 'subdomain'
+              sub_d = href.match(/\/\/([^\.]*)\./)[1]
+              sub_code = Lang.get_code(sub_d)
+              if sub_code && sub_code.downcase == lang.downcase
+                new_href = href.sub(Regexp.new(lang, 'i'), lang.downcase)
+              else
+                new_href = href.sub(/(\/\/)([^\.]*)/, '\1' + lang.downcase + '.' + '\2')
+              end
+            when 'query'
+              new_href = href =~ /\?/ ? href + '&wovn=' + lang : href + '?wovn=' + lang
+            else # path
+              new_href = href.sub(/([^\.]*\.[^\/]*)(\/|$)/, '\1/' + lang + '/')
           end
         end
       elsif href
         case pattern
-        when 'subdomain'
-          lang_url = headers.protocol + '://' + lang.downcase + '.' + headers.host 
-          if href =~ /^\//
-            new_href = lang_url + href
-          else
+          when 'subdomain'
+            lang_url = headers.protocol + '://' + lang.downcase + '.' + headers.host
             current_dir = headers.pathname.sub(/[^\/]*\.[^\.]{2,6}$/, '')
-            new_href = lang_url + current_dir + href
-          end
-        when 'query'
-          new_href = href =~ /\?/ ? href + '&wovn=' + lang : href + '?wovn=' + lang 
-        else # path
-          if href =~ /^\//
-            new_href = '/' + lang + href
-          else
-            current_dir = headers.pathname.sub(/[^\/]*\.[^\.]{2,6}$/, '')
-            new_href = '/' + lang + current_dir + href
-          end
+            if href =~ /^\.\..*$/
+              # ../path
+              new_href = lang_url + '/' + href.gsub(/^\.\.\//, '')
+            elsif href =~ /^\..*$/
+              # ./path
+              new_href = lang_url + current_dir + '/' + href.gsub(/^\.\//, '')
+            elsif href =~ /^\/.*$/
+              # /path
+              new_href = lang_url + current_dir + href
+            else
+              # path
+              new_href = lang_url + current_dir + '/' + href
+            end
+          when 'query'
+            new_href = href =~ /\?/ ? href + '&wovn=' + lang : href + '?wovn=' + lang
+          else # path
+            if href =~ /^\//
+              new_href = '/' + lang + href
+            else
+              current_dir = headers.pathname.sub(/[^\/]*\.[^\.]{2,6}$/, '')
+              new_href = '/' + lang + current_dir + href
+            end
         end
       end
       new_href
@@ -144,7 +152,7 @@ module Wovnrb
           end
         end
         # swap meta tag values
-        d.xpath('//meta').select{ |t|
+        d.xpath('//meta').select { |t|
           (t.get_attribute('name') || t.get_attribute('property') || '') =~ /^(description|keywords|og:title|og:description)$/
         }.each do |node|
           node_content = node.get_attribute('content').strip
@@ -160,7 +168,7 @@ module Wovnrb
             src = node.to_html.match(/src=['"]([^'"]*)['"]/i)[1]
 # THIS SRC CORRECTION DOES NOT HANDLE ONE IMPORTANT CASE
 # 1) "../path/with/ellipse"
-            # if this is not an absolute src
+# if this is not an absolute src
             if src !~ /:\/\//
               # if this is a path with a leading slash
               if src =~ /^\//
@@ -169,7 +177,7 @@ module Wovnrb
                 src = "#{url[:protocol]}://#{url[:host]}#{url[:path]}#{src}"
               end
             end
-          
+
 # shouldn't need size check, but for now...
             if src_index[src] && src_index[src][lang] && src_index[src][lang].size > 0
               node.attribute('src').value = "#{img_src_prefix}#{src_index[src][lang][0]['data']}"
@@ -200,7 +208,7 @@ module Wovnrb
           parent_node.add_child(insert_node)
         end
 
-        
+
         # INSERT LANGUAGE METALINKS
         published_langs = get_langs(values)
         published_langs.each do |l|
@@ -216,7 +224,7 @@ module Wovnrb
           (d.at_css('html') || d.at_css('HTML')).set_attribute('lang', lang)
         end
 
-        output = d.to_html.gsub(/href="([^"]*)"/) {|m| "href=\"#{URI.decode($1)}\""}
+        output = d.to_html.gsub(/href="([^"]*)"/) { |m| "href=\"#{URI.decode($1)}\"" }
         new_body.push(output)
       end
       body.close if body.respond_to?(:close)
@@ -229,7 +237,7 @@ module Wovnrb
       langs = Set.new
       (values['text_vals'] || {}).merge(values['img_vals'] || {}).each do |key, index|
         index.each do |l, val|
-            langs.add(l)
+          langs.add(l)
         end
       end
       langs
