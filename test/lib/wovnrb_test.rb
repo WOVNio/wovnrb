@@ -26,7 +26,6 @@ class WovnrbTest < Minitest::Test
   # def test_get_langs(values)
   # end
 
-
   def test_add_lang_code
     i = Wovnrb::Interceptor.new(get_app)
     h = Wovnrb::Headers.new(get_env('url' => 'http://favy.tips'), get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
@@ -263,6 +262,96 @@ class WovnrbTest < Minitest::Test
   #    headers.expects(:pathname).returns('/hello/tab.html')
   #    assert_equal('/fr/hello/hey/index.html', i.add_lang_code('hey/index.html', 'path', 'fr', headers))
   #  end
+  def generate_body(param = "")
+    case param
+    when "ignore_parent"
+      body = "<html><body><h1>Mr. Belvedere Fan Club</h1>
+                <div wovn_ignore><p>Hello</p></div>
+              </body></html>"
+    when "ignore_everything"
+      body = "<html><body wovn_ignore><h1>Mr. Belvedere Fan Club</h1>
+                <div><p>Hello</p></div>
+              </body></html>"
+    when "ignore_parent_translated_in_japanese"
+      body = "<html lang=\"ja\">
+<head>
+<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
+<script src=\"//j.wovn.io/0\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=0.1.73\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\">
+</head>
+<body>
+<h1>ベルベデアさんファンクラブ</h1>
+                <div wovn_ignore=\"\"><p>Hello</p></div>
+              </body>
+</html>
+"
+    when "translated_in_japanese"
+      body = "<html lang=\"ja\">
+<head>
+<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
+<script src=\"//j.wovn.io/0\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=0.1.73\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\">
+</head>
+<body>
+<h1>ベルベデアさんファンクラブ</h1>
+                <div><p>こんにちは</p></div>
+              </body>
+</html>
+"
+    when "ignore_everything_translated"
+      body = "<html lang=\"ja\">
+<head>
+<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
+<script src=\"//j.wovn.io/0\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=0.1.73\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\">
+</head>
+<body wovn_ignore=\"\">
+<h1>Mr. Belvedere Fan Club</h1>
+                <div><p>Hello</p></div>
+              </body>
+</html>
+"
+    else # "" case
+      body = "<html><body><h1>Mr. Belvedere Fan Club</h1>
+                <div><p>Hello</p></div>
+              </body></html>"
+    end
+    return [body]
+  end
+
+  def generate_values
+    values = {}
+    values['text_vals'] = {'Hello' => {'ja' => [{'data' => 'こんにちは'}]},
+    'Mr. Belvedere Fan Club' => {'ja' => [{'data' => 'ベルベデアさんファンクラブ'}]}}
+    return values
+  end
+
+  def test_switch_lang
+    i = Wovnrb::Interceptor.new(get_app)
+    h = Wovnrb::Headers.new(get_env('url' => 'http://page.com'), get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+    body = generate_body()
+    values = generate_values
+    url = h.url
+    swapped_body = i.switch_lang(body, values, url, 'ja', h)
+    assert_equal(generate_body('translated_in_japanese'), swapped_body)
+  end
+
+  def test_switch_lang_wovn_ignore
+    i = Wovnrb::Interceptor.new(get_app)
+    h = Wovnrb::Headers.new(get_env('url' => 'http://ignore-page.com'), get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+    body = generate_body('ignore_parent')
+    values = generate_values
+    url = h.url
+    swapped_body = i.switch_lang(body, values, url, 'ja', h)
+    assert_equal(generate_body('ignore_parent_translated_in_japanese'), swapped_body)
+  end
+
+  def test_switch_lang_wovn_ignore_everything
+    i = Wovnrb::Interceptor.new(get_app)
+    h = Wovnrb::Headers.new(get_env('url' => 'http://ignore-page.com'), get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+    body = generate_body('ignore_everything')
+    values = generate_values
+    url = h.url
+    swapped_body = i.switch_lang(body, values, url, 'ja', h)
+    assert_equal(generate_body('ignore_everything_translated'), swapped_body)
+  end
 
   def get_settings(options={})
     settings = {}

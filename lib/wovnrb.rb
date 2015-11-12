@@ -124,6 +124,16 @@ module Wovnrb
       new_href
     end
 
+    # returns true if a wovn_ignore is found in the tree from the node to the body tag
+    def check_wovn_ignore(node)
+      if !node.get_attribute('wovn_ignore').nil?
+        return true
+      elsif node.name === 'html'
+        return false
+      end
+      check_wovn_ignore(node.parent)
+    end
+
     def switch_lang(body, values, url, lang=STORE.settings['default_lang'], headers)
       lang = Lang.get_code(lang)
       text_index = values['text_vals'] || {}
@@ -138,6 +148,7 @@ module Wovnrb
         # add lang code to anchors href if not default lang 
         if lang != STORE.settings['default_lang']
           d.xpath('//a').each do |a|
+            next if check_wovn_ignore(a)
             href = a.get_attribute('href')
             new_href = add_lang_code(href, STORE.settings['url_pattern'], lang, headers)
             a.set_attribute('href', new_href)
@@ -146,6 +157,7 @@ module Wovnrb
 
         # swap text
         d.xpath('//text()').each do |node|
+          next if check_wovn_ignore(node)
           node_text = node.content.strip
 # shouldn't need size check, but for now...
           if text_index[node_text] && text_index[node_text][lang] && text_index[node_text][lang].size > 0
@@ -154,6 +166,7 @@ module Wovnrb
         end
         # swap meta tag values
         d.xpath('//meta').select { |t|
+          next if check_wovn_ignore(t)
           (t.get_attribute('name') || t.get_attribute('property') || '') =~ /^(description|keywords|og:title|og:description)$/
         }.each do |node|
           node_content = node.get_attribute('content').strip
@@ -164,6 +177,7 @@ module Wovnrb
         end
         # swap img srcs
         d.xpath('//img').each do |node|
+          next if check_wovn_ignore(node)
           # use regular expressions to support case insensitivity (right?)
           if node.to_html =~ /src=['"][^'"]*['"]/i
             src = node.to_html.match(/src=['"]([^'"]*)['"]/i)[1]
