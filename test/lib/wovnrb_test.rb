@@ -117,15 +117,17 @@ class WovnrbTest < Minitest::Test
     assert_equal("http://zh-cht.favy.tips/topics/31", i.add_lang_code("./topics/31", 'subdomain', 'zh-cht', h))
   end
 
-  #//url
-  #/path
-  #path
-  #../path
-  #path.html
-  #/path.html
-  #//url/path.php
-  #http://url/path.php
-  #./path
+  def test_add_lang_code_empty_href
+    i = Wovnrb::Interceptor.new(get_app)
+    h = Wovnrb::Headers.new(get_env('url' => 'http://favy.tips'), get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+    assert_equal("", i.add_lang_code("", 'subdomain', 'zh-cht', h))
+  end
+
+  def test_add_lang_code_hash_href
+    i = Wovnrb::Interceptor.new(get_app)
+    h = Wovnrb::Headers.new(get_env('url' => 'http://favy.tips'), get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+    assert_equal("#", i.add_lang_code("#", 'subdomain', 'zh-cht', h))
+  end
 
   #  def test_add_lang_code_nil_href
   #    i = Wovnrb::Interceptor.new(get_app)

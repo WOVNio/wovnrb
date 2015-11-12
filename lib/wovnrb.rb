@@ -64,6 +64,7 @@ module Wovnrb
     end
 
     def add_lang_code(href, pattern, lang, headers)
+      return href if href =~ /^(#.*)?$/
       # absolute links 
       new_href = href
       if href && href =~ /^(https?:)?\/\//i
