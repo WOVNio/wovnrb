@@ -266,21 +266,21 @@ class WovnrbTest < Minitest::Test
     case param
     when "ignore_parent"
       body = "<html><body><h1>Mr. Belvedere Fan Club</h1>
-                <div wovn_ignore><p>Hello</p></div>
+                <div wovn-ignore><p>Hello</p></div>
               </body></html>"
     when "ignore_everything"
-      body = "<html><body wovn_ignore><h1>Mr. Belvedere Fan Club</h1>
+      body = "<html><body wovn-ignore><h1>Mr. Belvedere Fan Club</h1>
                 <div><p>Hello</p></div>
               </body></html>"
     when "ignore_parent_translated_in_japanese"
       body = "<html lang=\"ja\">
 <head>
 <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
-<script src=\"//j.wovn.io/0\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=0.1.73\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\">
+<script src=\"//j.wovn.io/0\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\">
 </head>
 <body>
 <h1>ベルベデアさんファンクラブ</h1>
-                <div wovn_ignore=\"\"><p>Hello</p></div>
+                <div wovn-ignore=\"\"><p>Hello</p></div>
               </body>
 </html>
 "
@@ -288,7 +288,7 @@ class WovnrbTest < Minitest::Test
       body = "<html lang=\"ja\">
 <head>
 <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
-<script src=\"//j.wovn.io/0\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=0.1.73\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\">
+<script src=\"//j.wovn.io/0\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\">
 </head>
 <body>
 <h1>ベルベデアさんファンクラブ</h1>
@@ -300,14 +300,34 @@ class WovnrbTest < Minitest::Test
       body = "<html lang=\"ja\">
 <head>
 <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
-<script src=\"//j.wovn.io/0\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=0.1.73\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\">
+<script src=\"//j.wovn.io/0\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\">
 </head>
-<body wovn_ignore=\"\">
+<body wovn-ignore=\"\">
 <h1>Mr. Belvedere Fan Club</h1>
                 <div><p>Hello</p></div>
               </body>
 </html>
 "
+    when "empty"
+      body = "<html><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore><p>Hello</p></div></body></html>"
+    when "empty_single_quote"
+      body = "<html><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore=''><p>Hello</p></div></body></html>"
+    when "empty_double_quote"
+      body = "<html><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore=""><p>Hello</p></div></body></html>"
+    when "value_single_quote"
+      body = "<html><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore='value'><p>Hello</p></div></body></html>"
+    when "value_double_quote"
+      body = "<html><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore=\"value\"><p>Hello</p></div></body></html>"
+    when "empty_translated"
+      body = "<html lang=\"ja\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n<script src=\"//j.wovn.io/0\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=0.1.74\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\">\n</head>\n<body>\n<h1>Mr.BelvedereFanClub</h1>\n<div wovn-ignore=\"\"><p>Hello</p></div>\n</body>\n</html>\n"
+    when "empty_single_quote_translated"
+      body = "<html lang=\"ja\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n<script src=\"//j.wovn.io/0\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=0.1.74\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\">\n</head>\n<body>\n<h1>Mr.BelvedereFanClub</h1>\n<div wovn-ignore=\"\"><p>Hello</p></div>\n</body>\n</html>\n"
+    when "empty_double_quote_translated"
+      body = "<html lang=\"ja\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n<script src=\"//j.wovn.io/0\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=0.1.74\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\">\n</head>\n<body>\n<h1>Mr.BelvedereFanClub</h1>\n<div wovn-ignore=\"\"><p>Hello</p></div>\n</body>\n</html>\n"
+    when "value_single_quote_translated"
+      body = "<html lang=\"ja\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n<script src=\"//j.wovn.io/0\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=0.1.74\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\">\n</head>\n<body>\n<h1>Mr.BelvedereFanClub</h1>\n<div wovn-ignore=\"value\"><p>Hello</p></div>\n</body>\n</html>\n"
+    when "value_double_quote_translated"
+      body = "<html lang=\"ja\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n<script src=\"//j.wovn.io/0\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=0.1.74\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\">\n</head>\n<body>\n<h1>Mr.BelvedereFanClub</h1>\n<div wovn-ignore=\"value\"><p>Hello</p></div>\n</body>\n</html>\n"
     else # "" case
       body = "<html><body><h1>Mr. Belvedere Fan Club</h1>
                 <div><p>Hello</p></div>
@@ -351,6 +371,56 @@ class WovnrbTest < Minitest::Test
     url = h.url
     swapped_body = i.switch_lang(body, values, url, 'ja', h)
     assert_equal(generate_body('ignore_everything_translated'), swapped_body)
+  end
+
+  def test_switch_lang_wovn_ignore_empty
+    i = Wovnrb::Interceptor.new(get_app)
+    h = Wovnrb::Headers.new(get_env('url' => 'http://ignore-page.com'), get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+    body = generate_body('empty')
+    values = generate_values
+    url = h.url
+    swapped_body = i.switch_lang(body, values, url, 'ja', h)
+    assert_equal(generate_body('empty_translated'), swapped_body)
+  end
+
+  def test_switch_lang_wovn_ignore_empty_single_quote
+    i = Wovnrb::Interceptor.new(get_app)
+    h = Wovnrb::Headers.new(get_env('url' => 'http://ignore-page.com'), get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+    body = generate_body('empty_single_quote')
+    values = generate_values
+    url = h.url
+    swapped_body = i.switch_lang(body, values, url, 'ja', h)
+    assert_equal(generate_body('empty_single_quote_translated'), swapped_body)
+  end
+
+  def test_switch_lang_wovn_ignore_empty_double_quote
+    i = Wovnrb::Interceptor.new(get_app)
+    h = Wovnrb::Headers.new(get_env('url' => 'http://ignore-page.com'), get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+    body = generate_body('empty_double_quote')
+    values = generate_values
+    url = h.url
+    swapped_body = i.switch_lang(body, values, url, 'ja', h)
+    assert_equal(generate_body('empty_double_quote_translated'), swapped_body)
+  end
+
+  def test_switch_lang_wovn_ignore_value_single_quote
+    i = Wovnrb::Interceptor.new(get_app)
+    h = Wovnrb::Headers.new(get_env('url' => 'http://ignore-page.com'), get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+    body = generate_body('value_single_quote')
+    values = generate_values
+    url = h.url
+    swapped_body = i.switch_lang(body, values, url, 'ja', h)
+    assert_equal(generate_body('value_single_quote_translated'), swapped_body)
+  end
+
+  def test_switch_lang_wovn_ignore_value_double_quote
+    i = Wovnrb::Interceptor.new(get_app)
+    h = Wovnrb::Headers.new(get_env('url' => 'http://ignore-page.com'), get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+    body = generate_body('value_double_quote')
+    values = generate_values
+    url = h.url
+    swapped_body = i.switch_lang(body, values, url, 'ja', h)
+    assert_equal(generate_body('value_double_quote_translated'), swapped_body)
   end
 
   def get_settings(options={})

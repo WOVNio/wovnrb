@@ -25,7 +25,7 @@ module Wovnrb
       if STORE.settings['test_mode'] && STORE.settings['test_url'] != headers.url
         return @app.call(env)
       end
-       redirect if the path is set to the default language (for SEO purposes)
+      # redirect if the path is set to the default language (for SEO purposes)
       if (headers.path_lang == STORE.settings['default_lang'])
         redirect_headers = headers.redirect(STORE.settings['default_lang'])
         return [307, redirect_headers, ['']]
@@ -117,7 +117,7 @@ module Wovnrb
 
     # returns true if a wovn_ignore is found in the tree from the node to the body tag
     def check_wovn_ignore(node)
-      if !node.get_attribute('wovn_ignore').nil?
+      if !node.get_attribute('wovn-ignore').nil?
         return true
       elsif node.name === 'html'
         return false
@@ -203,7 +203,9 @@ module Wovnrb
 
         # INSERT BACKEND WIDGET
         insert_node = Nokogiri::XML::Node.new('script', d)
+        # TODO: CHANGE THIS BACK; Should be '//j.wovn.io/0' in production
         insert_node['src'] = '//j.wovn.io/0'
+        # insert_node['src'] = '//j.dev-wovn.io:3000/0'
         version = defined?(VERSION) ? VERSION : ''
         insert_node['data-wovnio'] = "key=#{STORE.settings['user_token']}&backend=true&currentLang=#{lang}&defaultLang=#{STORE.settings['default_lang']}&urlPattern=#{STORE.settings['url_pattern']}&version=#{version}"
         # do this so that there will be a closing tag (better compatibility with browsers)
