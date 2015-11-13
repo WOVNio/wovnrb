@@ -25,26 +25,17 @@ module Wovnrb
       if STORE.settings['test_mode'] && STORE.settings['test_url'] != headers.url
         return @app.call(env)
       end
-      # redirect if the path is set to the default language (for SEO purposes)
-      #if (headers.path_lang == STORE.settings['default_lang'])
-      #  redirect_headers = headers.redirect(STORE.settings['default_lang'])
-      #  return [307, redirect_headers, ['']]
-      #end
+       redirect if the path is set to the default language (for SEO purposes)
+      if (headers.path_lang == STORE.settings['default_lang'])
+        redirect_headers = headers.redirect(STORE.settings['default_lang'])
+        return [307, redirect_headers, ['']]
+      end
       lang = headers.lang_code
 
       # pass to application
       status, res_headers, body = @app.call(headers.request_out)
 
       if res_headers["Content-Type"] =~ /html/ # && !body[0].nil?
-        puts ""
-        puts ""
-        puts "WOVNRB LOGGING"
-        puts "H-PATHLANG: " + headers.path_lang
-        puts "DEF_LANG: " + STORE.settings['default_lang']
-        puts "WOVNRB LOGGING"
-        puts ""
-        puts ""
-
         values = STORE.get_values(headers.redis_url)
         url = {
             :protocol => headers.protocol,
