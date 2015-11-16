@@ -25,7 +25,7 @@ module Wovnrb
       if STORE.settings['test_mode'] && STORE.settings['test_url'] != headers.url
         return @app.call(env)
       end
-      # redirect if the path is set to the default language (for SEO purposes)
+       #redirect if the path is set to the default language (for SEO purposes)
       if (headers.path_lang == STORE.settings['default_lang'])
         redirect_headers = headers.redirect(STORE.settings['default_lang'])
         return [307, redirect_headers, ['']]
@@ -96,7 +96,7 @@ module Wovnrb
               new_href = lang_url + current_dir + '/' + href.gsub(/^\.\//, '')
             elsif href =~ /^\/.*$/
               # /path
-              new_href = lang_url + current_dir + href
+              new_href = lang_url + href
             else
               # path
               new_href = lang_url + current_dir + '/' + href
@@ -205,7 +205,7 @@ module Wovnrb
         insert_node = Nokogiri::XML::Node.new('script', d)
         # TODO: CHANGE THIS BACK; Should be '//j.wovn.io/0' in production
         insert_node['src'] = '//j.wovn.io/0'
-        # insert_node['src'] = '//j.dev-wovn.io:3000/0'
+        #insert_node['src'] = '//j.dev-wovn.io:3000/0'
         version = defined?(VERSION) ? VERSION : ''
         insert_node['data-wovnio'] = "key=#{STORE.settings['user_token']}&backend=true&currentLang=#{lang}&defaultLang=#{STORE.settings['default_lang']}&urlPattern=#{STORE.settings['url_pattern']}&version=#{version}"
         # do this so that there will be a closing tag (better compatibility with browsers)

@@ -32,6 +32,24 @@ class WovnrbTest < Minitest::Test
     assert_equal("http://www.facebook.com", i.add_lang_code("http://www.facebook.com", 'subdomain', 'zh-cht', h))
   end
 
+  def test_add_lang_code_relative_slash_href_url_with_path
+    i = Wovnrb::Interceptor.new(get_app)
+    h = Wovnrb::Headers.new(get_env('url' => 'http://fr.favy.tips/topics/44'), get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+    assert_equal("http://fr.favy.tips/topics/50", i.add_lang_code("/topics/50", 'subdomain', 'fr', h))
+  end
+
+  def test_add_lang_code_relative_dot_href_url_with_path
+    i = Wovnrb::Interceptor.new(get_app)
+    h = Wovnrb::Headers.new(get_env('url' => 'http://fr.favy.tips/topics/44'), get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+    assert_equal("http://fr.favy.tips/topics/44/topics/50", i.add_lang_code("./topics/50", 'subdomain', 'fr', h))
+  end
+
+  def test_add_lang_code_relative_two_dots_href_url_with_path
+    i = Wovnrb::Interceptor.new(get_app)
+    h = Wovnrb::Headers.new(get_env('url' => 'http://fr.favy.tips/topics/44'), get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+    assert_equal("http://fr.favy.tips/topics/50", i.add_lang_code("../topics/50", 'subdomain', 'fr', h))
+  end
+
   def test_add_lang_code_trad_chinese
     i = Wovnrb::Interceptor.new(get_app)
     h = Wovnrb::Headers.new(get_env('url' => 'http://favy.tips'), get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
