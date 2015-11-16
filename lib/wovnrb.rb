@@ -193,7 +193,7 @@ module Wovnrb
 
         # REMOVE WIDGET
         d.xpath('//script').each do |script_node|
-          if script_node['src'] && script_node['src'].include?('//j.wovn.io/')
+          if script_node['src'] && script_node['src'].include?('//j.(dev-)?wovn.io(:3000)?/')
             script_node.remove
           end
         end
