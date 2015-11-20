@@ -156,16 +156,16 @@ module Wovnrb
           end
         end
         # swap meta tag values
-       # d.xpath('//meta').select { |t|
-       #   next if check_wovn_ignore(t)
-       #   (t.get_attribute('name') || t.get_attribute('property') || '') =~ /^(description|keywords|og:title|og:description)$/
-       # }.each do |node|
-       #   node_content = node.get_attribute('content').strip
-# shoul#dn't need size check, but for now...
-       #   if text_index[node_content] && text_index[node_content][lang] && text_index[node_content][lang].size > 0
-       #     node.set_attribute('content', node_content.gsub(/^(\s*)[\S\s]*(\s*)$/, '\1' + text_index[node_content][lang][0]['data'] + '\2'))
-       #   end
-       # end
+        d.xpath('//meta').select { |t|
+          next if check_wovn_ignore(t)
+          (t.get_attribute('name') || t.get_attribute('property') || '') =~ /^(description|keywords|og:title|og:description)$/
+        }.each do |node|
+          node_content = node.get_attribute('content').strip
+# shouldn't need size check, but for now...
+          if text_index[node_content] && text_index[node_content][lang] && text_index[node_content][lang].size > 0
+            node.set_attribute('content', node_content.gsub(/^(\s*)[\S\s]*(\s*)$/, '\1' + text_index[node_content][lang][0]['data'] + '\2'))
+          end
+        end
         # swap img srcs
         d.xpath('//img').each do |node|
           next if check_wovn_ignore(node)
