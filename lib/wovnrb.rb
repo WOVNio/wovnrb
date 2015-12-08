@@ -130,11 +130,20 @@ module Wovnrb
       text_index = values['text_vals'] || {}
       src_index = values['img_vals'] || {}
       img_src_prefix = values['img_src_prefix'] || ''
+      ignore_all = false
       string_index = {}
       new_body = []
       body.each do |b|
         d = Nokogiri::HTML5(b)
         d.encoding = "UTF-8"
+
+        # If this page has wovn-ignore in the html tag, don't do anything
+        if ignore_all || d.xpath('//html[@wovn-ignore]').present?
+          ignore_all = true
+          output = d.to_html.gsub(/href="([^"]*)"/) { |m| "href=\"#{URI.decode($1)}\"" }
+          new_body.push(output)
+          next
+        end
 
         # add lang code to anchors href if not default lang 
         if lang != STORE.settings['default_lang']
@@ -194,6 +203,7 @@ module Wovnrb
         # REMOVE WIDGET
         d.xpath('//script').each do |script_node|
           if script_node['src'] && script_node['src'].include?('//j.(dev-)?wovn.io(:3000)?/')
+            #binding.pry
             script_node.remove
           end
         end
