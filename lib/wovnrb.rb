@@ -67,7 +67,8 @@ module Wovnrb
           return new_href
         end
         # only add lang if it's an internal link 
-        if uri.host === headers.host
+        # DNS names are case insensitive
+        if uri.host.downcase === headers.host.downcase
           case pattern
             when 'subdomain'
               sub_d = href.match(/\/\/([^\.]*)\./)[1]
@@ -214,7 +215,8 @@ module Wovnrb
         # INSERT BACKEND WIDGET
         insert_node = Nokogiri::XML::Node.new('script', d)
         # TODO: CHANGE THIS BACK; Should be '//j.wovn.io/0' in production
-        insert_node['src'] = '//j.wovn.io/0'
+        insert_node['src'] = '//j.wovn.io/1'
+        insert_node['async'] = true
         #insert_node['src'] = '//j.dev-wovn.io:3000/0'
         version = defined?(VERSION) ? VERSION : ''
         insert_node['data-wovnio'] = "key=#{STORE.settings['user_token']}&backend=true&currentLang=#{lang}&defaultLang=#{STORE.settings['default_lang']}&urlPattern=#{STORE.settings['url_pattern']}&version=#{version}"

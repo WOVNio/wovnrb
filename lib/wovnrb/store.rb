@@ -139,7 +139,7 @@ module Wovnrb
         vals = {}
       end
       if vals['expired'] || vals.empty?
-        host = 'j.wovn.io'
+        host = 'ee.wovn.io'
         post_data = "{\"user_token\":\"#{settings['user_token']}\", \"url\":#{url.to_json}}"
         headers = "Host: #{host}\r\nContent-Type: application/json;charset=UTF-8\r\nContent-Length: #{post_data.bytesize}\r\nConnection: close\r\n\r\n"
         s = TCPSocket.new(host, 80)
