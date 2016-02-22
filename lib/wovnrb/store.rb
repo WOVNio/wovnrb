@@ -2,7 +2,7 @@ require 'redis'
 require 'net/http'
 require 'socket'
 require 'cgi'
-require 'Logger' unless defined?(Logger)
+require 'logger' unless defined?(Logger)
 
 module Wovnrb
 

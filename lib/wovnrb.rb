@@ -139,7 +139,7 @@ module Wovnrb
         d.encoding = "UTF-8"
 
         # If this page has wovn-ignore in the html tag, don't do anything
-        if ignore_all || d.xpath('//html[@wovn-ignore]').present?
+        if ignore_all || !d.xpath('//html[@wovn-ignore]').empty?
           ignore_all = true
           output = d.to_html.gsub(/href="([^"]*)"/) { |m| "href=\"#{URI.decode($1)}\"" }
           new_body.push(output)
@@ -168,7 +168,7 @@ module Wovnrb
         # swap meta tag values
         d.xpath('//meta').select { |t|
           next if check_wovn_ignore(t)
-          (t.get_attribute('name') || t.get_attribute('property') || '') =~ /^(description|keywords|og:title|og:description)$/
+          (t.get_attribute('name') || t.get_attribute('property') || '') =~ /^(description|title|og:title|og:description|twitter:title|twitter:description)$/
         }.each do |node|
           node_content = node.get_attribute('content').strip
 # shouldn't need size check, but for now...
@@ -197,6 +197,12 @@ module Wovnrb
 # shouldn't need size check, but for now...
             if src_index[src] && src_index[src][lang] && src_index[src][lang].size > 0
               node.attribute('src').value = "#{img_src_prefix}#{src_index[src][lang][0]['data']}"
+            end
+          end
+          if node.get_attribute('alt')
+            alt = node.get_attribute('alt').strip
+            if text_index[alt] && text_index[alt][lang] && text_index[alt][lang].size > 0
+              node.attribute('alt').value = alt.gsub(/^(\s*)[\S\s]*(\s*)$/, '\1' + text_index[alt][lang][0]['data'] + '\2')
             end
           end
         end
