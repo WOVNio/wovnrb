@@ -1,4 +1,4 @@
-require 'wovnrb/services/URL'
+require 'wovnrb/services/url'
 
 class URLTest < Minitest::Test
 
