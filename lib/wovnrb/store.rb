@@ -1,6 +1,5 @@
-require 'redis'
 require 'net/http'
-require 'socket'
+require 'uri'
 require 'cgi'
 require 'logger' unless defined?(Logger)
 
@@ -21,8 +20,7 @@ module Wovnrb
           #'url_pattern' => 'subdomain',
           #'url_pattern_reg' => "^(?<lang>[^.]+)\.",
           'query' => [],
-          'backend_host' => 'rs1.wovn.io',
-          'backend_port' => '6379',
+          'api_url' => 'https://api.wovn.io/v0/values',
           'default_lang' => 'en',
           'supported_langs' => ['en'],
           'test_mode' => false,
@@ -54,13 +52,9 @@ module Wovnrb
         valid = false
         errors.push("query config #{settings['query']} is not valid.");
       end
-      if !settings.has_key?('backend_host') || settings['backend_host'].length == 0
+      if !settings.has_key?('api_url') || settings['api_url'].length == 0
         valid = false
-        errors.push("Backend host is not configured.");
-      end
-      if !settings.has_key?('backend_port') || settings['backend_port'].length == 0
-        valid = false
-        errors.push("Backend port is not configured.");
+        errors.push("API URL is not configured.")
       end
       if !settings.has_key?('default_lang') || settings['default_lang'].length == 0
         valid = false
@@ -98,7 +92,6 @@ module Wovnrb
         end
 
         # fix settings object
-        @settings['backend_port'] = @settings['backend_port'].to_s
         @settings['default_lang'] = Lang.get_code(@settings['default_lang'])
         if !@settings.has_key?('supported_langs')
           @settings['supported_langs'] = [@settings['default_lang']]
@@ -127,31 +120,16 @@ module Wovnrb
     # @return [Hash] The values Hash for the passed in url
     def get_values(url)
       url = url.gsub(/\/$/, '')
-      redis_key = 'WOVN:BACKEND:STORAGE:' + url + ':' + settings['user_token']
-      cli = Redis.new(host: settings['backend_host'], port: settings['backend_port'])
 
       begin
-        vals = cli.get(redis_key) || '{}'
-        vals = JSON.parse(vals)
+        api_uri = URI.parse("#{settings['api_url']}?token=#{settings['user_token']}&url=#{url}")
+        vals = http.get(api_uri)
       rescue
         logger = Logger.new('../error.log')
-        logger.error("Redis GET request failed with the following parameters:\nhost: #{settings['backend_host']}\nport: #{settings['backend_port']}\nkey: #{redis_key}")
-        vals = {}
+        logger.error("API server GET request failed with the following parameters:\napi_url: #{settings['api_url']}\ntoken: #{settings['user_token']}\nurl: #{url}")
       end
-      if vals['expired'] || vals.empty?
-        host = 'ee.wovn.io'
-        post_data = "{\"user_token\":\"#{settings['user_token']}\", \"url\":#{url.to_json}}"
-        headers = "Host: #{host}\r\nContent-Type: application/json;charset=UTF-8\r\nContent-Length: #{post_data.bytesize}\r\nConnection: close\r\n\r\n"
-        s = TCPSocket.new(host, 80)
-        s.puts "POST /pages/cache_backend HTTP/1.1\r\n#{headers}#{post_data}"
-        s.close
-      end
-      # handle this on the widget
-      #if vals.empty?
-      #  uri = URI.parse('http://api.wovn.io/v0/page/add')
-      #  Net::HTTP.post_form(uri, :user_token => user_token, :secret_key => @settings['secret_key'], :url => url)
-      #end
-      vals
+
+      vals || {}
     end
 
   end

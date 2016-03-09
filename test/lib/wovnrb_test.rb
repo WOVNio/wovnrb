@@ -465,8 +465,7 @@ class WovnrbTest < Minitest::Test
     settings['url_pattern'] = 'path'
     settings['url_pattern_reg'] = "/(?<lang>[^/.?]+)"
     settings['query'] = []
-    settings['backend_host'] = 'localhost'
-    settings['backend_port'] = '6379'
+    settings['api_url'] = 'http://localhost/v0/values'
     settings['default_lang'] = 'en'
     settings['supported_langs'] = []
     settings['secret_key'] = ''
