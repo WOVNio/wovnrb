@@ -14,7 +14,7 @@ module Wovnrb
   class Interceptor
     def initialize(app, opts={})
       @app = app
-      Store.settings.merge!(opts)
+      STORE.settings.merge!(opts)
     end
 
     def call(env)
