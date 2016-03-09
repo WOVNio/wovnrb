@@ -123,13 +123,15 @@ module Wovnrb
 
       begin
         api_uri = URI.parse("#{settings['api_url']}?token=#{settings['user_token']}&url=#{url}")
-        vals = http.get(api_uri)
+        vals = http.get(api_uri) || '{}'
+        vals = JSON.parse(vals)
       rescue
+        vals = {}
         logger = Logger.new('../error.log')
         logger.error("API server GET request failed with the following parameters:\napi_url: #{settings['api_url']}\ntoken: #{settings['user_token']}\nurl: #{url}")
       end
 
-      vals || {}
+      vals
     end
 
   end
