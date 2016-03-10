@@ -122,9 +122,17 @@ module Wovnrb
       url = url.gsub(/\/$/, '')
 
       begin
-        api_uri = URI.parse("#{settings['api_url']}?token=#{settings['user_token']}&url=#{url}")
-        vals = http.get(api_uri) || '{}'
-        vals = JSON.parse(vals)
+        uri = URI.parse("#{settings['api_url']}?token=#{settings['user_token']}&url=#{url}")
+        https = Net::HTTP.new(uri.host, uri.port)
+        https.use_ssl = true
+        res = https.start {
+          https.get(uri.request_uri)
+        }
+        if res.code == "200"
+          vals = JSON.parse(res.body || '{}')
+        else
+          vals = {}
+        end
       rescue
         vals = {}
         logger = Logger.new('../error.log')
