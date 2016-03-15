@@ -1,4 +1,5 @@
 language: ruby
 rvm:
   - 2.1.0
-script: export LC_CTYPE=en_US.UTF-8
+before_install:
+  - gem update bundler
