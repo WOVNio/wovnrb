@@ -6,7 +6,6 @@ require 'logger' unless defined?(Logger)
 module Wovnrb
 
   class Store
-    attr_reader :settings
 
     def initialize
       @settings = 
@@ -77,7 +76,12 @@ module Wovnrb
     # Returns the settings object, pulling from Rails config the first time this is called
     #
     # @return [Hash] The settings which are pulled from the config file given by the user and filled in by defaults
-    def settings
+    def settings(*opts)
+      if !opts.first.nil?
+        @settings.merge!(opts.first)
+        @config_loaded = false
+      end
+
       if !@config_loaded
         # get Rails config.wovnrb
         if Object.const_defined?('Rails') && Rails.configuration.respond_to?(:wovnrb)
