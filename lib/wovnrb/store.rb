@@ -123,10 +123,10 @@ module Wovnrb
 
       begin
         uri = URI.parse("#{settings['api_url']}?token=#{settings['user_token']}&url=#{url}")
-        https = Net::HTTP.new(uri.host, uri.port)
-        https.use_ssl = true
-        res = https.start {
-          https.get(uri.request_uri)
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = true if uri.scheme == 'https'
+        res = http.start {
+          http.get(uri.request_uri)
         }
         if res.code == "200"
           vals = JSON.parse(res.body || '{}')
