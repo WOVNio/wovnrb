@@ -1,3 +1,3 @@
 module Wovnrb
-  VERSION = "0.1.80"
+  VERSION = "0.2"
 end
