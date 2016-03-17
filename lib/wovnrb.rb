@@ -9,27 +9,26 @@ require 'wovnrb/railtie' if defined?(Rails)
 
 module Wovnrb
 
-  STORE = Store.new
-
   class Interceptor
     def initialize(app, opts={})
       @app = app
+      @store = Store.new
       opts = opts.each_with_object({}){|(k,v),memo| memo[k.to_s]=v}
-      STORE.settings(opts)
+      @store.settings(opts)
     end
 
     def call(env)
-      unless STORE.valid_settings?
+      unless @store.valid_settings?
         return @app.call(env)
       end
       @env = env
-      headers = Headers.new(env, STORE.settings)
-      if STORE.settings['test_mode'] && STORE.settings['test_url'] != headers.url
+      headers = Headers.new(env, @store.settings)
+      if @store.settings['test_mode'] && @store.settings['test_url'] != headers.url
         return @app.call(env)
       end
        #redirect if the path is set to the default language (for SEO purposes)
-      if (headers.path_lang == STORE.settings['default_lang'])
-        redirect_headers = headers.redirect(STORE.settings['default_lang'])
+      if (headers.path_lang == @store.settings['default_lang'])
+        redirect_headers = headers.redirect(@store.settings['default_lang'])
         return [307, redirect_headers, ['']]
       end
       lang = headers.lang_code
@@ -38,7 +37,7 @@ module Wovnrb
       status, res_headers, body = @app.call(headers.request_out)
 
       if res_headers["Content-Type"] =~ /html/ # && !body[0].nil?
-        values = STORE.get_values(headers.redis_url)
+        values = @store.get_values(headers.redis_url)
         url = {
             :protocol => headers.protocol,
             :host => headers.host,
@@ -128,7 +127,8 @@ module Wovnrb
       check_wovn_ignore(node.parent)
     end
 
-    def switch_lang(body, values, url, lang=STORE.settings['default_lang'], headers)
+    def switch_lang(body, values, url, lang=@store.settings['default_lang'], headers)
+
       lang = Lang.get_code(lang)
       text_index = values['text_vals'] || {}
       src_index = values['img_vals'] || {}
@@ -149,8 +149,8 @@ module Wovnrb
         end
 
         # add lang code to anchors href if not default lang 
-        if lang != STORE.settings['default_lang']
-          pattern = STORE.settings['url_pattern']
+        if lang != @store.settings['default_lang']
+          pattern = @store.settings['url_pattern']
 
           d.xpath('//a').each do |a|
             next if check_wovn_ignore(a)
@@ -249,7 +249,7 @@ module Wovnrb
         insert_node['async'] = true
         #insert_node['src'] = '//j.dev-wovn.io:3000/0'
         version = defined?(VERSION) ? VERSION : ''
-        insert_node['data-wovnio'] = "key=#{STORE.settings['user_token']}&backend=true&currentLang=#{lang}&defaultLang=#{STORE.settings['default_lang']}&urlPattern=#{STORE.settings['url_pattern']}&version=#{version}"
+        insert_node['data-wovnio'] = "key=#{@store.settings['user_token']}&backend=true&currentLang=#{lang}&defaultLang=#{@store.settings['default_lang']}&urlPattern=#{@store.settings['url_pattern']}&version=#{version}"
         # do this so that there will be a closing tag (better compatibility with browsers)
         insert_node.content = ' '
         if parent_node.children.size > 0
@@ -282,7 +282,7 @@ module Wovnrb
       #body
     end
 
-    # this clearly needs to be refactored. I'm thinking maybe a Value service? (STORE.values.get_langs)
+    # this clearly needs to be refactored. I'm thinking maybe a Value service? (@store.values.get_langs)
     def get_langs(values)
       langs = Set.new
       (values['text_vals'] || {}).merge(values['img_vals'] || {}).each do |key, index|
