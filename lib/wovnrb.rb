@@ -15,7 +15,7 @@ module Wovnrb
     def initialize(app, opts={})
       @app = app
       opts = opts.each_with_object({}){|(k,v),memo| memo[k.to_s]=v}
-      STORE.settings.merge!(opts)
+      STORE.settings(opts)
     end
 
     def call(env)
