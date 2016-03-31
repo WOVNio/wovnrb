@@ -1,23 +1,27 @@
 require 'net/http'
 require 'uri'
 require 'cgi'
-require 'logger' unless defined?(Logger)
+require 'singleton'
+require 'wovnrb/services/wovn_logger'
 
 module Wovnrb
-
   class Store
+    include Singleton
 
     def initialize
-      @settings = 
+      @settings = {}
+      @config_loaded = false
+      reset
+    end
+
+    def reset
+      @settings =
         {
           'user_token' => '',
           'secret_key' => '',
-          # 'url_pattern' => 'query'
-          # 'url_pattern_reg' => "?.*wovn=(?<lang>[^&]+)(&|$)",
+          'log_path' => 'log/wovn_error.log',
           'url_pattern' => 'path',
           'url_pattern_reg' => "/(?<lang>[^/.?]+)",
-          #'url_pattern' => 'subdomain',
-          #'url_pattern_reg' => "^(?<lang>[^.]+)\.",
           'query' => [],
           'api_url' => 'https://api.wovn.io/v0/values',
           'api_timeout_seconds' => 0.5,
@@ -68,9 +72,8 @@ module Wovnrb
       end
       # log errors
       if errors.length > 0
-        logger = Logger.new('log/error.log')
         errors.each do |e|
-          logger.error(e)
+          WovnLogger.instance.error(e)
         end
       end
       return valid

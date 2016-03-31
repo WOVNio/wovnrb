@@ -6,6 +6,10 @@ require 'webmock/minitest'
 require 'pry'
 
 class WovnrbTest < Minitest::Test
+  def setup
+    Wovnrb::Store.instance.reset
+  end
+
   def test_initialize
     i = Wovnrb::Interceptor.new(get_app)
     refute_nil(i)

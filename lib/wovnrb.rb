@@ -12,14 +12,14 @@ module Wovnrb
   class Interceptor
     def initialize(app, opts={})
       @app = app
-      @store = Store.new
+      @store = Store.instance
       opts = opts.each_with_object({}){|(k,v),memo| memo[k.to_s]=v}
       @store.settings(opts)
       CacheBase.set_single(@store.settings)
     end
 
     def call(env)
-      unless @store.valid_settings?
+      unless Store.instance.valid_settings?
         return @app.call(env)
       end
       @env = env
@@ -61,7 +61,7 @@ module Wovnrb
 
     def add_lang_code(href, pattern, lang, headers)
       return href if href =~ /^(#.*)?$/
-      # absolute links 
+      # absolute links
       new_href = href
       if href && href =~ /^(https?:)?\/\//i
         # in the future, perhaps validate url rather than using begin rescue
@@ -71,7 +71,7 @@ module Wovnrb
         rescue
           return new_href
         end
-        # only add lang if it's an internal link 
+        # only add lang if it's an internal link
         # DNS names are case insensitive
         if uri.host.downcase === headers.host.downcase
           case pattern
@@ -152,7 +152,7 @@ module Wovnrb
           next
         end
 
-        # add lang code to anchors href if not default lang 
+        # add lang code to anchors href if not default lang
         if lang != @store.settings['default_lang']
           pattern = @store.settings['url_pattern']
 

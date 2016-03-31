@@ -21,8 +21,7 @@ module Wovnrb
         response = get_from_api_server(uri)
       rescue => e
         response = '{}'
-        logger = Logger.new('../error.log')
-        logger.error("API server GET request failed :\nurl: #{uri}\n#{e.message}")
+        WovnLogger.instance.error("API server GET request failed :\nurl: #{uri}\n#{e.message}")
       end
 
       # Always cache response, even when error returns to avoid DDOS
