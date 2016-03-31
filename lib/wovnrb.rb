@@ -162,26 +162,6 @@ module Wovnrb
             new_href = add_lang_code(href, pattern, lang, headers)
             a.set_attribute('href', new_href)
           end
-
-          d.xpath('//form').each do |form|
-            next if check_wovn_ignore(form)
-            method = form.get_attribute('method')
-            if pattern == 'query' && (method.nil? || method.upcase == 'GET')
-              insert_node = Nokogiri::XML::Node.new('input', d)
-              insert_node['type'] = 'hidden'
-              insert_node['name'] = 'wovn'
-              insert_node['value'] = lang
-              if form.children.size > 0
-                form.children.first.add_previous_sibling(insert_node)
-              else
-                form.add_child(insert_node)
-              end
-            else
-              action = form.get_attribute('action')
-              new_action = add_lang_code(action, pattern, lang, headers)
-              form['action'] = new_action
-            end
-          end
         end
 
         # swap text
