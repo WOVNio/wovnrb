@@ -2,14 +2,10 @@
 require 'wovnrb'
 require 'wovnrb/headers'
 require 'minitest/autorun'
+require 'webmock/minitest'
 require 'pry'
 
 class WovnrbTest < Minitest::Test
-
-  def get_app
-  end
-
-
   def test_initialize
     i = Wovnrb::Interceptor.new(get_app)
     refute_nil(i)
@@ -23,6 +19,32 @@ class WovnrbTest < Minitest::Test
   # def test_switch_lang(body, values, url, lang=STORE.settings['default_lang'], headers)
   # end
 
+  def test_api_call
+    settings = get_settings
+    token = settings['user_token']
+    url = 'wovn.io/dashboard'
+    stub = stub_request(:get, "#{settings['api_url']}?token=#{token}&url=#{url}").
+      to_return(:body => '{"test_body": "a"}')
+
+    i = Wovnrb::Interceptor.new(get_app, settings)
+
+    i.call(get_env)
+    assert_requested(stub, :times => 1)
+  end
+
+  def test_api_call_with_cache
+    settings = get_settings
+    token = settings['user_token']
+    url = 'wovn.io/dashboard'
+    stub = stub_request(:get, "#{settings['api_url']}?token=#{token}&url=#{url}").
+      to_return(:body => '{"test_body": "a"}')
+
+    i = Wovnrb::Interceptor.new(RackMock.new, settings)
+
+    i.call(get_env)
+    i.call(get_env)
+    assert_requested(stub, :times => 1)
+  end
 
   # def test_get_langs(values)
   # end
@@ -361,13 +383,6 @@ class WovnrbTest < Minitest::Test
               </body></html>"
     end
     return [body]
-  end
-
-  def generate_values
-    values = {}
-    values['text_vals'] = {'Hello' => {'ja' => [{'data' => 'こんにちは'}]},
-    'Mr. Belvedere Fan Club' => {'ja' => [{'data' => 'ベルベデアさんファンクラブ'}]}}
-    return values
   end
 
   def test_switch_lang
@@ -894,6 +909,10 @@ EXPECTED
     assert_equal(expected, swapped_body)
   end
 
+  def get_app
+    RackMock.new
+  end
+
   def get_settings(options={})
     settings = {}
     settings['user_token'] = 'OHYx9'
@@ -902,8 +921,8 @@ EXPECTED
     settings['query'] = []
     settings['api_url'] = 'http://localhost/v0/values'
     settings['default_lang'] = 'en'
-    settings['supported_langs'] = []
-    settings['secret_key'] = ''
+    settings['supported_langs'] = ['en', 'ja']
+    settings['secret_key'] = 'secret_key'
     return settings.merge(options)
   end
 
@@ -936,5 +955,18 @@ EXPECTED
       env['PATH_INFO'] = url.path
     end
     return env.merge(options)
+  end
+
+  def generate_values
+    values = {}
+    values['text_vals'] = {'Hello' => {'ja' => [{'data' => 'こんにちは'}]},
+      'Mr. Belvedere Fan Club' => {'ja' => [{'data' => 'ベルベデアさんファンクラブ'}]}}
+    return values
+  end
+
+  class RackMock
+    def call(env)
+      [200, {'Content-Type' => 'text/html'}, ['']]
+    end
   end
 end

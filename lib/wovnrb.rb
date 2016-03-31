@@ -4,17 +4,18 @@ require 'wovnrb/lang'
 require 'nokogumbo'
 #require 'dom'
 require 'json'
-
+require 'wovnrb/api_data'
+require 'wovnrb/text_caches/cache_base'
 require 'wovnrb/railtie' if defined?(Rails)
 
 module Wovnrb
-
   class Interceptor
     def initialize(app, opts={})
       @app = app
       @store = Store.new
       opts = opts.each_with_object({}){|(k,v),memo| memo[k.to_s]=v}
       @store.settings(opts)
+      CacheBase.set_single(@store.settings)
     end
 
     def call(env)
@@ -26,7 +27,7 @@ module Wovnrb
       if @store.settings['test_mode'] && @store.settings['test_url'] != headers.url
         return @app.call(env)
       end
-       #redirect if the path is set to the default language (for SEO purposes)
+      #redirect if the path is set to the default language (for SEO purposes)
       if (headers.path_lang == @store.settings['default_lang'])
         redirect_headers = headers.redirect(@store.settings['default_lang'])
         return [307, redirect_headers, ['']]
@@ -37,7 +38,10 @@ module Wovnrb
       status, res_headers, body = @app.call(headers.request_out)
 
       if res_headers["Content-Type"] =~ /html/ # && !body[0].nil?
-        values = @store.get_values(headers.redis_url)
+        # ApiData creates request for external server, but cannot use async.
+        # Because some server not allow multi thread. (env['async.callback'] is not supported at all Server).
+        api_data = ApiData.new(headers.redis_url, @store)
+        values = api_data.get_data
         url = {
             :protocol => headers.protocol,
             :host => headers.host,

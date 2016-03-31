@@ -19,4 +19,5 @@
 *.swp
 mkmf.log
 .idea/
+*.iml
 .ruby-version

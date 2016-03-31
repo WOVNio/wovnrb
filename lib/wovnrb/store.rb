@@ -20,10 +20,13 @@ module Wovnrb
           #'url_pattern_reg' => "^(?<lang>[^.]+)\.",
           'query' => [],
           'api_url' => 'https://api.wovn.io/v0/values',
+          'api_timeout_seconds' => 0.5,
           'default_lang' => 'en',
           'supported_langs' => ['en'],
           'test_mode' => false,
           'test_url' => '',
+          'cache_megabytes' => nil,
+          'ttl_seconds' => nil
         }
       # When Store is initialized, the Rails.configuration object is not yet initialized
       @config_loaded = false
@@ -117,35 +120,6 @@ module Wovnrb
       end
       @settings
     end
-
-    # Get the values for the passed in url
-    #
-    # @param url [String] The url to get the values for
-    # @return [Hash] The values Hash for the passed in url
-    def get_values(url)
-      url = url.gsub(/\/$/, '')
-
-      begin
-        uri = URI.parse("#{settings['api_url']}?token=#{settings['user_token']}&url=#{url}")
-        http = Net::HTTP.new(uri.host, uri.port)
-        http.use_ssl = true if uri.scheme == 'https'
-        res = http.start {
-          http.get(uri.request_uri)
-        }
-        if res.code == "200"
-          vals = JSON.parse(res.body || '{}')
-        else
-          vals = {}
-        end
-      rescue
-        vals = {}
-        logger = Logger.new('../error.log')
-        logger.error("API server GET request failed with the following parameters:\napi_url: #{settings['api_url']}\ntoken: #{settings['user_token']}\nurl: #{url}")
-      end
-
-      vals
-    end
-
   end
 
 end
