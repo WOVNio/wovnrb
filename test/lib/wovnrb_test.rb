@@ -495,7 +495,7 @@ BODY
 <html lang=\"ja\">
 <head>
 <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
-<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=OHYx9&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=0.2\"> </script><title>Hey</title>
+<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=OHYx9&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=0.2.01\"> </script><title>Hey</title>
 <link rel=\"alternate\" hreflang=\"ja\" href=\"https://google.com/ja/\">
 </head>
 <body>
@@ -539,7 +539,7 @@ BODY
 <html lang=\"ja\">
 <head>
 <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
-<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=OHYx9&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=0.2\"> </script><title>Hey</title>
+<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=OHYx9&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=0.2.01\"> </script><title>Hey</title>
 <link rel=\"alternate\" hreflang=\"ja\" href=\"https://google.com/ja/\">
 </head>
 <body>
@@ -583,7 +583,7 @@ BODY
 <html lang=\"ja\">
 <head>
 <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
-<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=OHYx9&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=0.2\"> </script><title>Hey</title>
+<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=OHYx9&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=0.2.01\"> </script><title>Hey</title>
 <link rel=\"alternate\" hreflang=\"ja\" href=\"https://google.com/ja/\">
 </head>
 <body>
@@ -633,7 +633,7 @@ BODY
 <html lang=\"ja\">
 <head>
 <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
-<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=OHYx9&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=subdomain&amp;version=0.2\"> </script><title>Hey</title>
+<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=OHYx9&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=subdomain&amp;version=0.2.01\"> </script><title>Hey</title>
 <link rel=\"alternate\" hreflang=\"ja\" href=\"https://ja.google.com/\">
 </head>
 <body>
@@ -683,7 +683,7 @@ BODY
 <html lang=\"ja\">
 <head>
 <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
-<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=OHYx9&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=subdomain&amp;version=0.2\"> </script><title>Hey</title>
+<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=OHYx9&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=subdomain&amp;version=0.2.01\"> </script><title>Hey</title>
 <link rel=\"alternate\" hreflang=\"ja\" href=\"https://ja.google.com/\">
 </head>
 <body>
@@ -733,7 +733,7 @@ BODY
 <html lang=\"ja\">
 <head>
 <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
-<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=OHYx9&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=subdomain&amp;version=0.2\"> </script><title>Hey</title>
+<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=OHYx9&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=subdomain&amp;version=0.2.01\"> </script><title>Hey</title>
 <link rel=\"alternate\" hreflang=\"ja\" href=\"https://ja.google.com/\">
 </head>
 <body>
@@ -783,7 +783,7 @@ BODY
 <html lang=\"ja\">
 <head>
 <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
-<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=OHYx9&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=query&amp;version=0.2\"> </script><title>Hey</title>
+<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=OHYx9&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=query&amp;version=0.2.01\"> </script><title>Hey</title>
 <link rel=\"alternate\" hreflang=\"ja\" href=\"https://google.com/?wovn=ja\">
 </head>
 <body>
@@ -834,7 +834,7 @@ BODY
 <html lang=\"ja\">
 <head>
 <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
-<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=OHYx9&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=query&amp;version=0.2\"> </script><title>Hey</title>
+<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=OHYx9&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=query&amp;version=0.2.01\"> </script><title>Hey</title>
 <link rel=\"alternate\" hreflang=\"ja\" href=\"https://google.com/?wovn=ja\">
 </head>
 <body>
@@ -885,7 +885,7 @@ BODY
 <html lang=\"ja\">
 <head>
 <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
-<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=OHYx9&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=query&amp;version=0.2\"> </script><title>Hey</title>
+<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=OHYx9&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=query&amp;version=0.2.01\"> </script><title>Hey</title>
 <link rel=\"alternate\" hreflang=\"ja\" href=\"https://google.com/?wovn=ja\">
 </head>
 <body>
