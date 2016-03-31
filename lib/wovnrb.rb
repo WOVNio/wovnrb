@@ -6,6 +6,11 @@ require 'nokogumbo'
 require 'json'
 require 'wovnrb/api_data'
 require 'wovnrb/text_caches/cache_base'
+require 'wovnrb/html_replacers/replacer_base'
+require 'wovnrb/html_replacers/link_replacer'
+require 'wovnrb/html_replacers/text_replacer'
+require 'wovnrb/html_replacers/meta_replacer'
+require 'wovnrb/html_replacers/image_replacer'
 require 'wovnrb/railtie' if defined?(Rails)
 
 module Wovnrb

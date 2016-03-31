@@ -1,6 +1,12 @@
+require 'nokogumbo'
 require 'wovnrb/headers'
 require 'wovnrb/lang'
 require 'wovnrb/store'
+require 'wovnrb/html_replacers/replacer_base'
+require 'wovnrb/html_replacers/link_replacer'
+require 'wovnrb/html_replacers/text_replacer'
+require 'wovnrb/html_replacers/meta_replacer'
+require 'wovnrb/html_replacers/image_replacer'
 require 'minitest/autorun'
 
 
@@ -74,5 +80,16 @@ module Wovnrb
     end
     return env.merge(options)
   end
-  module_function :get_env, :get_settings
+
+  def to_dom(html)
+    dom = Nokogiri::HTML5(html)
+    dom.encoding = "UTF-8"
+    dom
+  end
+
+  def get_dom(innerHTML)
+    to_dom("<html><body>#{innerHTML}</body></html>")
+  end
+
+  module_function :get_env, :get_settings, :to_dom, :get_dom
 end

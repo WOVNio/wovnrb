@@ -349,9 +349,7 @@ module Wovnrb
     end
 
     def generate_dom(param='')
-      dom = Nokogiri::HTML5(generate_body(param))
-      dom.encoding = "UTF-8"
-      return dom
+      Wovnrb.to_dom(generate_body(param))
     end
 
     def generate_values
