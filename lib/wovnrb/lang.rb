@@ -121,35 +121,8 @@ module Wovnrb
     def switch_dom_lang(dom, store, values, url, headers)
       replace_dom_values(dom, values, store, url, headers)
 
-      # REMOVE WIDGET
-      dom.xpath('//script').each do |script_node|
-        if script_node['src'] && script_node['src'].include?('//j.(dev-)?wovn.io(:3000)?/')
-          #binding.pry
-          script_node.remove
-        end
-      end
-
-      # PARENT NODE FOR INSERTS
-      parent_node = dom.at_css('head') || dom.at_css('body') || dom.at_css('html')
-
-      # INSERT BACKEND WIDGET
-      insert_node = Nokogiri::XML::Node.new('script', dom)
-      # TODO: CHANGE THIS BACK; Should be '//j.wovn.io/0' in production
-      insert_node['src'] = '//j.wovn.io/1'
-      #insert_node['src'] = '//j.dev-wovn.io:3030/1'
-      insert_node['async'] = true
-      version = defined?(VERSION) ? VERSION : ''
-      insert_node['data-wovnio'] = "key=#{store.settings['user_token']}&backend=true&currentLang=#{@lang_code}&defaultLang=#{store.settings['default_lang']}&urlPattern=#{store.settings['url_pattern']}&version=#{version}"
-      # do this so that there will be a closing tag (better compatibility with browsers)
-      insert_node.content = ' '
-      if parent_node.children.size > 0
-        parent_node.children.first.add_previous_sibling(insert_node)
-      else
-        parent_node.add_child(insert_node)
-      end
-
-
       # INSERT LANGUAGE METALINKS
+      parent_node = dom.at_css('head') || dom.at_css('body') || dom.at_css('html')
       published_langs = get_langs(values)
       published_langs.each do |l|
         insert_node = Nokogiri::XML::Node.new('link', dom)
@@ -183,6 +156,7 @@ module Wovnrb
       replacers << TextReplacer.new(text_index)
       replacers << MetaReplacer.new(text_index)
       replacers << ImageReplacer.new(url, text_index, src_index, img_src_prefix)
+      replacers << ScriptReplacer.new(store)
 
       replacers.each do |replacer|
         replacer.replace(dom, self)

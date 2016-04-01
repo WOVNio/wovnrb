@@ -7,6 +7,7 @@ require 'wovnrb/html_replacers/link_replacer'
 require 'wovnrb/html_replacers/text_replacer'
 require 'wovnrb/html_replacers/meta_replacer'
 require 'wovnrb/html_replacers/image_replacer'
+require 'wovnrb/html_replacers/script_replacer'
 require 'minitest/autorun'
 
 
