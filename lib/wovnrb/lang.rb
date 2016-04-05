@@ -30,29 +30,6 @@ module Wovnrb
       'tr' => {name: 'Türkçe',            code: 'tr',     en: 'Turkish'},
       'uk' => {name: 'Українська',        code: 'uk',     en: 'Ukrainian'},
       'vi' => {name: 'Tiếng Việt',        code: 'vi',     en: 'Vietnamese'},
-
-=begin
-      * denotes no Google support
-      *{name: 'Urdu', code: 'ur', en: 'Urdu'},
-      {name: 'Català', code: 'ca'},
-      {name: 'Čeština', code: 'cs'},
-      {name: 'Български', code: 'bg'},
-      {name: 'Estonian', code: 'et'},
-      *{name: 'Haitian Creoloe', code: 'ht'},
-      *{name: 'Hmong Daw', code: 'mww'},
-      {name: 'Hungarian', code: 'hu'},
-      *{name: 'Klingon', code: 'tlh'},
-      *{name: 'Klingon (plqaD)', code: 'tlh-Qaak'},
-      {name: 'Latvian', code: 'lv'},
-      {name: 'Lithuanian', code: 'lt'},
-      {name: 'Maltese', code: 'mt'},
-      {name: 'Persian', code: 'fa'},
-      {name: 'Romanian', code: 'ro'},
-      {name: 'Slovak', code: 'sk'},
-      {name: 'Slovenian', code: 'sl'},
-      {name: 'Ukranian', code: 'uk'},
-      {name: 'Welsh', code: 'cy'},
-=end
     }
 
     def self.get_code(lang_name)
@@ -71,5 +48,129 @@ module Wovnrb
       return LANG[lang_code]
     end
 
+    def initialize(lang_name)
+      @lang_code = Lang.get_code(lang_name)
+    end
+
+    def lang_code
+      @lang_code
+    end
+
+    def add_lang_code(href, pattern, headers)
+      return href if href =~ /^(#.*)?$/
+      # absolute links
+      new_href = href
+      if href && href =~ /^(https?:)?\/\//i
+        # in the future, perhaps validate url rather than using begin rescue
+        # "#{url =~ /\// ? 'http:' : ''}#{url}" =~ URI::regexp
+        begin
+          uri = URI(href)
+        rescue
+          return new_href
+        end
+        # only add lang if it's an internal link
+        # DNS names are case insensitive
+        if uri.host.downcase === headers.host.downcase
+          case pattern
+            when 'subdomain'
+              sub_d = href.match(/\/\/([^\.]*)\./)[1]
+              sub_code = Lang.get_code(sub_d)
+              if sub_code && sub_code.downcase == @lang_code.downcase
+                new_href = href.sub(Regexp.new(@lang_code, 'i'), @lang_code.downcase)
+              else
+                new_href = href.sub(/(\/\/)([^\.]*)/, '\1' + @lang_code.downcase + '.' + '\2')
+              end
+            when 'query'
+              new_href = href =~ /\?/ ? href + '&wovn=' + @lang_code : href + '?wovn=' + @lang_code
+            else # path
+              new_href = href.sub(/([^\.]*\.[^\/]*)(\/|$)/, '\1/' + @lang_code + '/')
+          end
+        end
+      elsif href
+        case pattern
+          when 'subdomain'
+            lang_url = headers.protocol + '://' + @lang_code.downcase + '.' + headers.host
+            current_dir = headers.pathname.sub(/[^\/]*\.[^\.]{2,6}$/, '')
+            if href =~ /^\.\..*$/
+              # ../path
+              new_href = lang_url + '/' + href.gsub(/^\.\.\//, '')
+            elsif href =~ /^\..*$/
+              # ./path
+              new_href = lang_url + current_dir + '/' + href.gsub(/^\.\//, '')
+            elsif href =~ /^\/.*$/
+              # /path
+              new_href = lang_url + href
+            else
+              # path
+              new_href = lang_url + current_dir + '/' + href
+            end
+          when 'query'
+            new_href = href =~ /\?/ ? href + '&wovn=' + @lang_code : href + '?wovn=' + @lang_code
+          else # path
+            if href =~ /^\//
+              new_href = '/' + @lang_code + href
+            else
+              current_dir = headers.pathname.sub(/[^\/]*\.[^\.]{2,6}$/, '')
+              new_href = '/' + @lang_code + current_dir + href
+            end
+        end
+      end
+      new_href
+    end
+
+    def switch_dom_lang(dom, store, values, url, headers)
+      replace_dom_values(dom, values, store, url, headers)
+
+      # INSERT LANGUAGE METALINKS
+      parent_node = dom.at_css('head') || dom.at_css('body') || dom.at_css('html')
+      published_langs = get_langs(values)
+      published_langs.each do |l|
+        insert_node = Nokogiri::XML::Node.new('link', dom)
+        insert_node['rel'] = 'alternate'
+        insert_node['hreflang'] = l
+        insert_node['href'] = headers.redirect_location(l)
+        parent_node.add_child(insert_node)
+      end
+
+      # set lang property on HTML tag
+      if dom.at_css('html') || dom.at_css('HTML')
+        (dom.at_css('html') || dom.at_css('HTML')).set_attribute('lang', @lang_code)
+      end
+
+      dom.to_html.gsub(/href="([^"]*)"/) { |m| "href=\"#{URI.decode($1)}\"" }
+    end
+
+    private
+    def replace_dom_values(dom, values, store, url, headers)
+      text_index = values['text_vals'] || {}
+      src_index = values['img_vals'] || {}
+      img_src_prefix = values['img_src_prefix'] || ''
+
+      replacers = []
+      # add lang code to anchors href if not default lang
+      if @lang_code != store.settings['default_lang']
+        pattern = store.settings['url_pattern']
+        replacers << LinkReplacer.new(pattern, headers)
+      end
+
+      replacers << TextReplacer.new(text_index)
+      replacers << MetaReplacer.new(text_index)
+      replacers << ImageReplacer.new(url, text_index, src_index, img_src_prefix)
+      replacers << ScriptReplacer.new(store)
+
+      replacers.each do |replacer|
+        replacer.replace(dom, self)
+      end
+    end
+
+    def get_langs(values)
+      langs = Set.new
+      (values['text_vals'] || {}).merge(values['img_vals'] || {}).each do |key, index|
+        index.each do |l, val|
+          langs.add(l)
+        end
+      end
+      langs
+    end
   end
 end

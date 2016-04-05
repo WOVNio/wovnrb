@@ -1,29 +1,36 @@
 require 'net/http'
 require 'uri'
 require 'cgi'
-require 'logger' unless defined?(Logger)
+require 'singleton'
+require 'wovnrb/services/wovn_logger'
 
 module Wovnrb
-
   class Store
+    include Singleton
 
     def initialize
-      @settings = 
+      @settings = {}
+      @config_loaded = false
+      reset
+    end
+
+    def reset
+      @settings =
         {
           'user_token' => '',
           'secret_key' => '',
-          # 'url_pattern' => 'query'
-          # 'url_pattern_reg' => "?.*wovn=(?<lang>[^&]+)(&|$)",
+          'log_path' => 'log/wovn_error.log',
           'url_pattern' => 'path',
           'url_pattern_reg' => "/(?<lang>[^/.?]+)",
-          #'url_pattern' => 'subdomain',
-          #'url_pattern_reg' => "^(?<lang>[^.]+)\.",
           'query' => [],
           'api_url' => 'https://api.wovn.io/v0/values',
+          'api_timeout_seconds' => 0.5,
           'default_lang' => 'en',
           'supported_langs' => ['en'],
           'test_mode' => false,
           'test_url' => '',
+          'cache_megabytes' => nil,
+          'ttl_seconds' => nil
         }
       # When Store is initialized, the Rails.configuration object is not yet initialized
       @config_loaded = false
@@ -65,9 +72,8 @@ module Wovnrb
       end
       # log errors
       if errors.length > 0
-        logger = Logger.new('log/error.log')
         errors.each do |e|
-          logger.error(e)
+          WovnLogger.instance.error(e)
         end
       end
       return valid
@@ -117,35 +123,6 @@ module Wovnrb
       end
       @settings
     end
-
-    # Get the values for the passed in url
-    #
-    # @param url [String] The url to get the values for
-    # @return [Hash] The values Hash for the passed in url
-    def get_values(url)
-      url = url.gsub(/\/$/, '')
-
-      begin
-        uri = URI.parse("#{settings['api_url']}?token=#{settings['user_token']}&url=#{url}")
-        http = Net::HTTP.new(uri.host, uri.port)
-        http.use_ssl = true if uri.scheme == 'https'
-        res = http.start {
-          http.get(uri.request_uri)
-        }
-        if res.code == "200"
-          vals = JSON.parse(res.body || '{}')
-        else
-          vals = {}
-        end
-      rescue
-        vals = {}
-        logger = Logger.new('../error.log')
-        logger.error("API server GET request failed with the following parameters:\napi_url: #{settings['api_url']}\ntoken: #{settings['user_token']}\nurl: #{url}")
-      end
-
-      vals
-    end
-
   end
 
 end
