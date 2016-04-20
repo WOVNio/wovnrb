@@ -1,3 +1,5 @@
+require 'wovnrb/version'
+
 module Wovnrb
   class ScriptReplacer < ReplacerBase
     def initialize(store)
