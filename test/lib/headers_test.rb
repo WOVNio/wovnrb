@@ -66,6 +66,46 @@ class HeadersTest < Minitest::Test
     assert_equal('wovn.io/?wovn=zh-CHS', h.url)
   end
 
+  def test_initialize_with_use_proxy_false
+    env = Wovnrb.get_env('url' => 'http://localhost/contact', 'HTTP_X_FORWARDED_HOST' => 'wovn.io')
+    h = Wovnrb::Headers.new(env, Wovnrb.get_settings)
+    assert_equal('localhost/contact', h.url)
+    assert_equal('localhost', h.host)
+    assert_equal('localhost', h.unmasked_host)
+  end
+
+  def test_initialize_with_use_proxy_true
+   env = Wovnrb.get_env('url' => 'http://localhost/contact', 'HTTP_X_FORWARDED_HOST' => 'wovn.io')
+   h = Wovnrb::Headers.new(env, Wovnrb.get_settings('use_proxy' => true))
+   assert_equal('wovn.io/contact', h.url)
+   assert_equal('wovn.io', h.host)
+   assert_equal('wovn.io', h.unmasked_host)
+   assert_equal('localhost', env['HTTP_HOST'])
+   assert_equal('localhost', env['SERVER_NAME'])
+ end
+
+  #########################
+  # REQUEST_OUT
+  #########################
+
+  def test_request_out_with_use_proxy_false
+   h = Wovnrb::Headers.new(
+     Wovnrb.get_env('url' => 'http://localhost/contact', 'HTTP_X_FORWARDED_HOST' => 'ja.wovn.io'),
+     Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'),
+   )
+   env = h.request_out('ja')
+   assert_equal('ja.wovn.io', env['HTTP_X_FORWARDED_HOST'])
+  end
+
+  def test_request_out_with_use_proxy_true
+   h = Wovnrb::Headers.new(
+     Wovnrb.get_env('url' => 'http://localhost/contact', 'HTTP_X_FORWARDED_HOST' => 'ja.wovn.io'),
+     Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).', 'use_proxy' => true),
+   )
+   env = h.request_out('ja')
+   assert_equal('wovn.io', env['HTTP_X_FORWARDED_HOST'])
+  end
+
   #########################
   # GET SETTINGS
   #########################
@@ -2361,6 +2401,23 @@ class HeadersTest < Minitest::Test
 
   def test_path_lang_subdomain_zh_CHT_lowercase_with_slash_with_port_unsecure
     h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://zh-cht.wovn.io:1234/'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+    assert_equal('zh-CHT', h.path_lang)
+  end
+
+  def test_path_lang_sudomain_with_use_proxy_false
+    h = Wovnrb::Headers.new(
+       Wovnrb.get_env('url' => 'http://localhost:1234/test', 'HTTP_X_FORWARDED_HOST' => 'zh-cht.wovn.io'),
+       Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'),
+    )
+    assert_equal('', h.path_lang)
+  end
+
+  def test_path_lang_sudomain_with_use_proxy_true
+    env = Wovnrb.get_env('url' => 'http://localhost:1234/test', 'HTTP_X_FORWARDED_HOST' => 'zh-cht.wovn.io')
+    h = Wovnrb::Headers.new(
+      env,
+      Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).', 'use_proxy' => true),
+    )
     assert_equal('zh-CHT', h.path_lang)
   end
 

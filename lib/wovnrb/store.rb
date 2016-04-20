@@ -30,7 +30,8 @@ module Wovnrb
           'test_mode' => false,
           'test_url' => '',
           'cache_megabytes' => nil,
-          'ttl_seconds' => nil
+          'ttl_seconds' => nil,
+          'use_proxy' => false,  # use env['HTTP_X_FORWARDED_HOST'] instead of env['HTTP_HOST'] and env['SERVER_NAME'] when this setting is true.
         }
       # When Store is initialized, the Rails.configuration object is not yet initialized
       @config_loaded = false

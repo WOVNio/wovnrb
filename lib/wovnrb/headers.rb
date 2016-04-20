@@ -14,7 +14,11 @@ module Wovnrb
       @env = env
       @settings = settings
       @protocol = @env['rack.url_scheme']
-      @unmasked_host = @env['HTTP_HOST']
+      if settings['use_proxy'] && @env.has_key?('HTTP_X_FORWARDED_HOST')
+        @unmasked_host = @env['HTTP_X_FORWARDED_HOST']
+      else
+        @unmasked_host = @env['HTTP_HOST']
+      end
       unless @env.has_key?('REQUEST_URI')
         # Add '/' to PATH_INFO as a possible fix for pow server
         @env['REQUEST_URI'] = (@env['PATH_INFO'] =~ /^[^\/]/ ? '/' : '') + @env['PATH_INFO'] + (@env['QUERY_STRING'].size == 0 ? '' : "?#{@env['QUERY_STRING']}")
@@ -27,7 +31,12 @@ module Wovnrb
       @unmasked_pathname = @env['REQUEST_URI'].split('?')[0]
       @unmasked_pathname += '/' unless @unmasked_pathname =~ /\/$/ || @unmasked_pathname =~ /\/[^\/.]+\.[^\/.]+$/
       @unmasked_url = "#{@protocol}://#{@unmasked_host}#{@unmasked_pathname}"
-      @host = settings['url_pattern'] == 'subdomain' ? remove_lang(@env['HTTP_HOST'], self.lang_code) : @env['HTTP_HOST']
+      if settings['use_proxy'] && @env.has_key?('HTTP_X_FORWARDED_HOST')
+        @host = @env['HTTP_X_FORWARDED_HOST']
+      else
+        @host = @env['HTTP_HOST']
+      end
+      @host = settings['url_pattern'] == 'subdomain' ? remove_lang(@host, self.lang_code) : @host
       @pathname, @query = @env['REQUEST_URI'].split('?')
       @pathname = settings['url_pattern'] == 'path' ? remove_lang(@pathname, self.lang_code) : @pathname
       @query = @query || ''
@@ -62,7 +71,11 @@ module Wovnrb
     def path_lang
       if @path_lang.nil?
         rp = Regexp.new(@settings['url_pattern_reg'])
-        match = "#{@env['SERVER_NAME']}#{@env['REQUEST_URI']}".match(rp)
+        if @settings['use_proxy'] && @env.has_key?('HTTP_X_FORWARDED_HOST')
+          match = "#{@env['HTTP_X_FORWARDED_HOST']}#{@env['REQUEST_URI']}".match(rp)
+        else
+          match = "#{@env['SERVER_NAME']}#{@env['REQUEST_URI']}".match(rp)
+        end
         if match && match[:lang] && Lang.get_lang(match[:lang])
           @path_lang = Lang.get_code(match[:lang])
         else
@@ -130,8 +143,12 @@ module Wovnrb
         @env['QUERY_STRING'] = remove_lang(@env['QUERY_STRING']) if @env.has_key?('QUERY_STRING')
         @env['ORIGINAL_FULLPATH'] = remove_lang(@env['ORIGINAL_FULLPATH']) if @env.has_key?('ORIGINAL_FULLPATH')
       when 'subdomain'
-        @env["HTTP_HOST"] = remove_lang(@env["HTTP_HOST"])
-        @env["SERVER_NAME"] = remove_lang(@env["SERVER_NAME"])
+        if @settings['use_proxy'] && @env.has_key?('HTTP_X_FORWARDED_HOST')
+          @env['HTTP_X_FORWARDED_HOST'] = remove_lang(@env['HTTP_X_FORWARDED_HOST'])
+        else
+          @env["HTTP_HOST"] = remove_lang(@env["HTTP_HOST"])
+          @env["SERVER_NAME"] = remove_lang(@env["SERVER_NAME"])
+        end
         if @env.has_key?('HTTP_REFERER')
           @env["HTTP_REFERER"] = remove_lang(@env["HTTP_REFERER"])
         end
