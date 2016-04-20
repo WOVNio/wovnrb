@@ -266,6 +266,12 @@ module Wovnrb
       assert_equal('/fr/hello/hey/index.html', lang.add_lang_code('hey/index.html', 'path', headers))
     end
 
+    def test_add_lang_code_relative_path_at_root
+      lang = Lang.new('fr')
+      headers = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://google.com/'), Wovnrb.get_settings)
+      assert_equal('/fr/index.html', lang.add_lang_code('index.html', 'path', headers))
+    end
+
     def generate_body(param = "")
       case param
         when "ignore_parent"

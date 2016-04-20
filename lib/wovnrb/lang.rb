@@ -111,6 +111,7 @@ module Wovnrb
               new_href = '/' + @lang_code + href
             else
               current_dir = headers.pathname.sub(/[^\/]*\.[^\.]{2,6}$/, '')
+              current_dir = '/' if current_dir == ''
               new_href = '/' + @lang_code + current_dir + href
             end
         end
