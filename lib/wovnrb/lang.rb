@@ -56,6 +56,14 @@ module Wovnrb
       @lang_code
     end
 
+    # Adds language code to URL in "href" variable by "pattern" variable and own @lang_code.
+    #  When @lang_code is 'ja', add_lang_code('https://wovn.io', 'path', headers) returns 'https://wovn.io/ja/'.
+    # If you want to know more examples, see also test/lib/lang_test.rb.
+    #
+    # @param  [String] href            original URL.
+    # @param  [String] pattern         url_pattern of the settings. ('path', 'subdomain' or 'query')
+    # @param  [Wovnrb::Header] headers instance of Wovn::Header. It generates new env variable for original request.
+    # @return [String]                 URL added langauge code.
     def add_lang_code(href, pattern, headers)
       return href if href =~ /^(#.*)?$/
       # absolute links
@@ -111,6 +119,7 @@ module Wovnrb
               new_href = '/' + @lang_code + href
             else
               current_dir = headers.pathname.sub(/[^\/]*\.[^\.]{2,6}$/, '')
+              current_dir = '/' if current_dir == ''
               new_href = '/' + @lang_code + current_dir + href
             end
         end
