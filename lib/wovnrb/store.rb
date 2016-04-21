@@ -14,6 +14,9 @@ module Wovnrb
       reset
     end
 
+    # Reset @settings and @config_loaded variables to default.
+    #
+    # @return [nil]
     def reset
       @settings =
         {

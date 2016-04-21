@@ -10,6 +10,9 @@ module Wovnrb
     attr_reader :pathname
     attr_reader :redis_url
 
+    # Generates new instance of Wovnrb::Headers.
+    # Its parameters are set by parsing env variable.
+    #
     def initialize(env, settings)
       @env = env
       @settings = settings
@@ -68,6 +71,11 @@ module Wovnrb
       (self.path_lang && self.path_lang.length > 0) ? self.path_lang : @settings['default_lang']
     end
 
+    # picks up language code from requested URL by using url_pattern_reg setting.
+    # when language code is invalid, this method returns empty string.
+    # if you want examples, please see test/lib/headers_test.rb.
+    #
+    # @return [String] language code in requrested URL.
     def path_lang
       if @path_lang.nil?
         rp = Regexp.new(@settings['url_pattern_reg'])
