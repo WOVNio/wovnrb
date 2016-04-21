@@ -75,7 +75,7 @@ module Wovnrb
       wovn_data = [
         ['src', '//j.wovn.io/1'],
         ['async', 'true'],
-        ['data-wovnio', "key=#{user_token}&backend=true&currentLang=#{current_lang}&defaultLang=#{default_lang}&urlPattern=#{url_pattern}&version=0.2.01"]
+        ['data-wovnio', "key=#{user_token}&backend=true&currentLang=#{current_lang}&defaultLang=#{default_lang}&urlPattern=#{url_pattern}&version=#{Wovnrb::VERSION}"]
       ]
       wovn_data.each do |data|
         assert_equal(data[1], node.get_attribute(data[0]))
