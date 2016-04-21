@@ -13,6 +13,7 @@ require 'wovnrb/html_replacers/meta_replacer'
 require 'wovnrb/html_replacers/image_replacer'
 require 'wovnrb/html_replacers/script_replacer'
 require 'wovnrb/railtie' if defined?(Rails)
+require 'wovnrb/version'
 
 module Wovnrb
   class Interceptor
