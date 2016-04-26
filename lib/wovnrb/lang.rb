@@ -4,6 +4,7 @@ module Wovnrb
     LANG = {
       #http://msdn.microsoft.com/en-us/library/hh456380.aspx
       'ar' => {name: 'العربية',           code: 'ar',     en: 'Arabic'},
+      'bg' => {name: 'Български',         code: 'bg',     en: 'Bulgarian'},
       'zh-CHS' => {name: '简体中文',      code: 'zh-CHS', en: 'Simp Chinese'},
       'zh-CHT' => {name: '繁體中文',      code: 'zh-CHT', en: 'Trad Chinese'},
       'da' => {name: 'Dansk',             code: 'da',     en: 'Danish'},
