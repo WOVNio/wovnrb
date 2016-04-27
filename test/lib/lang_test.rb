@@ -8,6 +8,10 @@ module Wovnrb
       refute_nil(Wovnrb::Lang::LANG)
     end
 
+    def test_langs_length
+      assert_equal(28, Wovnrb::Lang::LANG.length)
+    end
+
     def test_keys_exist
       Wovnrb::Lang::LANG.each do |k, l|
         assert(l.has_key?(:name))
