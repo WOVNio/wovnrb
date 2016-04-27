@@ -26,6 +26,24 @@ module Wovnrb
 
       assert_equal(false, actual)
     end
+
+    def test_replace_text
+      replacer = ReplacerBase.new
+      actual = replacer.send(:replace_text, 'Hello', 'こんにちは')
+      assert_equal('こんにちは', actual)
+    end
+
+    def test_replace_text_with_space
+      replacer = ReplacerBase.new
+      actual = replacer.send(:replace_text, '    Hello    ', 'こんにちは')
+      assert_equal('    こんにちは    ', actual)
+    end
+
+    def test_replace_text_with_line_break
+      replacer = ReplacerBase.new
+      actual = replacer.send(:replace_text, "    Hello  \n   Hello    ", 'こんにちは')
+      assert_equal('    こんにちは    ', actual)
+    end
   end
 end
 
