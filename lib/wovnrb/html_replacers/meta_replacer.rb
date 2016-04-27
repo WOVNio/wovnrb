@@ -12,7 +12,7 @@ module Wovnrb
         node_content = node.get_attribute('content').strip
         # shouldn't need size check, but for now...
         if @text_index[node_content] && @text_index[node_content][lang.lang_code] && @text_index[node_content][lang.lang_code].size > 0
-          node.set_attribute('content', node.get_attribute('content').gsub(/^(\s*)[\S\s]*?(\s*)$/, '\1' + @text_index[node_content][lang.lang_code][0]['data'] + '\2'))
+          node.set_attribute('content', replace_text(node.get_attribute('content'), @text_index[node_content][lang.lang_code][0]['data']))
         end
       end
     end

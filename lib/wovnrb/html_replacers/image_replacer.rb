@@ -35,7 +35,7 @@ module Wovnrb
         if node.get_attribute('alt')
           alt = node.get_attribute('alt').strip
           if @text_index[alt] && @text_index[alt][lang.lang_code] && @text_index[alt][lang.lang_code].size > 0
-            node.attribute('alt').value = alt.gsub(/^(\s*)[\S\s]*(\s*)$/, '\1' + @text_index[alt][lang.lang_code][0]['data'] + '\2')
+            node.attribute('alt').value = replace_text(alt, @text_index[alt][lang.lang_code][0]['data'])
           end
         end
       end

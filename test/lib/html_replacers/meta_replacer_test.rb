@@ -78,18 +78,6 @@ module Wovnrb
       assert_equal('さようなら', content2)
     end
 
-    def test_replace_with_space
-      replacer = MetaReplacer.new({
-        'Hello' => {'ja' => [{'data' => 'こんにちは'}]},
-      })
-
-      dom = Wovnrb.get_dom('<meta property="title" content="   Hello    ">')
-      replacer.replace(dom, Lang.new('ja'))
-
-      content = dom.xpath('//meta')[0].get_attribute('content')
-      assert_equal('   こんにちは    ', content)
-    end
-
     def test_replace_wovn_ignore
       replacer = MetaReplacer.new({
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]},
