@@ -13,5 +13,9 @@ module Wovnrb
       end
       wovn_ignore?(node.parent)
     end
+
+    def replace_text(from, to)
+      from.gsub(/\A(\s*)[\S\s]*?(\s*)\Z/, '\1' + to + '\2')
+    end
   end
 end
