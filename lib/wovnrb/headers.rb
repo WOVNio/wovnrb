@@ -55,6 +55,8 @@ module Wovnrb
         end
         if query_vals.length > 0
           @query = "?#{query_vals.sort.join('&')}"
+        else
+          @query = ''
         end
       else
         @query = ''
