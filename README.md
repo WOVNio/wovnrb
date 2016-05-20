@@ -100,15 +100,15 @@ parameters  | Translated page's URL           | Notes
 
 ### 2.4. query
 
-Using the query parameter, you can setup query parameters you wish to be ignored within the URL when translating via WOVN.io. There is no default value, in this case, all query parameters are included within the translated page's URL.
+WOVN.io ignores query parameters when searching translated page. If you want to add query parameter to translated page's URL, you should configure "query" parameter. (You need to configure WOVN.io too)
 
 	https://wovn.io/ja/contact?os=mac&keyboard=us
 
-If the defualt_lang is 'en', and the query is set to 'os=mac&keyboard=us', the above URL will be modified into the following URL to search for the page's translation.
+If the defualt_lang is 'en', and the query is set to '', the above URL will be modified into the following URL to search for the page's translation.
 
-	https://wovn.io/contact?os=mac&keyboard=us
+	https://wovn.io/contact
 
-If the default_lang is 'en', and the query is set to 'os=mac', the above URL will be modified into the following URL to search for the page's translation.
+If the default_lang is 'en', and the query is set to 'os', the above URL will be modified into the following URL to search for the page's translation.
 
 	https://wovn.io/contact?os=mac
 
