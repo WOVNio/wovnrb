@@ -38,8 +38,8 @@ Insert the following into either config/application.rb or config/environments/.
 ...
 
 config.wovnrb = {
-:user_token => '2Wle3',
-:secret_key => 'secret',
+  :user_token => '2Wle3',
+  :secret_key => 'secret',
 }
 
 ...
@@ -55,8 +55,8 @@ Insert the following into either the Application File or config.ru.
 require 'wovnrb'
 
 use Wovnrb::Interceptor, {
-:user_token => '2Wle3',
-:secret_key => 'secret',
+  :user_token => '2Wle3',
+  :secret_key => 'secret',
 }
 
 ...
