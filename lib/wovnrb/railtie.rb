@@ -1,4 +1,4 @@
-module Wovnrb
+class Wovnrb
 
   class Railtie < Rails::Railtie
     initializer 'wovnrb.configure_rails_initialization' do |app|

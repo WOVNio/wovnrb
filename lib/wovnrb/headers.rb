@@ -1,4 +1,4 @@
-module Wovnrb
+class Wovnrb
 
   class Headers
     attr_reader :unmasked_url

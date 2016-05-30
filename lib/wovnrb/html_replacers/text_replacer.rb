@@ -1,4 +1,4 @@
-module Wovnrb
+class Wovnrb
   class TextReplacer < ReplacerBase
     def initialize(text_index)
       @text_index = text_index

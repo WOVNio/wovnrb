@@ -15,14 +15,55 @@ require 'wovnrb/html_replacers/script_replacer'
 require 'wovnrb/railtie' if defined?(Rails)
 require 'wovnrb/version'
 
-module Wovnrb
+class Wovnrb
+  def initialize(opts={})
+    @interceptor = Interceptor.instance || Interceptor.new(nil, opts)
+  end
+
+  def get_text(srcs, domain, target_lang)
+    api_url = @interceptor.store.settings['api_url']
+    parsed_api_url = URI.parse(api_url)
+    parsed_api_url.path = ''
+
+    uri = URI.join(parsed_api_url.to_s, '/v0/domain/values').to_s  \
+        + "?srcs=#{CGI::escape(srcs.to_json)}" \
+        + "&domain=#{CGI::escape(domain)}" \
+        + "&target_lang=#{CGI::escape(target_lang)}" \
+        + "&token=#{CGI::escape(@interceptor.store.settings['user_token'])}"
+    parsed_uri = URI.parse(uri)
+
+    http = Net::HTTP.new(parsed_uri.host, parsed_uri.port)
+    http.use_ssl = true if parsed_uri.scheme == 'https'
+    http.open_timeout = @interceptor.store.settings['api_timeout_seconds']
+    http.read_timeout= @interceptor.store.settings['api_timeout_seconds']
+    response = http.start {
+         http.get(parsed_uri.request_uri)
+    }
+
+    if response.code != '200'
+      return nil
+    end
+
+    body = response.body
+    data = JSON.parse(body)
+    data["results"]
+  end
+
   class Interceptor
+    attr_reader :store
+    @@instance = nil
+
     def initialize(app, opts={})
       @app = app
       @store = Store.instance
       opts = opts.each_with_object({}){|(k,v),memo| memo[k.to_s]=v}
       @store.settings(opts)
       CacheBase.set_single(@store.settings)
+      @@instance = self
+    end
+
+    def self.instance
+      @@instance
     end
 
     def call(env)
@@ -89,6 +130,5 @@ module Wovnrb
       new_body
     end
   end
-
 end
 

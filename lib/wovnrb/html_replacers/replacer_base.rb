@@ -1,4 +1,4 @@
-module Wovnrb
+class Wovnrb
   class ReplacerBase
     def replace(dom, lang)
       raise NotImplementedError.new('replace is not defined')

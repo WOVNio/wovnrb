@@ -1,4 +1,4 @@
-module Wovnrb
+class Wovnrb
   class ApiData
     def initialize(access_url, store)
       @access_url = access_url.gsub(/\/$/, '')

@@ -1,4 +1,4 @@
-module Wovnrb
+class Wovnrb
   class LinkReplacer < ReplacerBase
     def initialize(pattern, headers)
       @pattern = pattern

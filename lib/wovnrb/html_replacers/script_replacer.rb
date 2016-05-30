@@ -1,4 +1,4 @@
-module Wovnrb
+class Wovnrb
   class ScriptReplacer < ReplacerBase
     def initialize(store)
       @store = store

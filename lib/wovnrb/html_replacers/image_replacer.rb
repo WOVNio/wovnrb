@@ -1,4 +1,4 @@
-module Wovnrb
+class Wovnrb
   class ImageReplacer < ReplacerBase
     def initialize(url, text_index, src_index, img_src_prefix)
       @url = url

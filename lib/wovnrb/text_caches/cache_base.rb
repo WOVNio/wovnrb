@@ -1,6 +1,6 @@
 require 'active_support/inflector'
 
-module Wovnrb
+class Wovnrb
   class CacheBase
     @@strategy_map = {
         memory: :memory_cache

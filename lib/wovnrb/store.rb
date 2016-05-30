@@ -4,7 +4,7 @@ require 'cgi'
 require 'singleton'
 require 'wovnrb/services/wovn_logger'
 
-module Wovnrb
+class Wovnrb
   class Store
     include Singleton
 
