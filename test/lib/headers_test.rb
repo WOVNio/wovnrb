@@ -82,7 +82,25 @@ class HeadersTest < Minitest::Test
    assert_equal('wovn.io', h.unmasked_host)
    assert_equal('localhost', env['HTTP_HOST'])
    assert_equal('localhost', env['SERVER_NAME'])
- end
+  end
+
+  def test_initialize_without_query
+    env = Wovnrb.get_env
+    h = Wovnrb::Headers.new(env, Wovnrb.get_settings)
+    assert_equal('wovn.io/dashboard', h.redis_url)
+  end
+
+  def test_initialize_with_query
+    env = Wovnrb.get_env
+    h = Wovnrb::Headers.new(env, Wovnrb.get_settings('query' => ['param']))
+    assert_equal('wovn.io/dashboard?param=val', h.redis_url)
+  end
+
+  def test_initialize_with_not_matching_query
+    env = Wovnrb.get_env
+    h = Wovnrb::Headers.new(env, Wovnrb.get_settings('query' => ['aaa']))
+    assert_equal('wovn.io/dashboard', h.redis_url)
+  end
 
   #########################
   # REQUEST_OUT
