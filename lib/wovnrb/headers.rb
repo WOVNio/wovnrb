@@ -172,6 +172,9 @@ module Wovnrb
         if @env.has_key?('ORIGINAL_FULLPATH')
           @env['ORIGINAL_FULLPATH'] = remove_lang(@env['ORIGINAL_FULLPATH'])
         end
+        if @env.has_key?('HTTP_REFERER')
+          @env["HTTP_REFERER"] = remove_lang(@env["HTTP_REFERER"])
+        end
       end
       @env
     end
