@@ -21,32 +21,63 @@ class Wovnrb
   end
 
   def get_text(srcs, domain, target_lang)
-    api_url = @interceptor.store.settings['api_url']
-    parsed_api_url = URI.parse(api_url)
-    parsed_api_url.path = ''
 
-    uri = URI.join(parsed_api_url.to_s, '/v0/domain/values').to_s  \
-        + "?srcs=#{CGI::escape(srcs.to_json)}" \
-        + "&domain=#{CGI::escape(domain)}" \
-        + "&target_lang=#{CGI::escape(target_lang)}" \
-        + "&token=#{CGI::escape(@interceptor.store.settings['user_token'])}"
-    parsed_uri = URI.parse(uri)
+    # Check paramters.
+    if srcs.nil? || srcs.empty? || srcs.instance_of?(Array) == false
+        domain.nil? || domain.empty?
+        target_lang.nil? || target_lang.empty?
+      return nil
+    end
 
+    # Generate request URI.
+    begin
+      api_url = @interceptor.store.settings['api_url']
+      parsed_api_url = URI.parse(api_url)
+      parsed_api_url.path = ''
+
+      uri = URI.join(parsed_api_url.to_s, '/v0/domain/values').to_s  \
+          + "?srcs=#{CGI::escape(srcs.to_json)}" \
+          + "&domain=#{CGI::escape(domain)}" \
+          + "&target_lang=#{CGI::escape(target_lang)}" \
+          + "&token=#{CGI::escape(@interceptor.store.settings['user_token'])}"
+      parsed_uri = URI.parse(uri)
+    rescue => e
+      return nil
+    end
+
+    # Send request to API server.
     http = Net::HTTP.new(parsed_uri.host, parsed_uri.port)
     http.use_ssl = true if parsed_uri.scheme == 'https'
     http.open_timeout = @interceptor.store.settings['api_timeout_seconds']
-    http.read_timeout= @interceptor.store.settings['api_timeout_seconds']
-    response = http.start {
-         http.get(parsed_uri.request_uri)
-    }
+    http.read_timeout = @interceptor.store.settings['api_timeout_seconds']
+    begin
+      response = http.start {
+        http.get(parsed_uri.request_uri)
+      }
+    rescue => e
+      return nil
+    end
 
     if response.code != '200'
       return nil
     end
 
     body = response.body
-    data = JSON.parse(body)
-    data["results"]
+    if body.nil? || body.empty?
+      return nil
+    end
+
+    begin
+      data = JSON.parse(body)
+    rescue => e
+      return nil
+    end
+
+    if data.nil? || data.has_key?('results') == false
+      return nil
+    end
+
+    return data['results']
   end
 
   class Interceptor
