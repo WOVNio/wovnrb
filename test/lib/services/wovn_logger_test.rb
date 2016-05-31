@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'singleton'
 
-module Wovnrb
+class Wovnrb
   class StoreTest < WovnMiniTest
     def setup
       Singleton.__init__(WovnLogger)

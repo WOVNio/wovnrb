@@ -11,7 +11,7 @@ require 'wovnrb/html_replacers/script_replacer'
 require 'minitest/autorun'
 
 
-module Wovnrb
+class Wovnrb
   class WovnMiniTest < Minitest::Test
     def before_setup
       super
@@ -38,7 +38,7 @@ module Wovnrb
     end
   end
 
-  def get_settings(options={})
+  def self.get_settings(options={})
     settings = {}
     settings['user_token'] = 'OHYx9'
     settings['url_pattern'] = 'path'
@@ -51,7 +51,7 @@ module Wovnrb
     return settings.merge(options)
   end
 
-  def get_env(options={})
+  def self.get_env(options={})
     env = {}
     env['rack.url_scheme'] = 'http'
     env['HTTP_HOST'] = 'wovn.io'
@@ -82,15 +82,13 @@ module Wovnrb
     return env.merge(options)
   end
 
-  def to_dom(html)
+  def self.to_dom(html)
     dom = Nokogiri::HTML5(html)
     dom.encoding = "UTF-8"
     dom
   end
 
-  def get_dom(innerHTML)
+  def self.get_dom(innerHTML)
     to_dom("<html><body>#{innerHTML}</body></html>")
   end
-
-  module_function :get_env, :get_settings, :to_dom, :get_dom
 end

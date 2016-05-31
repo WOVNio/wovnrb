@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'webmock/minitest'
 
-module Wovnrb
+class Wovnrb
   class ScriptReplacerTest < WovnMiniTest
     def test_replace
       store = Store.instance

@@ -4,7 +4,7 @@ require 'wovnrb/api_data'
 require 'test_helper'
 require 'webmock/minitest'
 
-module Wovnrb
+class Wovnrb
   class MemoryCacheTest < WovnMiniTest
     def setup
       Wovnrb::CacheBase.set_single({})
