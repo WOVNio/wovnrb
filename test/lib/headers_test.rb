@@ -106,6 +106,31 @@ class HeadersTest < Minitest::Test
    assert_equal('wovn.io', env['HTTP_X_FORWARDED_HOST'])
   end
 
+  def test_request_out_http_referer_subdomain
+    h = Wovnrb::Headers.new(
+      Wovnrb.get_env(
+        'SERVER_NAME' => 'ja.wovn.io',
+        'REQUEST_URI' => '/test',
+        'HTTP_REFERER' => 'http://ja.wovn.io/test',
+      ),
+      Wovnrb.get_settings(
+        'url_pattern' => 'subdomain',
+        'url_pattern_reg' => '^(?<lang>[^.]+).',
+      ),
+    )
+    env = h.request_out('ja')
+    assert_equal('http://wovn.io/test', env['HTTP_REFERER'])
+  end
+
+  def test_request_out_http_referer_path
+    h = Wovnrb::Headers.new(
+      Wovnrb.get_env('REQUEST_URI' => '/ja/test', 'HTTP_REFERER' => 'http://wovn.io/ja/test'),
+      Wovnrb.get_settings,
+    )
+    env = h.request_out('ja')
+    assert_equal('http://wovn.io/test', env['HTTP_REFERER'])
+  end
+
   #########################
   # GET SETTINGS
   #########################
