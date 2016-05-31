@@ -82,7 +82,25 @@ class HeadersTest < Minitest::Test
    assert_equal('wovn.io', h.unmasked_host)
    assert_equal('localhost', env['HTTP_HOST'])
    assert_equal('localhost', env['SERVER_NAME'])
- end
+  end
+
+  def test_initialize_without_query
+    env = Wovnrb.get_env
+    h = Wovnrb::Headers.new(env, Wovnrb.get_settings)
+    assert_equal('wovn.io/dashboard', h.redis_url)
+  end
+
+  def test_initialize_with_query
+    env = Wovnrb.get_env
+    h = Wovnrb::Headers.new(env, Wovnrb.get_settings('query' => ['param']))
+    assert_equal('wovn.io/dashboard?param=val', h.redis_url)
+  end
+
+  def test_initialize_with_not_matching_query
+    env = Wovnrb.get_env
+    h = Wovnrb::Headers.new(env, Wovnrb.get_settings('query' => ['aaa']))
+    assert_equal('wovn.io/dashboard', h.redis_url)
+  end
 
   #########################
   # REQUEST_OUT
@@ -104,6 +122,31 @@ class HeadersTest < Minitest::Test
    )
    env = h.request_out('ja')
    assert_equal('wovn.io', env['HTTP_X_FORWARDED_HOST'])
+  end
+
+  def test_request_out_http_referer_subdomain
+    h = Wovnrb::Headers.new(
+      Wovnrb.get_env(
+        'SERVER_NAME' => 'ja.wovn.io',
+        'REQUEST_URI' => '/test',
+        'HTTP_REFERER' => 'http://ja.wovn.io/test',
+      ),
+      Wovnrb.get_settings(
+        'url_pattern' => 'subdomain',
+        'url_pattern_reg' => '^(?<lang>[^.]+).',
+      ),
+    )
+    env = h.request_out('ja')
+    assert_equal('http://wovn.io/test', env['HTTP_REFERER'])
+  end
+
+  def test_request_out_http_referer_path
+    h = Wovnrb::Headers.new(
+      Wovnrb.get_env('REQUEST_URI' => '/ja/test', 'HTTP_REFERER' => 'http://wovn.io/ja/test'),
+      Wovnrb.get_settings,
+    )
+    env = h.request_out('ja')
+    assert_equal('http://wovn.io/test', env['HTTP_REFERER'])
   end
 
   #########################

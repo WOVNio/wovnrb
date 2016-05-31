@@ -1,3 +1,3 @@
-class Wovnrb
-  VERSION = "0.2.03"
+module Wovnrb
+  VERSION = "0.2.04"
 end
