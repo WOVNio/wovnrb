@@ -26,7 +26,7 @@ class Wovnrb
           'url_pattern' => 'path',
           'url_pattern_reg' => "/(?<lang>[^/.?]+)",
           'query' => [],
-          'api_url' => 'https://api.wovn.io/v0/values',
+          'api_url' => 'https://api.wovn.io/v0',
           'api_timeout_seconds' => 0.5,
           'default_lang' => 'en',
           'supported_langs' => ['en'],

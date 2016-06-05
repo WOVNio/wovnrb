@@ -58,5 +58,37 @@ class Wovnrb
       assert_equal({}, api_data.get_data)
       assert(log_mock.errors[0].start_with?('API server GET request failed'))
     end
+
+    def test_build_api_uri
+      token = 'a'
+      url = 'url'
+      store = Wovnrb::Store.instance
+      store.settings['user_token'] = token
+      api_data = Wovnrb::ApiData.new(url, store)
+      api_uri = api_data.send(:build_api_uri)
+      assert_equal('https://api.wovn.io/v0/values?token=a&url=url', api_uri.to_s)
+    end
+
+    def test_build_api_uri_with_old_api_url
+      token = 'a'
+      url = 'url'
+      store = Wovnrb::Store.instance
+      store.settings['user_token'] = token
+      store.settings['api_url'] = 'https://api.wovn.io/v0/values'
+      api_data = Wovnrb::ApiData.new(url, store)
+      api_uri = api_data.send(:build_api_uri)
+      assert_equal('https://api.wovn.io/v0/values?token=a&url=url', api_uri.to_s)
+    end
+
+    def test_build_api_uri_with_non_default_api_url
+      token = 'a'
+      url = 'url'
+      store = Wovnrb::Store.instance
+      store.settings['user_token'] = token
+      store.settings['api_url'] = 'http://api0.wovn.io/v1'
+      api_data = Wovnrb::ApiData.new(url, store)
+      api_uri = api_data.send(:build_api_uri)
+      assert_equal('http://api0.wovn.io/v1/values?token=a&url=url', api_uri.to_s)
+    end
   end
 end

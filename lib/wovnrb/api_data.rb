@@ -34,10 +34,20 @@ class Wovnrb
       "#{@@cache_prefix}#{url}"
     end
 
+    # Generate api_url object for backend API.
+    #
+    # @return [URI::HTTP or URI::HTTPS] api_url object for backend API.
     def build_api_uri
+      api_url = URI.parse(@store.settings['api_url'])
+      if md = api_url.path.match(/^\/v\d+/)
+        api_url.path = md[0] + '/values'  # use API version in api_url setting.
+      else
+        api_url.path = '/v0/values'
+      end
       t = CGI::escape(@store.settings['user_token'])
       u = CGI::escape(@access_url)
-      URI.parse("#{@store.settings['api_url']}?token=#{t}&url=#{u}")
+      api_url.query = "token=#{t}&url=#{u}"
+      api_url
     end
 
     def get_from_api_server(uri)
