@@ -20,11 +20,11 @@ class Wovnrb
     @interceptor = Interceptor.instance || Interceptor.new(nil, opts)
   end
 
-  def get_text(srcs, domain, target_lang)
+  def get_text(srcs, host, target_lang)
 
     # Check paramters.
     if srcs.nil? || srcs.empty? || srcs.instance_of?(Array) == false
-        domain.nil? || domain.empty?
+        host.nil? || host.empty?
         target_lang.nil? || target_lang.empty?
       return nil
     end
@@ -35,9 +35,9 @@ class Wovnrb
       parsed_api_url = URI.parse(api_url)
       parsed_api_url.path = ''
 
-      uri = URI.join(parsed_api_url.to_s, '/v0/domain/values').to_s  \
+      uri = URI.join(parsed_api_url.to_s, '/v0/project/values').to_s  \
           + "?srcs=#{CGI::escape(srcs.to_json)}" \
-          + "&domain=#{CGI::escape(domain)}" \
+          + "&host=#{CGI::escape(host)}" \
           + "&target_lang=#{CGI::escape(target_lang)}" \
           + "&token=#{CGI::escape(@interceptor.store.settings['user_token'])}"
       parsed_uri = URI.parse(uri)
