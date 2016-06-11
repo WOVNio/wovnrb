@@ -11,6 +11,22 @@ class Wovnrb
       JSON.parse(data)
     end
 
+    def get_from_api_server(uri)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true if uri.scheme == 'https'
+      http.open_timeout = @store.settings['api_timeout_seconds']
+      http.read_timeout= @store.settings['api_timeout_seconds']
+      response = http.start {
+        http.get(uri.request_uri)
+      }
+
+      if response.code == '200'
+        response.body
+      else
+        raise "Response Code is not success: #{response.code}"
+      end
+    end
+
     private
     def get_data_value(cache_key)
       cache_value = CacheBase.get_single.get(cache_key)
@@ -48,22 +64,6 @@ class Wovnrb
       u = CGI::escape(@access_url)
       api_url.query = "token=#{t}&url=#{u}"
       api_url
-    end
-
-    def get_from_api_server(uri)
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true if uri.scheme == 'https'
-      http.open_timeout = @store.settings['api_timeout_seconds']
-      http.read_timeout= @store.settings['api_timeout_seconds']
-      response = http.start {
-        http.get(uri.request_uri)
-      }
-
-      if response.code == '200'
-        response.body
-      else
-        raise "Response Code is not success: #{response.code}"
-      end
     end
   end
 end

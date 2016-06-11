@@ -46,23 +46,13 @@ class Wovnrb
     end
 
     # Send request to API server.
-    http = Net::HTTP.new(parsed_uri.host, parsed_uri.port)
-    http.use_ssl = true if parsed_uri.scheme == 'https'
-    http.open_timeout = @interceptor.store.settings['api_timeout_seconds']
-    http.read_timeout = @interceptor.store.settings['api_timeout_seconds']
     begin
-      response = http.start {
-        http.get(parsed_uri.request_uri)
-      }
+      body = ApiData.get_from_api_server(parsed_uri)
     rescue => e
+      WovnLogger.instance.error("API server GET request failed :\nurl: #{parsed_uri}\n#{e.message}")
       return nil
     end
 
-    if response.code != '200'
-      return nil
-    end
-
-    body = response.body
     if body.nil? || body.empty?
       return nil
     end
