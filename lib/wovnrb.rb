@@ -29,37 +29,12 @@ class Wovnrb
       return nil
     end
 
-    # Generate request URI.
-    begin
-      api_url = @interceptor.store.settings['api_url']
-      parsed_api_url = URI.parse(api_url)
-      parsed_api_url.path = ''
-
-      uri = URI.join(parsed_api_url.to_s, '/v0/project/values').to_s  \
-          + "?srcs=#{CGI::escape(srcs.to_json)}" \
-          + "&host=#{CGI::escape(host)}" \
-          + "&target_lang=#{CGI::escape(target_lang)}" \
-          + "&token=#{CGI::escape(@interceptor.store.settings['user_token'])}"
-      parsed_uri = URI.parse(uri)
-    rescue => e
-      return nil
-    end
-
     # Send request to API server.
+    api_data = ApiData.new(@interceptor.store)
     begin
-      body = ApiData.get_from_api_server(parsed_uri)
+      data = api_data.get_project_values(srcs, host, target_lang)
     rescue => e
-      WovnLogger.instance.error("API server GET request failed :\nurl: #{parsed_uri}\n#{e.message}")
-      return nil
-    end
-
-    if body.nil? || body.empty?
-      return nil
-    end
-
-    begin
-      data = JSON.parse(body)
-    rescue => e
+      WovnLogger.instance.error("API server GET request failed :\n#{e.message}")
       return nil
     end
 
@@ -109,8 +84,8 @@ class Wovnrb
       if res_headers["Content-Type"] =~ /html/ # && !body[0].nil?
         # ApiData creates request for external server, but cannot use async.
         # Because some server not allow multi thread. (env['async.callback'] is not supported at all Server).
-        api_data = ApiData.new(headers.redis_url, @store)
-        values = api_data.get_data
+        api_data = ApiData.new(@store)
+        values = api_data.get_page_values(headers.redis_url)
         url = {
             :protocol => headers.protocol,
             :host => headers.host,
