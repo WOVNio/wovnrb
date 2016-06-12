@@ -1,3 +1,15 @@
+require 'simplecov'
+
+# save to CircleCI's artifacts directory if we're on CircleCI
+if ENV['CIRCLE_ARTIFACTS']
+  dir = File.join(ENV['CIRCLE_ARTIFACTS'], "coverage")
+  SimpleCov.coverage_dir(dir)
+end
+
+SimpleCov.start do
+  add_filter '/test/'
+end
+
 require 'nokogumbo'
 require 'wovnrb/headers'
 require 'wovnrb/lang'
@@ -9,7 +21,6 @@ require 'wovnrb/html_replacers/meta_replacer'
 require 'wovnrb/html_replacers/image_replacer'
 require 'wovnrb/html_replacers/script_replacer'
 require 'minitest/autorun'
-
 
 class Wovnrb
   class WovnMiniTest < Minitest::Test
