@@ -8,6 +8,7 @@ end
 
 SimpleCov.start do
   add_filter '/test/'
+  track_files 'lib/**/*.rb'
 end
 
 require 'nokogumbo'
