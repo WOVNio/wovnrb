@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+require 'cgi'
+require 'json'
 require 'wovnrb'
 require 'wovnrb/headers'
 require 'minitest/autorun'
@@ -15,6 +17,18 @@ class WovnrbTest < Minitest::Test
     refute_nil(i)
   end
 
+  def test_get_text
+    token = 'a'
+    srcs = ['Message']
+    host = 'wovn.io'
+    target_lang = 'ja'
+    stub_request(:get, "https://api.wovn.io/v0/project/values?srcs=#{CGI::escape(srcs.to_json)}&host=#{CGI::escape(host)}&target_lang=#{target_lang}&token=#{token}").
+      to_return(:body => '{"results": [{"dst": "メッセージ", "src": "Message"}]}')
+    wovnrb = Wovnrb.new
+    wovnrb.instance_variable_get(:@interceptor).store.settings['user_token'] = token
+    results = wovnrb.get_text(srcs, host, target_lang)
+    assert_equal([{'dst' => 'メッセージ', 'src' => 'Message'}], results)
+  end
 
   # def test_call(env)
   # end
