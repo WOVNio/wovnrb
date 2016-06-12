@@ -8,6 +8,8 @@ end
 
 SimpleCov.start do
   add_filter '/test/'
+  add_filter '/lib/wovnrb/railtie.rb'
+  add_filter '/lib/wovnrb/version.rb'
   track_files 'lib/**/*.rb'
 end
 
