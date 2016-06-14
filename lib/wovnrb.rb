@@ -21,6 +21,12 @@ class Wovnrb
     @interceptor = Interceptor.instance || Interceptor.new(nil, opts)
   end
 
+  # Search texts.
+  #
+  # @param srcs [Array] search srcs
+  # @param host [String] search host
+  # @param target_lang [String] target lang
+  # @return [Array] dsts
   def get_text(srcs, host, target_lang)
 
     # Check paramters.
