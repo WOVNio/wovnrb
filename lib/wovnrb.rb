@@ -14,6 +14,7 @@ require 'wovnrb/html_replacers/image_replacer'
 require 'wovnrb/html_replacers/script_replacer'
 require 'wovnrb/railtie' if defined?(Rails)
 require 'wovnrb/version'
+require 'active_support/core_ext/object/blank'
 
 class Wovnrb
   def initialize(opts={})
@@ -23,22 +24,15 @@ class Wovnrb
   def get_text(srcs, host, target_lang)
 
     # Check paramters.
-    if srcs.nil? || srcs.empty? || srcs.instance_of?(Array) == false
-        host.nil? || host.empty?
-        target_lang.nil? || target_lang.empty?
-      return nil
+    if srcs.blank? || srcs.instance_of?(Array) == false || host.blank? || target_lang.blank?
+      raise ArgumentError, 'Invalid arguments'
     end
 
     # Send request to API server.
     api_data = ApiData.new(@interceptor.store)
-    begin
-      data = api_data.get_project_values(srcs, host, target_lang)
-    rescue => e
-      WovnLogger.instance.error("API server GET request failed :\n#{e.message}")
-      return nil
-    end
+    data = api_data.get_project_values(srcs, host, target_lang)
 
-    if data.nil? || data.has_key?('results') == false
+    if data.blank? || data.has_key?('results') == false
       return nil
     end
 
