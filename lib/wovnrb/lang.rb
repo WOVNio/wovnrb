@@ -1,5 +1,5 @@
 # -*- encoding: UTF-8 -*-
-module Wovnrb
+class Wovnrb
   class Lang
     LANG = {
       #http://msdn.microsoft.com/en-us/library/hh456380.aspx

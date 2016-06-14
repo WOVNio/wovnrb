@@ -1,7 +1,7 @@
 require 'minitest/autorun'
 require 'test_helper'
 
-module Wovnrb
+class Wovnrb
   class StoreTest < WovnMiniTest
     def test_initialize
       s = Wovnrb::Store.instance

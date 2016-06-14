@@ -2,7 +2,7 @@ require 'wovnrb/text_caches/cache_base'
 require 'minitest/autorun'
 
 class CacheBaseTest < Minitest::Test
-  def teardown
+  def setup
     Wovnrb::CacheBase.reset_cache
   end
 

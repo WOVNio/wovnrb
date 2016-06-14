@@ -14,15 +14,52 @@ require 'wovnrb/html_replacers/image_replacer'
 require 'wovnrb/html_replacers/script_replacer'
 require 'wovnrb/railtie' if defined?(Rails)
 require 'wovnrb/version'
+require 'active_support/core_ext/object/blank'
 
-module Wovnrb
+class Wovnrb
+  def initialize(opts={})
+    @interceptor = Interceptor.instance || Interceptor.new(nil, opts)
+  end
+
+  # Search texts.
+  #
+  # @param srcs [Array] search srcs
+  # @param host [String] search host
+  # @param target_lang [String] target lang
+  # @return [Array] dsts
+  def get_text(srcs, host, target_lang)
+
+    # Check paramters.
+    if srcs.blank? || srcs.instance_of?(Array) == false || host.blank? || target_lang.blank?
+      raise ArgumentError, 'Invalid arguments'
+    end
+
+    # Send request to API server.
+    api_data = ApiData.new(@interceptor.store)
+    data = api_data.get_project_values(srcs, host, target_lang)
+
+    if data.blank? || data.has_key?('results') == false
+      return nil
+    end
+
+    return data['results']
+  end
+
   class Interceptor
+    attr_reader :store
+    @@instance = nil
+
     def initialize(app, opts={})
       @app = app
       @store = Store.instance
       opts = opts.each_with_object({}){|(k,v),memo| memo[k.to_s]=v}
       @store.settings(opts)
       CacheBase.set_single(@store.settings)
+      @@instance = self
+    end
+
+    def self.instance
+      @@instance
     end
 
     def call(env)
@@ -47,8 +84,8 @@ module Wovnrb
       if res_headers["Content-Type"] =~ /html/ # && !body[0].nil?
         # ApiData creates request for external server, but cannot use async.
         # Because some server not allow multi thread. (env['async.callback'] is not supported at all Server).
-        api_data = ApiData.new(headers.redis_url, @store)
-        values = api_data.get_data
+        api_data = ApiData.new(@store)
+        values = api_data.get_page_values(headers.redis_url)
         url = {
             :protocol => headers.protocol,
             :host => headers.host,
@@ -89,6 +126,5 @@ module Wovnrb
       new_body
     end
   end
-
 end
 

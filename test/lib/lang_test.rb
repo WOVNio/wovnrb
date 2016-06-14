@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'minitest/autorun'
 
-module Wovnrb
+class Wovnrb
   class LangTest < WovnMiniTest
 
     def test_langs_exist

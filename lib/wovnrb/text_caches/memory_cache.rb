@@ -2,7 +2,7 @@ require 'active_support/cache'
 require 'active_support/cache/memory_store'
 require 'lz4-ruby'
 
-module Wovnrb
+class Wovnrb
   class MemoryCache < CacheBase
     @@default_memory_cache_config = {
       cache_megabytes: 200,

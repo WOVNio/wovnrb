@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'webmock/minitest'
 
-module Wovnrb
+class Wovnrb
   class ReplacerBaseTest < WovnMiniTest
     def test_wovn_ignore
       replacer = ReplacerBase.new

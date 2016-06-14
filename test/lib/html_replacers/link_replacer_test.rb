@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'webmock/minitest'
 
-module Wovnrb
+class Wovnrb
   class ReplacerBaseTest < WovnMiniTest
     def test_replace
       replacer = LinkReplacer.new('query', get_header)

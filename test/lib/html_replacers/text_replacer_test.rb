@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'webmock/minitest'
 
-module Wovnrb
+class Wovnrb
   class TextReplacerTest < WovnMiniTest
     def test_replace
       replacer = TextReplacer.new({

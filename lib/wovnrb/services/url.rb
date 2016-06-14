@@ -1,4 +1,4 @@
-module Wovnrb
+class Wovnrb
   class URL
     def self.resolve_absolute_url(curr_location, rel_location)
     end

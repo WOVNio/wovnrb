@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+require 'cgi'
+require 'json'
 require 'wovnrb'
 require 'wovnrb/headers'
 require 'minitest/autorun'
@@ -8,6 +10,12 @@ require 'pry'
 class WovnrbTest < Minitest::Test
   def setup
     Wovnrb::Store.instance.reset
+    Wovnrb::CacheBase.set_single({})
+  end
+
+  def teardown
+    Wovnrb::CacheBase.reset_cache
+    WebMock.reset!
   end
 
   def test_initialize
@@ -15,6 +23,66 @@ class WovnrbTest < Minitest::Test
     refute_nil(i)
   end
 
+  def test_get_text
+    token = 'a'
+    srcs = ['Message']
+    host = 'wovn.io'
+    target_lang = 'ja'
+    stub_request(:get, "https://api.wovn.io/v0/project/values?srcs=#{CGI::escape(srcs.to_json)}&host=#{CGI::escape(host)}&target_lang=#{target_lang}&token=#{token}").
+      to_return(:body => '{"results": [{"dst": "メッセージ", "src": "Message"}]}')
+    wovnrb = Wovnrb.new
+    wovnrb.instance_variable_get(:@interceptor).store.settings['user_token'] = token
+    results = wovnrb.get_text(srcs, host, target_lang)
+    assert_equal([{'dst' => 'メッセージ', 'src' => 'Message'}], results)
+  end
+
+  def test_get_text_invalid_arguments
+    token = 'a'
+    wovnrb = Wovnrb.new
+    wovnrb.instance_variable_get(:@interceptor).store.settings['user_token'] = token
+
+    srcs = nil
+    host = nil
+    target_lang = nil
+    assert_raises ArgumentError do
+      wovnrb.get_text(srcs, host, target_lang)
+    end
+
+    srcs = []
+    host = nil
+    target_lang = nil
+    assert_raises ArgumentError do
+      wovnrb.get_text(srcs, host, target_lang)
+    end
+
+    srcs = ['Message']
+    host = nil
+    target_lang = nil
+    assert_raises ArgumentError do
+      wovnrb.get_text(srcs, host, target_lang)
+    end
+
+    srcs = ['Message']
+    host = 'wovn.io'
+    target_lang = nil
+    assert_raises ArgumentError do
+      wovnrb.get_text(srcs, host, target_lang)
+    end
+  end
+
+  def test_get_text_empty_data
+    token = 'a'
+    srcs = ['Message']
+    host = 'wovn.io'
+    target_lang = 'ja'
+    stub_request(:get, "https://api.wovn.io/v0/project/values?srcs=#{CGI::escape(srcs.to_json)}&host=#{CGI::escape(host)}&target_lang=#{target_lang}&token=#{token}").
+      to_return(:status => [500, "Internal Server Error"])
+    wovnrb = Wovnrb.new
+    wovnrb.instance_variable_get(:@interceptor).store.settings['user_token'] = token
+    log_mock = Wovnrb::LogMock.mock_log
+    results = wovnrb.get_text(srcs, host, target_lang)
+    assert_equal(nil, results)
+  end
 
   # def test_call(env)
   # end

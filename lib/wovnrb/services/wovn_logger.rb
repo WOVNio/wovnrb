@@ -1,7 +1,7 @@
 require 'singleton'
 require 'logger' unless defined?(Logger)
 
-module Wovnrb
+class Wovnrb
   class WovnLogger
     include Singleton
 
