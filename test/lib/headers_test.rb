@@ -5911,4 +5911,14 @@ class HeadersTest < Minitest::Test
     h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io:1234/zh-cht'), Wovnrb.get_settings)
     assert_equal('zh-CHT', h.path_lang)
   end
+
+  def test_remove_lang_path
+    h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings)
+
+    uri_without_scheme = h.remove_lang('wovn.io/ja', 'ja')
+    assert_equal('wovn.io/', uri_without_scheme)
+
+    uri_with_scheme = h.remove_lang('https://wovn.io/ja/', 'ja')
+    assert_equal('https://wovn.io/', uri_with_scheme)
+  end
 end
