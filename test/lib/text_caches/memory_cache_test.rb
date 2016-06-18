@@ -1,3 +1,4 @@
+# -*- encoding: UTF-8 -*-
 require 'wovnrb/text_caches/cache_base'
 require 'wovnrb/text_caches/memory_cache'
 require 'minitest/autorun'
