@@ -1,5 +1,6 @@
 require 'test_helper'
 require 'wovnrb/headers'
+require 'wovnrb/lang'
 require 'minitest/autorun'
 require 'pry'
 
@@ -5915,10 +5916,36 @@ class HeadersTest < Minitest::Test
   def test_remove_lang_path
     h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings)
 
-    uri_without_scheme = h.remove_lang('wovn.io/ja', 'ja')
-    assert_equal('wovn.io/', uri_without_scheme)
+    Wovnrb::Lang::LANG.each_key do |key|
+      uri_without_scheme = h.remove_lang("wovn.io/#{key}", key)
+      assert_equal('wovn.io/', uri_without_scheme)
 
-    uri_with_scheme = h.remove_lang('https://wovn.io/ja/', 'ja')
-    assert_equal('https://wovn.io/', uri_with_scheme)
+      uri_with_scheme = h.remove_lang("https://wovn.io/#{key}/", key)
+      assert_equal('https://wovn.io/', uri_with_scheme)
+    end
+  end
+
+  def test_remove_lang_query
+    h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings('url_pattern' => 'query'))
+
+    Wovnrb::Lang::LANG.each_key do |key|
+      uri_without_scheme = h.remove_lang("wovn.io/?wovn=#{key}", key)
+      assert_equal('wovn.io/', uri_without_scheme)
+
+      uri_with_scheme = h.remove_lang("https://wovn.io?wovn=#{key}", key)
+      assert_equal('https://wovn.io', uri_with_scheme)
+    end
+  end
+
+  def test_remove_lang_subdomain
+    h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings('url_pattern' => 'subdomain'))
+
+    Wovnrb::Lang::LANG.each_key do |key|
+      uri_without_scheme = h.remove_lang("#{key.downcase}.wovn.io/", key)
+      assert_equal('wovn.io/', uri_without_scheme)
+
+      uri_with_scheme = h.remove_lang("https://#{key.downcase}.wovn.io", key)
+      assert_equal('https://wovn.io', uri_with_scheme)
+    end
   end
 end
