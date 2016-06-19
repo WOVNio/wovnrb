@@ -5916,7 +5916,10 @@ class HeadersTest < Minitest::Test
   def test_remove_lang_path
     h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings)
 
-    Wovnrb::Lang::LANG.each_key do |key|
+    keys = Wovnrb::Lang::LANG.keys
+    assert_equal(28, keys.size)
+
+    for key in keys
       uri_without_scheme = h.remove_lang("wovn.io/#{key}", key)
       assert_equal('wovn.io/', uri_without_scheme)
 
@@ -5928,7 +5931,10 @@ class HeadersTest < Minitest::Test
   def test_remove_lang_query
     h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings('url_pattern' => 'query'))
 
-    Wovnrb::Lang::LANG.each_key do |key|
+    keys = Wovnrb::Lang::LANG.keys
+    assert_equal(28, keys.size)
+
+    for key in keys
       uri_without_scheme = h.remove_lang("wovn.io/?wovn=#{key}", key)
       assert_equal('wovn.io/', uri_without_scheme)
 
@@ -5940,7 +5946,10 @@ class HeadersTest < Minitest::Test
   def test_remove_lang_subdomain
     h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings('url_pattern' => 'subdomain'))
 
-    Wovnrb::Lang::LANG.each_key do |key|
+    keys = Wovnrb::Lang::LANG.keys
+    assert_equal(28, keys.size)
+
+    for key in keys
       uri_without_scheme = h.remove_lang("#{key.downcase}.wovn.io/", key)
       assert_equal('wovn.io/', uri_without_scheme)
 
