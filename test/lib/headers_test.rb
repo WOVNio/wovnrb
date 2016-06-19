@@ -5928,6 +5928,26 @@ class HeadersTest < Minitest::Test
     end
   end
 
+  def test_remove_lang_path_with_nil_lang
+    h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings)
+
+    uri_without_scheme = h.remove_lang('wovn.io', nil)
+    assert_equal('wovn.io', uri_without_scheme)
+
+    uri_with_scheme = h.remove_lang('https://wovn.io/', nil)
+    assert_equal('https://wovn.io/', uri_with_scheme)
+  end
+
+  def test_remove_lang_path_with_empty_lang
+    h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings)
+
+    uri_without_scheme = h.remove_lang('wovn.io', '')
+    assert_equal('wovn.io', uri_without_scheme)
+
+    uri_with_scheme = h.remove_lang('https://wovn.io/', '')
+    assert_equal('https://wovn.io/', uri_with_scheme)
+  end
+
   def test_remove_lang_query
     h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings('url_pattern' => 'query'))
 
@@ -5943,6 +5963,26 @@ class HeadersTest < Minitest::Test
     end
   end
 
+  def test_remove_lang_query_with_nil_lang
+    h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings('url_pattern' => 'query'))
+
+    uri_without_scheme = h.remove_lang('wovn.io', nil)
+    assert_equal('wovn.io', uri_without_scheme)
+
+    uri_with_scheme = h.remove_lang('https://wovn.io/', nil)
+    assert_equal('https://wovn.io/', uri_with_scheme)
+  end
+
+  def test_remove_lang_query_with_empty_lang
+    h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings('url_pattern' => 'query'))
+
+    uri_without_scheme = h.remove_lang('wovn.io', '')
+    assert_equal('wovn.io', uri_without_scheme)
+
+    uri_with_scheme = h.remove_lang('https://wovn.io/', '')
+    assert_equal('https://wovn.io/', uri_with_scheme)
+  end
+
   def test_remove_lang_subdomain
     h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings('url_pattern' => 'subdomain'))
 
@@ -5956,5 +5996,25 @@ class HeadersTest < Minitest::Test
       uri_with_scheme = h.remove_lang("https://#{key.downcase}.wovn.io", key)
       assert_equal('https://wovn.io', uri_with_scheme)
     end
+  end
+
+  def test_remove_lang_subdomain_with_nil_lang
+    h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings('url_pattern' => 'subdomain'))
+
+    uri_without_scheme = h.remove_lang('wovn.io', nil)
+    assert_equal('wovn.io', uri_without_scheme)
+
+    uri_with_scheme = h.remove_lang('https://wovn.io/', nil)
+    assert_equal('https://wovn.io/', uri_with_scheme)
+  end
+
+  def test_remove_lang_subdomain_with_empty_lang
+    h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings('url_pattern' => 'subdomain'))
+
+    uri_without_scheme = h.remove_lang('wovn.io', '')
+    assert_equal('wovn.io', uri_without_scheme)
+
+    uri_with_scheme = h.remove_lang('https://wovn.io/', '')
+    assert_equal('https://wovn.io/', uri_with_scheme)
   end
 end
