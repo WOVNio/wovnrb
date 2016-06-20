@@ -179,7 +179,18 @@ module Wovnrb
       @env
     end
 
+    # Remove language code from the URI.
+    #
+    # @param uri  [String] original URI
+    # @param lang [String] language code
+    # @return     [String] removed URI
     def remove_lang(uri, lang=self.path_lang)
+
+      # Do nothing if lang is empty.
+      if lang.nil? || lang.empty?
+        return uri
+      end
+
       case @settings['url_pattern']
       when 'query'
         return uri.sub(/(^|\?|&)wovn=#{lang}(&|$)/, '\1').gsub(/(\?|&)$/, '')
