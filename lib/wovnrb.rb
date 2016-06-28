@@ -71,7 +71,15 @@ module Wovnrb
       ignore_all = false
       new_body = []
       body.each do |b|
-        d = Nokogiri::HTML5(b)
+        # temporarily remove noscripts
+        noscripts = []
+        b_without_noscripts = b
+        b.scan /<noscript.*?>.*?<\/noscript>/m do |match|
+          noscript_identifier = "<noscript wovn-id=\"#{noscripts.count}\"></noscript>"
+          noscripts << match
+          b_without_noscripts = b_without_noscripts.sub(match, noscript_identifier)
+        end
+        d = Nokogiri::HTML5(b_without_noscripts)
         d.encoding = "UTF-8"
 
         # If this page has wovn-ignore in the html tag, don't do anything
@@ -83,6 +91,11 @@ module Wovnrb
         end
 
         output = lang.switch_dom_lang(d, @store, values, url, headers)
+        # put back noscripts
+        noscripts.each_with_index do |noscript, index|
+          noscript_identifier = "<noscript wovn-id=\"#{index}\"></noscript>"
+          output.sub!(noscript_identifier, noscript)
+        end
         new_body.push(output)
       end
       body.close if body.respond_to?(:close)
