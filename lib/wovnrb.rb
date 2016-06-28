@@ -74,8 +74,8 @@ module Wovnrb
         # temporarily remove noscripts
         noscripts = []
         b_without_noscripts = b
-        b.scan /<noscript>.*?<\/noscript>/m do |match|
-          noscript_identifier = "<!--__WOVN_NOSCRIPT_#{noscripts.count}__-->"
+        b.scan /<noscript.*?>.*?<\/noscript>/m do |match|
+          noscript_identifier = "<noscript wovn-id=\"#{noscripts.count}\"></noscript>"
           noscripts << match
           b_without_noscripts = b_without_noscripts.sub(match, noscript_identifier)
         end
@@ -93,7 +93,7 @@ module Wovnrb
         output = lang.switch_dom_lang(d, @store, values, url, headers)
         # put back noscripts
         noscripts.each_with_index do |noscript, index|
-          noscript_identifier = "<!--__WOVN_NOSCRIPT_#{index}__-->"
+          noscript_identifier = "<noscript wovn-id=\"#{index}\"></noscript>"
           output.sub!(noscript_identifier, noscript)
         end
         new_body.push(output)
