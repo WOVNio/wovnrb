@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["jeff@wovn.io"]
   spec.summary       = %q{Gem for WOVN.io}
   spec.description   = %q{Ruby gem for WOVN backend on Rack.}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/WOVNio/wovnrb"
   spec.license       = "MIT"
 
 
@@ -26,29 +26,29 @@ Gem::Specification.new do |spec|
   #spec.extensions    = spec.files.grep(%r{/extconf\.rb$})
 
   spec.add_dependency "nokogumbo", "1.3.0"
-  spec.add_dependency "activesupport"
-  spec.add_dependency "lz4-ruby"
+  spec.add_dependency "activesupport", "~> 0"
+  spec.add_dependency "lz4-ruby", "~> 0"
 
   spec.add_development_dependency "bundler", "~> 1.7"
   spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "listen", "~> 3.0.6"
+  spec.add_development_dependency "listen", "~> 3.0", ">= 3.0.6"
   ##spec.add_development_dependency "mocha"
   #spec.add_development_dependency "rspec"
   #spec.add_development_dependency "rspec-nc"
-  spec.add_development_dependency "test-unit"
-  spec.add_development_dependency "test-unit-notify"
-  spec.add_development_dependency "minitest"
-  spec.add_development_dependency "terminal-notifier"
-  spec.add_development_dependency "guard"
-  spec.add_development_dependency "guard-rspec"
-  spec.add_development_dependency "pry"
-  spec.add_development_dependency "pry-remote"
-  spec.add_development_dependency "pry-nav"
+  spec.add_development_dependency "test-unit", "~> 0"
+  spec.add_development_dependency "test-unit-notify", "~> 0"
+  spec.add_development_dependency "minitest", "~> 0"
+  spec.add_development_dependency "terminal-notifier", "~> 0"
+  spec.add_development_dependency "guard", "~> 0"
+  spec.add_development_dependency "guard-rspec", "~> 0"
+  spec.add_development_dependency "pry", "~> 0"
+  spec.add_development_dependency "pry-remote", "~> 0"
+  spec.add_development_dependency "pry-nav", "~> 0"
   #spec.add_development_dependency "rice"
-  spec.add_development_dependency "rake-compiler"
-  spec.add_development_dependency "geminabox"
-  spec.add_development_dependency "timecop"
-  spec.add_development_dependency "webmock"
+  spec.add_development_dependency "rake-compiler", "~> 0"
+  spec.add_development_dependency "geminabox", "~> 0"
+  spec.add_development_dependency "timecop", "~> 0"
+  spec.add_development_dependency "webmock", "~> 0"
 
 end
 
