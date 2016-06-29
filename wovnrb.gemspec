@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Jeff Sandford", "Antoine David"]
   spec.email         = ["jeff@wovn.io"]
   spec.summary       = %q{Gem for WOVN.io}
-  spec.description   = %q{ALPHA VERSION, not in a useable form.}
+  spec.description   = %q{Ruby gem for WOVN backend on Rack.}
   spec.homepage      = ""
   spec.license       = "MIT"
 
