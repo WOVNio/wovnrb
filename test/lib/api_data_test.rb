@@ -1,7 +1,7 @@
+require 'test_helper'
 require 'wovnrb/text_caches/cache_base'
 require 'wovnrb/text_caches/memory_cache'
 require 'wovnrb/api_data'
-require 'test_helper'
 require 'webmock/minitest'
 
 module Wovnrb
