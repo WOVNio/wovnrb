@@ -1,3 +1,18 @@
+require 'simplecov'
+
+# save to CircleCI's artifacts directory if we're on CircleCI
+if ENV['CIRCLE_ARTIFACTS']
+  dir = File.join(ENV['CIRCLE_ARTIFACTS'], "coverage")
+  SimpleCov.coverage_dir(dir)
+end
+
+SimpleCov.start do
+  add_filter '/test/'
+  add_filter '/lib/wovnrb/railtie.rb'
+  add_filter '/lib/wovnrb/version.rb'
+  track_files 'lib/**/*.rb'
+end
+
 require 'nokogumbo'
 require 'wovnrb/headers'
 require 'wovnrb/lang'
