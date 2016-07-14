@@ -33,6 +33,16 @@ module Wovnrb
       'vi' => {name: 'Tiếng Việt',        code: 'vi',     en: 'Vietnamese'},
     }
 
+    # Provides the ISO639-1 code for a given lang code.
+    # Source: https://support.google.com/webmasters/answer/189077?hl=en
+    #
+    # @param lang_code [String] lang_code Code of the language.
+    #
+    # @return [String] The ISO639-1 code of the language.
+    def self.iso_639_1_normalization(lang_code)
+      return lang_code.sub(/zh-CHT/i, 'zh-Hant').sub(/zh-CHS/i, 'zh-Hans')
+    end
+
     def self.get_code(lang_name)
       return nil if lang_name.nil?
       return lang_name if LANG[lang_name]
@@ -137,7 +147,7 @@ module Wovnrb
       published_langs.each do |l|
         insert_node = Nokogiri::XML::Node.new('link', dom)
         insert_node['rel'] = 'alternate'
-        insert_node['hreflang'] = l
+        insert_node['hreflang'] = Lang::iso_639_1_normalization(l)
         insert_node['href'] = headers.redirect_location(l)
         parent_node.add_child(insert_node)
       end
