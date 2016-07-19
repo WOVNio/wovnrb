@@ -26,7 +26,11 @@ Gem::Specification.new do |spec|
   #spec.extensions    = spec.files.grep(%r{/extconf\.rb$})
 
   spec.add_dependency "nokogumbo", "1.3.0"
-  spec.add_dependency "activesupport", "4.2.6"
+  if RUBY_VERSION < "2.2.2"
+    spec.add_dependency "activesupport", "< 5"
+  else
+    spec.add_dependency "activesupport"
+  end
   spec.add_dependency "lz4-ruby"
 
   spec.add_development_dependency "bundler", "~> 1.7"
