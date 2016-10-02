@@ -6,3 +6,8 @@ test:
   override:
     - bundle exec rake test
 
+deployment:
+  rubygems:
+    branch: master
+    commands:
+      - bash ./release.sh
