@@ -3,6 +3,7 @@ require 'uri'
 require 'cgi'
 require 'singleton'
 require 'wovnrb/services/wovn_logger'
+require 'wovnrb/services/glob'
 
 module Wovnrb
   class Store
@@ -23,6 +24,8 @@ module Wovnrb
           'user_token' => '',
           'secret_key' => '',
           'log_path' => 'log/wovn_error.log',
+          'ignore_patterns' => [],
+          'ignore_globs' => [],
           'url_pattern' => 'path',
           'url_pattern_reg' => "/(?<lang>[^/.?]+)",
           'query' => [],
@@ -48,19 +51,23 @@ module Wovnrb
       errors = [];
       if !settings.has_key?('user_token') || settings['user_token'].length < 5 || settings['user_token'].length > 6
         valid = false
-        errors.push("User token #{settings['user_token']} is not valid.");
+        errors.push("User token #{settings['user_token']} is not valid.")
       end
       if !settings.has_key?('secret_key') || settings['secret_key'].length == 0 #|| settings['secret_key'].length < 5 || settings['secret_key'].length > 6
         valid = false
-        errors.push("Secret key #{settings['secret_key']} is not valid.");
+        errors.push("Secret key #{settings['secret_key']} is not valid.")
+      end
+      if settings.has_key?('ignore_patterns') && !settings['ignore_patterns'].kind_of?(Array)
+        valid = false
+        errors.push("Ignore Patterns #{settings['ignore_patterns']} should be Array.")
       end
       if !settings.has_key?('url_pattern') || settings['url_pattern'].length == 0
         valid = false
-        errors.push("Url pattern #{settings['url_pattern']} is not valid.");
+        errors.push("Url pattern #{settings['url_pattern']} is not valid.")
       end
       if !settings.has_key?('query') || !settings['query'].kind_of?(Array)
         valid = false
-        errors.push("query config #{settings['query']} is not valid.");
+        errors.push("query config #{settings['query']} is not valid.")
       end
       if !settings.has_key?('api_url') || settings['api_url'].length == 0
         valid = false
@@ -68,11 +75,11 @@ module Wovnrb
       end
       if !settings.has_key?('default_lang') || settings['default_lang'].length == 0
         valid = false
-        errors.push("Default lang #{settings['default_lang']} is not valid.");
+        errors.push("Default lang #{settings['default_lang']} is not valid.")
       end
       if !settings.has_key?('supported_langs') || !settings['supported_langs'].kind_of?(Array) || settings['supported_langs'].size < 1
         valid = false
-        errors.push("Supported langs configuration is not valid.");
+        errors.push("Supported langs configuration is not valid.")
       end
       # log errors
       if errors.length > 0
@@ -92,39 +99,49 @@ module Wovnrb
         @config_loaded = false
       end
 
-      if !@config_loaded
-        # get Rails config.wovnrb
-        if Object.const_defined?('Rails') && Rails.configuration.respond_to?(:wovnrb)
-          config_settings = Rails.configuration.wovnrb.stringify_keys
-          if config_settings.has_key?('url_pattern')
-            if config_settings['url_pattern'] == 'query' || config_settings['url_pattern'] == 'subdomain' || config_settings['url_pattern'] == 'path'
-              config_settings['url_pattern'] = config_settings['url_pattern']
-              config_settings.delete('url_pattern')
-            end
-          end
-          @settings.merge!(Rails.configuration.wovnrb.stringify_keys)
-        end
-
-        # fix settings object
-        @settings['default_lang'] = Lang.get_code(@settings['default_lang'])
-        if !@settings.has_key?('supported_langs')
-          @settings['supported_langs'] = [@settings['default_lang']]
-        end
-        if @settings['url_pattern'] == 'path'
-          @settings['url_pattern_reg'] = "/(?<lang>[^/.?]+)"
-        elsif @settings['url_pattern'] == 'query'
-          @settings['url_pattern_reg'] = "((\\?.*&)|\\?)wovn=(?<lang>[^&]+)(&|$)"
-        elsif @settings['url_pattern'] == 'subdomain'
-          @settings['url_pattern_reg'] = "^(?<lang>[^.]+)\."
-        end
-        if @settings['test_mode'] != true || @settings['test_mode'] != 'on'
-          @settings['test_mode'] = false
-        else
-          @settings['test_mode'] = true
-        end
-
-        @config_loaded = true
+      if @config_loaded
+        return @settings
       end
+
+      # get Rails config.wovnrb
+      if Object.const_defined?('Rails') && Rails.configuration.respond_to?(:wovnrb)
+        config_settings = Rails.configuration.wovnrb.stringify_keys
+        if config_settings.has_key?('url_pattern')
+          if config_settings['url_pattern'] == 'query' || config_settings['url_pattern'] == 'subdomain' || config_settings['url_pattern'] == 'path'
+            config_settings['url_pattern'] = config_settings['url_pattern']
+            config_settings.delete('url_pattern')
+          end
+        end
+        @settings.merge!(Rails.configuration.wovnrb.stringify_keys)
+      end
+
+      # fix settings object
+      @settings['default_lang'] = Lang.get_code(@settings['default_lang'])
+      if !@settings.has_key?('supported_langs')
+        @settings['supported_langs'] = [@settings['default_lang']]
+      end
+
+      if @settings['url_pattern'] == 'path'
+        @settings['url_pattern_reg'] = "/(?<lang>[^/.?]+)"
+      elsif @settings['url_pattern'] == 'query'
+        @settings['url_pattern_reg'] = "((\\?.*&)|\\?)wovn=(?<lang>[^&]+)(&|$)"
+      elsif @settings['url_pattern'] == 'subdomain'
+        @settings['url_pattern_reg'] = "^(?<lang>[^.]+)\."
+      end
+
+      if @settings['test_mode'] != true || @settings['test_mode'] != 'on'
+        @settings['test_mode'] = false
+      else
+        @settings['test_mode'] = true
+      end
+
+      if @settings['ignore_patterns'].kind_of?(Array)
+        @settings['ignore_globs'] = @settings['ignore_patterns'].map do |pattern|
+          Glob.new(pattern)
+        end
+      end
+
+      @config_loaded = true
       @settings
     end
   end
