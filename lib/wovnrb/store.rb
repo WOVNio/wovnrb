@@ -24,7 +24,7 @@ module Wovnrb
           'user_token' => '',
           'secret_key' => '',
           'log_path' => 'log/wovn_error.log',
-          'ignore_patterns' => [],
+          'ignore_paths' => [],
           'ignore_globs' => [],
           'url_pattern' => 'path',
           'url_pattern_reg' => "/(?<lang>[^/.?]+)",
@@ -57,9 +57,9 @@ module Wovnrb
         valid = false
         errors.push("Secret key #{settings['secret_key']} is not valid.")
       end
-      if settings.has_key?('ignore_patterns') && !settings['ignore_patterns'].kind_of?(Array)
+      if settings.has_key?('ignore_paths') && !settings['ignore_paths'].kind_of?(Array)
         valid = false
-        errors.push("Ignore Patterns #{settings['ignore_patterns']} should be Array.")
+        errors.push("Ignore Paths #{settings['ignore_paths']} should be Array.")
       end
       if !settings.has_key?('url_pattern') || settings['url_pattern'].length == 0
         valid = false
@@ -114,6 +114,7 @@ module Wovnrb
         end
         @settings.merge!(Rails.configuration.wovnrb.stringify_keys)
       end
+      cleanSettings
 
       # fix settings object
       @settings['default_lang'] = Lang.get_code(@settings['default_lang'])
@@ -135,14 +136,19 @@ module Wovnrb
         @settings['test_mode'] = true
       end
 
-      if @settings['ignore_patterns'].kind_of?(Array)
-        @settings['ignore_globs'] = @settings['ignore_patterns'].map do |pattern|
+      if @settings['ignore_paths'].kind_of?(Array)
+        @settings['ignore_globs'] = @settings['ignore_paths'].map do |pattern|
           Glob.new(pattern)
         end
       end
 
       @config_loaded = true
       @settings
+    end
+
+    private
+    def cleanSettings
+      @settings['ignore_globs'] = []
     end
   end
 

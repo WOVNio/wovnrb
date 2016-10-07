@@ -44,36 +44,44 @@ module Wovnrb
       assert_equal(['User token  is not valid.', 'Secret key  is not valid.'], mock.errors)
     end
 
-    def test_settings_ignore_patterns
+    def test_settings_ignore_paths
       s = Wovnrb::Store.instance
-      s.settings({'ignore_patterns' => ['/api/**']})
+      s.settings({'ignore_paths' => ['/api/**']})
       assert_equal(1, s.settings['ignore_globs'].size)
       assert_equal(true, s.settings['ignore_globs'].first.match?('/api/a/b'))
       assert_equal(false, s.settings['ignore_globs'].first.match?('/a/b'))
     end
 
-    def test_settings_ignore_patterns_multiple
+    def test_settings_ignore_paths_multiple
       s = Wovnrb::Store.instance
-      s.settings({'ignore_patterns' => ['/api/a/**', '/api/b/**']})
+      s.settings({'ignore_paths' => ['/api/a/**', '/api/b/**']})
       assert_equal(2, s.settings['ignore_globs'].size)
       assert_equal(true, s.settings['ignore_globs'].any?{|g| g.match?('/api/a')})
       assert_equal(true, s.settings['ignore_globs'].any?{|g| g.match?('/api/b')})
       assert_equal(false, s.settings['ignore_globs'].any?{|g| g.match?('/api/c')})
     end
 
-    def test_settings_ignore_patterns_empty
+    def test_settings_ignore_paths_empty
       s = Wovnrb::Store.instance
-      s.settings({'ignore_patterns' => []})
+      s.settings({'ignore_paths' => []})
       assert_equal([], s.settings['ignore_globs'])
     end
 
-    def test_settings_invalid_ignore_patterns
+    def test_settings_invalid_ignore_paths
       mock = LogMock.mock_log
       store = Wovnrb::Store.instance
-      store.settings({'ignore_patterns' => 'aaaa'})
+      store.settings({'ignore_paths' => 'aaaa'})
 
       assert_equal(false, store.valid_settings?)
-      assert_equal(['User token  is not valid.', 'Secret key  is not valid.', 'Ignore Patterns aaaa should be Array.'], mock.errors)
+      assert_equal(['User token  is not valid.', 'Secret key  is not valid.', 'Ignore Paths aaaa should be Array.'], mock.errors)
+    end
+
+    def test_settings_ignore_glob_injection
+      s = Wovnrb::Store.instance
+      s.settings({'ignore_paths' => nil})
+      s.settings({'ignore_globs' => [1, 2]})
+
+      assert_equal([], s.settings['ignore_globs'])
     end
   end
 end

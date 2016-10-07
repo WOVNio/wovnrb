@@ -1,5 +1,5 @@
 module Wovnrb
-  # inspired from https://github.com/isaacs/node-glob
+  # inspired by https://github.com/isaacs/node-glob
   #
   # "*" Matches 0 or more characters in a single path portion
   # "**" If a "globstar" is alone in a path portion,
