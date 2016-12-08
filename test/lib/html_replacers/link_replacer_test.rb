@@ -33,6 +33,21 @@ module Wovnrb
       assert_equal('/index.html', link)
     end
 
+    def test_replace_mustache
+      replacer = LinkReplacer.new('query', get_header)
+      dom = Wovnrb.get_dom('<a href="{{hello}}">link text</a>')
+      replacer.replace(dom, Lang.new('en'))
+
+      link = dom.xpath('//a')[0].get_attribute('href')
+      assert_equal('{{hello}}', link)
+
+      dom = Wovnrb.get_dom('<a href=" {{hello}} ">link text</a>')
+      replacer.replace(dom, Lang.new('en'))
+
+      link = dom.xpath('//a')[0].get_attribute('href')
+      assert_equal(' {{hello}} ', link)
+    end
+
 
 
     def get_header
