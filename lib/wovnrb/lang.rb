@@ -163,6 +163,7 @@ module Wovnrb
     private
     def replace_dom_values(dom, values, store, url, headers)
       text_index = values['text_vals'] || {}
+      html_text_index = values['html_text_vals'] || {}
       src_index = values['img_vals'] || {}
       img_src_prefix = values['img_src_prefix'] || ''
 
@@ -173,7 +174,11 @@ module Wovnrb
         replacers << LinkReplacer.new(pattern, headers)
       end
 
-      replacers << TextReplacer.new(text_index)
+      if store.settings['use_scrap2']
+        replacers << HTMLTextReplacer.new(text_vals, html_text_index)
+      else
+       replacers << TextReplacer.new(text_index)
+      end
       replacers << MetaReplacer.new(text_index)
       replacers << ImageReplacer.new(url, text_index, src_index, img_src_prefix)
       replacers << ScriptReplacer.new(store)
