@@ -48,7 +48,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake-compiler"
   spec.add_development_dependency "geminabox"
   spec.add_development_dependency "timecop"
-  spec.add_development_dependency "webmock"
+  spec.add_development_dependency "webmock", '~> 2.1.0'
   spec.add_development_dependency "simplecov"
+  spec.add_development_dependency 'public_suffix', '~> 1.4.6'
 end
 
