@@ -88,9 +88,9 @@ module Wovnrb
       node_to_adjust = (base_node == node_1) ? node_2 : node_1
 
       if base_node.children.first.name.downcase == 'text' && node_to_adjust.children.first.name.downcase != 'text'
-        node_to_adjust.inner_html = ' ' + node_to_adjust.inner_html
+        node_to_adjust.inner_html = "\u200b" + node_to_adjust.inner_html
       elsif base_node.children.last.name.downcase == 'text' && node_to_adjust.children.last.name.downcase != 'text'
-        node_to_adjust.inner_html += ' '
+        node_to_adjust.inner_html += "\u200b"
       end
     end
   end

@@ -82,7 +82,31 @@ module Wovnrb
       assert_equal('Hello <a>World</a>', inner_html)
     end
 
-    def test_replace_with_complex_value_unballanced_left_alignment
+    def test_replace_with_complex_value_src_unballanced_left_alignment
+      replacer = HTMLTextReplacer.new({}, {
+        'Hello <a>World</a>' => {'ja' => [{'data' => '<a>こんにちは World</a>'}]}
+      })
+
+      dom = Wovnrb.get_dom('<p>Hello <a>World</a></p>')
+      replacer.replace(dom, Lang.new('ja'))
+
+      inner_html = dom.xpath('//p')[0].inner_html
+      assert_equal("\u200b<a>こんにちは World</a>", inner_html)
+    end
+
+    def test_replace_with_complex_value_src_unballanced_right_alignment
+      replacer = HTMLTextReplacer.new({}, {
+        'Hello <a>World</a>!' => {'ja' => [{'data' => 'こんにちは<a>World</a>'}]}
+      })
+
+      dom = Wovnrb.get_dom('<p>Hello <a>World</a>!</p>')
+      replacer.replace(dom, Lang.new('ja'))
+
+      inner_html = dom.xpath('//p')[0].inner_html
+      assert_equal("こんにちは<a>World</a>\u200b", inner_html)
+    end
+
+    def test_replace_with_complex_value_dst_unballanced_left_alignment
       replacer = HTMLTextReplacer.new({}, {
         '<a>Hello World</a>' => {'ja' => [{'data' => 'こんにちは<a>World</a>'}]}
       })
@@ -94,7 +118,7 @@ module Wovnrb
       assert_equal('こんにちは<a>World</a>', inner_html)
     end
 
-    def test_replace_with_complex_value_unballanced_right_alignment
+    def test_replace_with_complex_value_dst_unballanced_right_alignment
       replacer = HTMLTextReplacer.new({}, {
         'Hello <a>World</a>' => {'ja' => [{'data' => 'こんにちは<a>World</a>!'}]}
       })
