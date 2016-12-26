@@ -29,6 +29,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "activesupport", "< 5"
   spec.add_dependency "lz4-ruby"
 
+  spec.add_development_dependency 'public_suffix', '~> 1.4.6'
   spec.add_development_dependency "bundler", "~> 1.7"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "listen", "~> 3.0.6"
