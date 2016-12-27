@@ -73,7 +73,7 @@ module Wovnrb
     # @param [Nokogiri::XML::Node] dst_node The node with the content to put in
     #                                       the src_node.
     def swap_complex_val(src_node, dst_node)
-      align_node_to_src(src_node, dst_node)
+      align_nodes(src_node, dst_node)
       src_node_children = src_node.children
       dst_node_children = dst_node.children
 
@@ -106,7 +106,7 @@ module Wovnrb
     #
     # @param [Nokogiri::XML::Node] node_1 The first node to align.
     # @param [Nokogiri::XML::Node] node_2 The second node to align.
-    def align_node_to_src(node_1, node_2)
+    def align_nodes(node_1, node_2)
       base_node = (node_1.children.count > node_2.children.count) ? node_1 : node_2
       node_to_adjust = (base_node == node_1) ? node_2 : node_1
 
