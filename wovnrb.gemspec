@@ -28,6 +28,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "nokogumbo", "1.3.0"
   spec.add_dependency "activesupport", "< 5"
   spec.add_dependency "lz4-ruby"
+  spec.add_dependency 'nokogiri', '~> 1.6.8'
 
   spec.add_development_dependency "bundler", "~> 1.7"
   spec.add_development_dependency "rake", "~> 10.0"
@@ -51,6 +52,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "webmock", '~> 2.1.0'
   spec.add_development_dependency "simplecov"
   spec.add_development_dependency 'public_suffix', '~> 1.4.6'
-  spec.add_development_dependency 'nokogiri', '~> 1.9.2'
 end
 
