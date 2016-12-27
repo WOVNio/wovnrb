@@ -175,9 +175,9 @@ module Wovnrb
       end
 
       if store.settings['use_scrap2']
-        replacers << HTMLTextReplacer.new(text_vals, html_text_index)
+        replacers << HTMLTextReplacer.new(text_index, html_text_index)
       else
-       replacers << TextReplacer.new(text_index)
+        replacers << TextReplacer.new(text_index)
       end
       replacers << MetaReplacer.new(text_index)
       replacers << ImageReplacer.new(url, text_index, src_index, img_src_prefix)

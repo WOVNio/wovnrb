@@ -9,9 +9,12 @@ require 'wovnrb/text_caches/cache_base'
 require 'wovnrb/html_replacers/replacer_base'
 require 'wovnrb/html_replacers/link_replacer'
 require 'wovnrb/html_replacers/text_replacer'
+require 'wovnrb/html_replacers/html_text_replacer'
+require 'wovnrb/html_replacers/html_text_scraper'
 require 'wovnrb/html_replacers/meta_replacer'
 require 'wovnrb/html_replacers/image_replacer'
 require 'wovnrb/html_replacers/script_replacer'
+require 'wovnrb/services/text_util'
 require 'wovnrb/railtie' if defined?(Rails)
 require 'wovnrb/version'
 
