@@ -91,7 +91,7 @@ module Wovnrb
       replacer.replace(dom, Lang.new('ja'))
 
       inner_html = dom.xpath('//p')[0].inner_html
-      assert_equal("\u200b<a>こんにちは World</a>", inner_html)
+      assert_equal("<a>こんにちは World</a>", inner_html)
     end
 
     def test_replace_with_complex_value_src_unballanced_right_alignment

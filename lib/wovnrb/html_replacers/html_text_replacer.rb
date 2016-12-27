@@ -111,7 +111,6 @@ module Wovnrb
       node_to_adjust = (base_node == node_1) ? node_2 : node_1
 
       if base_node.children.first.name.downcase == 'text' && node_to_adjust.children.first.name.downcase != 'text'
-        node_to_adjust.inner_html = "\u200b" + node_to_adjust.inner_html
         if node_to_adjust.children.count > 0
           node_to_adjust.children[0].add_previous_sibling(Nokogiri::XML::Text.new('', node_to_adjust.document))
         else
