@@ -20,20 +20,22 @@ module Wovnrb
     end
 
     def replace(dom, lang)
-      replace_node(dom, lang)
+      replace_node(dom.xpath('/html')[0], lang)
     end
 
     private
     def replace_node(node, lang)
+      return if wovn_ignore?(node)
+
       if @scraper.is_text_value?(node)
         data = @scraper.get_complex_data(node)
         return unless data
 
-        p data
-        new_value = get_complex_value(data, lang)
+        index = (node.name.downcase == 'text') ? @text_index : @html_text_index
+        new_value = get_complex_value(data, lang, index)
         return unless new_value
 
-        replace_complex_data(n, new_value)
+        swap_val(node, new_value)
       else
         if node.children
           node.children.each do |child|
@@ -43,12 +45,80 @@ module Wovnrb
       end
     end
 
-    def get_complex_value(original_data, lang)
+    def get_complex_value(data, lang, index)
+      lang_code = lang.lang_code
+      if index[data] && index[data][lang_code] && index[data][lang_code].size > 0
+        new_value = index[data][lang.lang_code][0]['data']
+      end
+    end
+
+    # Swaps the content of a node by the content of a given string.
+    #
+    # @param [Nokogiri::XML::Node] node The node from which content must be
+    #                                   swapped.
+    # @param [String] The content to put in the node.
+    def swap_val(node, dst)
+      if node.name.downcase != 'text'
+        dst_node = data_to_node(dst)
+        swap_complex_val(node, dst_node)
+      else
+        node.content = replace_text(node.content, dst)
+      end
+    end
+
+    # Swaps the content of a node by the content of a given node.
+    #
+    # @param [Nokogiri::XML::Node] src_node The node from which content must be
+    #                                       swapped.
+    # @param [Nokogiri::XML::Node] dst_node The node with the content to put in
+    #                                       the src_node.
+    def swap_complex_val(src_node, dst_node)
+      align_nodes(src_node, dst_node)
+      src_node_children = src_node.children
+      dst_node_children = dst_node.children
+
+      src_node_children.each_with_index do |src_child, i|
+        dst_child = dst_node_children[i]
+
+        if src_child.name.downcase == 'text'
+          src_child.content = replace_text(src_child.content.strip, dst_child.content)
+        else
+          swap_complex_val(src_child, dst_child)
+        end
+      end
 
     end
 
-    def replace_complex_data(node, value)
+    # Creates a node from a HTML string.
+    #
+    # @param [String] str The string to act as inner HTML.
+    #
+    # @return [Nokogiri::XML::Node] The node represented be str.
+    def data_to_node(str)
+      dom = Nokogiri::HTML5("<html><body><div>#{str}</div></body></html>")
+      return dom.xpath("/html/body/div").first
+    end
 
+    # Aligns two nodes for swaping.
+    # If one node has more children, then it should be a text node a the
+    # begginning or the end. If so, an empty text node is added to the node with
+    # less children.
+    #
+    # @param [Nokogiri::XML::Node] node_1 The first node to align.
+    # @param [Nokogiri::XML::Node] node_2 The second node to align.
+    def align_nodes(node_1, node_2)
+      base_node = (node_1.children.count > node_2.children.count) ? node_1 : node_2
+      node_to_adjust = (base_node == node_1) ? node_2 : node_1
+
+      if base_node.children.first.name.downcase == 'text' && node_to_adjust.children.first.name.downcase != 'text'
+        if node_to_adjust.children.count > 0
+          node_to_adjust.children[0].add_previous_sibling(Nokogiri::XML::Text.new('', node_to_adjust.document))
+        else
+          node_to_adjust.add_child(Nokogiri::XML::Text.new('', node_to_adjust.document))
+        end
+      elsif base_node.children.last.name.downcase == 'text' && node_to_adjust.children.last.name.downcase != 'text'
+        node_to_adjust.add_child(Nokogiri::XML::Text.new('', node_to_adjust.document))
+      end
     end
   end
 end
