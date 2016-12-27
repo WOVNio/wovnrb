@@ -174,7 +174,7 @@ module Wovnrb
         replacers << LinkReplacer.new(pattern, headers)
       end
 
-      if store.settings['use_scrap2']
+      if store.settings['use_scraping2']
         replacers << HTMLTextReplacer.new(text_index, html_text_index)
       else
         replacers << TextReplacer.new(text_index)
