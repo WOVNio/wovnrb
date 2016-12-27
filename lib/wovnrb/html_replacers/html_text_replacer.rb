@@ -20,20 +20,22 @@ module Wovnrb
     end
 
     def replace(dom, lang)
-      replace_node(dom, lang)
+      replace_node(dom.xpath('/html')[0], lang)
     end
 
     private
     def replace_node(node, lang)
+      return if wovn_ignore?(node)
+
       if @scraper.is_text_value?(node)
         data = @scraper.get_complex_data(node)
         return unless data
 
-        p data
-        new_value = get_complex_value(data, lang)
+        index = (node.name.downcase == 'text') ? @text_index : @html_text_index
+        new_value = get_complex_value(data, lang, index)
         return unless new_value
 
-        replace_complex_data(n, new_value)
+        swap_val(node, new_value)
       else
         if node.children
           node.children.each do |child|
@@ -43,12 +45,11 @@ module Wovnrb
       end
     end
 
-    def get_complex_value(original_data, lang)
-      # TODO
-    end
-
-    def replace_complex_data(node, value)
-      # TODO
+    def get_complex_value(data, lang, index)
+      lang_code = lang.lang_code
+      if index[data] && index[data][lang_code] && index[data][lang_code].size > 0
+        new_value = index[data][lang.lang_code][0]['data']
+      end
     end
 
     # Swaps the content of a node by the content of a given string.

@@ -45,7 +45,7 @@ module Wovnrb
 
     def test_replace_with_complex_value
       replacer = HTMLTextReplacer.new({}, {
-        'Hello <a>World</a>' => {'ja' => [{'data' => 'こんにちは<a>World</a>'}]}
+        'Hello<a>World</a>' => {'ja' => [{'data' => 'こんにちは<a>World</a>'}]}
       })
 
       dom = Wovnrb.get_dom('<p>Hello <a>World</a></p>')
@@ -57,8 +57,8 @@ module Wovnrb
 
     def test_replace_multiple_with_complex_value
       replacer = HTMLTextReplacer.new({}, {
-        'Hello <a>World</a>' => {'ja' => [{'data' => 'こんにちは<a>World</a>'}]},
-        'Another Hello <a>World ;)</a>' => {'ja' => [{'data' => 'こんにちは<a>World ;)</a>'}]},
+        'Hello<a>World</a>' => {'ja' => [{'data' => 'こんにちは<a>World</a>'}]},
+        'Another Hello<a>World ;)</a>' => {'ja' => [{'data' => 'こんにちは<a>World ;)</a>'}]},
       })
 
       dom = Wovnrb.get_dom('<p>Hello <a>World</a></p><p>Another Hello <a>World ;)</a></p>')
@@ -72,7 +72,7 @@ module Wovnrb
 
     def test_replace_wovn_ignore_with_complex_value
       replacer = HTMLTextReplacer.new({}, {
-        'Hello <a>World</a>' => {'ja' => [{'data' => 'こんにちは<a>World</a>'}]}
+        'Hello<a>World</a>' => {'ja' => [{'data' => 'こんにちは<a>World</a>'}]}
       })
 
       dom = Wovnrb.get_dom('<p wovn-ignore>Hello <a>World</a></p>')
@@ -84,7 +84,7 @@ module Wovnrb
 
     def test_replace_with_complex_value_src_unballanced_left_alignment
       replacer = HTMLTextReplacer.new({}, {
-        'Hello <a>World</a>' => {'ja' => [{'data' => '<a>こんにちは World</a>'}]}
+        'Hello<a>World</a>' => {'ja' => [{'data' => '<a>こんにちは World</a>'}]}
       })
 
       dom = Wovnrb.get_dom('<p>Hello <a>World</a></p>')
@@ -96,7 +96,7 @@ module Wovnrb
 
     def test_replace_with_complex_value_src_unballanced_right_alignment
       replacer = HTMLTextReplacer.new({}, {
-        'Hello <a>World</a>!' => {'ja' => [{'data' => 'こんにちは<a>World</a>'}]}
+        'Hello<a>World</a>!' => {'ja' => [{'data' => 'こんにちは<a>World</a>'}]}
       })
 
       dom = Wovnrb.get_dom('<p>Hello <a>World</a>!</p>')
@@ -108,19 +108,19 @@ module Wovnrb
 
     def test_replace_with_complex_value_dst_unballanced_left_alignment
       replacer = HTMLTextReplacer.new({}, {
-        '<a>Hello World</a>' => {'ja' => [{'data' => 'こんにちは<a>World</a>'}]}
+        '<a>Hello World</a>!' => {'ja' => [{'data' => 'こんにちは<a>World</a>!'}]}
       })
 
-      dom = Wovnrb.get_dom('<p><a>Hello World</a></p>')
+      dom = Wovnrb.get_dom('<p><a>Hello World</a>!</p>')
       replacer.replace(dom, Lang.new('ja'))
 
       inner_html = dom.xpath('//p')[0].inner_html
-      assert_equal('こんにちは<a>World</a>', inner_html)
+      assert_equal('こんにちは<a>World</a>!', inner_html)
     end
 
     def test_replace_with_complex_value_dst_unballanced_right_alignment
       replacer = HTMLTextReplacer.new({}, {
-        'Hello <a>World</a>' => {'ja' => [{'data' => 'こんにちは<a>World</a>!'}]}
+        'Hello<a>World</a>' => {'ja' => [{'data' => 'こんにちは<a>World</a>!'}]}
       })
 
       dom = Wovnrb.get_dom('<p>Hello <a>World</a></p>')
