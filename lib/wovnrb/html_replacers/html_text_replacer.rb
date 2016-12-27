@@ -95,8 +95,8 @@ module Wovnrb
     #
     # @return [Nokogiri::XML::Node] The node represented be str.
     def data_to_node(str)
-      dom = Nokogiri::HTML5("<html><body><div id=\"dst-node\">#{str}</div></body></html>")
-      return dom.xpath("//div[@id='dst-node']").first
+      dom = Nokogiri::HTML5("<html><body><div>#{str}</div></body></html>")
+      return dom.xpath("/html/body/div").first
     end
 
     # Aligns two nodes for swaping.
