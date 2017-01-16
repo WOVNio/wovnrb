@@ -25,6 +25,7 @@ module Wovnrb
       img = dom.xpath('//img')[0]
       assert_equal('prefix::http://test.com/ttt.img', img.get_attribute('src'))
       assert_equal('こんにちは', img.get_attribute('alt'))
+      assert_equal('wovn-src:Hello', img.previous.content)
     end
 
     def test_replace_relative_path
@@ -44,6 +45,7 @@ module Wovnrb
 
       img = dom.xpath('//img')[0]
       assert_equal('http://test.com/ttt.img', img.get_attribute('src'))
+      assert_equal(nil, img.previous)
     end
 
     def test_replace_root_path
@@ -63,6 +65,7 @@ module Wovnrb
 
       img = dom.xpath('//img')[0]
       assert_equal('http://test.com/ttt.img', img.get_attribute('src'))
+      assert_equal(nil, img.previous)
     end
 
     def test_replace_absolute_path
@@ -82,6 +85,7 @@ module Wovnrb
 
       img = dom.xpath('//img')[0]
       assert_equal('http://test.com/ttt.img', img.get_attribute('src'))
+      assert_equal(nil, img.previous)
     end
   end
 end

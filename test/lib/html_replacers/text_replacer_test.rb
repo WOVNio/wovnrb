@@ -12,8 +12,9 @@ module Wovnrb
       dom = Wovnrb.get_dom('Hello')
       replacer.replace(dom, Lang.new('ja'))
 
-      content = dom.xpath('//text()')[0].content
-      assert_equal('こんにちは', content)
+      node = dom.xpath('//text()')[0]
+      assert_equal('こんにちは', node.content)
+      assert_equal('wovn-src:Hello', node.previous.content)
     end
 
     def test_replace_multiple
@@ -25,10 +26,12 @@ module Wovnrb
       dom = Wovnrb.get_dom('<span>Hello</span><span>Bye</span>')
       replacer.replace(dom, Lang.new('ja'))
 
-      content = dom.xpath('//text()')[0].content
-      content2 = dom.xpath('//text()')[1].content
-      assert_equal('こんにちは', content)
-      assert_equal('さようなら', content2)
+      node = dom.xpath('//text()')[0]
+      node2 = dom.xpath('//text()')[1]
+      assert_equal('こんにちは', node.content)
+      assert_equal('wovn-src:Hello', node.previous.content)
+      assert_equal('さようなら', node2.content)
+      assert_equal('wovn-src:Bye', node2.previous.content)
     end
 
     def test_replace_wovn_ignore
@@ -39,8 +42,9 @@ module Wovnrb
       dom = Wovnrb.get_dom('<div wovn-ignore>Hello</div>')
       replacer.replace(dom, Lang.new('ja'))
 
-      content = dom.xpath('//text()')[0].content
-      assert_equal('Hello', content)
+      node = dom.xpath('//text()')[0]
+      assert_equal('Hello', node.content)
+      assert_equal(nil, node.previous)
     end
   end
 end
