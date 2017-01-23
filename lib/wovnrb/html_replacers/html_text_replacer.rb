@@ -107,21 +107,21 @@ module Wovnrb
     # @param [Nokogiri::XML::Node] node_1 The first node to align.
     # @param [Nokogiri::XML::Node] node_2 The second node to align.
     def align_nodes(node_1, node_2)
-      ajust_nodes_alignment(node_1, node_2)
-      ajust_nodes_alignment(node_2, node_1)
+      ajust_node_alignment(node_1)
+      ajust_node_alignment(node_2)
     end
 
-    def ajust_nodes_alignment(base_node, node_to_adjust)
-      if base_node.children.first.name.downcase == 'text' && node_to_adjust.children.first.name.downcase != 'text'
-        if node_to_adjust.children.count > 0
-          node_to_adjust.children[0].add_previous_sibling(Nokogiri::XML::Text.new('', node_to_adjust.document))
+    def ajust_node_alignment(node)
+      if node.children.first.name.downcase != 'text'
+        if node.children.count > 0
+          node.children[0].add_previous_sibling(Nokogiri::XML::Text.new('', node.document))
         else
-          node_to_adjust.add_child(Nokogiri::XML::Text.new('', node_to_adjust.document))
+          node.add_child(Nokogiri::XML::Text.new('', node.document))
         end
       end
 
-      if base_node.children.last.name.downcase == 'text' && node_to_adjust.children.last.name.downcase != 'text'
-        node_to_adjust.add_child(Nokogiri::XML::Text.new('', node_to_adjust.document))
+      if node.children.last.name.downcase != 'text'
+        node.add_child(Nokogiri::XML::Text.new('', node.document))
       end
     end
   end
