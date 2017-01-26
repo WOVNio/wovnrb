@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
   #spec.extensions    = spec.files.grep(%r{/extconf\.rb$})
 
   spec.add_dependency "nokogumbo", "1.3.0"
+  spec.add_dependency "nokogiri", "< 1.6.8.1"
   spec.add_dependency "activesupport", "< 5"
   spec.add_dependency "lz4-ruby"
   spec.add_dependency 'nokogiri', '~> 1.6.8'
@@ -51,6 +52,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "timecop"
   spec.add_development_dependency "webmock", '~> 2.1.0'
   spec.add_development_dependency "simplecov"
-  spec.add_development_dependency 'public_suffix', '~> 1.4.6'
+  spec.add_development_dependency "public_suffix", '~> 1.4.6'
 end
 

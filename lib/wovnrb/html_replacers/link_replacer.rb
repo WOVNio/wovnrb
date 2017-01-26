@@ -10,6 +10,7 @@ module Wovnrb
         next if wovn_ignore?(node)
 
         href = node.get_attribute('href')
+        next if href =~ /^\s*\{\{.+\}\}\s*$/
         new_href = lang.add_lang_code(href, @pattern, @headers)
         node.set_attribute('href', new_href)
       end
