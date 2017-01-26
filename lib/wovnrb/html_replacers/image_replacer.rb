@@ -35,6 +35,7 @@ module Wovnrb
         if node.get_attribute('alt')
           alt = node.get_attribute('alt').strip
           if @text_index[alt] && @text_index[alt][lang.lang_code] && @text_index[alt][lang.lang_code].size > 0
+            add_comment_node(node, alt)
             node.attribute('alt').value = replace_text(alt, @text_index[alt][lang.lang_code][0]['data'])
           end
         end

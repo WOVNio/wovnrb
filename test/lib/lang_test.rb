@@ -325,7 +325,8 @@ module Wovnrb
 <script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\">
 </head>
 <body>
-<h1>ベルベデアさんファンクラブ</h1>
+<h1>
+<!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1>
                 <div wovn-ignore=\"\"><p>Hello</p></div>
               </body>
 </html>
@@ -337,8 +338,9 @@ module Wovnrb
 <script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\">
 </head>
 <body>
-<h1>ベルベデアさんファンクラブ</h1>
-                <div><p>こんにちは</p></div>
+<h1>
+<!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1>
+                <div><p><!--wovn-src:Hello-->こんにちは</p></div>
               </body>
 </html>
 "
@@ -375,7 +377,8 @@ module Wovnrb
         when "value_double_quote_translated"
           body = "<html lang=\"ja\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\">\n</head>\n<body>\n<h1>Mr.BelvedereFanClub</h1>\n<div wovn-ignore=\"value\"><p>Hello</p></div>\n</body>\n</html>\n"
         when "meta_img_alt_tags_translated"
-          body = "<html lang=\"ja\">\n<head>\n<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=#{Wovnrb::VERSION}\"> </script><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n<meta name=\"description\" content=\"こんにちは\">\n<meta name=\"title\" content=\"こんにちは\">\n<meta property=\"og:title\" content=\"こんにちは\">\n<meta property=\"og:description\" content=\"こんにちは\">\n<meta property=\"twitter:title\" content=\"こんにちは\">\n<meta property=\"twitter:description\" content=\"こんにちは\">\n<link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\">\n</head>\n<body>\n<h1>ベルベデアさんファンクラブ</h1>\n<div><p>こんにちは</p></div>\n<img src=\"http://example.com/photo.png\" alt=\"こんにちは\">\n</body>\n</html>\n"
+          body = "<html lang=\"ja\">\n<head>\n<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=#{Wovnrb::VERSION}\"> </script><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n<meta name=\"description\" content=\"こんにちは\">\n<meta name=\"title\" content=\"こんにちは\">\n<meta property=\"og:title\" content=\"こんにちは\">\n<meta property=\"og:description\" content=\"こんにちは\">\n<meta property=\"twitter:title\" content=\"こんにちは\">\n<meta property=\"twitter:description\" content=\"こんにちは\">\n<link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\">\n</head>\n<body>\n<h1>
+<!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1>\n<div><p><!--wovn-src:Hello-->こんにちは</p></div>\n<!--wovn-src:Hello--><img src=\"http://example.com/photo.png\" alt=\"こんにちは\">\n</body>\n</html>\n"
         when  "meta_img_alt_tags"
           body = "<html><head><meta name =\"description\" content=\"Hello\">\n<meta name=\"title\" content=\"Hello\">\n<meta property=\"og:title\" content=\"Hello\">\n<meta property=\"og:description\" content=\"Hello\">\n<meta property=\"twitter:title\" content=\"Hello\">\n<meta property=\"twitter:description\" content=\"Hello\"></head>
 <body><h1>Mr. Belvedere Fan Club</h1>
