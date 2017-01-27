@@ -105,6 +105,7 @@ module Wovnrb
     def node_to_src(node, complex, surround=false)
       src = ''
       tag_name = node.name.downcase
+      wovn_ignore = node.has_attribute?('wovn-ignore')
 
       # specific cases
       if tag_name == 'text'
@@ -123,7 +124,7 @@ module Wovnrb
       end
 
       if surround
-        format_tag(tag_name, content)
+        format_tag(tag_name, content, wovn_ignore)
       else
         content
       end
@@ -138,8 +139,12 @@ module Wovnrb
     end
 
     private
-    def format_tag(name, content)
-      "<#{name}>#{content}</#{name}>"
+    def format_tag(name, content, wovn_ignore=false)
+      if wovn_ignore
+        "<#{name} wovn-ignore></#{name}>"
+      else
+        "<#{name}>#{content}</#{name}>"
+      end
     end
 
     def format_standalone_tag(name)
