@@ -44,7 +44,7 @@ module Wovnrb
 
       node = dom.xpath('//text()')[0]
       assert_equal('Hello', node.content)
-      assert_equal(nil, node.previous)
+      assert_nil(node.previous)
     end
   end
 end

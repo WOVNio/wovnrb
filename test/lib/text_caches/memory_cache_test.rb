@@ -62,7 +62,7 @@ class MemoryCacheTest < Minitest::Test
 
   def test_get_without_cache
     memory = Wovnrb::MemoryCache.new({})
-    assert_equal(nil, memory.get('a'))
+    assert_nil(memory.get('a'))
 
   end
 
@@ -70,7 +70,7 @@ class MemoryCacheTest < Minitest::Test
     memory = Wovnrb::MemoryCache.new({})
     memory.put('a', 'b')
     Timecop.travel(1.day.since)
-    assert_equal(nil, memory.get('a'))
+    assert_nil(memory.get('a'))
   end
 
   def test_get_with_over_memory
@@ -80,7 +80,7 @@ class MemoryCacheTest < Minitest::Test
     })
     memory.put('a', 'c')
     memory.put('b', 'd')
-    assert_equal(nil, memory.get('a'))
+    assert_nil(memory.get('a'))
     assert_equal('d', memory.get('b'))
   end
 

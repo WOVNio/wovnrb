@@ -70,15 +70,15 @@ module Wovnrb
     end
 
     def test_get_code_with_invalid_name
-      assert_equal(nil, Wovnrb::Lang.get_code('WOVN4LYFE'))
+      assert_nil(Wovnrb::Lang.get_code('WOVN4LYFE'))
     end
 
     def test_get_code_with_empty_string
-      assert_equal(nil, Wovnrb::Lang.get_code(''))
+      assert_nil(Wovnrb::Lang.get_code(''))
     end
 
     def test_get_code_with_nil
-      assert_equal(nil, Wovnrb::Lang.get_code(nil))
+      assert_nil(Wovnrb::Lang.get_code(nil))
     end
 
     def test_add_lang_code
@@ -204,7 +204,7 @@ module Wovnrb
     def test_add_lang_code_nil_href
       lang = Lang.new('en')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://favy.tips'), Wovnrb.get_settings)
-      assert_equal(nil, lang.add_lang_code(nil,'path', h))
+      assert_nil(lang.add_lang_code(nil,'path', h))
     end
     def test_add_lang_code_absolute_different_host
       lang = Lang.new('fr')
