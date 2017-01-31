@@ -73,6 +73,7 @@ module Wovnrb
     # @param [Nokogiri::XML::Node] dst_node The node with the content to put in
     #                                       the src_node.
     def swap_complex_val(src_node, dst_node)
+      return if src_node.has_attribute?('wovn-ignore')
       align_nodes(src_node, dst_node)
       src_node_children = src_node.children
       dst_node_children = dst_node.children

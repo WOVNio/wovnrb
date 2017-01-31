@@ -186,6 +186,20 @@ module Wovnrb
       assert_equal('<a>hello</a>', src)
     end
 
+    def test_node_to_src_with_nest_wovn_ignore
+      node = create_node('<div>hello<a wovn-ignore>world</a>welcome</div>')
+      src = @scraper.node_to_src(node, false, false)
+
+      assert_equal('hello<a wovn-ignore></a>welcome', src)
+    end
+
+    def test_node_to_src_with_nest_two_wovn_ignore
+      node = create_node('<div>hello<a wovn-ignore>world</a>welcome<span wovn-ignore>again</span></div>')
+      src = @scraper.node_to_src(node, false, false)
+
+      assert_equal('hello<a wovn-ignore></a>welcome<span wovn-ignore></span>', src)
+    end
+
     def test_get_node_text
       node = create_node('hello&lt;&gt;world')
       assert_equal('hello<>world', node.text)

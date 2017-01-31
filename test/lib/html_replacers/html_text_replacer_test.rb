@@ -153,5 +153,32 @@ module Wovnrb
       inner_html = dom.xpath('//p')[0].inner_html
       assert_equal('<a>こんにちは World!</a>', inner_html)
     end
+
+    def test_replace_with_complex_value_wovn_ignore_dst_unballanced_right_alignment
+      replacer = HTMLTextReplacer.new({}, {
+        'Hello<a wovn-ignore></a>' => {'ja' => [{'data' => 'こんにちは<a wovn-ignore></a>!'}]}
+      })
+
+      dom = Wovnrb.get_dom('<p>Hello <a wovn-ignore>World</a></p>')
+      replacer.replace(dom, Lang.new('ja'))
+
+      inner_html = dom.xpath('//p')[0].inner_html
+      assert_equal('こんにちは<a wovn-ignore="">World</a>!', inner_html)
+    end
+
+    def test_replace_multiple_with_complex_value_wovn_ignore
+      replacer = HTMLTextReplacer.new({}, {
+        'Hello<a>World</a>' => {'ja' => [{'data' => 'こんにちは<a>World</a>'}]},
+        'Another Hello<a wovn-ignore></a>' => {'ja' => [{'data' => 'こんにちはanother<a wovn-ignore></a>'}]},
+      })
+
+      dom = Wovnrb.get_dom('<p>Hello <a>World</a></p><p>Another Hello <a wovn-ignore>World ;)</a></p>')
+      replacer.replace(dom, Lang.new('ja'))
+
+      inner_html_1 = dom.xpath('//p')[0].inner_html
+      inner_html_2 = dom.xpath('//p')[1].inner_html
+      assert_equal('こんにちは<a>World</a>', inner_html_1)
+      assert_equal('こんにちはanother<a wovn-ignore="">World ;)</a>', inner_html_2)
+    end
   end
 end
