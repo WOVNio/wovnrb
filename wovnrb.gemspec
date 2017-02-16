@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
   #spec.extensions    = %w[ext/dom/extconf.rb]
   #spec.extensions    = spec.files.grep(%r{/extconf\.rb$})
 
-  spec.add_dependency "nokogumbo", "1.3.0"
+  spec.add_dependency "nokogumbo", "1.4.1"
   spec.add_dependency "nokogiri", "< 1.6.8.1"
   spec.add_dependency "activesupport", "< 5"
   spec.add_dependency "lz4-ruby"
