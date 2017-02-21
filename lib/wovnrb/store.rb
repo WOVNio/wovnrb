@@ -22,7 +22,6 @@ module Wovnrb
       @settings =
         {
           'user_token' => '',
-          'secret_key' => '',
           'log_path' => 'log/wovn_error.log',
           'ignore_paths' => [],
           'ignore_globs' => [],
@@ -52,10 +51,6 @@ module Wovnrb
       if !settings.has_key?('user_token') || settings['user_token'].length < 5 || settings['user_token'].length > 6
         valid = false
         errors.push("User token #{settings['user_token']} is not valid.")
-      end
-      if !settings.has_key?('secret_key') || settings['secret_key'].length == 0 #|| settings['secret_key'].length < 5 || settings['secret_key'].length > 6
-        valid = false
-        errors.push("Secret key #{settings['secret_key']} is not valid.")
       end
       if settings.has_key?('ignore_paths') && !settings['ignore_paths'].kind_of?(Array)
         valid = false

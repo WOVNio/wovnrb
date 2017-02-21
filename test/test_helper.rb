@@ -62,7 +62,6 @@ module Wovnrb
     settings['api_url'] = 'http://localhost/v0/values'
     settings['default_lang'] = 'en'
     settings['supported_langs'] = ['en', 'ja']
-    settings['secret_key'] = 'secret_key'
     return settings.merge(options)
   end
 
