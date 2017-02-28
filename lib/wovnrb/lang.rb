@@ -20,6 +20,7 @@ module Wovnrb
       'ja' => {name: '日本語',            code: 'ja',     en: 'Japanese'},
       'ko' => {name: '한국어',            code: 'ko',     en: 'Korean'},
       'ms' => {name: 'Bahasa Melayu',     code: 'ms',     en: 'Malay'},
+      'my' => { name: 'ဗမာစာ',             code: 'my',     en: 'Burmese' },
       'no' => {name: 'Norsk',             code: 'no',     en: 'Norwegian'},
       'pl' => {name: 'Polski',            code: 'pl',     en: 'Polish'},
       'pt' => {name: 'Português',         code: 'pt',     en: 'Portuguese'},
