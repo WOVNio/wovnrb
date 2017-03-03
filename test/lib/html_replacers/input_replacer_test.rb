@@ -52,6 +52,42 @@ module Wovnrb
       assert_equal('Hello', content)
     end
 
+    def test_dont_replace_type_hidden_value
+      replacer = InputReplacer.new({
+        'Hello' => {'ja' => [{'data' => 'こんにちは'}]}
+      })
+
+      dom = Wovnrb.get_dom('<input type="hidden" value="Hello">')
+      replacer.replace(dom, Lang.new('ja'))
+
+      content = dom.xpath('//input')[0].get_attribute('value')
+      assert_equal('Hello', content)
+    end
+
+    def test_dont_replace_type_password_value
+      replacer = InputReplacer.new({
+        'Hello' => {'ja' => [{'data' => 'こんにちは'}]}
+      })
+
+      dom = Wovnrb.get_dom('<input type="password" value="Hello">')
+      replacer.replace(dom, Lang.new('ja'))
+
+      content = dom.xpath('//input')[0].get_attribute('value')
+      assert_equal('Hello', content)
+    end
+
+    def test_dont_replace_type_url_value
+      replacer = InputReplacer.new({
+        'Hello' => {'ja' => [{'data' => 'こんにちは'}]}
+      })
+
+      dom = Wovnrb.get_dom('<input type="url" value="Hello">')
+      replacer.replace(dom, Lang.new('ja'))
+
+      content = dom.xpath('//input')[0].get_attribute('value')
+      assert_equal('Hello', content)
+    end
+
     def test_dont_replace_no_type_value
       replacer = InputReplacer.new({
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]}

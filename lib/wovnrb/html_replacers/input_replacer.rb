@@ -11,6 +11,9 @@ module Wovnrb
         node.get_attribute('value') != '' &&
         node.get_attribute('type') &&
         node.get_attribute('type') != 'text' &&
+        node.get_attribute('type') != 'hidden' &&
+        node.get_attribute('type') != 'password' &&
+        node.get_attribute('type') != 'url' &&
         node.get_attribute('type') != 'search')
       }.each do |node|
         node_value = node.get_attribute('value').strip
