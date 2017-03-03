@@ -101,13 +101,13 @@ module Wovnrb
 
       # no replace image if not exist host alias
       img = img_dom_helper(url, src_index, path, [])
-      assert_equal('/test.img', img.get_attribute('src'), [])
-      img = img_dom_helper(url, src_index, path, [])
-      assert_equal('/test.img', img.get_attribute('src'), ['www.test.com'])
-      img = img_dom_helper(url, src_index, path, [])
-      assert_equal('/test.img', img.get_attribute('src'), ['www.example.com'])
-      img = img_dom_helper(url, src_index, path, [])
-      assert_equal('/test.img', img.get_attribute('src'), ['www.test.com', 'www.wrong.com'])
+      assert_equal('/test.img', img.get_attribute('src'))
+      img = img_dom_helper(url, src_index, path, ['www.test.com'])
+      assert_equal('/test.img', img.get_attribute('src'))
+      img = img_dom_helper(url, src_index, path, ['www.example.com'])
+      assert_equal('/test.img', img.get_attribute('src'))
+      img = img_dom_helper(url, src_index, path, ['www.test.com', 'www.wrong.com'])
+      assert_equal('/test.img', img.get_attribute('src'))
 
       # replace image if exist host alias
       img = img_dom_helper(url, src_index, path, ['www.test.com', 'www.example.com'])
