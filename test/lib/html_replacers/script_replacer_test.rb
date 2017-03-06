@@ -71,6 +71,22 @@ module Wovnrb
       check_wovn_script(scripts[0], 'test_token', 'ja', 'en', 'domain')
     end
 
+    def test_contains_lang_code_aliases
+      store = Store.instance
+      store.settings['user_token'] = 'test_token'
+      store.settings['default_lang'] = 'en'
+      store.settings['url_pattern'] = 'domain'
+      store.settings['custom_lang_aliases'] = {'ja' => 'staging-ja'}
+
+      replacer = ScriptReplacer.new(store)
+      dom = to_head_dom('')
+      replacer.replace(dom, Lang.new('ja'))
+
+      scripts = dom.xpath('//script')
+      assert_equal(1, scripts.length)
+      check_wovn_script(scripts[0], 'test_token', 'ja', 'en', 'domain', '{"ja":"staging-ja"}')
+    end
+
     def check_wovn_script(node, user_token, current_lang, default_lang, url_pattern, custom_lang_aliases = {})
       wovn_data = [
         ['src', '//j.wovn.io/1'],
@@ -85,22 +101,6 @@ module Wovnrb
 
     def to_head_dom(html)
       Wovnrb.to_dom("<html><head>#{html}</head></html>")
-    end
-
-    def test_contains_lang_code_aliases
-      store = Store.instance
-      store.settings['user_token'] = 'test_token'
-      store.settings['default_lang'] = 'en'
-      store.settings['url_pattern'] = 'domain'
-      store.settings['custom_lang_aliases'] = {ja: 'staging-ja'}
-
-      replacer = ScriptReplacer.new(store)
-      dom = to_head_dom('')
-      replacer.replace(dom, Lang.new('ja'))
-
-      scripts = dom.xpath('//script')
-      assert_equal(1, scripts.length)
-      check_wovn_script(scripts[0], 'test_token', 'ja', 'en', 'domain', {ja: 'staging-ja'})
     end
   end
 end

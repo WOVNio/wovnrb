@@ -93,16 +93,16 @@ module Wovnrb
 
     def test_add_custom_lang_aliases_single_value
       s = Wovnrb::Store.instance
-      s.settings({'custom_lang_aliases' => {ja: 'staging-ja'}})
+      s.settings({'custom_lang_aliases' => {'ja' => 'staging-ja'}})
 
-      assert_equal({ja: 'staging-ja'}, s.settings['custom_lang_aliases'])
+      assert_equal({'ja' => 'staging-ja'}, s.settings['custom_lang_aliases'])
     end
 
     def test_add_custom_lang_aliases_multiple_values
       s = Wovnrb::Store.instance
-      s.settings({'custom_lang_aliases' => {ja: 'staging-ja', en: 'staging-en'}})
+      s.settings({'custom_lang_aliases' => {'ja' => 'staging-ja', 'en' => 'staging-en'}})
 
-      assert_equal({ja: 'staging-ja', en: 'staging-en'}, s.settings['custom_lang_aliases'])
+      assert_equal({'ja' => 'staging-ja', 'en' => 'staging-en'}, s.settings['custom_lang_aliases'])
     end
   end
 end

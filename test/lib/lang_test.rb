@@ -521,5 +521,18 @@ module Wovnrb
       swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)
       assert_equal(generate_body('value_double_quote_translated'), swapped_body)
     end
+
+    def test_get_code_from_custom_lang
+      store = Store.instance
+      store.settings['custom_lang_aliases'] = {'ja' => 'staging-ja'}
+      assert_equal('ja', Wovnrb::Lang.get_code('staging-ja'))
+    end
+
+    def test_add_lang_code_with_custom_lang_aliases
+      lang = Lang.new('fr')
+      Store.instance.settings['custom_lang_aliases'] = {'fr' => 'staging-fr'}
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://favy.tips'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      assert_equal("http://staging-fr.favy.tips/topics/50", lang.add_lang_code("/topics/50", 'subdomain', h))
+    end
   end
 end

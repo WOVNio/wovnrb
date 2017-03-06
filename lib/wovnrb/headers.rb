@@ -182,24 +182,25 @@ module Wovnrb
     # Remove language code from the URI.
     #
     # @param uri  [String] original URI
-    # @param lang [String] language code
+    # @param lang_code [String] language code
     # @return     [String] removed URI
     def remove_lang(uri, lang=self.path_lang)
+      lang_code = Store.instance.settings['custom_lang_aliases'][lang] || lang
 
       # Do nothing if lang is empty.
-      if lang.nil? || lang.empty?
+      if lang_code.nil? || lang_code.empty?
         return uri
       end
 
       case @settings['url_pattern']
       when 'query'
-        return uri.sub(/(^|\?|&)wovn=#{lang}(&|$)/, '\1').gsub(/(\?|&)$/, '')
+        return uri.sub(/(^|\?|&)wovn=#{lang_code}(&|$)/, '\1').gsub(/(\?|&)$/, '')
       when 'subdomain'
-        rp = Regexp.new('(^|(//))' + lang + '\.', 'i')
+        rp = Regexp.new('(^|(//))' + lang_code + '\.', 'i')
         return uri.sub(rp, '\1')
      #when 'path'
       else
-        return uri.sub(/\/#{lang}(\/|$)/, '/')
+        return uri.sub(/\/#{lang_code}(\/|$)/, '/')
       end
     end
 

@@ -46,6 +46,9 @@ module Wovnrb
     def self.get_code(lang_name)
       return nil if lang_name.nil?
       return lang_name if LANG[lang_name]
+      custom_lang_aliases = Store.instance.settings['custom_lang_aliases']
+      custom_lang = LANG[custom_lang_aliases.invert[lang_name]]
+      return custom_lang[:code] if custom_lang
       LANG.each do |k, l|
         if lang_name.downcase == l[:name].downcase || lang_name.downcase == l[:en].downcase || lang_name.downcase == l[:code].downcase
           return l[:code]
@@ -77,6 +80,7 @@ module Wovnrb
     # @return [String]                 URL added langauge code.
     def add_lang_code(href, pattern, headers)
       return href if href =~ /^(#.*)?$/
+      lang_code = Store.instance.settings['custom_lang_aliases'][@lang_code] || @lang_code
       # absolute links
       new_href = href
       if href && href =~ /^(https?:)?\/\//i
@@ -94,21 +98,21 @@ module Wovnrb
             when 'subdomain'
               sub_d = href.match(/\/\/([^\.]*)\./)[1]
               sub_code = Lang.get_code(sub_d)
-              if sub_code && sub_code.downcase == @lang_code.downcase
-                new_href = href.sub(Regexp.new(@lang_code, 'i'), @lang_code.downcase)
+              if sub_code && sub_code.downcase == lang_code.downcase
+                new_href = href.sub(Regexp.new(lang_code, 'i'), lang_code.downcase)
               else
-                new_href = href.sub(/(\/\/)([^\.]*)/, '\1' + @lang_code.downcase + '.' + '\2')
+                new_href = href.sub(/(\/\/)([^\.]*)/, '\1' + lang_code.downcase + '.' + '\2')
               end
             when 'query'
-              new_href = href =~ /\?/ ? href + '&wovn=' + @lang_code : href + '?wovn=' + @lang_code
+              new_href = href =~ /\?/ ? href + '&wovn=' + lang_code : href + '?wovn=' + lang_code
             else # path
-              new_href = href.sub(/([^\.]*\.[^\/]*)(\/|$)/, '\1/' + @lang_code + '/')
+              new_href = href.sub(/([^\.]*\.[^\/]*)(\/|$)/, '\1/' + lang_code + '/')
           end
         end
       elsif href
         case pattern
           when 'subdomain'
-            lang_url = headers.protocol + '://' + @lang_code.downcase + '.' + headers.host
+            lang_url = headers.protocol + '://' + lang_code.downcase + '.' + headers.host
             current_dir = headers.pathname.sub(/[^\/]*\.[^\.]{2,6}$/, '')
             if href =~ /^\.\..*$/
               # ../path
@@ -124,14 +128,14 @@ module Wovnrb
               new_href = lang_url + current_dir + '/' + href
             end
           when 'query'
-            new_href = href =~ /\?/ ? href + '&wovn=' + @lang_code : href + '?wovn=' + @lang_code
+            new_href = href =~ /\?/ ? href + '&wovn=' + lang_code : href + '?wovn=' + lang_code
           else # path
             if href =~ /^\//
-              new_href = '/' + @lang_code + href
+              new_href = '/' + lang_code + href
             else
               current_dir = headers.pathname.sub(/[^\/]*\.[^\.]{2,6}$/, '')
               current_dir = '/' if current_dir == ''
-              new_href = '/' + @lang_code + current_dir + href
+              new_href = '/' + lang_code + current_dir + href
             end
         end
       end
