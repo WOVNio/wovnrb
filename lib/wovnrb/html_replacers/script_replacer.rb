@@ -26,7 +26,7 @@ module Wovnrb
       insert_node['src'] = '//j.wovn.io/1'
       insert_node['async'] = true
       version = defined?(VERSION) ? VERSION : ''
-      insert_node['data-wovnio'] = "key=#{@store.settings['user_token']}&backend=true&currentLang=#{lang.lang_code}&defaultLang=#{@store.settings['default_lang']}&urlPattern=#{@store.settings['url_pattern']}&version=#{version}"
+      insert_node['data-wovnio'] = "key=#{@store.settings['user_token']}&backend=true&currentLang=#{lang.lang_code}&defaultLang=#{@store.settings['default_lang']}&urlPattern=#{@store.settings['url_pattern']}&langCodeAliases=#{@store.settings['custom_lang_aliases']}&version=#{version}"
       # do this so that there will be a closing tag (better compatibility with browsers)
       insert_node.content = ' '
       if parent_node.children.size > 0

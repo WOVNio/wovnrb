@@ -37,6 +37,7 @@ module Wovnrb
           'cache_megabytes' => nil,
           'ttl_seconds' => nil,
           'use_proxy' => false,  # use env['HTTP_X_FORWARDED_HOST'] instead of env['HTTP_HOST'] and env['SERVER_NAME'] when this setting is true.
+          'custom_lang_aliases' => {}
         }
       # When Store is initialized, the Rails.configuration object is not yet initialized
       @config_loaded = false
@@ -75,6 +76,10 @@ module Wovnrb
       if !settings.has_key?('supported_langs') || !settings['supported_langs'].kind_of?(Array) || settings['supported_langs'].size < 1
         valid = false
         errors.push("Supported langs configuration is not valid.")
+      end
+      if !settings.has_key?('custom_lang_aliases') || !settings['custom_lang_aliases'].kind_of?(Hash)
+        valid = false
+        errors.push("Custom lang aliases is not valid.")
       end
       # log errors
       if errors.length > 0
