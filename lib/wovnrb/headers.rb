@@ -208,7 +208,6 @@ module Wovnrb
 
     def out(headers)
       r = Regexp.new("//" + @host)
-      # TODO test
       lang_code = Store.instance.settings['custom_lang_aliases'][self.lang_code] || self.lang_code
       if headers.has_key?("Location") && headers["Location"] =~ r
         case @settings['url_pattern']

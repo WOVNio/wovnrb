@@ -151,6 +151,42 @@ module Wovnrb
       assert_equal('http://wovn.io/test', env['HTTP_REFERER'])
     end
 
+    def test_request_out_http_referer_subdomain_with_custom_lang_code
+      Store.instance.settings['custom_lang_aliases'] = {'ja' => 'staging-ja'}
+      h = Wovnrb::Headers.new(
+        Wovnrb.get_env(
+          'SERVER_NAME' => 'staging-ja.wovn.io',
+          'REQUEST_URI' => '/test',
+          'HTTP_REFERER' => 'http://staging-ja.wovn.io/test',
+        ),
+        Wovnrb.get_settings(
+          'url_pattern' => 'subdomain',
+          'url_pattern_reg' => '^(?<lang>[^.]+).',
+        ),
+      )
+      env = h.request_out('ja')
+      assert_equal('http://wovn.io/test', env['HTTP_REFERER'])
+    end
+
+    def test_out_http_referer_subdomain_with_custom_lang_code
+      Store.instance.settings['custom_lang_aliases'] = {'ja' => 'staging-ja'}
+      h = Wovnrb::Headers.new(
+        Wovnrb.get_env(
+          'SERVER_NAME' => 'staging-ja.wovn.io',
+          'REQUEST_URI' => '/test',
+          'HTTP_REFERER' => 'http://staging-ja.wovn.io/test',
+        ),
+        Wovnrb.get_settings(
+          'url_pattern' => 'subdomain',
+          'url_pattern_reg' => '^(?<lang>[^.]+).',
+        ),
+      )
+      headers = h.request_out('ja')
+      assert_equal('http://wovn.io/test', headers['HTTP_REFERER'])
+      headers['Location'] = headers['HTTP_REFERER']
+      assert_equal('http://staging-ja.wovn.io/test', h.out(headers)['Location'])
+    end
+
     #########################
     # GET SETTINGS
     #########################
