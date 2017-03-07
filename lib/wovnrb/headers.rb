@@ -128,19 +128,21 @@ module Wovnrb
         return "#{self.protocol}://#{self.url}"
         #return remove_lang("#{@env['HTTP_HOST']}#{@env['REQUEST_URI']}", lang)
       else
+        # TODO test
+        lang_code = Store.instance.settings['custom_lang_aliases'][lang] || lang
         location = self.url
         case @settings['url_pattern']
         when 'query'
           if location !~ /\?/
-            location = "#{location}?wovn=#{lang}"
+            location = "#{location}?wovn=#{lang_code}"
           else @env['REQUEST_URI'] !~ /(\?|&)wovn=/
-            location = "#{location}&wovn=#{lang}"
+            location = "#{location}&wovn=#{lang_code}"
           end
         when 'subdomain'
-          location = "#{lang.downcase}.#{location}"
+          location = "#{lang_code.downcase}.#{location}"
        #when 'path'
         else
-          location = location.sub(/(\/|$)/, "/#{lang}/");
+          location = location.sub(/(\/|$)/, "/#{lang_code}/");
         end
         return "#{self.protocol}://#{location}"
       end
@@ -206,6 +208,8 @@ module Wovnrb
 
     def out(headers)
       r = Regexp.new("//" + @host)
+      # TODO test
+      lang_code = Store.instance.settings['custom_lang_aliases'][self.lang_code] || self.lang_code
       if headers.has_key?("Location") && headers["Location"] =~ r
         case @settings['url_pattern']
         when 'query'
@@ -214,12 +218,12 @@ module Wovnrb
           else
             headers["Location"] += "?"
           end
-          headers['Location'] += "wovn=#{self.lang_code}"
+          headers['Location'] += "wovn=#{lang_code}"
         when 'subdomain'
-          headers["Location"] = headers["Location"].sub(/\/\/([^.]+)/, '//' + self.lang_code + '.\1')
+          headers["Location"] = headers["Location"].sub(/\/\/([^.]+)/, '//' + lang_code + '.\1')
        #when 'path'
         else
-          headers["Location"] = headers['Location'].sub(/(\/\/[^\/]+)/, '\1/' + self.lang_code)
+          headers["Location"] = headers['Location'].sub(/(\/\/[^\/]+)/, '\1/' + lang_code)
         end
       end
       headers
