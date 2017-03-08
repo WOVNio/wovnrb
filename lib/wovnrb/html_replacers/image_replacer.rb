@@ -20,9 +20,9 @@ module Wovnrb
           if src !~ /:\/\//
             # if this is a path with a leading slash
             if src =~ /^\//
-              src = "#{@url[:protocol]}://#{@url[:host]}#{src}"
+              src = File.join("#{@url[:protocol]}://#{@url[:host]}", src)
             else
-              src = "#{@url[:protocol]}://#{@url[:host]}#{@url[:path]}#{src}"
+              src = File.join("#{@url[:protocol]}://#{@url[:host]}#{@url[:path]}", src)
             end
           end
 

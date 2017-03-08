@@ -69,10 +69,19 @@ module Wovnrb
     end
 
     def test_replace_absolute_path
+        img_test_helper('/hello/')
+    end
+
+    def test_replace_empty_path
+        img_test_helper('')
+    end
+
+    private
+    def img_test_helper path
       url = {
-        :protocol => 'http',
-        :host => 'www.example.com',
-        :path => '/hello/'
+        protocol: 'http',
+        host: 'www.example.com',
+        path: path,
       }
       text_index = {}
       src_index = {
