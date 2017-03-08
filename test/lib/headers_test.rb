@@ -105,6 +105,27 @@ module Wovnrb
     end
 
     #########################
+    # REDIRECT_LOCATION
+    #########################
+
+    def test_redirect_location_without_custom_lang_code
+      h = Wovnrb::Headers.new(
+        Wovnrb.get_env('url' => 'http://wovn.io/contact', 'HTTP_X_FORWARDED_HOST' => 'wovn.io'),
+        Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'),
+      )
+      assert_equal('http://ja.wovn.io/contact', h.redirect_location('ja'))
+    end
+
+    def test_redirect_location_without_custom_lang_code
+      Store.instance.settings['custom_lang_aliases'] = {'ja' => 'staging-ja'}
+      h = Wovnrb::Headers.new(
+        Wovnrb.get_env('url' => 'http://wovn.io/contact', 'HTTP_X_FORWARDED_HOST' => 'wovn.io'),
+        Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'),
+      )
+      assert_equal('http://staging-ja.wovn.io/contact', h.redirect_location('ja'))
+    end
+
+    #########################
     # REQUEST_OUT
     #########################
 
