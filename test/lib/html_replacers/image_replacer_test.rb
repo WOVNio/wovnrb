@@ -69,11 +69,15 @@ module Wovnrb
     end
 
     def test_replace_absolute_path
-        img_test_helper('/hello/')
+      img = img_test_helper('/hello/')
+      assert_equal('http://test.com/ttt.img', img.get_attribute('src'))
+      assert_nil(img.previous)
     end
 
     def test_replace_empty_path
-        img_test_helper('')
+      img = img_test_helper('')
+      assert_equal('http://test.com/ttt.img', img.get_attribute('src'))
+      assert_nil(img.previous)
     end
 
     private
@@ -88,13 +92,9 @@ module Wovnrb
         'http://www.test.com/test.img' => {'ja' => [{'data' => 'http://test.com/ttt.img'}]}
       }
       replacer = ImageReplacer.new(url, text_index, src_index, '')
-
       dom = Wovnrb.get_dom('<img src="http://www.test.com/test.img"')
       replacer.replace(dom, Lang.new('ja'))
-
-      img = dom.xpath('//img')[0]
-      assert_equal('http://test.com/ttt.img', img.get_attribute('src'))
-      assert_nil(img.previous)
+      dom.xpath('//img')[0]
     end
   end
 end
