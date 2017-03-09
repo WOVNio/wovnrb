@@ -20,9 +20,9 @@ module Wovnrb
           if src !~ /:\/\//
             # if this is a path with a leading slash
             if src =~ /^\//
-              src = File.join("#{@url[:protocol]}://#{@url[:host]}", src)
+              src = join_path("#{@url[:protocol]}://#{@url[:host]}", src)
             else
-              src = File.join("#{@url[:protocol]}://#{@url[:host]}#{@url[:path]}", src)
+              src = join_path("#{@url[:protocol]}://#{@url[:host]}#{@url[:path]}", src)
             end
           end
 
@@ -40,6 +40,12 @@ module Wovnrb
           end
         end
       end
+    end
+
+    private
+    def join_path(x, y)
+      separator = (x[-1] != '/' and y[0] != '/') ? '/' : ''
+      "#{x}#{separator}#{y}"
     end
   end
 end
