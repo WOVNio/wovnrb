@@ -142,6 +142,10 @@ module Wovnrb
         end
       end
 
+      if @settings.has_key?('custom_lang_aliases')
+        @settings['custom_lang_aliases'].stringify_keys!
+      end
+
       @config_loaded = true
       @settings
     end

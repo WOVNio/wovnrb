@@ -104,5 +104,12 @@ module Wovnrb
 
       assert_equal({'ja' => 'staging-ja', 'en' => 'staging-en'}, s.settings['custom_lang_aliases'])
     end
+
+    def test_add_custom_lang_aliases_using_symbols
+      s = Wovnrb::Store.instance
+      s.settings({'custom_lang_aliases' => {ja: 'staging-ja', en: 'staging-en'}})
+
+      assert_equal({'ja' => 'staging-ja', 'en' => 'staging-en'}, s.settings['custom_lang_aliases'])
+    end
   end
 end
