@@ -386,6 +386,23 @@ module Wovnrb
 <div><p>Hello</p></div>
 <img src=\"http://example.com/photo.png\" alt=\"Hello\">
 </body></html>"
+        when  "a_href_javascript"
+          body = "<html><body><h1>Mr. Belvedere Fan Club</h1>
+                <div><p><a href=\"javascript:void(0)\">Hello</a></p></div>
+              </body></html>"
+        when  "a_href_javascript_translated"
+          body = "<html lang=\"ja\">
+<head>
+<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
+<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\">
+</head>
+<body>
+<h1>
+<!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1>
+                <div><p><a href=\"javascript:void(0)\"><!--wovn-src:Hello-->こんにちは</a></p></div>
+              </body>
+</html>
+"
         else # "" case
           body = "<html><body><h1>Mr. Belvedere Fan Club</h1>
                 <div><p>Hello</p></div>
@@ -441,6 +458,16 @@ module Wovnrb
       url = h.url
       swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)
       assert_equal(generate_body('translated_in_japanese'), swapped_body)
+    end
+
+    def test_switch_lang_href_javascript
+      lang = Lang.new('ja')
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      dom = generate_dom('a_href_javascript')
+      values = generate_values
+      url = h.url
+      swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)
+      assert_equal(generate_body('a_href_javascript_translated'), swapped_body)
     end
 
     def test_switch_lang_meta_img_alt_tags

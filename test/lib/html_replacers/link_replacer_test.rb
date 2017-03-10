@@ -33,6 +33,33 @@ module Wovnrb
       assert_equal('/index.html', link)
     end
 
+    def test_replace_javascript_link_query
+      replacer = LinkReplacer.new('query', get_header)
+      dom = Wovnrb.get_dom('<a href="javascript:void(0);">link text</a>')
+      replacer.replace(dom, Lang.new('en'))
+
+      link = dom.xpath('//a')[0].get_attribute('href')
+      assert_equal('javascript:void(0);', link)
+    end
+
+    def test_replace_javascript_link_path
+      replacer = LinkReplacer.new('path', get_header)
+      dom = Wovnrb.get_dom('<a href="javascript:void(0);">link text</a>')
+      replacer.replace(dom, Lang.new('en'))
+
+      link = dom.xpath('//a')[0].get_attribute('href')
+      assert_equal('javascript:void(0);', link)
+    end
+
+    def test_replace_javascript_link_subdomain
+      replacer = LinkReplacer.new('subdomain', get_header)
+      dom = Wovnrb.get_dom('<a href="javascript:void(0);">link text</a>')
+      replacer.replace(dom, Lang.new('en'))
+
+      link = dom.xpath('//a')[0].get_attribute('href')
+      assert_equal('javascript:void(0);', link)
+    end
+
     def test_replace_mustache
       replacer = LinkReplacer.new('query', get_header)
       dom = Wovnrb.get_dom('<a href="{{hello}}">link text</a>')
