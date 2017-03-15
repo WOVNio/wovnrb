@@ -21,9 +21,9 @@ module Wovnrb
           if src !~ /:\/\//
             # if this is a path with a leading slash
             if src =~ /^\//
-              src = "#{@url[:protocol]}://#{@url[:host]}#{src}"
+              src = join_path("#{@url[:protocol]}://#{@url[:host]}", src)
             else
-              src = "#{@url[:protocol]}://#{@url[:host]}#{@url[:path]}#{src}"
+              src = join_path("#{@url[:protocol]}://#{@url[:host]}#{@url[:path]}", src)
             end
           end
 
@@ -58,6 +58,11 @@ module Wovnrb
       if @src_index[src] && @src_index[src][lang.lang_code] && @src_index[src][lang.lang_code].size > 0
         node.attribute('src').value = "#{@img_src_prefix}#{@src_index[src][lang.lang_code][0]['data']}"
       end
+    end
+
+    def join_path(x, y)
+      separator = (x[-1] != '/' and y[0] != '/') ? '/' : ''
+      "#{x}#{separator}#{y}"
     end
   end
 end

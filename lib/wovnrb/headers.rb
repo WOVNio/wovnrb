@@ -128,19 +128,21 @@ module Wovnrb
         return "#{self.protocol}://#{self.url}"
         #return remove_lang("#{@env['HTTP_HOST']}#{@env['REQUEST_URI']}", lang)
       else
+        # TODO test
+        lang_code = Store.instance.settings['custom_lang_aliases'][lang] || lang
         location = self.url
         case @settings['url_pattern']
         when 'query'
           if location !~ /\?/
-            location = "#{location}?wovn=#{lang}"
+            location = "#{location}?wovn=#{lang_code}"
           else @env['REQUEST_URI'] !~ /(\?|&)wovn=/
-            location = "#{location}&wovn=#{lang}"
+            location = "#{location}&wovn=#{lang_code}"
           end
         when 'subdomain'
-          location = "#{lang.downcase}.#{location}"
+          location = "#{lang_code.downcase}.#{location}"
        #when 'path'
         else
-          location = location.sub(/(\/|$)/, "/#{lang}/");
+          location = location.sub(/(\/|$)/, "/#{lang_code}/");
         end
         return "#{self.protocol}://#{location}"
       end
@@ -182,29 +184,31 @@ module Wovnrb
     # Remove language code from the URI.
     #
     # @param uri  [String] original URI
-    # @param lang [String] language code
+    # @param lang_code [String] language code
     # @return     [String] removed URI
     def remove_lang(uri, lang=self.path_lang)
+      lang_code = Store.instance.settings['custom_lang_aliases'][lang] || lang
 
       # Do nothing if lang is empty.
-      if lang.nil? || lang.empty?
+      if lang_code.nil? || lang_code.empty?
         return uri
       end
 
       case @settings['url_pattern']
       when 'query'
-        return uri.sub(/(^|\?|&)wovn=#{lang}(&|$)/, '\1').gsub(/(\?|&)$/, '')
+        return uri.sub(/(^|\?|&)wovn=#{lang_code}(&|$)/, '\1').gsub(/(\?|&)$/, '')
       when 'subdomain'
-        rp = Regexp.new('(^|(//))' + lang + '\.', 'i')
+        rp = Regexp.new('(^|(//))' + lang_code + '\.', 'i')
         return uri.sub(rp, '\1')
      #when 'path'
       else
-        return uri.sub(/\/#{lang}(\/|$)/, '/')
+        return uri.sub(/\/#{lang_code}(\/|$)/, '/')
       end
     end
 
     def out(headers)
       r = Regexp.new("//" + @host)
+      lang_code = Store.instance.settings['custom_lang_aliases'][self.lang_code] || self.lang_code
       if headers.has_key?("Location") && headers["Location"] =~ r
         case @settings['url_pattern']
         when 'query'
@@ -213,12 +217,12 @@ module Wovnrb
           else
             headers["Location"] += "?"
           end
-          headers['Location'] += "wovn=#{self.lang_code}"
+          headers['Location'] += "wovn=#{lang_code}"
         when 'subdomain'
-          headers["Location"] = headers["Location"].sub(/\/\/([^.]+)/, '//' + self.lang_code + '.\1')
+          headers["Location"] = headers["Location"].sub(/\/\/([^.]+)/, '//' + lang_code + '.\1')
        #when 'path'
         else
-          headers["Location"] = headers['Location'].sub(/(\/\/[^\/]+)/, '\1/' + self.lang_code)
+          headers["Location"] = headers['Location'].sub(/(\/\/[^\/]+)/, '\1/' + lang_code)
         end
       end
       headers
