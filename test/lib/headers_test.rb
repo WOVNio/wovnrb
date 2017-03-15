@@ -5917,7 +5917,7 @@ class HeadersTest < Minitest::Test
     h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings)
 
     keys = Wovnrb::Lang::LANG.keys
-    assert_equal(28, keys.size)
+    assert_equal(29, keys.size)
 
     for key in keys
       uri_without_scheme = h.remove_lang("wovn.io/#{key}", key)
@@ -5952,7 +5952,7 @@ class HeadersTest < Minitest::Test
     h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings('url_pattern' => 'query'))
 
     keys = Wovnrb::Lang::LANG.keys
-    assert_equal(28, keys.size)
+    assert_equal(29, keys.size)
 
     for key in keys
       uri_without_scheme = h.remove_lang("wovn.io/?wovn=#{key}", key)
@@ -5987,7 +5987,7 @@ class HeadersTest < Minitest::Test
     h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings('url_pattern' => 'subdomain'))
 
     keys = Wovnrb::Lang::LANG.keys
-    assert_equal(28, keys.size)
+    assert_equal(29, keys.size)
 
     for key in keys
       uri_without_scheme = h.remove_lang("#{key.downcase}.wovn.io/", key)

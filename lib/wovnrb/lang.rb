@@ -20,6 +20,7 @@ module Wovnrb
       'ja' => {name: '日本語',            code: 'ja',     en: 'Japanese'},
       'ko' => {name: '한국어',            code: 'ko',     en: 'Korean'},
       'ms' => {name: 'Bahasa Melayu',     code: 'ms',     en: 'Malay'},
+      'my' => { name: 'ဗမာစာ',             code: 'my',     en: 'Burmese' },
       'no' => {name: 'Norsk',             code: 'no',     en: 'Norwegian'},
       'pl' => {name: 'Polski',            code: 'pl',     en: 'Polish'},
       'pt' => {name: 'Português',         code: 'pt',     en: 'Portuguese'},
@@ -176,6 +177,7 @@ module Wovnrb
 
       replacers << TextReplacer.new(text_index)
       replacers << MetaReplacer.new(text_index)
+      replacers << InputReplacer.new(text_index)
       replacers << ImageReplacer.new(url, text_index, src_index, img_src_prefix, host_aliases)
       replacers << ScriptReplacer.new(store)
 

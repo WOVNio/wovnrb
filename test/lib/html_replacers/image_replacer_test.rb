@@ -45,7 +45,7 @@ module Wovnrb
 
       img = dom.xpath('//img')[0]
       assert_equal('http://test.com/ttt.img', img.get_attribute('src'))
-      assert_equal(nil, img.previous)
+      assert_nil(img.previous)
     end
 
     def test_replace_root_path
@@ -65,7 +65,7 @@ module Wovnrb
 
       img = dom.xpath('//img')[0]
       assert_equal('http://test.com/ttt.img', img.get_attribute('src'))
-      assert_equal(nil, img.previous)
+      assert_nil(img.previous)
     end
 
     def test_replace_absolute_path
@@ -85,7 +85,7 @@ module Wovnrb
 
       img = dom.xpath('//img')[0]
       assert_equal('http://test.com/ttt.img', img.get_attribute('src'))
-      assert_equal(nil, img.previous)
+      assert_nil(img.previous)
     end
 
     def test_replace_host_alias
