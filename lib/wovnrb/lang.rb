@@ -170,6 +170,7 @@ module Wovnrb
       text_index = values['text_vals'] || {}
       src_index = values['img_vals'] || {}
       img_src_prefix = values['img_src_prefix'] || ''
+      host_aliases = values['host_aliases'] || []
 
       replacers = []
       # add lang code to anchors href if not default lang
@@ -181,7 +182,7 @@ module Wovnrb
       replacers << TextReplacer.new(text_index)
       replacers << MetaReplacer.new(text_index)
       replacers << InputReplacer.new(text_index)
-      replacers << ImageReplacer.new(url, text_index, src_index, img_src_prefix)
+      replacers << ImageReplacer.new(url, text_index, src_index, img_src_prefix, host_aliases)
       replacers << ScriptReplacer.new(store)
 
       replacers.each do |replacer|
