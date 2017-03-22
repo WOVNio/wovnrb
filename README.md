@@ -38,8 +38,7 @@ Insert the following into either config/application.rb or config/environments/.
 ...
 
 config.wovnrb = {
-  :user_token => '2Wle3',
-  :secret_key => 'secret',
+  :user_token => '2Wle3'
 }
 
 ...
@@ -55,8 +54,7 @@ Insert the following into either the Application File or config.ru.
 require 'wovnrb'
 
 use Wovnrb::Interceptor, {
-  :user_token => '2Wle3',
-  :secret_key => 'secret',
+  :user_token => '2Wle3'
 }
 
 ...
@@ -71,7 +69,6 @@ WOVN.io Ruby Library's valid parameters are as follows.
 Parameter Name | Required | Default Setting
 -------------- | -------- | ----------------
 user_token     | yes      | ''
-secret_key     | yes      | ''
 url_pattern    | yes      | 'path'
 query          |          | []
 default_lang   | yes      | 'en'
@@ -80,11 +77,7 @@ default_lang   | yes      | 'en'
 
 Set your WOVN.io Account's user token. This parameter is required.
 
-### 2.2. secret_key
-
-This parameter is in development; it is not currently used. However, it is a required parameter, so ensure to set a value for it.
-
-### 2.3. url_pattern
+### 2.2. url_pattern
 
 The Library works in the Ruby Application by adding new URL's to be translated. You can set the type of url with the url_pattern parameter. There are 3 types that can be set.
 
@@ -98,7 +91,7 @@ parameters  | Translated page's URL           | Notes
 
 	https://wovn.io/contact
 
-### 2.4. query
+### 2.3. query
 
 WOVN.io ignores query parameters when searching translated page. If you want to add query parameter to translated page's URL, you should configure "query" parameter. (You need to configure WOVN.io too)
 
@@ -112,7 +105,7 @@ If the default_lang is 'en', and the query is set to 'os', the above URL will be
 
 	https://wovn.io/contact?os=mac
 
-### 2.5. default_lang
+### 2.4. default_lang
 
 This sets the Ruby application's default language. The default value is English ('en').
 
@@ -128,7 +121,7 @@ The library will redirect to the following URL.
 
 ## 3. Contributing
 
-1. Fork it ( https://github.com/[my-github-username]/wovnrb/fork )
+1. Fork it ( https://github.com/WOVNio/wovnrb/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)

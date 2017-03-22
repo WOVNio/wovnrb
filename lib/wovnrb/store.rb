@@ -4,6 +4,8 @@ require 'cgi'
 require 'singleton'
 require 'wovnrb/services/wovn_logger'
 require 'wovnrb/services/glob'
+require 'active_support'
+require 'active_support/core_ext'
 
 module Wovnrb
   class Store
@@ -22,7 +24,6 @@ module Wovnrb
       @settings =
         {
           'user_token' => '',
-          'secret_key' => '',
           'log_path' => 'log/wovn_error.log',
           'ignore_paths' => [],
           'ignore_globs' => [],
@@ -39,6 +40,7 @@ module Wovnrb
           'cache_megabytes' => nil,
           'ttl_seconds' => nil,
           'use_proxy' => false,  # use env['HTTP_X_FORWARDED_HOST'] instead of env['HTTP_HOST'] and env['SERVER_NAME'] when this setting is true.
+          'custom_lang_aliases' => {}
         }
       # When Store is initialized, the Rails.configuration object is not yet initialized
       @config_loaded = false
@@ -53,10 +55,6 @@ module Wovnrb
       if !settings.has_key?('user_token') || settings['user_token'].length < 5 || settings['user_token'].length > 6
         valid = false
         errors.push("User token #{settings['user_token']} is not valid.")
-      end
-      if !settings.has_key?('secret_key') || settings['secret_key'].length == 0 #|| settings['secret_key'].length < 5 || settings['secret_key'].length > 6
-        valid = false
-        errors.push("Secret key #{settings['secret_key']} is not valid.")
       end
       if settings.has_key?('ignore_paths') && !settings['ignore_paths'].kind_of?(Array)
         valid = false
@@ -87,6 +85,10 @@ module Wovnrb
       if !settings.has_key?('supported_langs') || !settings['supported_langs'].kind_of?(Array) || settings['supported_langs'].size < 1
         valid = false
         errors.push("Supported langs configuration is not valid.")
+      end
+      if !settings.has_key?('custom_lang_aliases') || !settings['custom_lang_aliases'].kind_of?(Hash)
+        valid = false
+        errors.push("Custom lang aliases is not valid.")
       end
       # log errors
       if errors.length > 0
@@ -147,6 +149,10 @@ module Wovnrb
         @settings['ignore_globs'] = @settings['ignore_paths'].map do |pattern|
           Glob.new(pattern)
         end
+      end
+
+      if @settings.has_key?('custom_lang_aliases')
+        @settings['custom_lang_aliases'].stringify_keys!
       end
 
       @config_loaded = true

@@ -41,7 +41,7 @@ module Wovnrb
       valid = store.valid_settings?
 
       assert_equal(false, valid)
-      assert_equal(['User token  is not valid.', 'Secret key  is not valid.'], mock.errors)
+      assert_equal(['User token  is not valid.'], mock.errors)
     end
 
     def test_settings_ignore_paths
@@ -73,7 +73,7 @@ module Wovnrb
       store.settings({'ignore_paths' => 'aaaa'})
 
       assert_equal(false, store.valid_settings?)
-      assert_equal(['User token  is not valid.', 'Secret key  is not valid.', 'Ignore Paths aaaa should be Array.'], mock.errors)
+      assert_equal(['User token  is not valid.', 'Ignore Paths aaaa should be Array.'], mock.errors)
     end
 
     def test_settings_ignore_glob_injection
@@ -82,6 +82,34 @@ module Wovnrb
       s.settings({'ignore_globs' => [1, 2]})
 
       assert_equal([], s.settings['ignore_globs'])
+    end
+
+    def test_add_custom_lang_aliases_empty
+      s = Wovnrb::Store.instance
+      s.settings({'custom_lang_aliases' => {}})
+
+      assert_equal({}, s.settings['custom_lang_aliases'])
+    end
+
+    def test_add_custom_lang_aliases_single_value
+      s = Wovnrb::Store.instance
+      s.settings({'custom_lang_aliases' => {'ja' => 'staging-ja'}})
+
+      assert_equal({'ja' => 'staging-ja'}, s.settings['custom_lang_aliases'])
+    end
+
+    def test_add_custom_lang_aliases_multiple_values
+      s = Wovnrb::Store.instance
+      s.settings({'custom_lang_aliases' => {'ja' => 'staging-ja', 'en' => 'staging-en'}})
+
+      assert_equal({'ja' => 'staging-ja', 'en' => 'staging-en'}, s.settings['custom_lang_aliases'])
+    end
+
+    def test_add_custom_lang_aliases_using_symbols
+      s = Wovnrb::Store.instance
+      s.settings({'custom_lang_aliases' => {ja: 'staging-ja', en: 'staging-en'}})
+
+      assert_equal({'ja' => 'staging-ja', 'en' => 'staging-en'}, s.settings['custom_lang_aliases'])
     end
   end
 end
