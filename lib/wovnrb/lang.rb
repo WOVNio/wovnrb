@@ -21,6 +21,7 @@ module Wovnrb
       'ko' => {name: '한국어',            code: 'ko',     en: 'Korean'},
       'ms' => {name: 'Bahasa Melayu',     code: 'ms',     en: 'Malay'},
       'my' => { name: 'ဗမာစာ',             code: 'my',     en: 'Burmese' },
+      'ne' => {name: 'नेपाली भाषा',            code: 'ne',     en: 'Nepali'},
       'no' => {name: 'Norsk',             code: 'no',     en: 'Norwegian'},
       'pl' => {name: 'Polski',            code: 'pl',     en: 'Polish'},
       'pt' => {name: 'Português',         code: 'pt',     en: 'Portuguese'},

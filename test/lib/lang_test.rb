@@ -10,7 +10,7 @@ module Wovnrb
     end
 
     def test_langs_length
-      assert_equal(29, Wovnrb::Lang::LANG.length)
+      assert_equal(30, Wovnrb::Lang::LANG.length)
     end
 
     def test_keys_exist
@@ -41,6 +41,7 @@ module Wovnrb
        assert_equal('ko',       Lang::iso_639_1_normalization('ko'))
        assert_equal('ms',       Lang::iso_639_1_normalization('ms'))
        assert_equal('my',       Lang::iso_639_1_normalization('my'))
+       assert_equal('ne',       Lang::iso_639_1_normalization('ne'))
        assert_equal('no',       Lang::iso_639_1_normalization('no'))
        assert_equal('pl',       Lang::iso_639_1_normalization('pl'))
        assert_equal('pt',       Lang::iso_639_1_normalization('pt'))
