@@ -48,12 +48,16 @@ module Wovnrb
 
     def test_add_comment_node
       replacer = ReplacerBase.new
-      html = Nokogiri::HTML("<html><body><h1 id=\"test-node\">Test Content</h1></body></html>")
+      html = Nokogiri::HTML5('<html><body><h1 id="test-node">Test Content</h1></body></html>')
       h1 = html.xpath("//h1[@id='test-node']")[0]
-      text_node = h1.children[0]
 
-      assert_equal("Test Content", h1.inner_html)
-      replacer.send(:add_comment_node, text_node, 'test content')
+      assert_equal('Test Content', h1.inner_html)
+      h1.xpath('//text()').each do |node|
+        text_content = node.content
+        if text_content == 'Test Content'
+          replacer.send(:add_comment_node, node, 'test content')
+        end
+      end
       assert_equal("<!--wovn-src:test content-->Test Content", h1.inner_html)
     end
   end
