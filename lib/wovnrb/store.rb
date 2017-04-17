@@ -149,7 +149,7 @@ module Wovnrb
         @settings['custom_lang_aliases'].stringify_keys!
       end
 
-      if valid_dev_mode? && @settings['api_url'].blank?
+      if dev_mode? && @settings['api_url'].blank?
         @settings['api_url'] = "#{wovn_protocol}://api.#{wovn_host}/v0/values"
       end
 
@@ -161,16 +161,16 @@ module Wovnrb
       @settings
     end
 
-    def valid_dev_mode?
-      @settings['dev_mode'] && Rails.env.development?
+    def dev_mode?
+      @settings['dev_mode']
     end
 
     def wovn_protocol
-      valid_dev_mode? ? 'http' : 'https'
+      dev_mode? ? 'http' : 'https'
     end
 
     def wovn_host
-      valid_dev_mode? ? 'dev-wovn.io:3000' : 'wovn.io'
+      dev_mode? ? 'dev-wovn.io:3000' : 'wovn.io'
     end
 
     private
