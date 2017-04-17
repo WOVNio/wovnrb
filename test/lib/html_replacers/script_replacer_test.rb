@@ -23,12 +23,12 @@ module Wovnrb
       assert_equal('test/test.js', other_script.get_attribute('src'))
     end
 
-    def test_replace_with_dev_mode_on
+    def test_replace_with_wovn_dev_mode_on
       store = Store.instance
       store.settings['user_token'] = 'test_token'
       store.settings['default_lang'] = 'en'
       store.settings['url_pattern'] = 'domain'
-      store.settings['dev_mode'] = true
+      store.settings['wovn_dev_mode'] = true
 
       replacer = ScriptReplacer.new(store)
       dom = to_head_dom('<script src="test/test.js"></script>')

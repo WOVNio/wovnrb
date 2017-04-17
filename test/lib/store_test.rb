@@ -112,46 +112,46 @@ module Wovnrb
       assert_equal({'ja' => 'staging-ja', 'en' => 'staging-en'}, s.settings['custom_lang_aliases'])
     end
 
-    def test_dev_mode_on
+    def test_wovn_dev_mode_on
       s = Wovnrb::Store.instance
-      s.settings({'dev_mode' => true})
+      s.settings({'wovn_dev_mode' => true})
 
-      assert(s.settings['dev_mode'])
-      assert(s.dev_mode?)
+      assert(s.settings['wovn_dev_mode'])
+      assert(s.wovn_dev_mode?)
     end
 
-    def test_dev_mode_off_by_default
+    def test_wovn_dev_mode_off_by_default
       s = Wovnrb::Store.instance
       s.settings({})
 
-      assert(!s.settings['dev_mode'])
-      assert(!s.dev_mode?)
+      assert(!s.settings['wovn_dev_mode'])
+      assert(!s.wovn_dev_mode?)
     end
 
-    def test_default_api_url_with_dev_mode_on
+    def test_default_api_url_with_wovn_dev_mode_on
       s = Wovnrb::Store.instance
-      s.settings({'dev_mode' => true})
+      s.settings({'wovn_dev_mode' => true})
 
       assert_equal('http://api.dev-wovn.io:3000/v0/values', s.settings['api_url'])
     end
 
-    def test_default_api_url_with_dev_mode_off
+    def test_default_api_url_with_wovn_dev_mode_off
       s = Wovnrb::Store.instance
-      s.settings({'dev_mode' => false})
+      s.settings({'wovn_dev_mode' => false})
 
       assert_equal('https://api.wovn.io/v0/values', s.settings['api_url'])
     end
 
-    def test_custom_api_url_not_changed_with_dev_mode_on
+    def test_custom_api_url_not_changed_with_wovn_dev_mode_on
       s = Wovnrb::Store.instance
-      s.settings({'api_url' => 'test-api.io', 'dev_mode' => true})
+      s.settings({'api_url' => 'test-api.io', 'wovn_dev_mode' => true})
 
       assert_equal('test-api.io', s.settings['api_url'])
     end
 
-    def test_custom_api_url_not_changed_with_dev_mode_off
+    def test_custom_api_url_not_changed_with_wovn_dev_mode_off
       s = Wovnrb::Store.instance
-      s.settings({'api_url' => 'test-api.io', 'dev_mode' => false})
+      s.settings({'api_url' => 'test-api.io', 'wovn_dev_mode' => false})
 
       assert_equal('test-api.io', s.settings['api_url'])
     end

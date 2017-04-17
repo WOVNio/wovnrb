@@ -40,7 +40,7 @@ module Wovnrb
           'ttl_seconds' => nil,
           'use_proxy' => false,  # use env['HTTP_X_FORWARDED_HOST'] instead of env['HTTP_HOST'] and env['SERVER_NAME'] when this setting is true.
           'custom_lang_aliases' => {},
-          'dev_mode' => false
+          'wovn_dev_mode' => false
         }
       # When Store is initialized, the Rails.configuration object is not yet initialized
       @config_loaded = false
@@ -149,7 +149,7 @@ module Wovnrb
         @settings['custom_lang_aliases'].stringify_keys!
       end
 
-      if dev_mode? && @settings['api_url'].blank?
+      if wovn_dev_mode? && @settings['api_url'].blank?
         @settings['api_url'] = "#{wovn_protocol}://api.#{wovn_host}/v0/values"
       end
 
@@ -161,16 +161,16 @@ module Wovnrb
       @settings
     end
 
-    def dev_mode?
-      @settings['dev_mode']
+    def wovn_dev_mode?
+      @settings['wovn_dev_mode']
     end
 
     def wovn_protocol
-      dev_mode? ? 'http' : 'https'
+      wovn_dev_mode? ? 'http' : 'https'
     end
 
     def wovn_host
-      dev_mode? ? 'dev-wovn.io:3000' : 'wovn.io'
+      wovn_dev_mode? ? 'dev-wovn.io:3000' : 'wovn.io'
     end
 
     private
