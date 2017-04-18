@@ -3,7 +3,6 @@ machine:
     version: 2.3.0
 
 test:
-  pre:
   override:
     - bundle exec rake test
     # check that no crash occurs with earlier version of nokogiri
