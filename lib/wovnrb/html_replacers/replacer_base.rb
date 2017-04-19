@@ -18,7 +18,7 @@ module Wovnrb
     # <title> may not contain other markup, so add comment-node to node's previous
     # @see https://www.w3.org/TR/html401/struct/global.html#h-7.4.2
     def add_comment_node(node, text)
-      comment_node = Nokogiri::XML::Comment.new(node, "wovn-src:#{text}")
+      comment_node = Nokogiri::XML::Comment.new(node.document, "wovn-src:#{text}")
       if node.parent.name == 'title'
         node.parent.add_previous_sibling(comment_node)
       else
