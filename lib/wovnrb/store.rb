@@ -30,6 +30,7 @@ module Wovnrb
           'url_pattern' => 'path',
           'url_pattern_reg' => "/(?<lang>[^/.?]+)",
           'query' => [],
+          'use_scraping2' => false, # experimental don't make it true
           'api_url' => 'https://api.wovn.io/v0/values',
           'api_timeout_seconds' => 0.5,
           'default_lang' => 'en',
@@ -66,6 +67,12 @@ module Wovnrb
       if !settings.has_key?('query') || !settings['query'].kind_of?(Array)
         valid = false
         errors.push("query config #{settings['query']} is not valid.")
+      end
+      if settings.has_key?('use_scraping2')
+        unless [true, false].include?(settings['use_scraping2'])
+          valid = false
+          errors.push("use_fragmented_value config #{settings['use_fragmented_value']} is not valid.")
+        end
       end
       if !settings.has_key?('api_url') || settings['api_url'].length == 0
         valid = false

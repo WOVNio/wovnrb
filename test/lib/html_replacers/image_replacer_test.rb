@@ -121,6 +121,7 @@ module Wovnrb
       # replace image if exist host alias
       img = img_dom_helper(url, src_index, path, ['www.test.com', 'www.example.com'])
       assert_equal('http://test.com/ttt.img', img.get_attribute('src'))
+      assert_nil(img.previous)
     end
 
     private
