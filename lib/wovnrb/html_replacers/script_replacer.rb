@@ -23,7 +23,7 @@ module Wovnrb
 
       # INSERT BACKEND WIDGET
       insert_node = Nokogiri::XML::Node.new('script', dom)
-      insert_node['src'] = '//j.wovn.io/1'
+      insert_node['src'] = "//j.#{@store.wovn_host}/1"
       insert_node['async'] = true
       version = defined?(VERSION) ? VERSION : ''
       insert_node['data-wovnio'] = "key=#{@store.settings['user_token']}&backend=true&currentLang=#{lang.lang_code}&defaultLang=#{@store.settings['default_lang']}&urlPattern=#{@store.settings['url_pattern']}&langCodeAliases=#{JSON.dump(@store.settings['custom_lang_aliases'])}&version=#{version}"

@@ -23,6 +23,27 @@ module Wovnrb
       assert_equal('test/test.js', other_script.get_attribute('src'))
     end
 
+    def test_replace_with_wovn_dev_mode_on
+      store = Store.instance
+      store.settings['user_token'] = 'test_token'
+      store.settings['default_lang'] = 'en'
+      store.settings['url_pattern'] = 'domain'
+      store.settings['wovn_dev_mode'] = true
+
+      replacer = ScriptReplacer.new(store)
+      dom = to_head_dom('<script src="test/test.js"></script>')
+      replacer.replace(dom, Lang.new('ja'))
+
+      scripts = dom.xpath('//script')
+      assert_equal(2, scripts.length)
+
+      wovn_script = scripts[0]
+      other_script = scripts[1]
+
+      assert_equal('//j.dev-wovn.io:3000/1', wovn_script.get_attribute('src'))
+      assert_equal('test/test.js', other_script.get_attribute('src'))
+    end
+
     def test_with_embed_wovn
       store = Store.instance
       store.settings['user_token'] = 'test_token'

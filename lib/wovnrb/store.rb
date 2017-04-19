@@ -11,6 +11,29 @@ module Wovnrb
   class Store
     include Singleton
 
+    def self.default_settings
+      {
+        'user_token' => '',
+        'log_path' => 'log/wovn_error.log',
+        'ignore_paths' => [],
+        'ignore_globs' => [],
+        'url_pattern' => 'path',
+        'url_pattern_reg' => "/(?<lang>[^/.?]+)",
+        'query' => [],
+        'api_url' => 'https://api.wovn.io/v0/values',
+        'api_timeout_seconds' => 0.5,
+        'default_lang' => 'en',
+        'supported_langs' => ['en'],
+        'test_mode' => false,
+        'test_url' => '',
+        'cache_megabytes' => nil,
+        'ttl_seconds' => nil,
+        'use_proxy' => false,  # use env['HTTP_X_FORWARDED_HOST'] instead of env['HTTP_HOST'] and env['SERVER_NAME'] when this setting is true.
+        'custom_lang_aliases' => {},
+        'wovn_dev_mode' => false
+      }
+    end
+
     def initialize
       @settings = {}
       @config_loaded = false
@@ -21,26 +44,7 @@ module Wovnrb
     #
     # @return [nil]
     def reset
-      @settings =
-        {
-          'user_token' => '',
-          'log_path' => 'log/wovn_error.log',
-          'ignore_paths' => [],
-          'ignore_globs' => [],
-          'url_pattern' => 'path',
-          'url_pattern_reg' => "/(?<lang>[^/.?]+)",
-          'query' => [],
-          'api_url' => 'https://api.wovn.io/v0/values',
-          'api_timeout_seconds' => 0.5,
-          'default_lang' => 'en',
-          'supported_langs' => ['en'],
-          'test_mode' => false,
-          'test_url' => '',
-          'cache_megabytes' => nil,
-          'ttl_seconds' => nil,
-          'use_proxy' => false,  # use env['HTTP_X_FORWARDED_HOST'] instead of env['HTTP_HOST'] and env['SERVER_NAME'] when this setting is true.
-          'custom_lang_aliases' => {}
-        }
+      @settings = Store.default_settings
       # When Store is initialized, the Rails.configuration object is not yet initialized
       @config_loaded = false
     end
@@ -148,8 +152,24 @@ module Wovnrb
         @settings['custom_lang_aliases'].stringify_keys!
       end
 
+      if wovn_dev_mode? && @settings['api_url'] == Store.default_settings['api_url']
+        @settings['api_url'] = "#{wovn_protocol}://api.#{wovn_host}/v0/values"
+      end
+
       @config_loaded = true
       @settings
+    end
+
+    def wovn_dev_mode?
+      @settings['wovn_dev_mode']
+    end
+
+    def wovn_protocol
+      wovn_dev_mode? ? 'http' : 'https'
+    end
+
+    def wovn_host
+      wovn_dev_mode? ? 'dev-wovn.io:3000' : 'wovn.io'
     end
 
     private
