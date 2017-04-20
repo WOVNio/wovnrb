@@ -10,3 +10,8 @@ test:
     - bundle update nokogiri
     - bundle exec rake test
 
+deployment:
+  rubygems:
+    branch: master
+    commands:
+      - bash ./release.sh
