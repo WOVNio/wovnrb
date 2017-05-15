@@ -11,7 +11,7 @@ module Wovnrb
 
       #if Rails.env.development? && config.respond_to?(:wovnrb)
       #  config.after_initialize do
-      #    config.wovnrb[:user_token] = User.first.short_token
+      #    config.wovnrb[:project_token] = User.first.short_token
       #  end
       #end
     end

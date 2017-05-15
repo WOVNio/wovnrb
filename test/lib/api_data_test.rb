@@ -25,7 +25,7 @@ module Wovnrb
       stub_request(:get, "https://api.wovn.io/v0/values?token=#{token}&url=#{url}").
         to_return(:body => '{"test_body": "a"}')
       store = Wovnrb::Store.instance
-      store.settings['user_token'] = token
+      store.settings('user_token' => token)
       api_data = Wovnrb::ApiData.new(url, store)
 
       assert_equal({'test_body' => 'a'}, api_data.get_data)
@@ -37,7 +37,7 @@ module Wovnrb
       stub = stub_request(:get, "https://api.wovn.io/v0/values?token=#{token}&url=#{url}").
         to_return(:body => '{"test_body": "a"}')
       store = Wovnrb::Store.instance
-      store.settings['user_token'] = token
+      store.settings('user_token' => token)
       api_data = Wovnrb::ApiData.new(url, store)
 
       assert_equal({'test_body' => 'a'}, api_data.get_data)
@@ -51,7 +51,7 @@ module Wovnrb
       stub_request(:get, "https://api.wovn.io/v0/values?token=#{token}&url=#{url}").
         to_return(:status => [500, "Internal Server Error"])
       store = Wovnrb::Store.instance
-      store.settings['user_token'] = token
+      store.settings('user_token' => token)
       api_data = Wovnrb::ApiData.new(url, store)
       log_mock = Wovnrb::LogMock.mock_log
 

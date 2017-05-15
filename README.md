@@ -38,7 +38,7 @@ Insert the following into either config/application.rb or config/environments/.
 ...
 
 config.wovnrb = {
-  :user_token => '2Wle3'
+  :project_token => '2Wle3'
 }
 
 ...
@@ -54,7 +54,7 @@ Insert the following into either the Application File or config.ru.
 require 'wovnrb'
 
 use Wovnrb::Interceptor, {
-  :user_token => '2Wle3'
+  :project_token => '2Wle3'
 }
 
 ...
@@ -68,12 +68,12 @@ WOVN.io Ruby Library's valid parameters are as follows.
 
 Parameter Name | Required | Default Setting
 -------------- | -------- | ----------------
-user_token     | yes      | ''
+project_token  | yes      | ''
 url_pattern    | yes      | 'path'
 query          |          | []
 default_lang   | yes      | 'en'
 
-### 2.1. user_token
+### 2.1. project_token
 
 Set your WOVN.io Account's user token. This parameter is required.
 

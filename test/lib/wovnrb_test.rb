@@ -25,7 +25,7 @@ class WovnrbTest < Minitest::Test
 
   def test_api_call
     settings = Wovnrb.get_settings
-    token = settings['user_token']
+    token = settings['project_token']
     url = 'wovn.io/dashboard'
     stub = stub_request(:get, "#{settings['api_url']}?token=#{token}&url=#{url}").
       to_return(:body => '{"test_body": "a"}')
@@ -38,7 +38,7 @@ class WovnrbTest < Minitest::Test
 
   def test_api_call_with_cache
     settings = Wovnrb.get_settings
-    token = settings['user_token']
+    token = settings['project_token']
     url = 'wovn.io/dashboard'
     stub = stub_request(:get, "#{settings['api_url']}?token=#{token}&url=#{url}").
       to_return(:body => '{"test_body": "a"}')
