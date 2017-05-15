@@ -75,7 +75,7 @@ default_lang   | yes      | 'en'
 
 ### 2.1. project_token
 
-Set your WOVN.io Account's user token. This parameter is required.
+Set your WOVN.io Account's Project token. This parameter is required.
 
 ### 2.2. url_pattern
 

@@ -57,7 +57,7 @@ module Wovnrb
       errors = [];
       if !settings.has_key?('project_token') || settings['project_token'].length < 5 || settings['project_token'].length > 6
         valid = false
-        errors.push("User token #{settings['project_token']} is not valid.")
+        errors.push("Project token #{settings['project_token']} is not valid.")
       end
       if settings.has_key?('ignore_paths') && !settings['ignore_paths'].kind_of?(Array)
         valid = false

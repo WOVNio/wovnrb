@@ -61,7 +61,7 @@ module Wovnrb
       valid = store.valid_settings?
 
       assert_equal(false, valid)
-      assert_equal(['User token  is not valid.'], mock.errors)
+      assert_equal(['Project token  is not valid.'], mock.errors)
     end
 
     def test_settings_ignore_paths
@@ -93,7 +93,7 @@ module Wovnrb
       store.settings({'ignore_paths' => 'aaaa'})
 
       assert_equal(false, store.valid_settings?)
-      assert_equal(['User token  is not valid.', 'Ignore Paths aaaa should be Array.'], mock.errors)
+      assert_equal(['Project token  is not valid.', 'Ignore Paths aaaa should be Array.'], mock.errors)
     end
 
     def test_settings_ignore_glob_injection
