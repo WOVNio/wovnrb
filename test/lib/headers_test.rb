@@ -129,6 +129,43 @@ module Wovnrb
     # REQUEST_OUT
     #########################
 
+    def test_request_out_with_wovn_target_lang_header_with_subdomain
+      h = Wovnrb::Headers.new(
+        Wovnrb.get_env(
+          'SERVER_NAME' => 'ja.wovn.io',
+          'REQUEST_URI' => '/test',
+          'HTTP_REFERER' => 'http://ja.wovn.io/test',
+        ),
+        Wovnrb.get_settings(
+          'url_pattern' => 'subdomain',
+          'url_pattern_reg' => '^(?<lang>[^.]+).',
+        ),
+      )
+      env = h.request_out('ja')
+      assert_equal('ja', env['Wovn-Target-Lang'])
+    end
+
+    def test_request_out_with_wovn_target_lang_header_with_path
+      h = Wovnrb::Headers.new(
+        Wovnrb.get_env('REQUEST_URI' => '/ja/test', 'HTTP_REFERER' => 'http://wovn.io/ja/test'),
+        Wovnrb.get_settings,
+      )
+      env = h.request_out('ja')
+      assert_equal('ja', env['Wovn-Target-Lang'])
+    end
+
+    def test_request_out_with_wovn_target_lang_header_with_query
+      h = Wovnrb::Headers.new(
+        Wovnrb.get_env('REQUEST_URI' => 'test?wovn=ja', 'HTTP_REFERER' => 'http://wovn.io/test'),
+        Wovnrb.get_settings(
+          'url_pattern' => 'query',
+          'url_pattern_reg' => "((\\?.*&)|\\?)wovn=(?<lang>[^&]+)(&|$)",
+        ),
+      )
+      env = h.request_out('ja')
+      assert_equal('ja', env['Wovn-Target-Lang'])
+    end
+
     def test_request_out_with_use_proxy_false
       h = Wovnrb::Headers.new(
         Wovnrb.get_env('url' => 'http://localhost/contact', 'HTTP_X_FORWARDED_HOST' => 'ja.wovn.io'),
