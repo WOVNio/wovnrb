@@ -14,6 +14,26 @@ module Wovnrb
       assert_equal('/(?<lang>[^/.?]+)', s.settings['url_pattern_reg'])
     end
 
+    def test_settings_user_token_retro_compatibility
+      s = Wovnrb::Store.instance
+      s.settings('user_token' => 'aaaaa')
+      assert_equal('aaaaa', s.settings['project_token'])
+      assert(!s.settings.has_key?('user_token'))
+    end
+
+    def test_settings_project_token_set
+      s = Wovnrb::Store.instance
+      s.settings('project_token' => 'bbbbbb')
+      assert_equal('bbbbbb', s.settings['project_token'])
+    end
+
+    def test_settings_project_token_set_without_retro_compatibility
+      s = Wovnrb::Store.instance
+      s.settings('project_token' => 'bbbbbb', 'user_token' => 'aaaaa')
+      assert_equal('bbbbbb', s.settings['project_token'])
+      assert(!s.settings.has_key?('user_token'))
+    end
+
     def test_settings_url_pattern_path
       s = Wovnrb::Store.instance
       s.settings({'url_pattern' => 'path'})
@@ -41,7 +61,7 @@ module Wovnrb
       valid = store.valid_settings?
 
       assert_equal(false, valid)
-      assert_equal(['User token  is not valid.'], mock.errors)
+      assert_equal(['Project token  is not valid.'], mock.errors)
     end
 
     def test_settings_ignore_paths
@@ -73,7 +93,7 @@ module Wovnrb
       store.settings({'ignore_paths' => 'aaaa'})
 
       assert_equal(false, store.valid_settings?)
-      assert_equal(['User token  is not valid.', 'Ignore Paths aaaa should be Array.'], mock.errors)
+      assert_equal(['Project token  is not valid.', 'Ignore Paths aaaa should be Array.'], mock.errors)
     end
 
     def test_settings_ignore_glob_injection

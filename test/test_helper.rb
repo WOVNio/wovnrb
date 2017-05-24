@@ -55,7 +55,7 @@ module Wovnrb
 
   def get_settings(options={})
     settings = {}
-    settings['user_token'] = 'OHYx9'
+    settings['project_token'] = 'OHYx9'
     settings['url_pattern'] = 'path'
     settings['url_pattern_reg'] = "/(?<lang>[^/.?]+)"
     settings['query'] = []

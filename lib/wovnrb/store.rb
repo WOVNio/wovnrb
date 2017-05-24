@@ -13,7 +13,7 @@ module Wovnrb
 
     def self.default_settings
       {
-        'user_token' => '',
+        'project_token' => '',
         'log_path' => 'log/wovn_error.log',
         'ignore_paths' => [],
         'ignore_globs' => [],
@@ -55,9 +55,9 @@ module Wovnrb
     def valid_settings?
       valid = true
       errors = [];
-      if !settings.has_key?('user_token') || settings['user_token'].length < 5 || settings['user_token'].length > 6
+      if !settings.has_key?('project_token') || settings['project_token'].length < 5 || settings['project_token'].length > 6
         valid = false
-        errors.push("User token #{settings['user_token']} is not valid.")
+        errors.push("Project token #{settings['project_token']} is not valid.")
       end
       if settings.has_key?('ignore_paths') && !settings['ignore_paths'].kind_of?(Array)
         valid = false
@@ -127,6 +127,11 @@ module Wovnrb
       if !@settings.has_key?('supported_langs')
         @settings['supported_langs'] = [@settings['default_lang']]
       end
+
+      if @settings.has_key?('user_token') && @settings['project_token'].empty?
+        @settings['project_token'] = @settings['user_token']
+      end
+      @settings.delete('user_token')
 
       if @settings['url_pattern'] == 'path'
         @settings['url_pattern_reg'] = "/(?<lang>[^/.?]+)"

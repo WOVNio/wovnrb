@@ -35,7 +35,7 @@ module Wovnrb
     end
 
     def build_api_uri
-      t = CGI::escape(@store.settings['user_token'])
+      t = CGI::escape(@store.settings['project_token'])
       u = CGI::escape(@access_url)
       URI.parse("#{@store.settings['api_url']}?token=#{t}&url=#{u}")
     end
