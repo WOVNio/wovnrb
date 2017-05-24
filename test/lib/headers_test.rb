@@ -142,7 +142,7 @@ module Wovnrb
         ),
       )
       env = h.request_out('ja')
-      assert_equal('ja', env['Wovn-Target-Lang'])
+      assert_equal('ja', env['WOVN_TARGET_LANG'])
     end
 
     def test_request_out_with_wovn_target_lang_header_using_path
@@ -151,7 +151,7 @@ module Wovnrb
         Wovnrb.get_settings,
       )
       env = h.request_out('ja')
-      assert_equal('ja', env['Wovn-Target-Lang'])
+      assert_equal('ja', env['WOVN_TARGET_LANG'])
     end
 
     def test_request_out_with_wovn_target_lang_header_using_query
@@ -163,7 +163,7 @@ module Wovnrb
         ),
       )
       env = h.request_out('ja')
-      assert_equal('ja', env['Wovn-Target-Lang'])
+      assert_equal('ja', env['WOVN_TARGET_LANG'])
     end
 
     def test_request_out_with_use_proxy_false
@@ -258,7 +258,7 @@ module Wovnrb
         ),
       )
       headers = h.out(h.request_out('ja'))
-      assert_equal('ja', headers['Wovn-Target-Lang'])
+      assert_equal('ja', headers['WOVN_TARGET_LANG'])
     end
 
     def test_out_with_wovn_target_lang_header_using_path
@@ -267,7 +267,7 @@ module Wovnrb
         Wovnrb.get_settings,
       )
       headers = h.out(h.request_out('ja'))
-      assert_equal('ja', headers['Wovn-Target-Lang'])
+      assert_equal('ja', headers['WOVN_TARGET_LANG'])
     end
 
     def test_out_with_wovn_target_lang_header_using_query
@@ -279,7 +279,7 @@ module Wovnrb
         ),
       )
       headers = h.out(h.request_out('ja'))
-      assert_equal('ja', headers['Wovn-Target-Lang'])
+      assert_equal('ja', headers['WOVN_TARGET_LANG'])
     end
 
     #########################
