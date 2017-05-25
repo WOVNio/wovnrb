@@ -23,7 +23,7 @@ module Wovnrb
     end
 
     def replaceable_value?(node)
-      return false unless node.get_attribute('type') == 'submit'
+      return false unless ['submit', 'reset'].include? node.get_attribute('type')
 
       attribute_value = node.get_attribute('value')
       attribute_value && !attribute_value.empty?
