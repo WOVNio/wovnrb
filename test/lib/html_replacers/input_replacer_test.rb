@@ -76,7 +76,7 @@ module Wovnrb
       assert_equal('Hello', content)
     end
 
-    def test_dont_replace_type_password_placeholder
+    def test_replace_type_password_placeholder
       replacer = InputReplacer.new({
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]},
         'Hi' => {'ja' => [{'data' => 'やぁ'}]},
