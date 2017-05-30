@@ -76,6 +76,21 @@ module Wovnrb
       assert_equal('Hello', content)
     end
 
+    def test_replace_type_password_placeholder
+      replacer = InputReplacer.new({
+        'Hello' => {'ja' => [{'data' => 'こんにちは'}]},
+        'Hi' => {'ja' => [{'data' => 'やぁ'}]},
+      })
+
+      dom = Wovnrb.get_dom('<input type="password" value="Hello" placeholder="Hi">')
+      replacer.replace(dom, Lang.new('ja'))
+
+      value_content = dom.xpath('//input')[0].get_attribute('value')
+      placeholder_content = dom.xpath('//input')[0].get_attribute('placeholder')
+      assert_equal('Hello', value_content)
+      assert_equal('やぁ', placeholder_content)
+    end
+
     def test_dont_replace_type_url_value
       replacer = InputReplacer.new({
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]}
