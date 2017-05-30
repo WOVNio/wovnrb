@@ -39,6 +39,7 @@ module Wovnrb
       else
         @host = @env['HTTP_HOST']
       end
+      @env['wovnrb.target_lang'] = self.lang_code
       @host = settings['url_pattern'] == 'subdomain' ? remove_lang(@host, self.lang_code) : @host
       @pathname, @query = @env['REQUEST_URI'].split('?')
       @pathname = settings['url_pattern'] == 'path' ? remove_lang(@pathname, self.lang_code) : @pathname
