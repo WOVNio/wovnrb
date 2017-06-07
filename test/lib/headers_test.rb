@@ -245,6 +245,60 @@ module Wovnrb
       assert_equal('http://staging-ja.wovn.io/test', h.out(headers)['Location'])
     end
 
+    def test_out_original_lang_with_subdomain_url_pattern
+      h = Wovnrb::Headers.new(
+        Wovnrb.get_env(
+          'SERVER_NAME' => 'wovn.io',
+          'REQUEST_URI' => '/test',
+          'HTTP_REFERER' => 'http://wovn.io/test',
+        ),
+        Wovnrb.get_settings(
+          'url_pattern' => 'subdomain',
+          'url_pattern_reg' => '^(?<lang>[^.]+).',
+        ),
+      )
+      headers = h.request_out(h.lang_code)
+      assert_equal('http://wovn.io/test', headers['HTTP_REFERER'])
+      headers['Location'] = headers['HTTP_REFERER']
+      assert_equal('http://wovn.io/test', h.out(headers)['Location'])
+    end
+
+    def test_out_original_lang_with_path_url_pattern
+      h = Wovnrb::Headers.new(
+        Wovnrb.get_env(
+          'SERVER_NAME' => 'wovn.io',
+          'REQUEST_URI' => '/test',
+          'HTTP_REFERER' => 'http://wovn.io/test',
+        ),
+        Wovnrb.get_settings(
+          'url_pattern' => 'path',
+          'url_pattern_reg' => '/(?<lang>[^/.?]+)',
+        ),
+      )
+      headers = h.request_out(h.lang_code)
+      assert_equal('http://wovn.io/test', headers['HTTP_REFERER'])
+      headers['Location'] = headers['HTTP_REFERER']
+      assert_equal('http://wovn.io/test', h.out(headers)['Location'])
+    end
+
+    def test_out_original_lang_with_query_url_pattern
+      h = Wovnrb::Headers.new(
+        Wovnrb.get_env(
+          'SERVER_NAME' => 'wovn.io',
+          'REQUEST_URI' => '/test',
+          'HTTP_REFERER' => 'http://wovn.io/test',
+        ),
+        Wovnrb.get_settings(
+          'url_pattern' => 'query',
+          'url_pattern_reg' => '((\\?.*&)|\\?)wovn=(?<lang>[^&]+)(&|$)',
+        ),
+      )
+      headers = h.request_out(h.lang_code)
+      assert_equal('http://wovn.io/test', headers['HTTP_REFERER'])
+      headers['Location'] = headers['HTTP_REFERER']
+      assert_equal('http://wovn.io/test', h.out(headers)['Location'])
+    end
+
     def test_out_with_wovn_target_lang_header_using_subdomain
       h = Wovnrb::Headers.new(
         Wovnrb.get_env(
