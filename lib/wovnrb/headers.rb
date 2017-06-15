@@ -210,20 +210,20 @@ module Wovnrb
     def out(headers)
       r = Regexp.new("//" + @host)
       lang_code = Store.instance.settings['custom_lang_aliases'][self.lang_code] || self.lang_code
-      if headers.has_key?("Location") && headers["Location"] =~ r
+      if lang_code != @settings['default_lang'] && headers.has_key?("Location") && headers["Location"] =~ r
         case @settings['url_pattern']
         when 'query'
-          if headers["Location"] =~ /\?/
-            headers["Location"] += "&"
+          if headers['Location'] =~ /\?/
+            headers['Location'] += "&"
           else
-            headers["Location"] += "?"
+            headers['Location'] += "?"
           end
           headers['Location'] += "wovn=#{lang_code}"
         when 'subdomain'
-          headers["Location"] = headers["Location"].sub(/\/\/([^.]+)/, '//' + lang_code + '.\1')
+          headers['Location'] = headers["Location"].sub(/\/\/([^.]+)/, '//' + lang_code + '.\1')
        #when 'path'
         else
-          headers["Location"] = headers['Location'].sub(/(\/\/[^\/]+)/, '\1/' + lang_code)
+          headers['Location'] = headers['Location'].sub(/(\/\/[^\/]+)/, '\1/' + lang_code)
         end
       end
       headers
