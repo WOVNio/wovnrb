@@ -1,5 +1,4 @@
 require 'active_support/cache'
-require 'active_support/cache/memory_store'
 require 'lz4-ruby'
 
 module Wovnrb

@@ -5,7 +5,6 @@ require 'singleton'
 require 'wovnrb/services/wovn_logger'
 require 'wovnrb/services/glob'
 require 'active_support'
-require 'active_support/core_ext'
 
 module Wovnrb
   class Store
