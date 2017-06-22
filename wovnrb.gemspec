@@ -26,8 +26,12 @@ Gem::Specification.new do |spec|
   #spec.extensions    = spec.files.grep(%r{/extconf\.rb$})
 
   spec.add_dependency "nokogumbo", ">= 1.3.0"
-  spec.add_dependency "nokogiri", "< 1.6.8.1"
-  spec.add_dependency "activesupport", "< 5"
+  spec.add_dependency "nokogiri", "<= 1.8"
+  if RUBY_VERSION < "2.2.2"
+    spec.add_dependency "activesupport", '< 5.0.0'
+  else
+    spec.add_dependency "activesupport"
+  end
   spec.add_dependency "lz4-ruby"
 
   spec.add_development_dependency "bundler", "~> 1.7"
@@ -47,10 +51,11 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pry-nav"
   #spec.add_development_dependency "rice"
   spec.add_development_dependency "rake-compiler"
-  spec.add_development_dependency "geminabox"
   spec.add_development_dependency "timecop"
-  spec.add_development_dependency "webmock", '~> 2.1.0'
+
+  # NOTE; it need to use webmock 2.3.2 for avoiding error when we use ruby 2.4.x.
+  # https://github.com/bblimke/webmock/issues/683
+  spec.add_development_dependency "webmock", '>= 2.3.2'
   spec.add_development_dependency "simplecov"
   spec.add_development_dependency "public_suffix", '~> 1.4.6'
 end
-
