@@ -40,7 +40,7 @@ module Wovnrb
         redirect_headers = headers.redirect(@store.settings['default_lang'])
         return [307, redirect_headers, ['']]
       end
-      lang = headers.lang_code
+      lang = get_lang(env, headers.lang_code)
 
       # pass to application
       status, res_headers, body = @app.call(headers.request_out)
@@ -49,8 +49,7 @@ module Wovnrb
         unless @store.settings['ignore_globs'].any?{|g| g.match?(headers.pathname)}
           # ApiData creates request for external server, but cannot use async.
           # Because some server not allow multi thread. (env['async.callback'] is not supported at all Server).
-          api_data = ApiData.new(headers.redis_url, @store)
-          values = api_data.get_data
+          values = get_values(env, headers.redis_url, @store)
           @store.settings({'default_lang' => values['language'] || @store.settings['default_lang']})
           url = {
             :protocol => headers.protocol,
@@ -105,7 +104,20 @@ module Wovnrb
       body.close if body.respond_to?(:close)
       new_body
     end
+
+    private
+
+    WOVN_TRANSLATE_KEY = 'WOVN_TRANSLATE'
+    WOVN_TRANSLATE_LANGUAGE = 'WOVN_TRANSLATE_LANG'
+
+    def get_values(env, redis_url, store)
+      values = env[WOVN_TRANSLATE_KEY]
+      return values if values
+      ApiData.new(redis_url, @store).get_data
+    end
+
+    def get_lang(env, default)
+      return env[WOVN_TRANSLATE_LANGUAGE] || default
+    end
   end
-
 end
-
