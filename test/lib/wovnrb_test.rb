@@ -50,6 +50,19 @@ class WovnrbTest < Minitest::Test
     assert_requested(stub, :times => 1)
   end
 
+  def test_api_call_with_language
+    settings = Wovnrb.get_settings
+    token = settings['project_token']
+    url = 'wovn.io/dashboard'
+    stub = stub_request(:get, "#{settings['api_url']}?token=#{token}&url=#{url}").
+      to_return(:body => '{"test_body": "a", "language": "ja"}')
+
+    i = Wovnrb::Interceptor.new(get_app, settings)
+
+    _status, _header, html = i.call(Wovnrb.get_env)
+    assert_match(/backend=true&amp;currentLang=en&amp;defaultLang=ja/, html.to_s)
+  end
+
   def test_switch_lang
     i = Wovnrb::Interceptor.new(get_app)
     h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))

@@ -51,7 +51,7 @@ module Wovnrb
           # Because some server not allow multi thread. (env['async.callback'] is not supported at all Server).
           api_data = ApiData.new(headers.redis_url, @store)
           values = api_data.get_data
-          @store.settings({default_lang: values['language']})
+          @store.settings({'default_lang' => values['language']})
           url = {
             :protocol => headers.protocol,
             :host => headers.host,
