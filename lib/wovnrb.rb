@@ -116,7 +116,7 @@ module Wovnrb
     def is_amp_page?(body)
       html_attributes = body.xpath('//html')[0].try(:attributes) || {}
 
-      !html_attributes['amp'].nil? || !html_attributes["\u26A1"].nil?
+      html_attributes['amp'] || html_attributes["\u26A1"]
     end
   end
 end
