@@ -86,7 +86,7 @@ module Wovnrb
         d.encoding = "UTF-8"
 
         # If this page has wovn-ignore in the html tag, don't do anything
-        if ignore_all || !d.xpath('//html[@wovn-ignore]').empty?
+        if ignore_all || !d.xpath('//html[@wovn-ignore]').empty? || is_amp_page?(d)
           ignore_all = true
           output = d.to_html.gsub(/href="([^"]*)"/) { |m| "href=\"#{URI.decode($1)}\"" }
           new_body.push(output)
@@ -104,7 +104,21 @@ module Wovnrb
       body.close if body.respond_to?(:close)
       new_body
     end
-  end
 
+    private
+
+    # Checks if a given HTML body is an Accelerated Mobile Page (AMP).
+    # To do so, it looks at the required attributes for the HTML tag:
+    # https://www.ampproject.org/docs/tutorials/create/basic_markup.
+    #
+    # @param {Nokogiri::HTML5::Document} body The HTML body to check.
+    #
+    # @returns {Boolean} True is the HTML body is an AMP, false otherwise.
+    def is_amp_page?(body)
+      html_attributes = body.xpath('//html')[0].try(:attributes) || {}
+
+      html_attributes['amp'] || html_attributes["\u26A1"]
+    end
+  end
 end
 
