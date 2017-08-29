@@ -78,27 +78,59 @@ class WovnrbTest < Minitest::Test
   def test_switch_lang_ignores_amp
     interceptor = Wovnrb::Interceptor.new(get_app)
     headers = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-    body =  "<html amp><body><h1>Mr. Belvedere Fan Club</h1>
-                <div><p>Hello</p></div>
-              </body></html>"
+    body = <<HTML
+<html amp>
+<body>
+  <h1>Mr. Belvedere Fan Club</h1>
+  <div><p>Hello</p></div>
+</body>
+</html>
+HTML
+    expected_body = <<HTML
+<html amp="">
+<head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head>
+<body>
+  <h1>Mr. Belvedere Fan Club</h1>
+  <div><p>Hello</p></div>
+
+
+</body>
+</html>
+HTML
     values = generate_values
     url = headers.url
     swapped_bodies = interceptor.switch_lang([body], values, url, 'ja', headers)
 
-    assert_equal([body], swapped_bodies)
+    assert_equal([expected_body], swapped_bodies)
   end
 
   def test_switch_lang_ignores_amp_defined_with_symbol_attribute
     interceptor = Wovnrb::Interceptor.new(get_app)
     headers = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-    body =  "<html ⚡><body><h1>Mr. Belvedere Fan Club</h1>
-                <div><p>Hello</p></div>
-              </body></html>"
+    body = <<HTML
+<html ⚡>
+<body>
+  <h1>Mr. Belvedere Fan Club</h1>
+  <div><p>Hello</p></div>
+</body>
+</html>
+HTML
+    expected_body = <<HTML
+<html ⚡="">
+<head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head>
+<body>
+  <h1>Mr. Belvedere Fan Club</h1>
+  <div><p>Hello</p></div>
+
+
+</body>
+</html>
+HTML
     values = generate_values
     url = headers.url
     swapped_bodies = interceptor.switch_lang([body], values, url, 'ja', headers)
 
-    assert_equal([body], swapped_bodies)
+    assert_equal([expected_body], swapped_bodies)
   end
 
   def test_switch_lang_with_noscript_in_head
