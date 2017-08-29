@@ -88,7 +88,7 @@ module Wovnrb
         # If this page has wovn-ignore in the html tag, don't do anything
         if ignore_all || !d.xpath('//html[@wovn-ignore]').empty? || is_amp_page?(d)
           ignore_all = true
-          output = d.to_html.gsub(/href="([^"]*)"/) { |m| "href=\"#{URI.decode($1)}\""}
+          output = d.to_html.gsub(/href="([^"]*)"/) { |m| "href=\"#{URI.decode($1)}\"" }
           new_body.push(output)
           next
         end
