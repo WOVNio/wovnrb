@@ -69,6 +69,21 @@ module Wovnrb
       assert_equal('http://favy.tips/index.jpg', link)
     end
 
+    def test_replace_img_link_path_with_query_or_hash
+      replacer = LinkReplacer.new('path', get_header)
+      dom = Wovnrb.get_dom('<a href="http://favy.tips/index.jpg?test=1">link text</a>')
+      replacer.replace(dom, Lang.new('ja'))
+
+      link = dom.xpath('//a')[0].get_attribute('href')
+      assert_equal('http://favy.tips/index.jpg?test=1', link)
+
+      dom = Wovnrb.get_dom('<a href="http://favy.tips/index.jpg#test=1">link text</a>')
+      replacer.replace(dom, Lang.new('ja'))
+
+      link = dom.xpath('//a')[0].get_attribute('href')
+      assert_equal('http://favy.tips/index.jpg#test=1', link)
+    end
+
     def test_replace_audio_link_path
       replacer = LinkReplacer.new('path', get_header)
       dom = Wovnrb.get_dom('<a href="/index.mp3">link text</a>')
@@ -76,6 +91,21 @@ module Wovnrb
 
       link = dom.xpath('//a')[0].get_attribute('href')
       assert_equal('/index.mp3', link)
+    end
+
+    def test_replace_audio_link_path_with_query_or_hash
+      replacer = LinkReplacer.new('path', get_header)
+      dom = Wovnrb.get_dom('<a href="/index.mp3?test=1">link text</a>')
+      replacer.replace(dom, Lang.new('ja'))
+
+      link = dom.xpath('//a')[0].get_attribute('href')
+      assert_equal('/index.mp3?test=1', link)
+
+      dom = Wovnrb.get_dom('<a href="/index.mp3#test=1">link text</a>')
+      replacer.replace(dom, Lang.new('ja'))
+
+      link = dom.xpath('//a')[0].get_attribute('href')
+      assert_equal('/index.mp3#test=1', link)
     end
 
     def test_replace_video_link_path
@@ -87,6 +117,21 @@ module Wovnrb
       assert_equal('/index.mp4', link)
     end
 
+    def test_replace_video_link_path_with_query_or_hash
+      replacer = LinkReplacer.new('path', get_header)
+      dom = Wovnrb.get_dom('<a href="/index.mp4?test=1">link text</a>')
+      replacer.replace(dom, Lang.new('ja'))
+
+      link = dom.xpath('//a')[0].get_attribute('href')
+      assert_equal('/index.mp4?test=1', link)
+
+      dom = Wovnrb.get_dom('<a href="/index.mp4#test=1">link text</a>')
+      replacer.replace(dom, Lang.new('ja'))
+
+      link = dom.xpath('//a')[0].get_attribute('href')
+      assert_equal('/index.mp4#test=1', link)
+    end
+
     def test_replace_doc_link_path
       replacer = LinkReplacer.new('path', get_header)
       dom = Wovnrb.get_dom('<a href="/index.pptx">link text</a>')
@@ -94,6 +139,21 @@ module Wovnrb
 
       link = dom.xpath('//a')[0].get_attribute('href')
       assert_equal('/index.pptx', link)
+    end
+
+    def test_replace_doc_link_path_with_query_or_hash
+      replacer = LinkReplacer.new('path', get_header)
+      dom = Wovnrb.get_dom('<a href="/index.pptx?test=1">link text</a>')
+      replacer.replace(dom, Lang.new('ja'))
+
+      link = dom.xpath('//a')[0].get_attribute('href')
+      assert_equal('/index.pptx?test=1', link)
+
+      dom = Wovnrb.get_dom('<a href="/index.pptx#test=1">link text</a>')
+      replacer.replace(dom, Lang.new('ja'))
+
+      link = dom.xpath('//a')[0].get_attribute('href')
+      assert_equal('/index.pptx#test=1', link)
     end
 
     def test_replace_javascript_link_subdomain
