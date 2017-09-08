@@ -110,11 +110,11 @@ module Wovnrb
 
     def test_replace_video_link_path
       replacer = LinkReplacer.new('path', get_header)
-      dom = Wovnrb.get_dom('<a href="/index.mp4">link text</a>')
+      dom = Wovnrb.get_dom('<a href="/index.mpeg">link text</a>')
       replacer.replace(dom, Lang.new('ja'))
 
       link = dom.xpath('//a')[0].get_attribute('href')
-      assert_equal('/index.mp4', link)
+      assert_equal('/index.mpeg', link)
     end
 
     def test_replace_video_link_path_with_query_or_hash
