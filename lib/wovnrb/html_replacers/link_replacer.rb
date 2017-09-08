@@ -26,10 +26,10 @@ module Wovnrb
     end
 
     def is_file?(href)
-      img_files = /^(https?:\/\/)?.*(\.(#{FileExtension::IMG_FILES}))$/i
-      audio_files = /^(https?:\/\/)?.*(\.(#{FileExtension::AUDIO_FILES}))$/i
-      video_files = /^(https?:\/\/)?.*(\.(#{FileExtension::VIDEO_FILES}))$/i
-      doc_files = /^(https?:\/\/)?.*(\.(#{FileExtension::DOC_FILES}))$/i
+      img_files = /^(https?:\/\/)?.*(\.(#{FileExtension::IMG_FILES}))((\?|#).*)?$/i
+      audio_files = /^(https?:\/\/)?.*(\.(#{FileExtension::AUDIO_FILES}))((\?|#).*)?$/i
+      video_files = /^(https?:\/\/)?.*(\.(#{FileExtension::VIDEO_FILES}))((\?|#).*)?$/i
+      doc_files = /^(https?:\/\/)?.*(\.(#{FileExtension::DOC_FILES}))((\?|#).*)?$/i
       href =~ img_files || href =~ audio_files || href =~ video_files || href =~ doc_files
     end
   end
