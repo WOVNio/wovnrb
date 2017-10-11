@@ -106,7 +106,7 @@ module Wovnrb
                 new_href = href.sub(/(\/\/)([^\.]*)/, '\1' + code_to_add.downcase + '.' + '\2')
               end
             when 'query'
-              new_href = href =~ /\?/ ? href + '&wovn=' + code_to_add : href + '?wovn=' + code_to_add
+              new_href = add_query_lang_code(href, code_to_add)
             else # path
               new_href = href.sub(/([^\.]*\.[^\/]*)(\/|$)/, '\1/' + code_to_add + '/')
           end
@@ -130,7 +130,7 @@ module Wovnrb
               new_href = lang_url + current_dir + '/' + href
             end
           when 'query'
-            new_href = href =~ /\?/ ? href + '&wovn=' + code_to_add : href + '?wovn=' + code_to_add
+            new_href = add_query_lang_code(href, code_to_add)
           else # path
             if href =~ /^\//
               new_href = '/' + code_to_add + href
@@ -199,6 +199,12 @@ module Wovnrb
         end
       end
       langs
+    end
+
+    def add_query_lang_code(href, lang_code)
+      query_separator = href =~ /\?/ ? '&' : '?'
+
+      href.sub(/(#|$)/, "#{query_separator}wovn=#{lang_code}\\1")
     end
   end
 end

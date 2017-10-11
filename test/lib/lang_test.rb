@@ -238,6 +238,12 @@ module Wovnrb
       assert_equal('http://google.com?hey=yo&wovn=fr', lang.add_lang_code('http://google.com?hey=yo', 'query', headers))
     end
 
+    def test_add_lang_code_absolute_query_with_hash
+      lang = Lang.new('fr')
+      headers = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://google.com'), Wovnrb.get_settings)
+      assert_equal('http://google.com?wovn=fr#test', lang.add_lang_code('http://google.com#test', 'query', headers))
+    end
+
     def test_add_lang_code_absolute_path_no_pathname
       lang = Lang.new('fr')
       headers = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://google.com'), Wovnrb.get_settings)
@@ -281,6 +287,12 @@ module Wovnrb
     end
 
     def test_add_lang_code_relative_query_with_query
+      lang = Lang.new('fr')
+      headers = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://google.com/'), Wovnrb.get_settings)
+      assert_equal('/index.html?hey=yo&wovn=fr', lang.add_lang_code('/index.html?hey=yo', 'query', headers))
+    end
+
+    def test_add_lang_code_relative_query_with_hash
       lang = Lang.new('fr')
       headers = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://google.com/'), Wovnrb.get_settings)
       assert_equal('/index.html?hey=yo&wovn=fr', lang.add_lang_code('/index.html?hey=yo', 'query', headers))
