@@ -430,7 +430,7 @@ module Wovnrb
     end
 
     def test_switch_dom_lang_for_simplified_chinese
-      lang = Lang.new('ja')
+      lang = Lang.new('zh-CHS')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
       dom = generate_dom
       values = generate_values
@@ -440,10 +440,12 @@ module Wovnrb
       swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)
       assert(/hreflang="zh-Hans"/ =~ swapped_body)
       assert(!(/hreflang="zh-CHS"/ =~ swapped_body))
+      assert(/html lang="zh-Hans"/ =~ swapped_body)
+      assert(!(/html lang="zh-CHS"/ =~ swapped_body))
     end
 
     def test_switch_dom_lang_for_traditional_chinese
-      lang = Lang.new('ja')
+      lang = Lang.new('zh-CHT')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
       dom = generate_dom
       values = generate_values
@@ -453,6 +455,8 @@ module Wovnrb
       swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)
       assert(/hreflang="zh-Hant"/ =~ swapped_body)
       assert(!(/hreflang="zh-CHT"/ =~ swapped_body))
+      assert(/html lang="zh-Hant"/ =~ swapped_body)
+      assert(!(/html lang="zh-CHT"/ =~ swapped_body))
     end
 
     def test_switch_lang
