@@ -64,6 +64,7 @@ class WovnrbTest < Minitest::Test
 <head>
 <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
 <script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\">
+<link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\">
 </head>
 <body>
 <h1>
@@ -148,6 +149,7 @@ HTML
 <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
 <script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><noscript><div>test</div></noscript>
 <link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\">
+<link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\">
 </head>
 <body>
 <h1>
@@ -178,6 +180,7 @@ HTML
                 <div>test</div>
                 </noscript>
 <link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\">
+<link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\">
 </head>
 <body>
 <h1>
@@ -206,6 +209,7 @@ HTML
 <title>plop</title>
 <noscript><div>test2</div></noscript>
 <link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\">
+<link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\">
 </head>
 <body>
 <h1>
@@ -232,6 +236,7 @@ HTML
 <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
 <script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><noscript><!-- --><div>test</div></noscript>
 <link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\">
+<link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\">
 </head>
 <body>
 <h1>
@@ -257,6 +262,7 @@ HTML
 <head>
 <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
 <script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><!--<noscript><div>test</div></noscript>--><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\">
+<link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\">
 </head>
 <body>
 <h1>

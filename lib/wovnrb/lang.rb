@@ -150,7 +150,8 @@ module Wovnrb
       # INSERT LANGUAGE METALINKS
       parent_node = dom.at_css('head') || dom.at_css('body') || dom.at_css('html')
       published_langs = get_langs(values)
-      published_langs.each do |l|
+      all_langs = published_langs.add(store.settings['default_lang'])
+      all_langs.each do |l|
         insert_node = Nokogiri::XML::Node.new('link', dom)
         insert_node['rel'] = 'alternate'
         insert_node['hreflang'] = Lang::iso_639_1_normalization(l)
@@ -160,7 +161,7 @@ module Wovnrb
 
       # set lang property on HTML tag
       if dom.at_css('html') || dom.at_css('HTML')
-        (dom.at_css('html') || dom.at_css('HTML')).set_attribute('lang', @lang_code)
+        (dom.at_css('html') || dom.at_css('HTML')).set_attribute('lang', Lang::iso_639_1_normalization(@lang_code))
       end
 
       dom.to_html.gsub(/href="([^"]*)"/) { |m| "href=\"#{URI.decode($1)}\"" }
