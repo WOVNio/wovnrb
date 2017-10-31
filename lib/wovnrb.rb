@@ -1,3 +1,4 @@
+require 'rack'
 require 'wovnrb/store'
 require 'wovnrb/headers'
 require 'wovnrb/lang'
@@ -47,6 +48,11 @@ module Wovnrb
 
       if res_headers["Content-Type"] =~ /html/
         unless @store.settings['ignore_globs'].any?{|g| g.match?(headers.pathname)}
+          # If the user defines a token for this request, use it instead of the config token
+          request = Rack::Request.new(env)
+          if @store.valid_token?(request['wovn_token'])
+            @store.settings['project_token'] = request['wovn_token']
+          end
           # ApiData creates request for external server, but cannot use async.
           # Because some server not allow multi thread. (env['async.callback'] is not supported at all Server).
           api_data = ApiData.new(headers.redis_url, @store)

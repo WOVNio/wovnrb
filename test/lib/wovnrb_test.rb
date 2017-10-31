@@ -3,6 +3,7 @@ require 'wovnrb'
 require 'wovnrb/headers'
 require 'minitest/autorun'
 require 'webmock/minitest'
+require 'rack'
 require 'pry'
 
 class WovnrbTest < Minitest::Test
@@ -47,6 +48,22 @@ class WovnrbTest < Minitest::Test
 
     i.call(Wovnrb.get_env)
     i.call(Wovnrb.get_env)
+    assert_requested(stub, :times => 1)
+  end
+
+  def test_request_wovn_token
+    settings = Wovnrb.get_settings
+    settings['project_token'] = 'token0'
+    request_token = 'token1'
+    url = 'wovn.io/dashboard'
+    stub = stub_request(:get, "#{settings['api_url']}?token=#{request_token}&url=#{url}").
+      to_return(:body => '{"test_body": "a"}')
+
+    i = Wovnrb::Interceptor.new(RackMock.new, settings)
+
+    env = Wovnrb.get_env
+    env['wovn_token'] = request_token
+    i.call(env)
     assert_requested(stub, :times => 1)
   end
 

@@ -104,6 +104,42 @@ module Wovnrb
       assert_equal([], s.settings['ignore_globs'])
     end
 
+    def test_valid_user_token
+      mock = LogMock.mock_log
+      store = Wovnrb::Store.instance
+
+      assert_equal(true, store.valid_token?('12345'))
+    end
+
+    def test_valid_project_token
+      mock = LogMock.mock_log
+      store = Wovnrb::Store.instance
+
+      assert_equal(true, store.valid_token?('123456'))
+    end
+
+    def test_invalid_token_nil
+      mock = LogMock.mock_log
+      store = Wovnrb::Store.instance
+      settings = {'not_a_token' => '12345'}
+
+      assert_equal(false, store.valid_token?(settings['token']))
+    end
+
+    def test_invalid_token_too_short
+      mock = LogMock.mock_log
+      store = Wovnrb::Store.instance
+
+      assert_equal(false, store.valid_token?('hi'))
+    end
+
+    def test_invalid_token_too_long
+      mock = LogMock.mock_log
+      store = Wovnrb::Store.instance
+
+      assert_equal(false, store.valid_token?('1234567'))
+    end
+
     def test_add_custom_lang_aliases_empty
       s = Wovnrb::Store.instance
       s.settings({'custom_lang_aliases' => {}})
