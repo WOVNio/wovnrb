@@ -50,8 +50,8 @@ module Wovnrb
         unless @store.settings['ignore_globs'].any?{|g| g.match?(headers.pathname)}
           # If the user defines a token for this request, use it instead of the config token
           request = Rack::Request.new(env)
-          if @store.valid_token?(request['wovn_token'])
-            @store.settings['project_token'] = request['wovn_token']
+          if @store.valid_token?(request.params['wovn_token'])
+            @store.settings['project_token'] = request.params['wovn_token']
           end
           # ApiData creates request for external server, but cannot use async.
           # Because some server not allow multi thread. (env['async.callback'] is not supported at all Server).
