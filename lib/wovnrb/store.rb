@@ -48,13 +48,21 @@ module Wovnrb
       @config_loaded = false
     end
 
+    # Returns true or false based on whether the token is valid or not
+    #
+    # @return [Boolean] Returns true if the token is valid, and false if it is not
+    def valid_token?(token)
+      return !token.nil? && (token.length == 5 || token.length == 6)
+    end
+
     # Returns true or false based on whether the settings are valid or not, logs any invalid settings to ../error.log
     #
     # @return [Boolean] Returns true if the settings are valid, and false if they are not
     def valid_settings?
       valid = true
       errors = [];
-      if !settings.has_key?('project_token') || settings['project_token'].length < 5 || settings['project_token'].length > 6
+      #if valid_token?(!settings.has_key?('project_token') || settings['project_token'].length < 5 || settings['project_token'].length > 6
+      if !valid_token?(settings['project_token'])
         valid = false
         errors.push("Project token #{settings['project_token']} is not valid.")
       end

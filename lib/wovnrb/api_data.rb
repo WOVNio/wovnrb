@@ -31,7 +31,7 @@ module Wovnrb
 
     @@cache_prefix = 'api::cache::'
     def to_key(url)
-      "#{@@cache_prefix}#{url}"
+      "::" + @store.settings['project_token'] + "::#{@@cache_prefix}#{url}"
     end
 
     def build_api_uri
