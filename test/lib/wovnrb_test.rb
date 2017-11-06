@@ -3,6 +3,7 @@ require 'wovnrb'
 require 'wovnrb/headers'
 require 'minitest/autorun'
 require 'webmock/minitest'
+require 'rack'
 require 'pry'
 
 class WovnrbTest < Minitest::Test
@@ -43,10 +44,40 @@ class WovnrbTest < Minitest::Test
     stub = stub_request(:get, "#{settings['api_url']}?token=#{token}&url=#{url}").
       to_return(:body => '{"test_body": "a"}')
 
-    i = Wovnrb::Interceptor.new(RackMock.new, settings)
+    i = Wovnrb::Interceptor.new(get_app, settings)
 
     i.call(Wovnrb.get_env)
     i.call(Wovnrb.get_env)
+    assert_requested(stub, :times => 1)
+  end
+
+  def test_request_wovn_token
+    settings = Wovnrb.get_settings
+    settings['project_token'] = 'token0'
+    request_token = 'token1'
+    url = 'wovn.io/dashboard'
+    stub = stub_request(:get, "#{settings['api_url']}?token=#{request_token}&url=#{url}").
+      to_return(:body => '{"test_body": "a"}')
+
+    i = Wovnrb::Interceptor.new(get_app(:params => {'wovn_token' => request_token}), settings)
+
+    env = Wovnrb.get_env
+    i.call(env)
+    assert_requested(stub, :times => 1)
+  end
+
+  def test_request_invalid_wovn_token
+    settings = Wovnrb.get_settings
+    settings['project_token'] = 'token0'
+    request_token = 'invalidtoken1'
+    url = 'wovn.io/dashboard'
+    stub = stub_request(:get, "#{settings['api_url']}?token=#{settings['project_token']}&url=#{url}").
+      to_return(:body => '{"test_body": "a"}')
+
+    i = Wovnrb::Interceptor.new(get_app(:params => {'wovn_token' => settings['project_token']}), settings)
+
+    env = Wovnrb.get_env
+    i.call(env)
     assert_requested(stub, :times => 1)
   end
 
@@ -274,8 +305,8 @@ HTML
     assert_equal([expected_body], swapped_body)
   end
 
-  def get_app
-    RackMock.new
+  def get_app(opts={})
+    RackMock.new(opts)
   end
 
   def generate_values
@@ -286,8 +317,29 @@ HTML
   end
 
   class RackMock
+    def initialize(opts={})
+      @params = {}
+      if opts.has_key?(:params) && opts[:params].class == Hash
+        opts[:params].each do |key, val|
+          @params[key] = val
+        end
+      end
+      @request_headers = {}
+    end
+
     def call(env)
+      @env = env
+      if @params.length > 0
+        req = Rack::Request.new(@env)
+        @params.each do |key, val|
+          req.update_param(key, val)
+        end
+      end
       [200, {'Content-Type' => 'text/html'}, ['']]
+    end
+
+    def [](key)
+      @env[key]
     end
   end
 end
