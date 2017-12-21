@@ -89,7 +89,7 @@ module Wovnrb
         # in the future, perhaps validate url rather than using begin rescue
         # "#{url =~ /\// ? 'http:' : ''}#{url}" =~ URI::regexp
         begin
-          uri = URI(href)
+          uri = Addressable::URI.parse(href)
         rescue
           return new_href
         end
@@ -164,10 +164,25 @@ module Wovnrb
         (dom.at_css('html') || dom.at_css('HTML')).set_attribute('lang', Lang::iso_639_1_normalization(@lang_code))
       end
 
-      dom.to_html.gsub(/href="([^"]*)"/) { |m| "href=\"#{URI.decode($1)}\"" }
+      index_href = index_href_for_encoding_and_decoding(dom)
+      # NOTE: when we use `#to_html` with nokogiri, nokogiri encode all href.
+      #       but we want to keep original href as much as possible.
+      #       That's why we replace href with original href which added lang info by wovnrb like this after we used `to_html`
+      dom.to_html.gsub(/href="([^"]*)"/) { |m| "href=\"#{index_href[$1] || $1}\"" }
     end
 
     private
+
+    def index_href_for_encoding_and_decoding(dom)
+      result = {}
+      dom.css('a').each do |a_tag|
+        url = a_tag['href']
+        encoded_url = Addressable::URI.parse(url).normalize.to_s
+        result[encoded_url] = url if encoded_url != url
+      end
+      result
+    end
+
     def replace_dom_values(dom, values, store, url, headers)
       text_index = values['text_vals'] || {}
       src_index = values['img_vals'] || {}
