@@ -95,16 +95,13 @@ module Wovnrb
         if ignore_all || !d.xpath('//html[@wovn-ignore]').empty? || is_amp_page?(d)
           ignore_all = true
           output = d.to_html.gsub(/href="([^"]*)"/) { |m| "href=\"#{URI.decode($1)}\"" }
+          put_back_noscripts!(output, noscripts)
           new_body.push(output)
           next
         end
 
         output = lang.switch_dom_lang(d, @store, values, url, headers)
-        # put back noscripts
-        noscripts.each_with_index do |noscript, index|
-          noscript_identifier = "<noscript wovn-id=\"#{index}\"></noscript>"
-          output.sub!(noscript_identifier, noscript)
-        end
+        put_back_noscripts!(output, noscripts)
         new_body.push(output)
       end
       body.close if body.respond_to?(:close)
@@ -112,6 +109,13 @@ module Wovnrb
     end
 
     private
+
+    def put_back_noscripts!(output, noscripts)
+      noscripts.each_with_index do |noscript, index|
+        noscript_identifier = "<noscript wovn-id=\"#{index}\"></noscript>"
+        output.sub!(noscript_identifier, noscript)
+      end
+    end
 
     # Checks if a given HTML body is an Accelerated Mobile Page (AMP).
     # To do so, it looks at the required attributes for the HTML tag:
