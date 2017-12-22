@@ -94,7 +94,7 @@ module Wovnrb
       env['PATH_INFO'] = url.path
     end
 
-    return Rack::MockRequest.env_for(url, env.merge(options))
+    return Rack::MockRequest.env_for(url.to_s, env.merge(options))
   end
 
   def to_dom(html)
