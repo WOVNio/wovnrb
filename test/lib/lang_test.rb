@@ -588,6 +588,10 @@ module Wovnrb
       lang = Lang.new('ja')
       header = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings)
       html = <<-HTML
+        <head>
+          <link rel="stylesheet" type="text/css" href="%3Ca%3E%E3%81%B5%E3%82%86%3C%2Fa%3E/theme.css">
+          <link rel="stylesheet" type="text/css" href="テスト.css">
+        </head>
         <ul>
           <li><a href="http://page.com/%e5%ba%83%e5%b0%be">encoded japanese path</a></li>
           <li><a href="http://page.com/テスト/DxA9J">no encoded japanese path</a></li>
@@ -600,6 +604,8 @@ module Wovnrb
       url = header.url
 
       swapped_body = lang.switch_dom_lang(dom, Store.instance, generate_values, url, header)
+      assert(swapped_body.include?('<link rel="stylesheet" type="text/css" href="%3Ca%3E%E3%81%B5%E3%82%86%3C%2Fa%3E/theme.css">'))
+      assert(swapped_body.include?('<link rel="stylesheet" type="text/css" href="テスト.css">'))
       assert(swapped_body.include?('<a href="http://page.com/ja/%e5%ba%83%e5%b0%be">encoded japanese path</a>'))
       assert(swapped_body.include?('<a href="http://page.com/ja/テスト/DxA9J">no encoded japanese path</a>'))
       assert(swapped_body.include?('<a href="http://page.com/ja/#DnE897">decoded invalid path</a>'))
