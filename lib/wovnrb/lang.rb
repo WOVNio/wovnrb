@@ -175,7 +175,7 @@ module Wovnrb
 
     def index_href_for_encoding_and_decoding(dom)
       result = {}
-      dom.css('a').each do |a_tag|
+      dom.xpath('//*[@href]').each do |a_tag|
         url = a_tag['href']
         encoded_url = Addressable::URI.parse(url).normalize.to_s
         result[encoded_url] = url if encoded_url != url
