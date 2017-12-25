@@ -112,6 +112,7 @@ class WovnrbTest < Minitest::Test
     headers = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
     body = <<HTML
 <html amp>
+<head><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript></head>
 <body>
   <h1>Mr. Belvedere Fan Club</h1>
   <div><p>Hello</p></div>
@@ -120,7 +121,10 @@ class WovnrbTest < Minitest::Test
 HTML
     expected_body = <<HTML
 <html amp="">
-<head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head>
+<head>
+<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
+<noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+</head>
 <body>
   <h1>Mr. Belvedere Fan Club</h1>
   <div><p>Hello</p></div>
