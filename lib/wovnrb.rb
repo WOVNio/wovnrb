@@ -47,27 +47,31 @@ module Wovnrb
       status, res_headers, body = @app.call(headers.request_out)
 
       if res_headers["Content-Type"] =~ /html/
-        unless @store.settings['ignore_globs'].any?{|g| g.match?(headers.pathname)}
-          # If the user defines a token for this request, use it instead of the config token
-          request = Rack::Request.new(env)
-          if @store.valid_token?(request.params['wovn_token'])
-            @store.settings['project_token'] = request.params['wovn_token']
-          end
-          # ApiData creates request for external server, but cannot use async.
-          # Because some server not allow multi thread. (env['async.callback'] is not supported at all Server).
-          api_data = ApiData.new(headers.redis_url, @store)
-          values = api_data.get_data
-          url = {
-            :protocol => headers.protocol,
-            :host => headers.host,
-            :pathname => headers.pathname
-          }
-          body = switch_lang(body, values, url, lang, headers) unless status.to_s =~ /^1|302/
 
-          content_length = 0
-          body.each { |b| content_length += b.respond_to?(:bytesize) ? b.bytesize : 0 }
-          res_headers["Content-Length"] = content_length.to_s
+        request = Rack::Request.new(env)
+        unless request.params['wovn_disable'] == true
+          unless @store.settings['ignore_globs'].any?{|g| g.match?(headers.pathname)}
+            # If the user defines a token for this request, use it instead of the config token
+            if @store.valid_token?(request.params['wovn_token'])
+              @store.settings['project_token'] = request.params['wovn_token']
+            end
+            # ApiData creates request for external server, but cannot use async.
+            # Because some server not allow multi thread. (env['async.callback'] is not supported at all Server).
+            api_data = ApiData.new(headers.redis_url, @store)
+            values = api_data.get_data
+            url = {
+              :protocol => headers.protocol,
+              :host => headers.host,
+              :pathname => headers.pathname
+            }
+            body = switch_lang(body, values, url, lang, headers) unless status.to_s =~ /^1|302/
+
+            content_length = 0
+            body.each { |b| content_length += b.respond_to?(:bytesize) ? b.bytesize : 0 }
+            res_headers["Content-Length"] = content_length.to_s
+          end
         end
+
       end
 
       headers.out(res_headers)

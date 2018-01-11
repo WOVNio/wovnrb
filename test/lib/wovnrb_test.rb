@@ -81,6 +81,20 @@ class WovnrbTest < Minitest::Test
     assert_requested(stub, :times => 1)
   end
 
+  def test_request_wovn_disable
+    settings = Wovnrb.get_settings
+    token = settings['project_token']
+    url = 'wovn.io/dashboard'
+    stub = stub_request(:get, "#{settings['api_url']}?token=#{token}&url=#{url}").
+      to_return(:body => '{"test_body": "a"}')
+
+    i = Wovnrb::Interceptor.new(get_app(:params => {'wovn_disable' => true}), settings)
+
+    env = Wovnrb.get_env
+    i.call(env)
+    assert_requested(stub, :times => 0)
+  end
+
   def test_switch_lang
     i = Wovnrb::Interceptor.new(get_app)
     h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
