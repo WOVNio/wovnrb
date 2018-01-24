@@ -1,4 +1,7 @@
 # -*- encoding: UTF-8 -*-
+
+require 'addressable'
+
 module Wovnrb
   class Lang
     LANG = {

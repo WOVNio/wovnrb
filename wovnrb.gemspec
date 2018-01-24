@@ -30,6 +30,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "activesupport"
   spec.add_dependency "lz4-ruby"
   spec.add_dependency "rack"
+  spec.add_dependency "addressable"
 
   spec.add_development_dependency "bundler", "~> 1.7"
   spec.add_development_dependency "rake", "~> 10.0"
