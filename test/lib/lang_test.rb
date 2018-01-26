@@ -611,5 +611,15 @@ module Wovnrb
       assert(swapped_body.include?('<a href="http://page.com/ja/#DnE897">decoded invalid path</a>'))
       assert(swapped_body.include?('<a href="http://page.com/ja/%23DnE897">encoded invalid path</a>'))
     end
+
+    def test_switch_dom_lang_with_invalid_link
+      lang = Lang.new('en')
+      header = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings)
+      html = '<a href="※ http://invalid.example.com">無効なリンク</a>'
+      dom = Wovnrb.to_dom(html)
+      url = header.url
+      swapped_body = lang.switch_dom_lang(dom, Store.instance, generate_values, url, header)
+      assert(swapped_body.include?('html'))
+    end
   end
 end

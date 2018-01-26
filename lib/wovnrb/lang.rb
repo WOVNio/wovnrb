@@ -180,8 +180,12 @@ module Wovnrb
       result = {}
       dom.xpath('//*[@href]').each do |a_tag|
         url = a_tag['href']
-        encoded_url = Addressable::URI.parse(url).normalize.to_s
-        result[encoded_url] = url if encoded_url != url
+        begin
+          encoded_url = Addressable::URI.parse(url).normalize.to_s
+          result[encoded_url] = url if encoded_url != url
+        rescue Addressable::URI::InvalidURIError => e
+          WovnLogger.instance.error("Failed parse url : #{url}#{e.message}")
+        end
       end
       result
     end
