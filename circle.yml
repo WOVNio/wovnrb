@@ -5,8 +5,3 @@ machine:
 test:
   override:
     - bundle exec rake test
-    # check that no crash occurs with earlier version of nokogiri
-    - echo "gem 'nokogiri', '1.6.1'" >> Gemfile
-    - bundle update nokogiri
-    - bundle exec rake test
-
