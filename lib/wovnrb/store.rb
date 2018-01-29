@@ -161,7 +161,7 @@ module Wovnrb
       end
 
       if @settings.has_key?('custom_lang_aliases')
-        @settings['custom_lang_aliases'].stringify_keys!
+        stringify_keys! @settings['custom_lang_aliases']
       end
 
       if wovn_dev_mode? && @settings['api_url'] == Store.default_settings['api_url']
@@ -188,6 +188,11 @@ module Wovnrb
     def cleanSettings
       @settings['ignore_globs'] = []
     end
-  end
 
+    def stringify_keys!(h)
+      h.keys.each do |k|
+        h[k.to_s] = h.delete(k)
+      end
+    end
+  end
 end
