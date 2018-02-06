@@ -10,7 +10,7 @@ module Wovnrb
     end
 
     def test_langs_length
-      assert_equal(30, Wovnrb::Lang::LANG.length)
+      assert_equal(34, Wovnrb::Lang::LANG.length)
     end
 
     def test_keys_exist

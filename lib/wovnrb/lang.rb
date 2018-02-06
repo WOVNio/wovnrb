@@ -7,6 +7,7 @@ module Wovnrb
     LANG = {
       #http://msdn.microsoft.com/en-us/library/hh456380.aspx
       'ar' => {name: 'العربية',           code: 'ar',     en: 'Arabic'},
+      'bn' => {name: 'বাংলা ভাষা',             code: 'bn',     en: 'Bengali'},
       'bg' => {name: 'Български',         code: 'bg',     en: 'Bulgarian'},
       'zh-CHS' => {name: '简体中文',      code: 'zh-CHS', en: 'Simp Chinese'},
       'zh-CHT' => {name: '繁體中文',      code: 'zh-CHT', en: 'Trad Chinese'},
@@ -25,16 +26,19 @@ module Wovnrb
       'ms' => {name: 'Bahasa Melayu',     code: 'ms',     en: 'Malay'},
       'my' => { name: 'ဗမာစာ',             code: 'my',     en: 'Burmese' },
       'ne' => {name: 'नेपाली भाषा',            code: 'ne',     en: 'Nepali'},
+      'no' => {name: 'زبان_فارسی',        code: 'fs',     en: 'Persian'},
       'no' => {name: 'Norsk',             code: 'no',     en: 'Norwegian'},
       'pl' => {name: 'Polski',            code: 'pl',     en: 'Polish'},
       'pt' => {name: 'Português',         code: 'pt',     en: 'Portuguese'},
       'ru' => {name: 'Русский',           code: 'ru',     en: 'Russian'},
       'es' => {name: 'Español',           code: 'es',     en: 'Spanish'},
+      'es' => {name: 'Kiswahili',         code: 'sw',     en: 'Swahili'},
       'sv' => {name: 'Svensk',            code: 'sv',     en: 'Swedish'},
       'th' => {name: 'ภาษาไทย',           code: 'th',     en: 'Thai'},
       'hi' => {name: 'हिन्दी',               code: 'hi',     en: 'Hindi'},
       'tr' => {name: 'Türkçe',            code: 'tr',     en: 'Turkish'},
       'uk' => {name: 'Українська',        code: 'uk',     en: 'Ukrainian'},
+      'uk' => {name: 'اردو',              code: 'ur',     en: 'Urdu'},
       'vi' => {name: 'Tiếng Việt',        code: 'vi',     en: 'Vietnamese'},
     }
 
