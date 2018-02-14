@@ -1,11 +1,14 @@
 language: ruby
 cache: bundler
 rvm:
-  - 2.4.1
-  - 2.3.4
-  - 2.2.7
+  # Supported versions are
+  # > Ruby version:2.2 or later
+  # https://wovn.io/support/ruby-library/
+  - 2.5.0
+  - 2.4.3
+  - 2.3.6
+  - 2.2.9
+  # There is no support for 2.1 officially, but test for now.
   - 2.1.10
-  - 2.0.0
-  - 1.9.3
 before_install:
   - gem update bundler --no-document
