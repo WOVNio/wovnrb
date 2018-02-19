@@ -7,8 +7,10 @@ module Wovnrb
     LANG = {
       #http://msdn.microsoft.com/en-us/library/hh456380.aspx
       'ar' => {name: 'العربية',           code: 'ar',     en: 'Arabic'},
+      'eu' => {name: 'Euskara',           code: 'eu',     en: 'Basque'},
       'bn' => {name: 'বাংলা ভাষা',             code: 'bn',     en: 'Bengali'},
       'bg' => {name: 'Български',         code: 'bg',     en: 'Bulgarian'},
+      'ca' => {name: 'Català',            code: 'ca',     en: 'Catalan'},
       'zh-CHS' => {name: '简体中文',      code: 'zh-CHS', en: 'Simp Chinese'},
       'zh-CHT' => {name: '繁體中文',      code: 'zh-CHT', en: 'Trad Chinese'},
       'da' => {name: 'Dansk',             code: 'da',     en: 'Danish'},
@@ -16,6 +18,7 @@ module Wovnrb
       'en' => {name: 'English',           code: 'en',     en: 'English'},
       'fi' => {name: 'Suomi',             code: 'fi',     en: 'Finnish'},
       'fr' => {name: 'Français',          code: 'fr',     en: 'French'},
+      'gl' => {name: 'Galego',            code: 'gl',     en: 'Galician'},
       'de' => {name: 'Deutsch',           code: 'de',     en: 'German'},
       'el' => {name: 'Ελληνικά',          code: 'el',     en: 'Greek'},
       'he' => {name: 'עברית',             code: 'he',     en: 'Hebrew'},
@@ -23,6 +26,7 @@ module Wovnrb
       'it' => {name: 'Italiano',          code: 'it',     en: 'Italian'},
       'ja' => {name: '日本語',            code: 'ja',     en: 'Japanese'},
       'ko' => {name: '한국어',            code: 'ko',     en: 'Korean'},
+      'lv' =>{name: 'Latviešu',          code: 'lv',     en: 'Latvian'},
       'ms' => {name: 'Bahasa Melayu',     code: 'ms',     en: 'Malay'},
       'my' => { name: 'ဗမာစာ',             code: 'my',     en: 'Burmese' },
       'ne' => {name: 'नेपाली भाषा',            code: 'ne',     en: 'Nepali'},
