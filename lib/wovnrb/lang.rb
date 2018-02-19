@@ -30,7 +30,7 @@ module Wovnrb
       'ms' => {name: 'Bahasa Melayu',     code: 'ms',     en: 'Malay'},
       'my' => { name: 'ဗမာစာ',             code: 'my',     en: 'Burmese' },
       'ne' => {name: 'नेपाली भाषा',            code: 'ne',     en: 'Nepali'},
-      'fs' => {name: 'زبان_فارسی',        code: 'fs',     en: 'Persian'},
+      'fa' => {name: 'زبان_فارسی',        code: 'fa',     en: 'Persian'},
       'no' => {name: 'Norsk',             code: 'no',     en: 'Norwegian'},
       'pl' => {name: 'Polski',            code: 'pl',     en: 'Polish'},
       'pt' => {name: 'Português',         code: 'pt',     en: 'Portuguese'},
