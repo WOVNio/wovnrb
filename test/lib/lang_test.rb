@@ -44,7 +44,6 @@ module Wovnrb
        assert_equal('ja',       Lang::iso_639_1_normalization('ja'))
        assert_equal('ko',       Lang::iso_639_1_normalization('ko'))
        assert_equal('lv',       Lang::iso_639_1_normalization('lv'))
-       assert_equal('fs',       Lang::iso_639_1_normalization('fs'))
        assert_equal('ms',       Lang::iso_639_1_normalization('ms'))
        assert_equal('my',       Lang::iso_639_1_normalization('my'))
        assert_equal('ne',       Lang::iso_639_1_normalization('ne'))
