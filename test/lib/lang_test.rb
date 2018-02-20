@@ -39,6 +39,7 @@ module Wovnrb
        assert_equal('de',       Lang::iso_639_1_normalization('de'))
        assert_equal('el',       Lang::iso_639_1_normalization('el'))
        assert_equal('he',       Lang::iso_639_1_normalization('he'))
+       assert_equal('hu',       Lang::iso_639_1_normalization('hu'))
        assert_equal('id',       Lang::iso_639_1_normalization('id'))
        assert_equal('it',       Lang::iso_639_1_normalization('it'))
        assert_equal('ja',       Lang::iso_639_1_normalization('ja'))

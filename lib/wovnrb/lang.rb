@@ -22,6 +22,7 @@ module Wovnrb
       'de' => {name: 'Deutsch',           code: 'de',     en: 'German'},
       'el' => {name: 'Ελληνικά',          code: 'el',     en: 'Greek'},
       'he' => {name: 'עברית',             code: 'he',     en: 'Hebrew'},
+      'hu' => {name: 'Magyar',            code: 'hu',     en: 'Hungarian'},
       'id' => {name: 'Bahasa Indonesia',  code: 'id',     en: 'Indonesian'},
       'it' => {name: 'Italiano',          code: 'it',     en: 'Italian'},
       'ja' => {name: '日本語',            code: 'ja',     en: 'Japanese'},
