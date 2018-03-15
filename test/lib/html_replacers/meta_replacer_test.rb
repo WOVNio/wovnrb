@@ -95,7 +95,7 @@ module Wovnrb
       headers = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'https://test.com'), Wovnrb.get_settings)
       replacer = MetaReplacer.new({
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]},
-      }, headers)
+      }, 'path', headers)
 
       dom = Wovnrb.get_dom('<meta property="og:url" content="https://test.com">')
       replacer.replace(dom, Lang.new('ja'))
