@@ -1,7 +1,8 @@
 module Wovnrb
   class MetaReplacer < ReplacerBase
-    def initialize(text_index, headers=nil)
+    def initialize(text_index, pattern = nil, headers = nil)
       @text_index = text_index
+      @pattern = pattern
       @headers = headers
     end
 
@@ -11,8 +12,8 @@ module Wovnrb
         (node.get_attribute('name') || node.get_attribute('property') || '') =~ /^(description|title|og:title|og:description|og:url|twitter:title|twitter:description)$/
       }.each do |node|
         node_content = node.get_attribute('content').strip
-        if node.get_attribute('property') && node.get_attribute('property') === 'og:url' && @headers
-          new_url = @headers.add_lang_code(node_content, lang.lang_code)
+        if node.get_attribute('property') && node.get_attribute('property') === 'og:url' && @headers && @pattern
+          new_url = lang.add_lang_code(node_content, @pattern, @headers)
           node.set_attribute('content', new_url)
           next
         end

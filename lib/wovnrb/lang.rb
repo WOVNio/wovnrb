@@ -204,7 +204,7 @@ module Wovnrb
       end
 
       replacers << TextReplacer.new(text_index)
-      replacers << MetaReplacer.new(text_index, headers)
+      replacers << MetaReplacer.new(text_index, pattern, headers)
       replacers << InputReplacer.new(text_index)
       replacers << ImageReplacer.new(url, text_index, src_index, img_src_prefix, host_aliases)
       replacers << ScriptReplacer.new(store)
