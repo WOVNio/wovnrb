@@ -90,5 +90,18 @@ module Wovnrb
       content = dom.xpath('//meta')[0].get_attribute('content')
       assert_equal('Hello', content)
     end
+
+    def test_replace_wovn_ignore
+      headers = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'https://test.com'), Wovnrb.get_settings)
+      replacer = MetaReplacer.new({
+        'Hello' => {'ja' => [{'data' => 'こんにちは'}]},
+      }, headers)
+
+      dom = Wovnrb.get_dom('<meta property="og:url" content="https://test.com">')
+      replacer.replace(dom, Lang.new('ja'))
+
+      content = dom.xpath('//meta')[0].get_attribute('content')
+      assert_equal('https://test.com/ja/', content)
+    end
   end
 end
