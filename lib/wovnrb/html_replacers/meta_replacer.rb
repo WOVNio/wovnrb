@@ -12,7 +12,7 @@ module Wovnrb
         (node.get_attribute('name') || node.get_attribute('property') || '') =~ /^(description|title|og:title|og:description|og:url|twitter:title|twitter:description)$/
       }.each do |node|
         node_content = node.get_attribute('content').strip
-        if node.get_attribute('property') && node.get_attribute('property') === 'og:url' && @headers && @pattern
+        if @headers && @pattern && node.get_attribute('property') && node.get_attribute('property') === 'og:url'
           new_url = lang.add_lang_code(node_content, @pattern, @headers)
           node.set_attribute('content', new_url)
           next
