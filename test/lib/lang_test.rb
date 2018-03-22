@@ -10,7 +10,7 @@ module Wovnrb
     end
 
     def test_langs_length
-      assert_equal(30, Wovnrb::Lang::LANG.length)
+      assert_equal(39, Wovnrb::Lang::LANG.length)
     end
 
     def test_keys_exist
@@ -24,7 +24,10 @@ module Wovnrb
 
     def test_iso_639_1_normalization
        assert_equal('ar',       Lang::iso_639_1_normalization('ar'))
+       assert_equal('eu',       Lang::iso_639_1_normalization('eu'))
+       assert_equal('bn',       Lang::iso_639_1_normalization('bn'))
        assert_equal('bg',       Lang::iso_639_1_normalization('bg'))
+       assert_equal('ca',       Lang::iso_639_1_normalization('ca'))
        assert_equal('zh-Hans',  Lang::iso_639_1_normalization('zh-CHS'))
        assert_equal('zh-Hant',  Lang::iso_639_1_normalization('zh-CHT'))
        assert_equal('da',       Lang::iso_639_1_normalization('da'))
@@ -32,26 +35,32 @@ module Wovnrb
        assert_equal('en',       Lang::iso_639_1_normalization('en'))
        assert_equal('fi',       Lang::iso_639_1_normalization('fi'))
        assert_equal('fr',       Lang::iso_639_1_normalization('fr'))
+       assert_equal('gl',       Lang::iso_639_1_normalization('gl'))
        assert_equal('de',       Lang::iso_639_1_normalization('de'))
        assert_equal('el',       Lang::iso_639_1_normalization('el'))
        assert_equal('he',       Lang::iso_639_1_normalization('he'))
+       assert_equal('hu',       Lang::iso_639_1_normalization('hu'))
        assert_equal('id',       Lang::iso_639_1_normalization('id'))
        assert_equal('it',       Lang::iso_639_1_normalization('it'))
        assert_equal('ja',       Lang::iso_639_1_normalization('ja'))
        assert_equal('ko',       Lang::iso_639_1_normalization('ko'))
+       assert_equal('lv',       Lang::iso_639_1_normalization('lv'))
        assert_equal('ms',       Lang::iso_639_1_normalization('ms'))
        assert_equal('my',       Lang::iso_639_1_normalization('my'))
        assert_equal('ne',       Lang::iso_639_1_normalization('ne'))
+       assert_equal('fa',       Lang::iso_639_1_normalization('fa'))
        assert_equal('no',       Lang::iso_639_1_normalization('no'))
        assert_equal('pl',       Lang::iso_639_1_normalization('pl'))
        assert_equal('pt',       Lang::iso_639_1_normalization('pt'))
        assert_equal('ru',       Lang::iso_639_1_normalization('ru'))
        assert_equal('es',       Lang::iso_639_1_normalization('es'))
+       assert_equal('sw',       Lang::iso_639_1_normalization('sw'))
        assert_equal('sv',       Lang::iso_639_1_normalization('sv'))
        assert_equal('th',       Lang::iso_639_1_normalization('th'))
        assert_equal('hi',       Lang::iso_639_1_normalization('hi'))
        assert_equal('tr',       Lang::iso_639_1_normalization('tr'))
        assert_equal('uk',       Lang::iso_639_1_normalization('uk'))
+       assert_equal('ur',       Lang::iso_639_1_normalization('ur'))
        assert_equal('vi',       Lang::iso_639_1_normalization('vi'))
     end
 
