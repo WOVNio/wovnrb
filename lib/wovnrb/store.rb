@@ -11,7 +11,7 @@ module Wovnrb
     include Singleton
 
     def self.default_settings
-      {
+      Settings.new.merge({
         'project_token' => '',
         'log_path' => 'log/wovn_error.log',
         'ignore_paths' => [],
@@ -30,11 +30,11 @@ module Wovnrb
         'use_proxy' => false,  # use env['HTTP_X_FORWARDED_HOST'] instead of env['HTTP_HOST'] and env['SERVER_NAME'] when this setting is true.
         'custom_lang_aliases' => {},
         'wovn_dev_mode' => false
-      }
+      })
     end
 
     def initialize
-      @settings = {}
+      @settings = Settings.new
       @config_loaded = false
       reset
     end
@@ -127,7 +127,6 @@ module Wovnrb
         end
         @settings.merge!(Rails.configuration.wovnrb.stringify_keys)
       end
-      cleanSettings
 
       # fix settings object
       @settings['default_lang'] = Lang.get_code(@settings['default_lang'])
@@ -152,12 +151,6 @@ module Wovnrb
         @settings['test_mode'] = false
       else
         @settings['test_mode'] = true
-      end
-
-      if @settings['ignore_paths'].kind_of?(Array)
-        @settings['ignore_globs'] = @settings['ignore_paths'].map do |pattern|
-          Glob.new(pattern)
-        end
       end
 
       if @settings.has_key?('custom_lang_aliases')
@@ -185,14 +178,47 @@ module Wovnrb
     end
 
     private
-    def cleanSettings
-      @settings['ignore_globs'] = []
-    end
 
     def stringify_keys!(h)
       h.keys.each do |k|
         h[k.to_s] = h.delete(k)
       end
     end
+  end
+
+  class Settings < Hash
+    def initialize(*args, **kwargs)
+      super(*args, **kwargs)
+      @dynamic = {}
+    end
+
+    def [](key)
+      return @dynamic[key] if @dynamic.key?(key)
+      return ignore_globs if key == 'ignore_globs'
+      super(key)
+    end
+
+    def ignore_globs
+      ignore_paths = self['ignore_paths']
+      return [] unless ignore_paths.kind_of?(Array)
+      ignore_paths.map { |pattern| Glob.new(pattern) }
+    end
+
+    def clear_dynamic!
+      @dynamic.clear
+    end
+
+    def update_dynamic!(params)
+      # If the user defines dynamic settings for this request, use it instead of the config
+      DYNAMIC.each do |params_key, setting_key|
+        value = params[params_key]
+        @dynamic[setting_key] = value if value
+      end
+    end
+
+    DYNAMIC = {
+      'wovn_token' => 'project_token',
+      'wovn_ignore_paths' => 'ignore_paths',
+    }
   end
 end
