@@ -28,7 +28,7 @@ module Wovnrb
     end
 
     def call(env)
-      @store.settings.clear_dynamic!
+      @store.settings.clear_dynamic_settings!
       unless Store.instance.valid_settings?
         return @app.call(env)
       end

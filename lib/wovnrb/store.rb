@@ -4,6 +4,7 @@ require 'cgi'
 require 'singleton'
 require 'wovnrb/services/wovn_logger'
 require 'wovnrb/services/glob'
+require 'wovnrb/settings'
 require 'active_support'
 
 module Wovnrb
@@ -184,41 +185,5 @@ module Wovnrb
         h[k.to_s] = h.delete(k)
       end
     end
-  end
-
-  class Settings < Hash
-    def initialize(*args, **kwargs)
-      super(*args, **kwargs)
-      @dynamic = {}
-    end
-
-    def [](key)
-      return @dynamic[key] if @dynamic.key?(key)
-      return ignore_globs if key == 'ignore_globs'
-      super(key)
-    end
-
-    def ignore_globs
-      ignore_paths = self['ignore_paths']
-      return [] unless ignore_paths.kind_of?(Array)
-      ignore_paths.map { |pattern| Glob.new(pattern) }
-    end
-
-    def clear_dynamic!
-      @dynamic.clear
-    end
-
-    def update_dynamic!(params)
-      # If the user defines dynamic settings for this request, use it instead of the config
-      DYNAMIC.each do |params_key, setting_key|
-        value = params[params_key]
-        @dynamic[setting_key] = value if value
-      end
-    end
-
-    DYNAMIC = {
-      'wovn_token' => 'project_token',
-      'wovn_ignore_paths' => 'ignore_paths',
-    }
   end
 end
