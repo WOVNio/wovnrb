@@ -51,7 +51,7 @@ module Wovnrb
 
         request = Rack::Request.new(env)
         unless request.params['wovn_disable'] == true
-          @store.settings.update_dynamic!(request.params)
+          @store.settings.update_dynamic_settings!(request.params)
           unless @store.settings['ignore_globs'].any?{|g| g.match?(headers.pathname)}
 
             # ApiData creates request for external server, but cannot use async.

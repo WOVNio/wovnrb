@@ -21,7 +21,7 @@ module Wovnrb
       @dynamic_settings.clear
     end
 
-    def update_dynamic!(params)
+    def update_dynamic_settings!(params)
       # If the user defines dynamic settings for this request, use it instead of the config
       DYNAMIC_KEYS.each do |params_key, setting_key|
         value = params[params_key]
