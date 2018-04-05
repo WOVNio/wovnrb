@@ -4,6 +4,7 @@ require 'cgi'
 require 'singleton'
 require 'wovnrb/services/wovn_logger'
 require 'wovnrb/services/glob'
+require 'wovnrb/settings'
 require 'active_support'
 
 module Wovnrb
@@ -11,7 +12,7 @@ module Wovnrb
     include Singleton
 
     def self.default_settings
-      {
+      Settings.new.merge({
         'project_token' => '',
         'log_path' => 'log/wovn_error.log',
         'ignore_paths' => [],
@@ -30,11 +31,11 @@ module Wovnrb
         'use_proxy' => false,  # use env['HTTP_X_FORWARDED_HOST'] instead of env['HTTP_HOST'] and env['SERVER_NAME'] when this setting is true.
         'custom_lang_aliases' => {},
         'wovn_dev_mode' => false
-      }
+      })
     end
 
     def initialize
-      @settings = {}
+      @settings = Settings.new
       @config_loaded = false
       reset
     end
@@ -127,7 +128,6 @@ module Wovnrb
         end
         @settings.merge!(Rails.configuration.wovnrb.stringify_keys)
       end
-      cleanSettings
 
       # fix settings object
       @settings['default_lang'] = Lang.get_code(@settings['default_lang'])
@@ -152,12 +152,6 @@ module Wovnrb
         @settings['test_mode'] = false
       else
         @settings['test_mode'] = true
-      end
-
-      if @settings['ignore_paths'].kind_of?(Array)
-        @settings['ignore_globs'] = @settings['ignore_paths'].map do |pattern|
-          Glob.new(pattern)
-        end
       end
 
       if @settings.has_key?('custom_lang_aliases')
@@ -185,9 +179,6 @@ module Wovnrb
     end
 
     private
-    def cleanSettings
-      @settings['ignore_globs'] = []
-    end
 
     def stringify_keys!(h)
       h.keys.each do |k|

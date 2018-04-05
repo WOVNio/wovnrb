@@ -53,17 +53,27 @@ class WovnrbTest < Minitest::Test
 
   def test_request_wovn_token
     settings = Wovnrb.get_settings
-    settings['project_token'] = 'token0'
+    default_token = 'token0'
     request_token = 'token1'
+    settings['project_token'] = default_token
     url = 'wovn.io/dashboard'
     stub = stub_request(:get, "#{settings['api_url']}?token=#{request_token}&url=#{url}").
       to_return(:body => '{"test_body": "a"}')
 
-    i = Wovnrb::Interceptor.new(get_app(:params => {'wovn_token' => request_token}), settings)
+    app = get_app(:params => {'wovn_token' => request_token})
+    i = Wovnrb::Interceptor.new(app, settings)
 
     env = Wovnrb.get_env
     i.call(env)
     assert_requested(stub, :times => 1)
+
+    # check use default a token after use dynamic token
+    stub_default = stub_request(:get, "#{settings['api_url']}?token=#{default_token}&url=#{url}").
+      to_return(:body => '{"test_body": "a"}')
+    app.params.clear
+    env['rack.request.query_hash'] = {}
+    i.call(env)
+    assert_requested(stub_default, :times => 1)
   end
 
   def test_request_invalid_wovn_token
@@ -79,6 +89,20 @@ class WovnrbTest < Minitest::Test
     env = Wovnrb.get_env
     i.call(env)
     assert_requested(stub, :times => 1)
+  end
+
+  def test_request_wovn_ignore_paths
+    settings = Wovnrb.get_settings
+    url = 'wovn.io/dashboard'
+    stub = stub_request(:get, "#{settings['api_url']}?token=#{settings['project_token']}&url=#{url}").
+      to_return(:body => '{"test_body": "a"}')
+
+    app = get_app(:params => {'wovn_ignore_paths' => ['/dashboard']})
+    i = Wovnrb::Interceptor.new(app, settings)
+
+    env = Wovnrb.get_env
+    i.call(env)
+    assert_requested(stub, :times => 0)
   end
 
   def test_request_wovn_disable
@@ -335,6 +359,8 @@ HTML
   end
 
   class RackMock
+    attr_accessor :params
+
     def initialize(opts={})
       @params = {}
       if opts.has_key?(:params) && opts[:params].class == Hash

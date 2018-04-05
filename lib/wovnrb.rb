@@ -28,6 +28,7 @@ module Wovnrb
     end
 
     def call(env)
+      @store.settings.clear_dynamic_settings!
       unless Store.instance.valid_settings?
         return @app.call(env)
       end
@@ -50,11 +51,9 @@ module Wovnrb
 
         request = Rack::Request.new(env)
         unless request.params['wovn_disable'] == true
+          @store.settings.update_dynamic_settings!(request.params)
           unless @store.settings['ignore_globs'].any?{|g| g.match?(headers.pathname)}
-            # If the user defines a token for this request, use it instead of the config token
-            if @store.valid_token?(request.params['wovn_token'])
-              @store.settings['project_token'] = request.params['wovn_token']
-            end
+
             # ApiData creates request for external server, but cannot use async.
             # Because some server not allow multi thread. (env['async.callback'] is not supported at all Server).
             api_data = ApiData.new(headers.redis_url, @store)
@@ -135,4 +134,3 @@ module Wovnrb
     end
   end
 end
-
