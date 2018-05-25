@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+require 'test_helper'
 require 'wovnrb'
 require 'wovnrb/headers'
 require 'minitest/autorun'
@@ -117,6 +118,25 @@ class WovnrbTest < Minitest::Test
     env = Wovnrb.get_env
     i.call(env)
     assert_requested(stub, :times => 0)
+  end
+
+  def test_request_to_not_published_page
+    settings = Wovnrb.get_settings
+    default_token = 'token0'
+    request_token = 'token1'
+    settings['project_token'] = default_token
+    url = 'wovn.io/dashboard'
+    stub = stub_request(:get, "#{settings['api_url']}?token=#{request_token}&url=#{url}").
+      to_return(:body => '{"code":423,"message":"Page is not published"}', status: 423)
+
+    app = get_app(:params => {'wovn_token' => request_token})
+    i = Wovnrb::Interceptor.new(app, settings)
+    env = Wovnrb.get_env
+    i.stub(:switch_lang, ->{raise 'must not called'}) do
+      i.call(env)
+    end
+
+    assert_requested(stub, :times => 1)
   end
 
   def test_switch_lang

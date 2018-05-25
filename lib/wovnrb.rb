@@ -47,35 +47,42 @@ module Wovnrb
       # pass to application
       status, res_headers, body = @app.call(headers.request_out)
 
-      if res_headers["Content-Type"] =~ /html/
-
-        request = Rack::Request.new(env)
-        unless request.params['wovn_disable'] == true
-          @store.settings.update_dynamic_settings!(request.params)
-          unless @store.settings['ignore_globs'].any?{|g| g.match?(headers.pathname)}
-
-            # ApiData creates request for external server, but cannot use async.
-            # Because some server not allow multi thread. (env['async.callback'] is not supported at all Server).
-            api_data = ApiData.new(headers.redis_url, @store)
-            values = api_data.get_data
-            url = {
-              :protocol => headers.protocol,
-              :host => headers.host,
-              :pathname => headers.pathname
-            }
-            body = switch_lang(body, values, url, lang, headers) unless status.to_s =~ /^1|302/
-
-            content_length = 0
-            body.each { |b| content_length += b.respond_to?(:bytesize) ? b.bytesize : 0 }
-            res_headers["Content-Length"] = content_length.to_s
-          end
-        end
-
+      unless res_headers["Content-Type"] =~ /html/
+        return output(headers, status, res_headers, body)
       end
 
-      headers.out(res_headers)
-      [status, res_headers, body]
-      #[status, res_headers, d.transform()]
+      request = Rack::Request.new(env)
+
+      if request.params['wovn_disable'] == true
+        return output(headers, status, res_headers, body)
+      end
+
+      @store.settings.update_dynamic_settings!(request.params)
+      if @store.settings['ignore_globs'].any?{|g| g.match?(headers.pathname)}
+        return output(headers, status, res_headers, body)
+      end
+
+      # ApiData creates request for external server, but cannot use async.
+      # Because some server not allow multi thread. (env['async.callback'] is not supported at all Server).
+      api_data = ApiData.new(headers.redis_url, @store)
+      values = api_data.get_data
+
+      unless have_data?(values)
+        return output(headers, status, res_headers, body)
+      end
+
+      url = {
+        :protocol => headers.protocol,
+        :host => headers.host,
+        :pathname => headers.pathname
+      }
+      body = switch_lang(body, values, url, lang, headers) unless status.to_s =~ /^1|302/
+
+      content_length = 0
+      body.each { |b| content_length += b.respond_to?(:bytesize) ? b.bytesize : 0 }
+      res_headers["Content-Length"] = content_length.to_s
+
+      output(headers, status, res_headers, body)
     end
 
     def switch_lang(body, values, url, lang=@store.settings['default_lang'], headers)
@@ -112,6 +119,15 @@ module Wovnrb
     end
 
     private
+
+    def output(headers, status, res_headers, body)
+      headers.out(res_headers)
+      [status, res_headers, body]
+    end
+
+    def have_data?(values)
+      values.count > 0
+    end
 
     def put_back_noscripts!(output, noscripts)
       noscripts.each_with_index do |noscript, index|
