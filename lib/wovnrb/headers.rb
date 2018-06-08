@@ -14,9 +14,11 @@ module Wovnrb
     # Its parameters are set by parsing env variable.
     #
     def initialize(env, settings)
+      request = Rack::Request.new(env)
+
       @env = env
       @settings = settings
-      @protocol = @env['rack.url_scheme']
+      @protocol = request.scheme
       if settings['use_proxy'] && @env.has_key?('HTTP_X_FORWARDED_HOST')
         @unmasked_host = @env['HTTP_X_FORWARDED_HOST']
       else
