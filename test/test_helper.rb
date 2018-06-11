@@ -14,10 +14,12 @@ SimpleCov.start do
 end
 
 require 'nokogumbo'
+require 'rack'
 require 'wovnrb/headers'
 require 'wovnrb/lang'
 require 'wovnrb/store'
 require 'wovnrb/html_replacers/replacer_base'
+require 'wovnrb/html_replacers/input_replacer'
 require 'wovnrb/html_replacers/link_replacer'
 require 'wovnrb/html_replacers/text_replacer'
 require 'wovnrb/html_replacers/meta_replacer'

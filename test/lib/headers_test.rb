@@ -104,6 +104,12 @@ module Wovnrb
       assert_equal('wovn.io/dashboard', h.redis_url)
     end
 
+    def test_initialize_with_proto_header
+      env = Wovnrb.get_env('url' => 'http://page.com', 'HTTP_X_FORWARDED_PROTO' => 'https')
+      h = Wovnrb::Headers.new(env, Wovnrb.get_settings('query' => ['aaa']))
+      assert_equal('https', h.protocol)
+    end
+
     #########################
     # REDIRECT_LOCATION
     #########################

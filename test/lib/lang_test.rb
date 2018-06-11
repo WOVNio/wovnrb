@@ -480,6 +480,18 @@ module Wovnrb
       assert(!(/html lang="zh-CHT"/ =~ swapped_body))
     end
 
+    def test_switch_dom_lang_when_proxy_change_protocol
+      lang = Lang.new('en')
+      env = Wovnrb.get_env('url' => 'http://page.com', 'HTTP_X_FORWARDED_PROTO' => 'https')
+      header = Wovnrb::Headers.new(env, Wovnrb.get_settings)
+      html = '<html></html>'
+      dom = Wovnrb.to_dom(html)
+      url = header.url
+      swapped_body = lang.switch_dom_lang(dom, Store.instance, generate_values, url, header)
+      assert(swapped_body.include?('hreflang="ja" href="https://page.com/ja/"'))
+      assert(swapped_body.include?('hreflang="en" href="https://page.com/"'))
+    end
+
     def test_switch_lang
       lang = Lang.new('ja')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
