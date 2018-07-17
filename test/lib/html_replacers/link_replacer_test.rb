@@ -51,7 +51,7 @@ module Wovnrb
       assert_equal('javascript:onclick($(\'.any\').slideToggle());', link)
     end
 
-    def test_replace_upercased_javascript_code_link_query
+    def test_replace_uppercased_javascript_code_link_query
       replacer = LinkReplacer.new('query', get_header)
       dom = Wovnrb.get_dom('<a href="JAVASCRIPT:onclick($(\'.any\').slideToggle());">link text</a>')
       replacer.replace(dom, Lang.new('en'))
@@ -78,7 +78,7 @@ module Wovnrb
       assert_equal('javascript:onclick($(\'.any\').slideToggle());', link)
     end
 
-    def test_replace_upercased_javascript_code_link_path
+    def test_replace_uppercased_javascript_code_link_path
       replacer = LinkReplacer.new('path', get_header)
       dom = Wovnrb.get_dom('<a href="JAVASCRIPT:onclick($(\'.any\').slideToggle());">link text</a>')
       replacer.replace(dom, Lang.new('en'))
