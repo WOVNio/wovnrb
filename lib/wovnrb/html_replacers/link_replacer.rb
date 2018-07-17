@@ -18,7 +18,7 @@ module Wovnrb
 
         href = node.get_attribute('href')
         next if href =~ /^\s*\{\{.+\}\}\s*$/
-        next if href =~ /javascript:void\(/
+        next if href =~ /^\s*javascript:/i
         next if is_file?(href)
         new_href = lang.add_lang_code(href, @pattern, @headers)
         node.set_attribute('href', new_href)
