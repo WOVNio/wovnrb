@@ -67,10 +67,6 @@ module Wovnrb
       api_data = ApiData.new(headers.redis_url, @store)
       values = api_data.get_data
 
-      unless have_data?(values)
-        return output(headers, status, res_headers, body)
-      end
-
       url = {
         :protocol => headers.protocol,
         :host => headers.host,
@@ -113,8 +109,8 @@ module Wovnrb
         if have_data?(values)
           output = lang.switch_dom_lang(d, @store, values, url, headers)
         else
-          script_replacer = ScriptReplacer.new(@store)
-          output = script_replacer.replace(d, lang)
+          ScriptReplacer.new(@store).replace(d, lang)
+          output = d.to_html
         end
         put_back_noscripts!(output, noscripts)
         new_body.push(output)
