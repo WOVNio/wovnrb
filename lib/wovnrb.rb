@@ -113,8 +113,8 @@ module Wovnrb
         if have_data?(values)
           output = lang.switch_dom_lang(d, @store, values, url, headers)
         else
-          scriptReplacer = ScriptReplacer.new(@store)
-          ouput = scriptReplacer.replace(d, lang)
+          script_replacer = ScriptReplacer.new(@store)
+          output = script_replacer.replace(d, lang)
         end
         put_back_noscripts!(output, noscripts)
         new_body.push(output)
