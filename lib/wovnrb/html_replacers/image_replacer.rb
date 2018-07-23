@@ -1,6 +1,7 @@
 module Wovnrb
   class ImageReplacer < ReplacerBase
-    def initialize(url, text_index, src_index, img_src_prefix, host_aliases)
+    def initialize(store, url, text_index, src_index, img_src_prefix, host_aliases)
+      super(store)
       @url = url
       @text_index = text_index
       @src_index = src_index

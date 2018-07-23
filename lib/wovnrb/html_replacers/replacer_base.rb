@@ -1,5 +1,9 @@
 module Wovnrb
   class ReplacerBase
+    def initialize(store)
+      @store = store
+    end
+
     def replace(dom, lang)
       raise NotImplementedError.new('replace is not defined')
     end
@@ -11,6 +15,17 @@ module Wovnrb
       elsif node.name === 'html'
         return false
       end
+
+      node_class = node.get_attribute('class')
+      if node_class
+        classes = node_class.split
+        @store.settings['ignore_class'].each do |ignore_class|
+          if classes.include?(ignore_class)
+            return true
+          end
+        end
+      end
+
       wovn_ignore?(node.parent)
     end
 

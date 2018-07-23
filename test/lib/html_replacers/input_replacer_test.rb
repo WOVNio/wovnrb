@@ -5,7 +5,8 @@ require 'webmock/minitest'
 module Wovnrb
   class InputReplacerTest < WovnMiniTest
     def test_replace_submit_value
-      replacer = InputReplacer.new({
+      store = Store.instance
+      replacer = InputReplacer.new(store, {
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]}
       })
 
@@ -17,7 +18,8 @@ module Wovnrb
     end
 
     def test_dont_replace_empty_submit_value
-      replacer = InputReplacer.new({
+      store = Store.instance
+      replacer = InputReplacer.new(store, {
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]}
       })
 
@@ -29,7 +31,8 @@ module Wovnrb
     end
 
     def test_dont_replace_type_text_value
-      replacer = InputReplacer.new({
+      store = Store.instance
+      replacer = InputReplacer.new(store, {
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]}
       })
 
@@ -41,7 +44,8 @@ module Wovnrb
     end
 
     def test_dont_replace_type_search_value
-      replacer = InputReplacer.new({
+      store = Store.instance
+      replacer = InputReplacer.new(store, {
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]}
       })
 
@@ -53,7 +57,8 @@ module Wovnrb
     end
 
     def test_dont_replace_type_hidden_value
-      replacer = InputReplacer.new({
+      store = Store.instance
+      replacer = InputReplacer.new(store, {
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]}
       })
 
@@ -65,7 +70,8 @@ module Wovnrb
     end
 
     def test_dont_replace_type_password_value
-      replacer = InputReplacer.new({
+      store = Store.instance
+      replacer = InputReplacer.new(store, {
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]}
       })
 
@@ -77,7 +83,8 @@ module Wovnrb
     end
 
     def test_replace_type_password_placeholder
-      replacer = InputReplacer.new({
+      store = Store.instance
+      replacer = InputReplacer.new(store, {
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]},
         'Hi' => {'ja' => [{'data' => 'やぁ'}]},
       })
@@ -92,7 +99,8 @@ module Wovnrb
     end
 
     def test_dont_replace_type_url_value
-      replacer = InputReplacer.new({
+      store = Store.instance
+      replacer = InputReplacer.new(store, {
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]}
       })
 
@@ -104,7 +112,8 @@ module Wovnrb
     end
 
     def test_dont_replace_no_type_value
-      replacer = InputReplacer.new({
+      store = Store.instance
+      replacer = InputReplacer.new(store, {
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]}
       })
 
