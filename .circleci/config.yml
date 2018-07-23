@@ -8,7 +8,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - bundle-
+            - bundler-
       - run: bundle install --path vendor/bundle --jobs=4
       - save_cache:
           key: bundler-{{ checksum "Gemfile.lock" }}
