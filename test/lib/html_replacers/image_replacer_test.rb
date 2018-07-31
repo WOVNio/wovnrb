@@ -5,6 +5,7 @@ require 'webmock/minitest'
 module Wovnrb
   class ImageReplacerTest < WovnMiniTest
     def test_replace
+      store = Store.instance
       url = {
         :protocol => 'http',
         :host => 'www.example.com',
@@ -17,7 +18,7 @@ module Wovnrb
         'http://www.example.com/test.img' => {'ja' => [{'data' => 'http://test.com/ttt.img'}]}
       }
       img_src_prefix = 'prefix::'
-      replacer = ImageReplacer.new(url, text_index, src_index, img_src_prefix, [])
+      replacer = ImageReplacer.new(store, url, text_index, src_index, img_src_prefix, [])
 
       dom = Wovnrb.get_dom('<img src="http://www.example.com/test.img" alt="Hello"')
       replacer.replace(dom, Lang.new('ja'))
@@ -29,6 +30,7 @@ module Wovnrb
     end
 
     def test_replace_relative_path
+      store = Store.instance
       url = {
         :protocol => 'http',
         :host => 'www.example.com',
@@ -38,7 +40,7 @@ module Wovnrb
       src_index = {
         'http://www.example.com/hello/test.img' => {'ja' => [{'data' => 'http://test.com/ttt.img'}]}
       }
-      replacer = ImageReplacer.new(url, text_index, src_index, '', [])
+      replacer = ImageReplacer.new(store, url, text_index, src_index, '', [])
 
       dom = Wovnrb.get_dom('<img src="test.img"')
       replacer.replace(dom, Lang.new('ja'))
@@ -49,6 +51,7 @@ module Wovnrb
     end
 
     def test_replace_root_path
+      store = Store.instance
       url = {
         :protocol => 'http',
         :host => 'www.example.com',
@@ -58,7 +61,7 @@ module Wovnrb
       src_index = {
         'http://www.example.com/test.img' => {'ja' => [{'data' => 'http://test.com/ttt.img'}]}
       }
-      replacer = ImageReplacer.new(url, text_index, src_index, '', [])
+      replacer = ImageReplacer.new(store, url, text_index, src_index, '', [])
 
       dom = Wovnrb.get_dom('<img src="/test.img"')
       replacer.replace(dom, Lang.new('ja'))
@@ -82,6 +85,7 @@ module Wovnrb
 
     private
     def img_test_helper path
+      store = Store.instance
       url = {
         protocol: 'http',
         host: 'www.example.com',
@@ -91,13 +95,14 @@ module Wovnrb
       src_index = {
         'http://www.test.com/test.img' => {'ja' => [{'data' => 'http://test.com/ttt.img'}]}
       }
-      replacer = ImageReplacer.new(url, text_index, src_index, '', [])
+      replacer = ImageReplacer.new(store, url, text_index, src_index, '', [])
       dom = Wovnrb.get_dom('<img src="http://www.test.com/test.img"')
       replacer.replace(dom, Lang.new('ja'))
       dom.xpath('//img')[0]
     end
 
     def test_replace_host_alias
+      store = Store.instance
       url = {
         :protocol => 'http',
         :host => 'www.example.com',
@@ -109,24 +114,24 @@ module Wovnrb
       path = '/test.img'
 
       # no replace image if not exist host alias
-      img = img_dom_helper(url, src_index, path, [])
+      img = img_dom_helper(store, url, src_index, path, [])
       assert_equal('/test.img', img.get_attribute('src'))
-      img = img_dom_helper(url, src_index, path, ['www.test.com'])
+      img = img_dom_helper(store, url, src_index, path, ['www.test.com'])
       assert_equal('/test.img', img.get_attribute('src'))
-      img = img_dom_helper(url, src_index, path, ['www.example.com'])
+      img = img_dom_helper(store, url, src_index, path, ['www.example.com'])
       assert_equal('/test.img', img.get_attribute('src'))
-      img = img_dom_helper(url, src_index, path, ['www.test.com', 'www.wrong.com'])
+      img = img_dom_helper(store, url, src_index, path, ['www.test.com', 'www.wrong.com'])
       assert_equal('/test.img', img.get_attribute('src'))
 
       # replace image if exist host alias
-      img = img_dom_helper(url, src_index, path, ['www.test.com', 'www.example.com'])
+      img = img_dom_helper(store, url, src_index, path, ['www.test.com', 'www.example.com'])
       assert_equal('http://test.com/ttt.img', img.get_attribute('src'))
     end
 
     private
-    def img_dom_helper(url, src_index, path, host_aliases)
+    def img_dom_helper(store, url, src_index, path, host_aliases)
       text_index = {}
-      replacer = ImageReplacer.new(url, text_index, src_index, '', host_aliases)
+      replacer = ImageReplacer.new(store, url, text_index, src_index, '', host_aliases)
       dom = Wovnrb.get_dom('<img src="' + path + '"')
       replacer.replace(dom, Lang.new('ja'))
       dom.xpath('//img')[0]

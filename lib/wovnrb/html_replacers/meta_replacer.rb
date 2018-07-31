@@ -1,6 +1,7 @@
 module Wovnrb
   class MetaReplacer < ReplacerBase
-    def initialize(text_index, pattern = nil, headers = nil)
+    def initialize(store, text_index, pattern = nil, headers = nil)
+      super(store)
       @text_index = text_index
       @pattern = pattern
       @headers = headers
