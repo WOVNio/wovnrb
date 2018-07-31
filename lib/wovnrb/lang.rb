@@ -209,13 +209,13 @@ module Wovnrb
       # add lang code to anchors href if not default lang
       if @lang_code != store.settings['default_lang']
         pattern = store.settings['url_pattern']
-        replacers << LinkReplacer.new(pattern, headers)
+        replacers << LinkReplacer.new(store, pattern, headers)
       end
 
-      replacers << TextReplacer.new(text_index)
-      replacers << MetaReplacer.new(text_index, pattern, headers)
-      replacers << InputReplacer.new(text_index)
-      replacers << ImageReplacer.new(url, text_index, src_index, img_src_prefix, host_aliases)
+      replacers << TextReplacer.new(store, text_index)
+      replacers << MetaReplacer.new(store, text_index, pattern, headers)
+      replacers << InputReplacer.new(store, text_index)
+      replacers << ImageReplacer.new(store, url, text_index, src_index, img_src_prefix, host_aliases)
       replacers << ScriptReplacer.new(store)
 
       replacers.each do |replacer|

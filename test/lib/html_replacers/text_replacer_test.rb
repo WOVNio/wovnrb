@@ -5,7 +5,8 @@ require 'webmock/minitest'
 module Wovnrb
   class TextReplacerTest < WovnMiniTest
     def test_replace
-      replacer = TextReplacer.new({
+      store = Store.instance
+      replacer = TextReplacer.new(store,{
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]}
       })
 
@@ -18,7 +19,8 @@ module Wovnrb
     end
 
     def test_replace_multiple
-      replacer = TextReplacer.new({
+      store = Store.instance
+      replacer = TextReplacer.new(store, {
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]},
         'Bye' => {'ja' => [{'data' => 'さようなら'}]}
       })
@@ -35,7 +37,8 @@ module Wovnrb
     end
 
     def test_replace_wovn_ignore
-      replacer = TextReplacer.new({
+      store = Store.instance
+      replacer = TextReplacer.new(store, {
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]}
       })
 

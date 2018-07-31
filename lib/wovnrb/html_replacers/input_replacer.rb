@@ -1,6 +1,7 @@
 module Wovnrb
   class InputReplacer < ReplacerBase
-    def initialize(text_index)
+    def initialize(store, text_index)
+      super(store)
       @text_index = text_index
     end
 

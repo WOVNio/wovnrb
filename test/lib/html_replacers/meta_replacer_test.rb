@@ -5,7 +5,8 @@ require 'webmock/minitest'
 module Wovnrb
   class MetaReplacerTest < WovnMiniTest
     def test_replace_description
-      replacer = MetaReplacer.new({
+      store = Store.instance
+      replacer = MetaReplacer.new(store, {
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]}
       })
 
@@ -17,7 +18,8 @@ module Wovnrb
     end
 
     def test_replace_og_description
-      replacer = MetaReplacer.new({
+      store = Store.instance
+      replacer = MetaReplacer.new(store, {
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]}
       })
 
@@ -29,7 +31,8 @@ module Wovnrb
     end
 
     def test_replace_og_title
-      replacer = MetaReplacer.new({
+      store = Store.instance
+      replacer = MetaReplacer.new(store, {
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]}
       })
 
@@ -41,7 +44,8 @@ module Wovnrb
     end
 
     def test_replace_twitter_title
-      replacer = MetaReplacer.new({
+      store = Store.instance
+      replacer = MetaReplacer.new(store, {
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]}
       })
 
@@ -53,7 +57,8 @@ module Wovnrb
     end
 
     def test_replace_twitter_description
-      replacer = MetaReplacer.new({
+      store = Store.instance
+      replacer = MetaReplacer.new(store, {
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]}
       })
 
@@ -65,7 +70,8 @@ module Wovnrb
     end
 
     def test_replace_multi
-      replacer = MetaReplacer.new({
+      store = Store.instance
+      replacer = MetaReplacer.new(store, {
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]},
         'Bye' => {'ja' => [{'data' => 'さようなら'}]}
       })
@@ -80,7 +86,8 @@ module Wovnrb
     end
 
     def test_replace_wovn_ignore
-      replacer = MetaReplacer.new({
+      store = Store.instance
+      replacer = MetaReplacer.new(store, {
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]},
       })
 
@@ -91,9 +98,10 @@ module Wovnrb
       assert_equal('Hello', content)
     end
 
-    def test_replace_wovn_ignore
+    def test_replace_wovn_ignore_og
+      store = Store.instance
       headers = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'https://test.com'), Wovnrb.get_settings)
-      replacer = MetaReplacer.new({
+      replacer = MetaReplacer.new(store, {
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]},
       }, 'path', headers)
 

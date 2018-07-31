@@ -7,7 +7,8 @@ module Wovnrb
       DOC_FILES = 'zip|tar|ez|aw|atom(cat|svc)?|(cc)?xa?ml|cdmi(a|c|d|o|q)?|epub|g(ml|px|xf)|jar|js|ser|class|json(ml)?|do(c|t)m?|xps|pp(a|tx?|s)m?|potm?|sldm|mp(p|t)|bin|dms|lrf|mar|so|dist|distz|m?pkg|bpk|dump|rtf|tfi|pdf|pgp|apk|o(t|d)(b|c|ft?|g|h|i|p|s|t)'
     end
 
-    def initialize(pattern, headers)
+    def initialize(store, pattern, headers)
+      super(store)
       @pattern = pattern
       @headers = headers
     end

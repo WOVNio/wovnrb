@@ -4,7 +4,8 @@ require 'webmock/minitest'
 module Wovnrb
   class ReplacerBaseTest < WovnMiniTest
     def test_replace
-      replacer = LinkReplacer.new('query', get_header)
+      store = Store.instance
+      replacer = LinkReplacer.new(store, 'query', get_header)
       dom = Wovnrb.get_dom('<a href="/index.html">link text</a>')
       replacer.replace(dom, Lang.new('en'))
 
@@ -13,7 +14,8 @@ module Wovnrb
     end
 
     def test_replace_multiple
-      replacer = LinkReplacer.new('query', get_header)
+      store = Store.instance
+      replacer = LinkReplacer.new(store, 'query', get_header)
       dom = Wovnrb.get_dom('<a href="/index.html">link text</a><div>aaa</div><a href="/index2.html">link text</a>')
       replacer.replace(dom, Lang.new('en'))
 
@@ -25,7 +27,8 @@ module Wovnrb
     end
 
     def test_replace_ignore
-      replacer = LinkReplacer.new('query', get_header)
+      store = Store.instance
+      replacer = LinkReplacer.new(store, 'query', get_header)
       dom = Wovnrb.get_dom('<a wovn-ignore href="/index.html">link text</a>')
       replacer.replace(dom, Lang.new('en'))
 
@@ -34,7 +37,8 @@ module Wovnrb
     end
 
     def test_replace_empty_javascript_link_query
-      replacer = LinkReplacer.new('query', get_header)
+      store = Store.instance
+      replacer = LinkReplacer.new(store, 'query', get_header)
       dom = Wovnrb.get_dom('<a href="javascript:void(0);">link text</a>')
       replacer.replace(dom, Lang.new('en'))
 
@@ -43,7 +47,8 @@ module Wovnrb
     end
 
     def test_replace_javascript_code_link_query
-      replacer = LinkReplacer.new('query', get_header)
+      store = Store.instance
+      replacer = LinkReplacer.new(store, 'query', get_header)
       dom = Wovnrb.get_dom('<a href="javascript:onclick($(\'.any\').slideToggle());">link text</a>')
       replacer.replace(dom, Lang.new('en'))
 
@@ -52,7 +57,8 @@ module Wovnrb
     end
 
     def test_replace_uppercased_javascript_code_link_query
-      replacer = LinkReplacer.new('query', get_header)
+      store = Store.instance
+      replacer = LinkReplacer.new(store, 'query', get_header)
       dom = Wovnrb.get_dom('<a href="JAVASCRIPT:onclick($(\'.any\').slideToggle());">link text</a>')
       replacer.replace(dom, Lang.new('en'))
 
@@ -61,7 +67,8 @@ module Wovnrb
     end
 
     def test_replace_empty_javascript_link_path
-      replacer = LinkReplacer.new('path', get_header)
+      store = Store.instance
+      replacer = LinkReplacer.new(store, 'path', get_header)
       dom = Wovnrb.get_dom('<a href="javascript:void(0);">link text</a>')
       replacer.replace(dom, Lang.new('en'))
 
@@ -70,7 +77,8 @@ module Wovnrb
     end
 
     def test_replace_javascript_code_link_path
-      replacer = LinkReplacer.new('path', get_header)
+      store = Store.instance
+      replacer = LinkReplacer.new(store, 'path', get_header)
       dom = Wovnrb.get_dom('<a href="javascript:onclick($(\'.any\').slideToggle());">link text</a>')
       replacer.replace(dom, Lang.new('en'))
 
@@ -79,7 +87,8 @@ module Wovnrb
     end
 
     def test_replace_uppercased_javascript_code_link_path
-      replacer = LinkReplacer.new('path', get_header)
+      store = Store.instance
+      replacer = LinkReplacer.new(store, 'path', get_header)
       dom = Wovnrb.get_dom('<a href="JAVASCRIPT:onclick($(\'.any\').slideToggle());">link text</a>')
       replacer.replace(dom, Lang.new('en'))
 
@@ -88,7 +97,8 @@ module Wovnrb
     end
 
     def test_replace_link_path
-      replacer = LinkReplacer.new('path', get_header)
+      store = Store.instance
+      replacer = LinkReplacer.new(store, 'path', get_header)
       dom = Wovnrb.get_dom('<a href="/index.html">link text</a>')
       replacer.replace(dom, Lang.new('en'))
 
@@ -97,7 +107,8 @@ module Wovnrb
     end
 
     def test_replace_img_link_path
-      replacer = LinkReplacer.new('path', get_header)
+      store = Store.instance
+      replacer = LinkReplacer.new(store, 'path', get_header)
       dom = Wovnrb.get_dom('<a href="http://favy.tips/index.jpg">link text</a>')
       replacer.replace(dom, Lang.new('ja'))
 
@@ -106,7 +117,8 @@ module Wovnrb
     end
 
     def test_replace_img_link_path_with_query_or_hash
-      replacer = LinkReplacer.new('path', get_header)
+      store = Store.instance
+      replacer = LinkReplacer.new(store, 'path', get_header)
       dom = Wovnrb.get_dom('<a href="http://favy.tips/index.jpg?test=1">link text</a>')
       replacer.replace(dom, Lang.new('ja'))
 
@@ -121,7 +133,8 @@ module Wovnrb
     end
 
     def test_replace_audio_link_path
-      replacer = LinkReplacer.new('path', get_header)
+      store = Store.instance
+      replacer = LinkReplacer.new(store, 'path', get_header)
       dom = Wovnrb.get_dom('<a href="/index.mp3">link text</a>')
       replacer.replace(dom, Lang.new('ja'))
 
@@ -130,7 +143,8 @@ module Wovnrb
     end
 
     def test_replace_audio_link_path_with_query_or_hash
-      replacer = LinkReplacer.new('path', get_header)
+      store = Store.instance
+      replacer = LinkReplacer.new(store, 'path', get_header)
       dom = Wovnrb.get_dom('<a href="/index.mp3?test=1">link text</a>')
       replacer.replace(dom, Lang.new('ja'))
 
@@ -145,7 +159,8 @@ module Wovnrb
     end
 
     def test_replace_video_link_path
-      replacer = LinkReplacer.new('path', get_header)
+      store = Store.instance
+      replacer = LinkReplacer.new(store, 'path', get_header)
       dom = Wovnrb.get_dom('<a href="/index.mpeg">link text</a>')
       replacer.replace(dom, Lang.new('ja'))
 
@@ -154,7 +169,8 @@ module Wovnrb
     end
 
     def test_replace_video_link_path_with_query_or_hash
-      replacer = LinkReplacer.new('path', get_header)
+      store = Store.instance
+      replacer = LinkReplacer.new(store, 'path', get_header)
       dom = Wovnrb.get_dom('<a href="/index.mp4?test=1">link text</a>')
       replacer.replace(dom, Lang.new('ja'))
 
@@ -169,7 +185,8 @@ module Wovnrb
     end
 
     def test_replace_doc_link_path
-      replacer = LinkReplacer.new('path', get_header)
+      store = Store.instance
+      replacer = LinkReplacer.new(store, 'path', get_header)
       dom = Wovnrb.get_dom('<a href="/index.pptx">link text</a>')
       replacer.replace(dom, Lang.new('ja'))
 
@@ -178,7 +195,8 @@ module Wovnrb
     end
 
     def test_replace_doc_link_path_with_query_or_hash
-      replacer = LinkReplacer.new('path', get_header)
+      store = Store.instance
+      replacer = LinkReplacer.new(store, 'path', get_header)
       dom = Wovnrb.get_dom('<a href="/index.pptx?test=1">link text</a>')
       replacer.replace(dom, Lang.new('ja'))
 
@@ -193,7 +211,8 @@ module Wovnrb
     end
 
     def test_replace_javascript_link_subdomain
-      replacer = LinkReplacer.new('subdomain', get_header)
+      store = Store.instance
+      replacer = LinkReplacer.new(store, 'subdomain', get_header)
       dom = Wovnrb.get_dom('<a href="javascript:void(0);">link text</a>')
       replacer.replace(dom, Lang.new('en'))
 
@@ -202,7 +221,8 @@ module Wovnrb
     end
 
     def test_replace_mustache
-      replacer = LinkReplacer.new('query', get_header)
+      store = Store.instance
+      replacer = LinkReplacer.new(store, 'query', get_header)
       dom = Wovnrb.get_dom('<a href="{{hello}}">link text</a>')
       replacer.replace(dom, Lang.new('en'))
 

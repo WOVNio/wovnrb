@@ -1,7 +1,7 @@
 module Wovnrb
   class ScriptReplacer < ReplacerBase
     def initialize(store)
-      @store = store
+      super(store)
     end
 
     def replace(dom, lang)
