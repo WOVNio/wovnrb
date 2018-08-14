@@ -35,8 +35,6 @@ module Wovnrb
     end
 
     def initialize
-      @settings = Settings.new
-      @config_loaded = false
       reset
     end
 
