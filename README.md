@@ -72,6 +72,7 @@ project_token  | yes      | ''
 url_pattern    | yes      | 'path'
 query          |          | []
 default_lang   | yes      | 'en'
+ignore_class   |          | []
 
 ### 2.1. project_token
 
@@ -118,6 +119,10 @@ If the default_lang is set to 'en', when receiving a request for the following U
 The library will redirect to the following URL.
 
 	https://wovn.io/contact
+
+### 2.5 ignore_class
+
+This sets "Ignore class" which prevent WOVN translating HTML elements that have one of the array.
 
 ## 3. Contributing
 

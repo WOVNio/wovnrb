@@ -20,6 +20,7 @@ module Wovnrb
         'url_pattern' => 'path',
         'url_pattern_reg' => "/(?<lang>[^/.?]+)",
         'query' => [],
+        'ignore_class' => [],
         'api_url' => 'https://api.wovn.io/v0/values',
         'api_timeout_seconds' => 0.5,
         'default_lang' => 'en',
@@ -76,6 +77,10 @@ module Wovnrb
       if !settings.has_key?('query') || !settings['query'].kind_of?(Array)
         valid = false
         errors.push("query config #{settings['query']} is not valid.")
+      end
+      if !settings.has_key?('ignore_class') || !settings['ignore_class'].kind_of?(Array)
+        valid = false
+        errors.push("ignore_class config #{settings['ignore_class']} should be Array.")
       end
       if !settings.has_key?('api_url') || settings['api_url'].length == 0
         valid = false
