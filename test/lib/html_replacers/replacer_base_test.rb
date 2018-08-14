@@ -33,7 +33,7 @@ module Wovnrb
 
     def test_wovn_ignore_class
       store = Store.instance
-      store.settings('ignore_class' => ['base_ignore'])
+      store.update_settings({'ignore_class' => ['base_ignore']})
       replacer = ReplacerBase.new(store)
       dom = Wovnrb.to_dom('<html><body><div class="base_ignore"></div></body></html>')
       actual = replacer.send(:wovn_ignore?, dom.xpath('//div')[0])
@@ -43,7 +43,7 @@ module Wovnrb
 
     def test_wovn_ignore_multiple_classes
       store = Store.instance
-      store.settings('ignore_class' => ['base_ignore', 'base_ignore2'])
+      store.update_settings({'ignore_class' => ['base_ignore', 'base_ignore2']})
       replacer = ReplacerBase.new(store)
       html = <<HTML
 <html>
