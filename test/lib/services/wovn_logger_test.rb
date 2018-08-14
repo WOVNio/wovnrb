@@ -16,10 +16,9 @@ module Wovnrb
     end
 
     def test_initialize_without_path
-      path = Store.instance.settings['log_path']
       Store.instance.update_settings({'log_path' => nil})
       WovnLogger.instance
-      assert_equal(false, File.exists?(path))
+      assert_equal($stderr, WovnLogger.instance.instance_variable_get(:@logger))
     end
 
     def test_initialize_with_invalid_path
