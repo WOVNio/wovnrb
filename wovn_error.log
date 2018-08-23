@@ -1,0 +1,3 @@
+# Logfile created on 2018-08-24 12:20:17 +0900 by logger.rb/56815
+E, [2018-08-24T12:20:17.944942 #32316] ERROR -- : Wovn Error: log_path(log/wovn_error.log) is invalid, please change log_path at config
+E, [2018-08-24T12:20:17.945013 #32316] ERROR -- : Failed parse url : ※ http://invalid.example.comInvalid scheme format: ※ http
