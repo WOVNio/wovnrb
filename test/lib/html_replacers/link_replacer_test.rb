@@ -121,7 +121,7 @@ module Wovnrb
       dom = Wovnrb.get_dom('<html><head><link rel="stylesheet" type="text/css" href="http://favy.tips/hello/index.css"></head><body>hello</body></html>')
       replacer.replace(dom, Lang.new('en'))
       href = dom.xpath('//link').find { |d| d.attributes['rel'].value == 'stylesheet' }.attributes['href'].value
-      assert_equal('http://favy.tips/hello/index.css', href, 'Shoud not change the href')
+      assert_equal('http://favy.tips/hello/index.css', href, 'Should not change the href')
     end
 
     def test_replace_img_link_path
