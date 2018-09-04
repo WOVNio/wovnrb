@@ -14,7 +14,7 @@ module Wovnrb
     end
 
     def replace(dom, lang)
-      dom.xpath('//a').each do |node|
+      dom.xpath('//*[match(.)]', MultiTagMatcher.new).each do |node|
         next if wovn_ignore?(node)
 
         href = node.get_attribute('href')
@@ -32,6 +32,20 @@ module Wovnrb
       video_files = /^(https?:\/\/)?.*(\.(#{FileExtension::VIDEO_FILES}))((\?|#).*)?$/i
       doc_files = /^(https?:\/\/)?.*(\.(#{FileExtension::DOC_FILES}))((\?|#).*)?$/i
       href =~ img_files || href =~ audio_files || href =~ video_files || href =~ doc_files
+    end
+  end
+
+  class MultiTagMatcher
+    def match(node_set)
+      node_set.find_all { |node| a_tag?(node) || link_tag_with_canonical?(node) }
+    end
+
+    def a_tag?(node)
+      node.name == 'a'
+    end
+
+    def link_tag_with_canonical?(node)
+      node.name == 'link' && node.get_attribute('rel') == 'canonical'
     end
   end
 end
