@@ -106,6 +106,24 @@ module Wovnrb
       assert_equal('/en/index.html', link)
     end
 
+    def test_replace_link_path_with_canonical
+      store = Store.instance
+      replacer = LinkReplacer.new(store, 'path', get_header)
+      dom = Wovnrb.get_dom('<html><head><link rel="canonical" href="http://favy.tips/hello/index.html"></head><body>hello</body></html>')
+      replacer.replace(dom, Lang.new('en'))
+      canonical_href = dom.xpath('//link').find { |d| d.attributes['rel'].value == 'canonical' }.attributes['href'].value
+      assert_equal('http://favy.tips/en/hello/index.html', canonical_href)
+    end
+
+    def test_replace_link_with_style
+      store = Store.instance
+      replacer = LinkReplacer.new(store, 'path', get_header)
+      dom = Wovnrb.get_dom('<html><head><link rel="stylesheet" type="text/css" href="http://favy.tips/hello/index.css"></head><body>hello</body></html>')
+      replacer.replace(dom, Lang.new('en'))
+      href = dom.xpath('//link').find { |d| d.attributes['rel'].value == 'stylesheet' }.attributes['href'].value
+      assert_equal('http://favy.tips/hello/index.css', href, 'Should not change the href')
+    end
+
     def test_replace_img_link_path
       store = Store.instance
       replacer = LinkReplacer.new(store, 'path', get_header)
