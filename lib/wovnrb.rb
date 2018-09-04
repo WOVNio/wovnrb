@@ -85,7 +85,12 @@ module Wovnrb
       lang = Lang.new(lang)
       ignore_all = false
       new_body = []
-      body.each do |b|
+
+      # generate full_body to intercept
+      full_body = ''
+      body.each { |b| full_body += b }
+
+      [full_body].each do |b|
         # temporarily remove noscripts
         noscripts = []
         b_without_noscripts = b

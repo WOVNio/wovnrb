@@ -146,6 +146,32 @@ class WovnrbTest < Minitest::Test
     assert_equal([expected_body], swapped_body)
   end
 
+  def test_switch_lang_splitted_body
+    i = Wovnrb::Interceptor.new(get_app)
+    h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+    bodies =  ["<html><body><h1>Mr. Belvedere Fan Club</h1>",
+               "<div><p>Hello</p></div>",
+               "</body></html>"]
+    values = generate_values
+    url = h.url
+    swapped_body = i.switch_lang(bodies, values, url, 'ja', h)
+
+    expected_body = "<html lang=\"ja\">
+<head>
+<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
+<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\">
+<link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\">
+</head>
+<body>
+<h1>
+<!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1>
+<div><p><!--wovn-src:Hello-->こんにちは</p></div>
+</body>
+</html>
+"
+    assert_equal([expected_body], swapped_body)
+  end
+
   def test_switch_lang_missing_values
     i = Wovnrb::Interceptor.new(get_app)
     h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
