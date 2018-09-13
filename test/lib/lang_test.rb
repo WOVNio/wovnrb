@@ -356,18 +356,7 @@ module Wovnrb
 </html>
 "
         when "translated_in_japanese"
-          body = "<html lang=\"ja\">
-<head>
-<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
-<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\">
-<link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\">
-</head>
-<body>
-<h1>
-<!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1>
-                <div><p><!--wovn-src:Hello-->こんにちは</p></div>
-              </body>
-</html>
+          body = "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head><body><h1><!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1><div><p><!--wovn-src:Hello-->こんにちは</p></div></body></html>
 "
         when "ignore_everything_translated"
           body = "<html lang=\"ja\">
@@ -416,19 +405,7 @@ module Wovnrb
                 <div><p><a href=\"javascript:void(0)\">Hello</a></p></div>
               </body></html>"
         when  "a_href_javascript_translated"
-          body = "<html lang=\"ja\">
-<head>
-<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
-<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\">
-<link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\">
-</head>
-<body>
-<h1>
-<!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1>
-                <div><p><a href=\"javascript:void(0)\"><!--wovn-src:Hello-->こんにちは</a></p></div>
-              </body>
-</html>
-"
+          body = "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head><body><h1><!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1><div><p><a href=\"javascript:void(0)\"><!--wovn-src:Hello-->こんにちは</a></p></div></body></html>"
         else # "" case
           body = "<html><body><h1>Mr. Belvedere Fan Club</h1>
                 <div><p>Hello</p></div>
@@ -499,6 +476,7 @@ module Wovnrb
       values = generate_values
       url = h.url
       swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)
+      debugger
       assert_equal(generate_body('translated_in_japanese'), swapped_body)
     end
 
