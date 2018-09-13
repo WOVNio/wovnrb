@@ -182,16 +182,9 @@ class WovnrbTest < Minitest::Test
     url = h.url
     swapped_body = i.switch_lang([body], values, url, 'ja', h)
 
-    expected_body = "<html>
-<head>
-<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
-<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script>
-</head>
-<body>
-<h1>Mr. Belvedere Fan Club</h1>
+    expected_body = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script></head><body><h1>Mr. Belvedere Fan Club</h1>
                 <div><p>Hello</p></div>
-              </body>
-</html>
+              </body></html>
 "
     assert_equal([expected_body], swapped_body)
   end
@@ -209,18 +202,13 @@ class WovnrbTest < Minitest::Test
 </html>
 HTML
     expected_body = <<HTML
-<html amp="">
-<head>
-<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">
-<noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
-</head>
+<html amp=""><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript></head>
 <body>
   <h1>Mr. Belvedere Fan Club</h1>
   <div><p>Hello</p></div>
 
 
-</body>
-</html>
+</body></html>
 HTML
     values = generate_values
     url = headers.url
@@ -241,15 +229,12 @@ HTML
 </html>
 HTML
     expected_body = <<HTML
-<html ⚡="">
-<head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head>
-<body>
+<html ⚡=""><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body>
   <h1>Mr. Belvedere Fan Club</h1>
   <div><p>Hello</p></div>
 
 
-</body>
-</html>
+</body></html>
 HTML
     values = generate_values
     url = headers.url

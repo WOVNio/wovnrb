@@ -105,7 +105,7 @@ module Wovnrb
         # If this page has wovn-ignore in the html tag, don't do anything
         if ignore_all || !d.xpath('//html[@wovn-ignore]').empty? || is_amp_page?(d)
           ignore_all = true
-          output = d.to_html.gsub(/href="([^"]*)"/) { |m| "href=\"#{URI.decode($1)}\"" }
+          output = d.to_html(save_with: 0).gsub(/href="([^"]*)"/) { |m| "href=\"#{URI.decode($1)}\"" }
           put_back_noscripts!(output, noscripts)
           new_body.push(output)
           next
@@ -115,7 +115,7 @@ module Wovnrb
           output = lang.switch_dom_lang(d, @store, values, url, headers)
         else
           ScriptReplacer.new(@store).replace(d, lang)
-          output = d.to_html
+          output = d.to_html(save_with: 0)
         end
         put_back_noscripts!(output, noscripts)
         new_body.push(output)
