@@ -180,7 +180,7 @@ module Wovnrb
       # NOTE: when we use `#to_html` with nokogiri, nokogiri encode all href.
       #       but we want to keep original href as much as possible.
       #       That's why we replace href with original href which added lang info by wovnrb like this after we used `to_html`
-      dom.to_html.gsub(/href="([^"]*)"/) { |m| "href=\"#{index_href[$1] || $1}\"" }
+      dom.to_html(save_with: 0).gsub(/href="([^"]*)"/) { |m| "href=\"#{index_href[$1] || $1}\"" }
     end
 
     private
