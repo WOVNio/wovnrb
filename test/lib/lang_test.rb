@@ -2,9 +2,10 @@
 require 'test_helper'
 require 'minitest/autorun'
 
+require 'wovnrb/helpers/nokogumbo_helper'
+
 module Wovnrb
   class LangTest < WovnMiniTest
-
     def test_langs_exist
       refute_nil(Wovnrb::Lang::LANG)
     end
@@ -464,6 +465,16 @@ module Wovnrb
       url = h.url
       swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)
       assert_equal(generate_body('translated_in_japanese'), swapped_body)
+    end
+
+    def test_switch_lang_with_html_fragment
+      lang = Lang.new('ja')
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      dom = Helpers::NokogumboHelper::parse_html('<span>Hello</span>')
+      values = generate_values
+      url = h.url
+      swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)
+      assert_equal('<span><!--wovn-src:Hello-->こんにちは</span>', swapped_body)
     end
 
     def test_switch_lang_href_javascript

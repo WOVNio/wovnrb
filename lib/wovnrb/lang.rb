@@ -159,21 +159,23 @@ module Wovnrb
     def switch_dom_lang(dom, store, values, url, headers)
       replace_dom_values(dom, values, store, url, headers)
 
-      # INSERT LANGUAGE METALINKS
-      parent_node = dom.at_css('head') || dom.at_css('body') || dom.at_css('html')
-      published_langs = get_langs(values)
-      all_langs = published_langs.add(store.settings['default_lang'])
-      all_langs.each do |l|
-        insert_node = Nokogiri::XML::Node.new('link', dom)
-        insert_node['rel'] = 'alternate'
-        insert_node['hreflang'] = Lang::iso_639_1_normalization(l)
-        insert_node['href'] = headers.redirect_location(l)
-        parent_node.add_child(insert_node)
-      end
+      if dom.html?
+        # INSERT LANGUAGE METALINKS
+        parent_node = dom.at_css('head') || dom.at_css('body') || dom.at_css('html')
+        published_langs = get_langs(values)
+        all_langs = published_langs.add(store.settings['default_lang'])
+        all_langs.each do |l|
+          insert_node = Nokogiri::XML::Node.new('link', dom)
+          insert_node['rel'] = 'alternate'
+          insert_node['hreflang'] = Lang::iso_639_1_normalization(l)
+          insert_node['href'] = headers.redirect_location(l)
+          parent_node.add_child(insert_node)
+        end
 
-      # set lang property on HTML tag
-      if dom.at_css('html') || dom.at_css('HTML')
-        (dom.at_css('html') || dom.at_css('HTML')).set_attribute('lang', Lang::iso_639_1_normalization(@lang_code))
+        # set lang property on HTML tag
+        if dom.at_css('html') || dom.at_css('HTML')
+          (dom.at_css('html') || dom.at_css('HTML')).set_attribute('lang', Lang::iso_639_1_normalization(@lang_code))
+        end
       end
 
       index_href = index_href_for_encoding_and_decoding(dom)
@@ -213,10 +215,11 @@ module Wovnrb
       end
 
       replacers << TextReplacer.new(store, text_index)
+      # TODO: review xpath on the replacers below
       replacers << MetaReplacer.new(store, text_index, pattern, headers)
       replacers << InputReplacer.new(store, text_index)
       replacers << ImageReplacer.new(store, url, text_index, src_index, img_src_prefix, host_aliases)
-      replacers << ScriptReplacer.new(store)
+      replacers << ScriptReplacer.new(store) if dom.html?
 
       replacers.each do |replacer|
         replacer.replace(dom, self)

@@ -137,6 +137,29 @@ class WovnrbTest < Minitest::Test
     assert_equal([expected_body], swapped_body)
   end
 
+  def test_switch_lang_of_html_fragment_with_no_translation_values
+    i = Wovnrb::Interceptor.new(get_app)
+    h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+    body = '<select name="test"><option value="1">1</option><option value="2">2</option></select>'
+    values = {}
+    url = h.url
+    swapped_body = i.switch_lang([body], values, url, 'ja', h)
+
+    assert_equal([body], swapped_body)
+  end
+
+  def test_switch_lang_of_html_fragment_with_japanese_translations
+    i = Wovnrb::Interceptor.new(get_app)
+    h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+    body = '<span>Hello</span>'
+    expected_body = '<span><!--wovn-src:Hello-->こんにちは</span>'
+    values = generate_values
+    url = h.url
+    swapped_body = i.switch_lang([body], values, url, 'ja', h)
+
+    assert_equal([expected_body], swapped_body)
+  end
+
   def test_switch_lang_splitted_body
     i = Wovnrb::Interceptor.new(get_app)
     h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
@@ -149,6 +172,19 @@ class WovnrbTest < Minitest::Test
 
     expected_body = "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head><body><h1><!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1><div><p><!--wovn-src:Hello-->こんにちは</p></div></body></html>
 "
+    assert_equal([expected_body], swapped_body)
+  end
+
+  def test_switch_lang_of_html_fragment_in_splitted_body
+    i = Wovnrb::Interceptor.new(get_app)
+    h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+    bodies =  ['<select name="test"><option value="1">1</option>',
+               '<option value="2">2</option></select>']
+    expected_body = '<select name="test"><option value="1">1</option><option value="2">2</option></select>'
+    values = generate_values
+    url = h.url
+    swapped_body = i.switch_lang(bodies, values, url, 'ja', h)
+
     assert_equal([expected_body], swapped_body)
   end
 
