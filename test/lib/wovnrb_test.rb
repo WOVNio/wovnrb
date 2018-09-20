@@ -205,6 +205,34 @@ class WovnrbTest < Minitest::Test
     assert_equal([expected_body], swapped_body)
   end
 
+  def test_switch_lang_on_fragment_with_translate_fragment_false
+    Wovnrb::Store.instance.settings['translate_fragment'] = false
+    i = Wovnrb::Interceptor.new(get_app)
+    h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+    body =  "<h1>Mr. Belvedere Fan Club</h1>
+                <div><p>Hello</p></div>"
+    values = generate_values
+    url = h.url
+    swapped_body = i.switch_lang([body], values, url, 'ja', h)
+
+    assert_equal([body], swapped_body)
+  end
+
+  def test_switch_lang_on_fragment_with_translate_fragment_true
+    Wovnrb::Store.instance.settings['translate_fragment'] = true
+    i = Wovnrb::Interceptor.new(get_app)
+    h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+    body =  "<h1>Mr. Belvedere Fan Club</h1>
+                <div><p>Hello</p></div>"
+    values = generate_values
+    url = h.url
+    swapped_body = i.switch_lang([body], values, url, 'ja', h)
+    expected_body = "<h1><!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1>
+                <div><p><!--wovn-src:Hello-->こんにちは</p></div>"
+
+    assert_equal([expected_body], swapped_body)
+  end
+
   def test_switch_lang_ignores_amp
     interceptor = Wovnrb::Interceptor.new(get_app)
     headers = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))

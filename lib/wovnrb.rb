@@ -112,7 +112,7 @@ module Wovnrb
           next
         end
 
-        if have_data?(values)
+        if should_translate?(d, values)
           output = lang.switch_dom_lang(d, @store, values, url, headers)
         else
           ScriptReplacer.new(@store).replace(d, lang) if d.html?
@@ -130,6 +130,12 @@ module Wovnrb
     def output(headers, status, res_headers, body)
       headers.out(res_headers)
       [status, res_headers, body]
+    end
+
+    def should_translate?(dom, values)
+      translatable_html = dom.html? ? true : @store.settings['translate_fragment']
+
+      translatable_html && have_data?(values)
     end
 
     def have_data?(values)
