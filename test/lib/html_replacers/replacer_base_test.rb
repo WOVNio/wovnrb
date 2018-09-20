@@ -17,7 +17,7 @@ module Wovnrb
       store = Store.instance
       replacer = ReplacerBase.new(store)
       dom = Wovnrb.to_dom('<html wovn-ignore><body><div wovn-ignore></div></body></html>')
-      actual = replacer.send(:wovn_ignore?, dom.xpath('.//div')[0])
+      actual = replacer.send(:wovn_ignore?, dom.xpath('//div')[0])
 
       assert(actual)
     end
@@ -62,7 +62,7 @@ HTML
     def test_wovn_ignore_fragment
       store = Store.instance
       replacer = ReplacerBase.new(store)
-      dom = Nokogiri::HTML5.fragment('<div wovn-ignore></div>')
+      dom = Helpers::NokogumboHelper.parse_fragment('<div wovn-ignore></div>')
       actual = replacer.send(:wovn_ignore?, dom.xpath('.//div')[0])
 
       assert(actual)
@@ -72,7 +72,7 @@ HTML
     def test_wovn_ignore_fragment_parent
       store = Store.instance
       replacer = ReplacerBase.new(store)
-      dom = Nokogiri::HTML5.fragment('<div wovn-ignore><span></span></div>')
+      dom = Helpers::NokogumboHelper.parse_fragment('<div wovn-ignore><span></span></div>')
       actual = replacer.send(:wovn_ignore?, dom.xpath('.//span')[0])
 
       assert(actual)
@@ -81,7 +81,7 @@ HTML
     def test_wovn_ignore_fragment_no_wovn_ignore
       store = Store.instance
       replacer = ReplacerBase.new(store)
-      dom = Nokogiri::HTML5.fragment('<div><span></span></div>')
+      dom = Helpers::NokogumboHelper.parse_fragment('<div><span></span></div>')
       actual = replacer.send(:wovn_ignore?, dom.xpath('.//span')[0])
 
       assert(!actual)
