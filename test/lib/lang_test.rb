@@ -2,8 +2,6 @@
 require 'test_helper'
 require 'minitest/autorun'
 
-require 'wovnrb/helpers/nokogumbo_helper'
-
 module Wovnrb
   class LangTest < WovnMiniTest
     def test_langs_exist
@@ -470,7 +468,7 @@ module Wovnrb
     def test_switch_lang_with_html_fragment
       lang = Lang.new('ja')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      dom = Helpers::NokogumboHelper::parse_html('<span>Hello</span>')
+      dom = Helpers::NokogumboHelper::parse_fragment('<span>Hello</span>')
       values = generate_values
       url = h.url
       swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)

@@ -215,7 +215,6 @@ module Wovnrb
       end
 
       replacers << TextReplacer.new(store, text_index)
-      # TODO: review xpath on the replacers below
       replacers << MetaReplacer.new(store, text_index, pattern, headers)
       replacers << InputReplacer.new(store, text_index)
       replacers << ImageReplacer.new(store, url, text_index, src_index, img_src_prefix, host_aliases)

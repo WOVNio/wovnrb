@@ -24,7 +24,7 @@ module Wovnrb
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]}
       })
 
-      dom = Helpers::NokogumboHelper::parse_html('<span>Hello</span>')
+      dom = Helpers::NokogumboHelper::parse_fragment('<span>Hello</span>')
       replacer.replace(dom, Lang.new('ja'))
 
       node = dom.xpath('.//text()')[0]
@@ -57,7 +57,7 @@ module Wovnrb
         'Bye' => {'ja' => [{'data' => 'さようなら'}]}
       })
 
-      dom = Helpers::NokogumboHelper::parse_html('<span>Hello</span><span>Bye</span>')
+      dom = Helpers::NokogumboHelper::parse_fragment('<span>Hello</span><span>Bye</span>')
       replacer.replace(dom, Lang.new('ja'))
 
       node = dom.xpath('.//text()')[0]
@@ -88,7 +88,7 @@ module Wovnrb
         'Hello' => {'ja' => [{'data' => 'こんにちは'}]}
       })
 
-      dom = Helpers::NokogumboHelper::parse_html('<div wovn-ignore>Hello</div>')
+      dom = Helpers::NokogumboHelper::parse_fragment('<div wovn-ignore>Hello</div>')
       replacer.replace(dom, Lang.new('ja'))
 
       node = dom.xpath('.//text()')[0]
