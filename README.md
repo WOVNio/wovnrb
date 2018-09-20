@@ -129,7 +129,7 @@ This sets "Ignore class" which prevent WOVN translating HTML elements that have 
 
 This option allows to disable translating partial HTML content. By default,
 partial HTML content is translated but no widget snippet is added. Set
-"translate_fragment" to 'false' to stop translatinf partial HTML content.
+"translate_fragment" to 'false' to stop translating partial HTML content.
 
 ## 3. Contributing
 
