@@ -284,8 +284,32 @@ module Wovnrb
       assert_link(dom, '/en/sp/entry2017/m/test/m/css/iphone.css')
     end
 
+    def test_base_href
+      store = Store.instance
+      tests = [
+        { pathname: '/dirname/index.php', base: '/absolute/path', expected_href: '/absolute/path' },
+        { pathname: '/dirname/index.php', base: 'relative/path', expected_href: '/dirname/relative/path' },
+        { pathname: '/dirname/index.php', base: './dot/path', expected_href: '/dirname/dot/path' },
+        { pathname: '/dirname/index.php', base: '../doubledot/path', expected_href: '/doubledot/path' },
+        { pathname: '/', base: '../errordots/path', expected_href: '/errordots/path' },
+        { pathname: '/dirname/deep/index.php', base: './../.././../../../many/dots', expected_href: '/many/dots' },
+        { pathname: 'index.php', base: 'no/dir/path', expected_href: '/no/dir/path' },
+        { pathname: 'index.php', base: '/trailing/slash/', expected_href: '/trailing/slash/' },
+        { pathname: 'index.php', base: '', expected_href: '/' }
+      ]
+
+      tests.each do |test|
+        replacer = LinkReplacer.new(store, 'path', get_header(url_pattern: 'path', pathname: test[:pathname]))
+        dom = Wovnrb.get_dom("<base target=\"_blank\" href=\"#{test[:base]}\"><a href=\"/not_matter\">link text</a>")
+        assert_equal(test[:expected_href], replacer.send(:base_href, dom))
+      end
+    end
+
     def get_header(url_pattern: 'query', pathname: nil)
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => "http://favy.tips#{pathname}"), Wovnrb.get_settings('url_pattern' => url_pattern, 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      Wovnrb::Headers.new(
+        Wovnrb.get_env('url' => "http://favy.tips#{pathname}"),
+        Wovnrb.get_settings('url_pattern' => url_pattern, 'url_pattern_reg' => '^(?<lang>[^.]+).')
+      )
     end
 
     def create_dom_by_base(base:, href:)

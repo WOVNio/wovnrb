@@ -58,21 +58,7 @@ module Wovnrb
       return href if href =~ /^\//            # absolute path
       return href if href =~ /^http(s?):\/\// # full url
 
-      abs_path = Addressable::URI.join('/', @headers.dirname, href).to_s
-      strip_relative_path_jumps(abs_path)
-    end
-
-    def strip_relative_path_jumps(path)
-      components = path.split('/') - ['.', '']
-      while components.index('..')
-        if components.index('..').zero?
-          components.shift
-        else
-          components.slice!(components.index('..') - 1, 2)
-        end
-      end
-
-      Addressable::URI.join('/', components.join('/')).to_s
+      Addressable::URI.join('/', @headers.dirname, href).to_s
     end
   end
 
