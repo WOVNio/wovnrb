@@ -257,14 +257,12 @@ module Wovnrb
     def test_with_base_as_previous_directory
       dom, replacer = create_dom_by_base(base: '../', href: 'm/css/iphone.css')
       replacer.replace(dom, Lang.new('en'))
-
       assert_link(dom, '/en/sp/entry2017/m/css/iphone.css')
     end
 
     def test_with_base_as_different_host
       dom, replacer = create_dom_by_base(base: 'http://test.com', href: 'm/css/iphone.css')
       replacer.replace(dom, Lang.new('en'))
-
       assert_link(dom, 'http://test.com/m/css/iphone.css')
     end
 

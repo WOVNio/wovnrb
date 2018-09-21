@@ -54,11 +54,11 @@ module Wovnrb
       base_tag = dom.xpath('//base').first
       return nil unless base_tag
 
-      href= base_tag.get_attribute('href')
+      href = base_tag.get_attribute('href')
       return href if href =~ /^\//            # absolute path
       return href if href =~ /^http(s?):\/\// # full url
 
-      abs_path = File.join('/', @headers.dirname, href)
+      abs_path = Addressable::URI.join('/', @headers.dirname, href).to_s
       strip_relative_path_jumps(abs_path)
     end
 
@@ -72,10 +72,7 @@ module Wovnrb
         end
       end
 
-      stripped_path = File.join('/', components)
-      stripped_path += '/' if path.end_with?('/') && stripped_path.length > 1
-
-      stripped_path
+      Addressable::URI.join('/', components.join('/')).to_s
     end
   end
 
