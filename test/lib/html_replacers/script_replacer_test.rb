@@ -5,7 +5,7 @@ module Wovnrb
   class ScriptReplacerTest < WovnMiniTest
     def test_replace
       store = Store.instance
-      store.settings({
+      store.update_settings({
         'user_token' => 'test_token',
         'default_lang' => 'en',
         'url_pattern' => 'domain'
@@ -27,7 +27,7 @@ module Wovnrb
 
     def test_replace_with_wovn_dev_mode_on
       store = Store.instance
-      store.settings({
+      store.update_settings({
         'user_token' => 'test_token',
         'default_lang' => 'en',
         'url_pattern' => 'domain',
@@ -50,7 +50,7 @@ module Wovnrb
 
     def test_with_embed_wovn
       store = Store.instance
-      store.settings({
+      store.update_settings({
         'user_token' => 'test_token',
         'default_lang' => 'en',
         'url_pattern' => 'domain'
@@ -68,7 +68,7 @@ module Wovnrb
 
     def test_with_multiple_embed_wovn
       store = Store.instance
-      store.settings({
+      store.update_settings({
         'user_token' => 'test_token',
         'default_lang' => 'en',
         'url_pattern' => 'domain'
@@ -86,7 +86,7 @@ module Wovnrb
 
     def test_with_embed_wovn_at_body
       store = Store.instance
-      store.settings({
+      store.update_settings({
         'user_token' => 'test_token',
         'default_lang' => 'en',
         'url_pattern' => 'domain'
@@ -104,7 +104,7 @@ module Wovnrb
 
     def test_contains_lang_code_aliases
       store = Store.instance
-      store.settings({
+      store.update_settings({
         'user_token' => 'test_token',
         'default_lang' => 'en',
         'url_pattern' => 'domain',

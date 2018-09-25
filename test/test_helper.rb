@@ -42,7 +42,7 @@ module Wovnrb
     attr_accessor :errors
 
     def self.mock_log
-      Store.instance.settings['log_path'] = nil
+      Store.instance.update_settings({'log_path' => nil})
       mock = self.new
       WovnLogger.instance.set_logger(mock)
       mock

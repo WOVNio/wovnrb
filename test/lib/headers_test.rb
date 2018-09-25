@@ -123,7 +123,7 @@ module Wovnrb
     end
 
     def test_redirect_location_without_custom_lang_code
-      Store.instance.settings['custom_lang_aliases'] = {'ja' => 'staging-ja'}
+      Store.instance.update_settings({'custom_lang_aliases' => {'ja' => 'staging-ja'}})
       h = Wovnrb::Headers.new(
         Wovnrb.get_env('url' => 'http://wovn.io/contact', 'HTTP_X_FORWARDED_HOST' => 'wovn.io'),
         Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'),
@@ -216,7 +216,7 @@ module Wovnrb
     end
 
     def test_request_out_http_referer_subdomain_with_custom_lang_code
-      Store.instance.settings['custom_lang_aliases'] = {'ja' => 'staging-ja'}
+      Store.instance.update_settings({'custom_lang_aliases' => {'ja' => 'staging-ja'}})
       h = Wovnrb::Headers.new(
         Wovnrb.get_env(
           'SERVER_NAME' => 'staging-ja.wovn.io',
@@ -233,7 +233,7 @@ module Wovnrb
     end
 
     def test_out_http_referer_subdomain_with_custom_lang_code
-      Store.instance.settings['custom_lang_aliases'] = {'ja' => 'staging-ja'}
+      Store.instance.update_settings({'custom_lang_aliases' => {'ja' => 'staging-ja'}})
       h = Wovnrb::Headers.new(
         Wovnrb.get_env(
           'SERVER_NAME' => 'staging-ja.wovn.io',
@@ -6217,7 +6217,7 @@ module Wovnrb
     end
 
     def test_remove_lang_subdomain_with_custom_lang_alias
-      Store.instance.settings['custom_lang_aliases'] = {'fr' => 'staging-fr'}
+      Store.instance.update_settings({'custom_lang_aliases' => {'fr' => 'staging-fr'}})
       h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings('url_pattern' => 'subdomain'))
 
       uri_without_scheme = h.remove_lang("staging-fr.wovn.io/", 'fr')

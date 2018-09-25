@@ -24,7 +24,7 @@ module Wovnrb
       @app = app
       @store = Store.instance
       opts = opts.each_with_object({}){|(k,v),memo| memo[k.to_s]=v}
-      @store.settings(opts)
+      @store.update_settings(opts)
       CacheBase.set_single(@store.settings)
     end
 

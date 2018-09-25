@@ -37,8 +37,6 @@ module Wovnrb
     end
 
     def initialize
-      @settings = Settings.new
-      @config_loaded = false
       reset
     end
 
@@ -89,7 +87,7 @@ module Wovnrb
         valid = false
         errors.push("API URL is not configured.")
       end
-      if !settings.has_key?('default_lang') || settings['default_lang'].length == 0
+      if !settings.has_key?('default_lang') || settings['default_lang'].nil?
         valid = false
         errors.push("Default lang #{settings['default_lang']} is not valid.")
       end
@@ -112,30 +110,33 @@ module Wovnrb
 
     # Returns the settings object, pulling from Rails config the first time this is called
     #
-    # @return [Hash] The settings which are pulled from the config file given by the user and filled in by defaults
-    def settings(*opts)
-      if !opts.first.nil?
-        @settings.merge!(opts.first)
-        @config_loaded = false
-      end
+    def settings
+      load_settings unless @config_loaded
+      @settings
+    end
 
-      if @config_loaded
-        return @settings
-      end
-
-      # get Rails config.wovnrb
+    # Load Rails config.wovnrb
+    #
+    def load_settings
       if Object.const_defined?('Rails') && Rails.configuration.respond_to?(:wovnrb)
-        config_settings = Rails.configuration.wovnrb.stringify_keys
-        if config_settings.has_key?('url_pattern')
-          if config_settings['url_pattern'] == 'query' || config_settings['url_pattern'] == 'subdomain' || config_settings['url_pattern'] == 'path'
-            config_settings['url_pattern'] = config_settings['url_pattern']
-            config_settings.delete('url_pattern')
-          end
-        end
-        @settings.merge!(Rails.configuration.wovnrb.stringify_keys)
+        @config_loaded = true
+        update_settings(Rails.configuration.wovnrb)
+      end
+    end
+
+    def update_settings(new_settings)
+      load_settings unless @config_loaded
+      if !new_settings.nil?
+        @settings.merge!(new_settings.stringify_keys)
+        format_settings
+      end
+    end
+
+    def format_settings
+      if @settings.has_key?('custom_lang_aliases')
+        stringify_keys! @settings['custom_lang_aliases']
       end
 
-      # fix settings object
       @settings['default_lang'] = Lang.get_code(@settings['default_lang'])
       if !@settings.has_key?('supported_langs')
         @settings['supported_langs'] = [@settings['default_lang']]
@@ -160,16 +161,9 @@ module Wovnrb
         @settings['test_mode'] = true
       end
 
-      if @settings.has_key?('custom_lang_aliases')
-        stringify_keys! @settings['custom_lang_aliases']
-      end
-
       if wovn_dev_mode? && @settings['api_url'] == Store.default_settings['api_url']
         @settings['api_url'] = "#{wovn_protocol}://api.#{wovn_host}/v0/values"
       end
-
-      @config_loaded = true
-      @settings
     end
 
     def wovn_dev_mode?

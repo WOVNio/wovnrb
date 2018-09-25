@@ -573,7 +573,7 @@ module Wovnrb
 
     def test_add_lang_code_with_custom_lang_aliases
       lang = Lang.new('fr')
-      Store.instance.settings['custom_lang_aliases'] = {'fr' => 'staging-fr'}
+      Store.instance.update_settings({'custom_lang_aliases' => {'fr' => 'staging-fr'}})
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
       assert_equal("http://staging-fr.wovn.io/topics/50", lang.add_lang_code("/topics/50", 'subdomain', h))
     end
