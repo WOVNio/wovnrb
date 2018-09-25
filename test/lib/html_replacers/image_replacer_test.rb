@@ -29,6 +29,31 @@ module Wovnrb
       assert_equal('wovn-src:Hello', img.previous.content)
     end
 
+    def test_replace_in_fragment
+      store = Store.instance
+      url = {
+        :protocol => 'http',
+        :host => 'www.example.com',
+        :pathname => 'hello/index.html'
+      }
+      text_index = {
+        'Hello' => {'ja' => [{'data' => 'こんにちは'}]}
+      }
+      src_index = {
+        'http://www.example.com/test.img' => {'ja' => [{'data' => 'http://test.com/ttt.img'}]}
+      }
+      img_src_prefix = 'prefix::'
+      replacer = ImageReplacer.new(store, url, text_index, src_index, img_src_prefix, [])
+
+      dom = Helpers::NokogumboHelper::parse_fragment('<img src="http://www.example.com/test.img" alt="Hello">')
+      replacer.replace(dom, Lang.new('ja'))
+
+      img = dom.xpath('.//img')[0]
+      assert_equal('prefix::http://test.com/ttt.img', img.get_attribute('src'))
+      assert_equal('こんにちは', img.get_attribute('alt'))
+      assert_equal('wovn-src:Hello', img.previous.content)
+    end
+
     def test_replace_relative_path
       store = Store.instance
       url = {

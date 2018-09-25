@@ -66,13 +66,14 @@ After completing setup, start the Ruby Application, and make sure the WOVN.io li
 
 WOVN.io Ruby Library's valid parameters are as follows.
 
-Parameter Name | Required | Default Setting
--------------- | -------- | ----------------
-project_token  | yes      | ''
-url_pattern    | yes      | 'path'
-query          |          | []
-default_lang   | yes      | 'en'
-ignore_class   |          | []
+Parameter Name     | Required | Default Setting
+------------------ | -------- | ----------------
+project_token      | yes      | ''
+url_pattern        | yes      | 'path'
+query              |          | []
+default_lang       | yes      | 'en'
+ignore_class       |          | []
+translate_fragment |          | true
 
 ### 2.1. project_token
 
@@ -123,6 +124,12 @@ The library will redirect to the following URL.
 ### 2.5 ignore_class
 
 This sets "Ignore class" which prevent WOVN translating HTML elements that have one of the array.
+
+### 2.6 translate_fragment
+
+This option allows to disable translating partial HTML content. By default,
+partial HTML content is translated but no widget snippet is added. Set
+"translate_fragment" to 'false' to stop translating partial HTML content.
 
 ## 3. Contributing
 

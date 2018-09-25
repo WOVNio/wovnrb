@@ -5,6 +5,7 @@ require 'wovnrb/lang'
 require 'nokogumbo'
 #require 'dom'
 require 'json'
+require 'wovnrb/helpers/nokogumbo_helper'
 require 'wovnrb/api_data'
 require 'wovnrb/text_caches/cache_base'
 require 'wovnrb/html_replacers/replacer_base'
@@ -99,8 +100,8 @@ module Wovnrb
           noscripts << match
           b_without_noscripts = b_without_noscripts.sub(match, noscript_identifier)
         end
-        d = Nokogiri::HTML5(b_without_noscripts)
-        d.encoding = "UTF-8"
+
+        d = Helpers::NokogumboHelper::parse_html(b_without_noscripts)
 
         # If this page has wovn-ignore in the html tag, don't do anything
         if ignore_all || !d.xpath('//html[@wovn-ignore]').empty? || is_amp_page?(d)
@@ -111,10 +112,10 @@ module Wovnrb
           next
         end
 
-        if have_data?(values)
+        if must_translate?(d, values)
           output = lang.switch_dom_lang(d, @store, values, url, headers)
         else
-          ScriptReplacer.new(@store).replace(d, lang)
+          ScriptReplacer.new(@store).replace(d, lang) if d.html?
           output = d.to_html(save_with: 0)
         end
         put_back_noscripts!(output, noscripts)
@@ -129,6 +130,12 @@ module Wovnrb
     def output(headers, status, res_headers, body)
       headers.out(res_headers)
       [status, res_headers, body]
+    end
+
+    def must_translate?(dom, values)
+      can_translate = dom.html? ? true : @store.settings['translate_fragment']
+
+      can_translate && have_data?(values)
     end
 
     def have_data?(values)
