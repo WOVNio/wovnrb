@@ -13,7 +13,10 @@ module Wovnrb
       @headers = headers
     end
 
+
     def replace(dom, lang)
+      base_url = base_href(dom)
+
       dom.xpath('//*[match(.)]', MultiTagMatcher.new).each do |node|
         next if wovn_ignore?(node)
 
@@ -21,9 +24,22 @@ module Wovnrb
         next if href =~ /^\s*\{\{.+\}\}\s*$/
         next if href =~ /^\s*javascript:/i
         next if is_file?(href)
-        new_href = lang.add_lang_code(href, @pattern, @headers)
+
+        new_href = href
+        new_href = adjust_link_by_base(new_href, base_url) if base_url
+        new_href = lang.add_lang_code(new_href, @pattern, @headers)
+
         node.set_attribute('href', new_href)
       end
+    end
+
+    private
+
+    def adjust_link_by_base(href, base_url)
+      return href if href =~ /^\//            # absolute path
+      return href if href =~ /^http(s?):\/\// # full url
+
+      File.join(base_url, href)
     end
 
     def is_file?(href)
@@ -32,6 +48,17 @@ module Wovnrb
       video_files = /^(https?:\/\/)?.*(\.(#{FileExtension::VIDEO_FILES}))((\?|#).*)?$/i
       doc_files = /^(https?:\/\/)?.*(\.(#{FileExtension::DOC_FILES}))((\?|#).*)?$/i
       href =~ img_files || href =~ audio_files || href =~ video_files || href =~ doc_files
+    end
+
+    def base_href(dom)
+      base_tag = dom.xpath('//base').first
+      return nil unless base_tag
+
+      href = base_tag.get_attribute('href')
+      return href if href =~ /^\//            # absolute path
+      return href if href =~ /^http(s?):\/\// # full url
+
+      Addressable::URI.join('/', @headers.dirname, href).to_s
     end
   end
 

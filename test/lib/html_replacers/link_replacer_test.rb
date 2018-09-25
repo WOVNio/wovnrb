@@ -254,10 +254,75 @@ module Wovnrb
       assert_equal(' {{hello}} ', link)
     end
 
+    def test_with_base_as_previous_directory
+      dom, replacer = create_dom_by_base(base: '../', href: 'm/css/iphone.css')
+      replacer.replace(dom, Lang.new('en'))
+      assert_link(dom, '/en/sp/entry2017/m/css/iphone.css')
+    end
 
+    def test_with_base_as_different_host
+      dom, replacer = create_dom_by_base(base: 'http://test.com', href: 'm/css/iphone.css')
+      replacer.replace(dom, Lang.new('en'))
+      assert_link(dom, 'http://test.com/m/css/iphone.css')
+    end
 
-    def get_header
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'query', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+    def test_with_base_as_different_host_without_protocol
+      dom, replacer = create_dom_by_base(base: '//test.com', href: 'm/css/iphone.css')
+      replacer.replace(dom, Lang.new('en'))
+      assert_link(dom, '//test.com/m/css/iphone.css')
+    end
+
+    def test_with_base_as_relative_path
+      dom, replacer = create_dom_by_base(base: '/test', href: 'm/css/iphone.css')
+      replacer.replace(dom, Lang.new('en'))
+      assert_link(dom, '/en/test/m/css/iphone.css')
+    end
+
+    def test_with_base_as_relative_path_without_starting_slash
+      dom, replacer = create_dom_by_base(base: 'test/', href: 'm/css/iphone.css')
+      replacer.replace(dom, Lang.new('en'))
+      assert_link(dom, '/en/sp/entry2017/m/test/m/css/iphone.css')
+    end
+
+    def test_base_href
+      store = Store.instance
+      tests = [
+        { pathname: '/dirname/index.php', base: '/absolute/path', expected_href: '/absolute/path' },
+        { pathname: '/dirname/index.php', base: 'relative/path', expected_href: '/dirname/relative/path' },
+        { pathname: '/dirname/index.php', base: './dot/path', expected_href: '/dirname/dot/path' },
+        { pathname: '/dirname/index.php', base: '../doubledot/path', expected_href: '/doubledot/path' },
+        { pathname: '/', base: '../errordots/path', expected_href: '/errordots/path' },
+        { pathname: '/dirname/deep/index.php', base: './../.././../../../many/dots', expected_href: '/many/dots' },
+        { pathname: 'index.php', base: 'no/dir/path', expected_href: '/no/dir/path' },
+        { pathname: 'index.php', base: '/trailing/slash/', expected_href: '/trailing/slash/' },
+        { pathname: 'index.php', base: '', expected_href: '/' }
+      ]
+
+      tests.each do |test|
+        replacer = LinkReplacer.new(store, 'path', get_header(url_pattern: 'path', pathname: test[:pathname]))
+        dom = Wovnrb.get_dom("<base target=\"_blank\" href=\"#{test[:base]}\"><a href=\"/not_matter\">link text</a>")
+        assert_equal(test[:expected_href], replacer.send(:base_href, dom))
+      end
+    end
+
+    def get_header(url_pattern: 'query', pathname: nil)
+      Wovnrb::Headers.new(
+        Wovnrb.get_env('url' => "http://wovn.io#{pathname}"),
+        Wovnrb.get_settings('url_pattern' => url_pattern, 'url_pattern_reg' => '^(?<lang>[^.]+).')
+      )
+    end
+
+    def create_dom_by_base(base:, href:)
+      store = Store.instance
+      replacer = LinkReplacer.new(store, 'path', get_header(url_pattern: 'path', pathname: '/sp/entry2017/m/index.php'))
+      dom = Wovnrb.get_dom("<base target=\"_blank\" href=\"#{base}\"><a href=\"#{href}\">link text</a>")
+
+      [dom, replacer]
+    end
+
+    def assert_link(dom, expected)
+      link = dom.xpath('//a')[0].get_attribute('href')
+      assert_equal(expected, link)
     end
   end
 end

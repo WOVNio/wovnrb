@@ -1,4 +1,5 @@
 require 'simplecov'
+require 'pry'
 
 # save to CircleCI's artifacts directory if we're on CircleCI
 if ENV['CIRCLE_ARTIFACTS']
