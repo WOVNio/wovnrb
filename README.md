@@ -66,14 +66,14 @@ After completing setup, start the Ruby Application, and make sure the WOVN.io li
 
 WOVN.io Ruby Library's valid parameters are as follows.
 
-Parameter Name      | Required | Default Setting
-------------------- | -------- | ----------------
-project_token       | yes      | ''
-url_pattern         | yes      | 'path'
-query               |          | []
-default_lang        | yes      | 'en'
-ignore_class        |          | []
-translate_fragments |          | true
+Parameter Name     | Required | Default Setting
+------------------ | -------- | ----------------
+project_token      | yes      | ''
+url_pattern        | yes      | 'path'
+query              |          | []
+default_lang       | yes      | 'en'
+ignore_class       |          | []
+translate_fragment |          | true
 
 ### 2.1. project_token
 
