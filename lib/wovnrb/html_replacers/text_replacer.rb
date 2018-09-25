@@ -6,7 +6,7 @@ module Wovnrb
     end
 
     def replace(dom, lang)
-      dom.xpath('//text()').each do |node|
+      dom.xpath('.//text()').each do |node|
         next if wovn_ignore?(node)
 
         node_text = node.content.strip

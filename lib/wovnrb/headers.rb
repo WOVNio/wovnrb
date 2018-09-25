@@ -8,6 +8,7 @@ module Wovnrb
     attr_reader :host
     attr_reader :unmasked_pathname
     attr_reader :pathname
+    attr_reader :dirname
     attr_reader :redis_url
 
     # Generates new instance of Wovnrb::Headers.
@@ -231,6 +232,13 @@ module Wovnrb
       headers
     end
 
+    def dirname
+      if pathname.include?('/')
+        pathname.end_with?('/') ? pathname : pathname[0, pathname.rindex('/') + 1]
+      else
+        '/'
+      end
+    end
   end
 
 end

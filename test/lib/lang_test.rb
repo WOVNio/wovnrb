@@ -4,7 +4,6 @@ require 'minitest/autorun'
 
 module Wovnrb
   class LangTest < WovnMiniTest
-
     def test_langs_exist
       refute_nil(Wovnrb::Lang::LANG)
     end
@@ -94,44 +93,44 @@ module Wovnrb
 
     def test_add_lang_code
       lang = Lang.new('zh-cht')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://favy.tips'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
       assert_equal("http://www.facebook.com", lang.add_lang_code("http://www.facebook.com", 'subdomain', h))
     end
 
     def test_add_lang_code_relative_slash_href_url_with_path
       lang = Lang.new('fr')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://fr.favy.tips/topics/44'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://fr.favy.tips/topics/50", lang.add_lang_code("/topics/50", 'subdomain', h))
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://fr.wovn.io/topics/44'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      assert_equal("http://fr.wovn.io/topics/50", lang.add_lang_code("/topics/50", 'subdomain', h))
     end
 
     def test_add_lang_code_relative_dot_href_url_with_path
       lang = Lang.new('fr')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://fr.favy.tips/topics/44'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://fr.favy.tips/topics/44/topics/50", lang.add_lang_code("./topics/50", 'subdomain', h))
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://fr.wovn.io/topics/44'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      assert_equal("http://fr.wovn.io/topics/44/topics/50", lang.add_lang_code("./topics/50", 'subdomain', h))
     end
 
     def test_add_lang_code_relative_two_dots_href_url_with_path
       lang = Lang.new('fr')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://fr.favy.tips/topics/44'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://fr.favy.tips/topics/50", lang.add_lang_code("../topics/50", 'subdomain', h))
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://fr.wovn.io/topics/44'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      assert_equal("http://fr.wovn.io/topics/50", lang.add_lang_code("../topics/50", 'subdomain', h))
     end
 
     def test_add_lang_code_trad_chinese
       lang = Lang.new('zh-cht')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://favy.tips'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://zh-cht.favy.tips/topics/31", lang.add_lang_code("http://favy.tips/topics/31", 'subdomain', h))
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      assert_equal("http://zh-cht.wovn.io/topics/31", lang.add_lang_code("http://wovn.io/topics/31", 'subdomain', h))
     end
 
     def test_add_lang_code_trad_chinese_2
       lang = Lang.new('zh-cht')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://zh-cht.favy.tips'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://zh-cht.favy.tips/topics/31", lang.add_lang_code("/topics/31", 'subdomain', h))
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://zh-cht.wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      assert_equal("http://zh-cht.wovn.io/topics/31", lang.add_lang_code("/topics/31", 'subdomain', h))
     end
 
     def test_add_lang_code_trad_chinese_lang_in_link_already
       lang = Lang.new('zh-cht')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://zh-cht.favy.tips'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://zh-cht.favy.tips/topics/31", lang.add_lang_code("http://zh-cht.favy.tips/topics/31", 'subdomain', h))
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://zh-cht.wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      assert_equal("http://zh-cht.wovn.io/topics/31", lang.add_lang_code("http://zh-cht.wovn.io/topics/31", 'subdomain', h))
     end
 
     def test_add_lang_code_no_protocol
@@ -142,79 +141,79 @@ module Wovnrb
 
     def test_add_lang_code_no_protocol_2
       lang = Lang.new('zh-cht')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'https://zh-cht.favy.tips'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'https://zh-cht.wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
       assert_equal("//google.com", lang.add_lang_code("//google.com", 'subdomain', h))
     end
 
     def test_add_lang_code_invalid_url
       lang = Lang.new('zh-cht')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://favy.tips'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://www.facebook.com/sharer.php?u=http://favy.tips/topics/50&amp;amp;t=Gourmet Tofu World: Vegetarian-Friendly Japanese Food is Here!", lang.add_lang_code("http://www.facebook.com/sharer.php?u=http://favy.tips/topics/50&amp;amp;t=Gourmet Tofu World: Vegetarian-Friendly Japanese Food is Here!", 'subdomain', h))
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      assert_equal("http://www.facebook.com/sharer.php?u=http://wovn.io/topics/50&amp;amp;t=Gourmet Tofu World: Vegetarian-Friendly Japanese Food is Here!", lang.add_lang_code("http://www.facebook.com/sharer.php?u=http://wovn.io/topics/50&amp;amp;t=Gourmet Tofu World: Vegetarian-Friendly Japanese Food is Here!", 'subdomain', h))
     end
 
     def test_add_lang_code_path_only_with_slash
       lang = Lang.new('zh-cht')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://favy.tips'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://zh-cht.favy.tips/topics/31", lang.add_lang_code("/topics/31", 'subdomain', h))
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      assert_equal("http://zh-cht.wovn.io/topics/31", lang.add_lang_code("/topics/31", 'subdomain', h))
     end
 
     def test_add_lang_code_path_only_no_slash
       lang = Lang.new('zh-cht')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://favy.tips'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://zh-cht.favy.tips/topics/31", lang.add_lang_code("topics/31", 'subdomain', h))
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      assert_equal("http://zh-cht.wovn.io/topics/31", lang.add_lang_code("topics/31", 'subdomain', h))
     end
 
     def test_add_lang_code_path_explicit_page_no_slash
       lang = Lang.new('zh-cht')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://favy.tips'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://zh-cht.favy.tips/topics/31.html", lang.add_lang_code("topics/31.html", 'subdomain', h))
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      assert_equal("http://zh-cht.wovn.io/topics/31.html", lang.add_lang_code("topics/31.html", 'subdomain', h))
     end
 
     def test_add_lang_code_path_explicit_page_with_slash
       lang = Lang.new('zh-cht')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://favy.tips'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://zh-cht.favy.tips/topics/31.html", lang.add_lang_code("/topics/31.html", 'subdomain', h))
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      assert_equal("http://zh-cht.wovn.io/topics/31.html", lang.add_lang_code("/topics/31.html", 'subdomain', h))
     end
 
     def test_add_lang_code_no_protocol_with_path_explicit_page
       lang = Lang.new('zh-cht')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://favy.tips'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
       assert_equal("//www.google.com/topics/31.php", lang.add_lang_code("//www.google.com/topics/31.php", 'subdomain', h))
     end
 
     def test_add_lang_code_protocol_with_path_explicit_page
       lang = Lang.new('zh-cht')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://favy.tips'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
       assert_equal("http://www.google.com/topics/31.php", lang.add_lang_code("http://www.google.com/topics/31.php", 'subdomain', h))
     end
 
     def test_add_lang_code_relative_path_double_period
       lang = Lang.new('zh-cht')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://favy.tips'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://zh-cht.favy.tips/topics/31", lang.add_lang_code("../topics/31", 'subdomain', h))
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      assert_equal("http://zh-cht.wovn.io/topics/31", lang.add_lang_code("../topics/31", 'subdomain', h))
     end
 
     def test_add_lang_code_relative_path_single_period
       lang = Lang.new('zh-cht')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://favy.tips'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://zh-cht.favy.tips/topics/31", lang.add_lang_code("./topics/31", 'subdomain', h))
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      assert_equal("http://zh-cht.wovn.io/topics/31", lang.add_lang_code("./topics/31", 'subdomain', h))
     end
 
     def test_add_lang_code_empty_href
       lang = Lang.new('zh-cht')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://favy.tips'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
       assert_equal("", lang.add_lang_code("", 'subdomain', h))
     end
 
     def test_add_lang_code_hash_href
       lang = Lang.new('zh-cht')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://favy.tips'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
       assert_equal("#", lang.add_lang_code("#", 'subdomain', h))
     end
 
     def test_add_lang_code_nil_href
       lang = Lang.new('en')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://favy.tips'), Wovnrb.get_settings)
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings)
       assert_nil(lang.add_lang_code(nil,'path', h))
     end
     def test_add_lang_code_absolute_different_host
@@ -466,6 +465,16 @@ module Wovnrb
       assert_equal(generate_body('translated_in_japanese'), swapped_body)
     end
 
+    def test_switch_lang_with_html_fragment
+      lang = Lang.new('ja')
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      dom = Helpers::NokogumboHelper::parse_fragment('<span>Hello</span>')
+      values = generate_values
+      url = h.url
+      swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)
+      assert_equal('<span><!--wovn-src:Hello-->こんにちは</span>', swapped_body)
+    end
+
     def test_switch_lang_href_javascript
       lang = Lang.new('ja')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
@@ -565,8 +574,8 @@ module Wovnrb
     def test_add_lang_code_with_custom_lang_aliases
       lang = Lang.new('fr')
       Store.instance.update_settings({'custom_lang_aliases' => {'fr' => 'staging-fr'}})
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://favy.tips'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://staging-fr.favy.tips/topics/50", lang.add_lang_code("/topics/50", 'subdomain', h))
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      assert_equal("http://staging-fr.wovn.io/topics/50", lang.add_lang_code("/topics/50", 'subdomain', h))
     end
 
     def test_switch_dom_lang_for_keeping_originl_encoding_decoding

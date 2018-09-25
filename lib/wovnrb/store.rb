@@ -31,7 +31,8 @@ module Wovnrb
         'ttl_seconds' => nil,
         'use_proxy' => false,  # use env['HTTP_X_FORWARDED_HOST'] instead of env['HTTP_HOST'] and env['SERVER_NAME'] when this setting is true.
         'custom_lang_aliases' => {},
-        'wovn_dev_mode' => false
+        'wovn_dev_mode' => false,
+        'translate_fragment' => true
       })
     end
 

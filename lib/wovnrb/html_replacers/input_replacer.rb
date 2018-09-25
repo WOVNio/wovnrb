@@ -6,7 +6,7 @@ module Wovnrb
     end
 
     def replace(dom, lang)
-      dom.xpath('//input').each do |node|
+      dom.xpath('.//input').each do |node|
         next if wovn_ignore?(node)
 
         set_attribute('value', node, lang)       if replaceable_value? node

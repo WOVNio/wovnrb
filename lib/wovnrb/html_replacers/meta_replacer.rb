@@ -8,7 +8,7 @@ module Wovnrb
     end
 
     def replace(dom, lang)
-      dom.xpath('//meta').select { |node|
+      dom.xpath('.//meta').select { |node|
         next if wovn_ignore?(node)
         (node.get_attribute('name') || node.get_attribute('property') || '') =~ /^(description|title|og:title|og:description|og:url|twitter:title|twitter:description)$/
       }.each do |node|

@@ -12,7 +12,7 @@ module Wovnrb
     def wovn_ignore?(node)
       if !node.get_attribute('wovn-ignore').nil?
         return true
-      elsif node.name === 'html'
+      elsif node.name === 'html' || node.parent.nil?
         return false
       end
 

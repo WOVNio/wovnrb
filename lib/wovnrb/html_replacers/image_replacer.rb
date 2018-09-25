@@ -10,7 +10,7 @@ module Wovnrb
     end
 
     def replace(dom, lang)
-      dom.xpath('//img').each do |node|
+      dom.xpath('.//img').each do |node|
         next if wovn_ignore?(node)
 
         # use regular expressions to support case insensitivity (right?)

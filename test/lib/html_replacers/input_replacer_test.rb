@@ -17,6 +17,19 @@ module Wovnrb
       assert_equal('こんにちは', content)
     end
 
+    def test_replace_in_fragment
+      store = Store.instance
+      replacer = InputReplacer.new(store, {
+        'Hello' => {'ja' => [{'data' => 'こんにちは'}]}
+      })
+
+      dom = Helpers::NokogumboHelper::parse_fragment('<input type="submit" value="Hello">')
+      replacer.replace(dom, Lang.new('ja'))
+
+      content = dom.xpath('.//input')[0].get_attribute('value')
+      assert_equal('こんにちは', content)
+    end
+
     def test_dont_replace_empty_submit_value
       store = Store.instance
       replacer = InputReplacer.new(store, {
