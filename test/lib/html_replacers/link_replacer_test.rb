@@ -109,45 +109,45 @@ module Wovnrb
     def test_replace_link_path_with_canonical
       store = Store.instance
       replacer = LinkReplacer.new(store, 'path', get_header)
-      dom = Wovnrb.get_dom('<html><head><link rel="canonical" href="http://favy.tips/hello/index.html"></head><body>hello</body></html>')
+      dom = Wovnrb.get_dom('<html><head><link rel="canonical" href="http://wovn.io/hello/index.html"></head><body>hello</body></html>')
       replacer.replace(dom, Lang.new('en'))
       canonical_href = dom.xpath('//link').find { |d| d.attributes['rel'].value == 'canonical' }.attributes['href'].value
-      assert_equal('http://favy.tips/en/hello/index.html', canonical_href)
+      assert_equal('http://wovn.io/en/hello/index.html', canonical_href)
     end
 
     def test_replace_link_with_style
       store = Store.instance
       replacer = LinkReplacer.new(store, 'path', get_header)
-      dom = Wovnrb.get_dom('<html><head><link rel="stylesheet" type="text/css" href="http://favy.tips/hello/index.css"></head><body>hello</body></html>')
+      dom = Wovnrb.get_dom('<html><head><link rel="stylesheet" type="text/css" href="http://wovn.io/hello/index.css"></head><body>hello</body></html>')
       replacer.replace(dom, Lang.new('en'))
       href = dom.xpath('//link').find { |d| d.attributes['rel'].value == 'stylesheet' }.attributes['href'].value
-      assert_equal('http://favy.tips/hello/index.css', href, 'Should not change the href')
+      assert_equal('http://wovn.io/hello/index.css', href, 'Should not change the href')
     end
 
     def test_replace_img_link_path
       store = Store.instance
       replacer = LinkReplacer.new(store, 'path', get_header)
-      dom = Wovnrb.get_dom('<a href="http://favy.tips/index.jpg">link text</a>')
+      dom = Wovnrb.get_dom('<a href="http://wovn.io/index.jpg">link text</a>')
       replacer.replace(dom, Lang.new('ja'))
 
       link = dom.xpath('//a')[0].get_attribute('href')
-      assert_equal('http://favy.tips/index.jpg', link)
+      assert_equal('http://wovn.io/index.jpg', link)
     end
 
     def test_replace_img_link_path_with_query_or_hash
       store = Store.instance
       replacer = LinkReplacer.new(store, 'path', get_header)
-      dom = Wovnrb.get_dom('<a href="http://favy.tips/index.jpg?test=1">link text</a>')
+      dom = Wovnrb.get_dom('<a href="http://wovn.io/index.jpg?test=1">link text</a>')
       replacer.replace(dom, Lang.new('ja'))
 
       link = dom.xpath('//a')[0].get_attribute('href')
-      assert_equal('http://favy.tips/index.jpg?test=1', link)
+      assert_equal('http://wovn.io/index.jpg?test=1', link)
 
-      dom = Wovnrb.get_dom('<a href="http://favy.tips/index.jpg#test=1">link text</a>')
+      dom = Wovnrb.get_dom('<a href="http://wovn.io/index.jpg#test=1">link text</a>')
       replacer.replace(dom, Lang.new('ja'))
 
       link = dom.xpath('//a')[0].get_attribute('href')
-      assert_equal('http://favy.tips/index.jpg#test=1', link)
+      assert_equal('http://wovn.io/index.jpg#test=1', link)
     end
 
     def test_replace_audio_link_path
@@ -257,7 +257,7 @@ module Wovnrb
 
 
     def get_header
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://favy.tips'), Wovnrb.get_settings('url_pattern' => 'query', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'query', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
     end
   end
 end
