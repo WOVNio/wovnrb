@@ -1,0 +1,543 @@
+[
+  {
+    "xpath": "/html/head/title",
+    "srcs": [
+      "Website Localization | Translate web pages in 5 minutes | WOVN.io"
+    ]
+  },
+  {
+    "xpath": "/html/body/header/div/div/nav/ul/li/text()",
+    "srcs": [
+      "<a>",
+      "Top",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/header/div/div/nav/ul/li[2]/text()",
+    "srcs": [
+      "<a>",
+      "Pricing",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/header/div/div/nav/ul/li[3]/text()",
+    "srcs": [
+      "<a>",
+      "Developers",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/header/div/div/nav/ul/li[4]/text()",
+    "srcs": [
+      "<a>",
+      "Partners",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/header/div/div/nav/ul/li[5]/text()",
+    "srcs": [
+      "<a>",
+      "Support",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/header/div/div/nav/ul/li[6]/text()",
+    "srcs": [
+      "<a>",
+      "Contact",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/header/div/div/div/ul/li/text()",
+    "srcs": [
+      "<a>",
+      "Sign in",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/header/div/div/div/ul/li[2]/text()",
+    "srcs": [
+      "<a>",
+      "Sign up",
+      "<span>",
+      "free",
+      "</span>",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/header/div/div/div/p/text()",
+    "srcs": [
+      "TEL",
+      "<a>",
+      "(+81) 3-4405-9509",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div/div/h1/text()",
+    "srcs": [
+      "<strong>",
+      "Localize your website,",
+      "</strong>",
+      "<br>",
+      "translate web pages in minutes"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div/div/p/text()",
+    "srcs": [
+      "30 languages supported"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div/div/text()[3]",
+    "srcs": [
+      "<a>",
+      "SIGN UP FREE",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div/div/p[2]/text()",
+    "srcs": [
+      "TEL",
+      "<span>",
+      "<a>",
+      "(+81) 3-4405-9509",
+      "</a>",
+      "</span>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[2]/h2/text()",
+    "srcs": [
+      "Over 9,000 businesses around the world have chosen WOVN.io"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[3]/h2/text()",
+    "srcs": [
+      "Localize your website in as few as 5 minutes without a developer"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[3]/div/div/ul/li/div/text()",
+    "srcs": [
+      "STEP",
+      "<span>",
+      "1",
+      "</span>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[3]/div/div/ul/li/p/text()",
+    "srcs": [
+      "Add your site&#39;s URL"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[3]/div/div/ul/li[2]/div/text()",
+    "srcs": [
+      "STEP",
+      "<span>",
+      "2",
+      "</span>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[3]/div/div/ul/li[2]/p/text()",
+    "srcs": [
+      "Translate by hand, machine, or use pro translators and publish your site"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[3]/div/div/ul/li[3]/div/text()",
+    "srcs": [
+      "STEP",
+      "<span>",
+      "3",
+      "</span>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[3]/div/div/ul/li[3]/p/text()",
+    "srcs": [
+      "Add WOVN.io to your website with our",
+      "<br>",
+      "JavaScript snippet or server library"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[4]/h2/text()",
+    "srcs": [
+      "Edit your website directly"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[4]/div/div/h3/text()",
+    "srcs": [
+      "Edit text, tags, and images in one place"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[4]/div/div/p/text()",
+    "srcs": [
+      "Your website&#39;s text, meta information (title, meta, alt, etc.), and images will all be added to our translation editor. You can manage and translate everything from the editor."
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[4]/div/div[2]/h3/text()",
+    "srcs": [
+      "Make instant edits with our live editor"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[4]/div/div[2]/p/text()",
+    "srcs": [
+      "See the translations on your website as you write them. Be sure it will look exactly the way you want it before publishing."
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[4]/div/div[3]/h3/text()",
+    "srcs": [
+      "Freely customize the WOVN.io widget"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[4]/div/div[3]/p/text()",
+    "srcs": [
+      "Use our road-tested default widget or customize it. All paid plans offer maximum customization, create your own widget that fits your website&#39;s needs."
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[4]/div/div[3]/text()[3]",
+    "srcs": [
+      "<span>",
+      "Starter Plan",
+      "</span>",
+      "<span>",
+      "Business Plan",
+      "</span>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[4]/div/div[4]/h3/text()",
+    "srcs": [
+      "Automatic content and page addition"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[4]/div/div[4]/p/text()",
+    "srcs": [
+      "Advanced page and content management on business plans and above. Let WOVN.io add new pages and content, translate into multiple languages and publish to your site automatically."
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[4]/div/div[4]/text()[3]",
+    "srcs": [
+      "<span>",
+      "Business Plan",
+      "</span>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[5]/h2/text()",
+    "srcs": [
+      "Designed for any website"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[5]/ul/li/text()[2]",
+    "srcs": [
+      "Personal"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[5]/ul/li[2]/text()[2]",
+    "srcs": [
+      "Corporate"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[5]/ul/li[3]/text()[2]",
+    "srcs": [
+      "Store"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[5]/ul/li[4]/text()[2]",
+    "srcs": [
+      "Media"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[5]/ul/li[5]/text()[2]",
+    "srcs": [
+      "EC"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[5]/ul/li[6]/text()[2]",
+    "srcs": [
+      "Large"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[5]/ul/li[7]/text()[2]",
+    "srcs": [
+      "Cloud"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[5]/div/div/div/h3/text()[2]",
+    "srcs": [
+      "Dynamic page content"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[5]/div/div/div/p/text()",
+    "srcs": [
+      "Using our business plan and above features localize pages containing dynamic content such as login, search, reviews etc."
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[5]/div/div/div[2]/h3/text()[2]",
+    "srcs": [
+      "International SEO"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[5]/div/div/div[2]/p/text()",
+    "srcs": [
+      "With our server library, WOVN.io will make sure your pages show up in searches across languages. Plus, easily organize your localized languages by path, subdomain, or query for improved SEO."
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[5]/div/div/div[3]/h3/text()[2]",
+    "srcs": [
+      "No initial cost"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[5]/div/div/div[3]/p/text()",
+    "srcs": [
+      "No starting fees and no lock-in rates. Simple monthly plans that fit your needs. Support is included for free so you can get started without the need for developers or dedicated content managers."
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[6]/h2/text()",
+    "srcs": [
+      "Why WOVN.io?"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[6]/div/div/h3/text()",
+    "srcs": [
+      "Reduce maintenance costs"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[6]/div/div/p/text()",
+    "srcs": [
+      "Manage and create your translations without the need for a developer. Or have WOVN.io manage your content automatically. You can also order professional translations through WOVN.io at competitive prices."
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[6]/div/div[2]/h3/text()",
+    "srcs": [
+      "Reduce development costs"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[6]/div/div[2]/p/text()",
+    "srcs": [
+      "Localizing costs can increase for every language added, using WOVN.io, this cost is greatly reduced and managing multiple languages does not require the need for more development. Reach a global audience at a fraction of the cost."
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[6]/div/div[3]/h3/text()",
+    "srcs": [
+      "Multilingual marketing"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[6]/div/div[3]/p/text()",
+    "srcs": [
+      "Draw more users through localized SEO, increasing leads to your site. Localizing your content will lead to more visitors and more conversions."
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[6]/div/div[4]/h3/text()",
+    "srcs": [
+      "Maintenance light"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[6]/div/div[4]/p/text()",
+    "srcs": [
+      "Using WOVN.io does not increase the number of files on your servers or the amount of languages it must host. Leave the heavy lifting to us and keep server costs low."
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[7]/h2/text()",
+    "srcs": [
+      "WOVN.io user feedback"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[7]/div/div[2]/div/div/p/text()",
+    "srcs": [
+      "Thanks to dynamic page support and flexible communication, we were able to easily achieve multilingualization for a single page AngularJS application at low cost."
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[7]/div/div[2]/div/div[2]/p/text()",
+    "srcs": [
+      "All we had to do was insert a single line of script to get started. Compared with typical multilingualization, we realized a significant reduction in man-hours."
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[7]/div/div[2]/div/div[3]/p/text()",
+    "srcs": [
+      "Even companies without translation or system development capabilities can reach international markets at a low cost."
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[7]/div/div[2]/div/div[3]/div[2]/p/text()",
+    "srcs": [
+      "Hisayuki Uemori",
+      "<br>",
+      "<span>",
+      "Minimal tech CEO",
+      "</span>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[8]/div/h2/text()",
+    "srcs": [
+      "You can try our business plan free for 30 days!"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[8]/div/p/text()",
+    "srcs": [
+      "All business plan features are available during the trial"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[8]/div/text()[3]",
+    "srcs": [
+      "<a>",
+      "SIGN UP FREE",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/div[8]/div/div/text()",
+    "srcs": [
+      "TEL",
+      "<a>",
+      "(+81) 3-4405-9509",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/footer/div/section/div/nav/ul/li/text()",
+    "srcs": [
+      "<a>",
+      "Pricing",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/footer/div/section/div/nav/ul/li[2]/text()",
+    "srcs": [
+      "<a>",
+      "Developers",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/footer/div/section/div/nav/ul/li[3]/text()",
+    "srcs": [
+      "<a>",
+      "Partners",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/footer/div/section/div/nav/ul/li[4]/text()",
+    "srcs": [
+      "<a>",
+      "Support",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/footer/div/section/div/nav/ul/li[5]/text()",
+    "srcs": [
+      "<a>",
+      "Contact",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/footer/div/section/div/nav/ul/li[6]/text()",
+    "srcs": [
+      "<a>",
+      "Corporate",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/footer/div/section/div/p/text()",
+    "srcs": [
+      "<a>",
+      "support@wovn.io",
+      "</a>",
+      "<a>",
+      "(+81) 3-4405-9509",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/footer/div/section/div/ul/li/a/svg/title",
+    "srcs": [
+      "WOVN.io | Facebook"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/footer/div/section/div/ul/li[2]/a/svg/title",
+    "srcs": [
+      "WOVN.io | Twitter"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/footer/div/section[2]/p/text()",
+    "srcs": [
+      "©2017 Minimal Technologies"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[3]/main/div/footer/div/section[2]/div/text()",
+    "srcs": [
+      "<a>",
+      "Privacy policy",
+      "</a>",
+      "<span>",
+      "|",
+      "</span>",
+      "<a>",
+      "Terms",
+      "</a>"
+    ]
+  }
+]

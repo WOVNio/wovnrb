@@ -16,6 +16,11 @@ end
 
 require 'nokogumbo'
 require 'rack'
+require 'minitest/autorun'
+require 'shoulda/context'
+require 'active_support'
+require 'active_support/core_ext'
+
 require 'wovnrb/headers'
 require 'wovnrb/lang'
 require 'wovnrb/store'
@@ -26,9 +31,13 @@ require 'wovnrb/html_replacers/text_replacer'
 require 'wovnrb/html_replacers/meta_replacer'
 require 'wovnrb/html_replacers/image_replacer'
 require 'wovnrb/html_replacers/script_replacer'
+require 'wovnrb/html_replacers/unified_values/text_replacer'
+require 'wovnrb/html_replacers/unified_values/text_scraper'
+require 'wovnrb/html_replacers/unified_values/values_stack'
+require 'wovnrb/html_replacers/unified_values/element_category'
+require 'wovnrb/html_replacers/unified_values/dst_swapping_targets_creator'
+require 'wovnrb/html_replacers/unified_values/node_swapping_targets_creator'
 require 'wovnrb/helpers/nokogumbo_helper'
-require 'minitest/autorun'
-
 
 module Wovnrb
   class WovnMiniTest < Minitest::Test
@@ -112,4 +121,11 @@ module Wovnrb
   end
 
   module_function :get_env, :get_settings, :to_dom, :get_dom
+
+  def build_api_data(custom_page_values: {}, custom_project_data: {})
+    page_values = default_page_values.merge(custom_page_values)
+    project_data = default_project_data.merge(custom_project_data)
+
+    ApiData.new('dummy-key', page_values, project_data)
+  end
 end

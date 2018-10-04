@@ -1,0 +1,251 @@
+[
+  {
+    "xpath": "/html/head/title",
+    "srcs": [
+      "SIMPLE TITLE"
+    ]
+  },
+  {
+    "xpath": "/html/body/div/form/div/text()",
+    "srcs": [
+      "<input>",
+      "<button>",
+      "Search",
+      "</button>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div/form[2]/text()",
+    "srcs": [
+      "<label>",
+      "<span>",
+      "Search for:",
+      "</span>",
+      "<input>",
+      "</label>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[2]/span/p/text()",
+    "srcs": [
+      "Well"
+    ]
+  },
+  {
+    "xpath": "/html/body/a/span/h1/text()",
+    "srcs": [
+      "scrap"
+    ]
+  },
+  {
+    "xpath": "/html/body/text()[4]",
+    "srcs": [
+      "only"
+    ]
+  },
+  {
+    "xpath": "/html/body/text()[5]",
+    "srcs": [
+      "this too",
+      "</span>",
+      "</a>",
+      "<br>",
+      "<span>",
+      "<a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/text()[6]",
+    "srcs": [
+      "<a>",
+      "&quot;Storm hunters&quot; it is to see.",
+      "</a>",
+      "<a>",
+      "BLABLA5",
+      "</a>",
+      "</span>"
+    ]
+  },
+  {
+    "xpath": "/html/body/h1/div/text()",
+    "srcs": [
+      "Welcome to my Website!"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[4]/div/div/text()",
+    "srcs": [
+      "LOST AF?"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[4]/div/div[2]/p/text()",
+    "srcs": [
+      "WE&#39;LL TAKE THE BLAME."
+    ]
+  },
+  {
+    "xpath": "/html/body/div[4]/div/div[2]/p[2]/text()",
+    "srcs": [
+      "LET US MAKE IT UP TO YOU WITH SOME LINKS."
+    ]
+  },
+  {
+    "xpath": "/html/body/div[4]/div/div[3]/nav/ul/li/text()",
+    "srcs": [
+      "<a>",
+      "SHOP MENS",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[4]/div/div[3]/nav/ul/li[2]/text()",
+    "srcs": [
+      "<a>",
+      "SHOP WOMENS",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[4]/div/div[3]/nav/ul/li[3]/text()",
+    "srcs": [
+      "<a>",
+      "shop boys",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[4]/div/div[3]/nav/ul/li[4]/text()",
+    "srcs": [
+      "<a>",
+      "shop girls",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[4]/div[2]/text()",
+    "srcs": [
+      "&quot;"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[4]/div[2]/div/text()",
+    "srcs": [
+      "LOST AF?"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[4]/div[2]/div[2]/p/text()",
+    "srcs": [
+      "WE&#39;LL TAKE THE BLAME."
+    ]
+  },
+  {
+    "xpath": "/html/body/div[4]/div[2]/div[2]/p[2]/text()",
+    "srcs": [
+      "LET US MAKE IT UP TO YOU WITH SOME LINKS."
+    ]
+  },
+  {
+    "xpath": "/html/body/div[4]/div[2]/div[3]/nav/ul/li/text()",
+    "srcs": [
+      "<a>",
+      "SHOP MENS",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[4]/div[2]/div[3]/nav/ul/li[2]/text()",
+    "srcs": [
+      "<a>",
+      "SHOP WOMENS",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[4]/div[2]/div[3]/nav/ul/li[3]/text()",
+    "srcs": [
+      "<a>",
+      "shop boys",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[4]/div[2]/div[3]/nav/ul/li[4]/text()",
+    "srcs": [
+      "<a>",
+      "shop girls",
+      "</a>"
+    ]
+  },
+  {
+    "xpath": "/html/body/div[4]/text()[3]",
+    "srcs": [
+      "&quot;"
+    ]
+  },
+  {
+    "xpath": "/html/body/p/text()",
+    "srcs": [
+      "This is a paragraph! Here&#39;s how you make a link:",
+      "<a>",
+      "Neocities",
+      "</a>",
+      "."
+    ]
+  },
+  {
+    "xpath": "/html/body/p[2]/text()",
+    "srcs": [
+      "Here&#39;s how you can make",
+      "<strong>",
+      "bold",
+      "</strong>",
+      "and",
+      "<em>",
+      "italic",
+      "</em>",
+      "text."
+    ]
+  },
+  {
+    "xpath": "/html/body/p[3]/text()",
+    "srcs": [
+      "Here&#39;s how you can add an image:"
+    ]
+  },
+  {
+    "xpath": "/html/body/p[4]/text()",
+    "srcs": [
+      "Here&#39;s how to make a list:"
+    ]
+  },
+  {
+    "xpath": "/html/body/ul/li/text()",
+    "srcs": [
+      "First thing"
+    ]
+  },
+  {
+    "xpath": "/html/body/ul/li[2]/text()",
+    "srcs": [
+      "Second thing"
+    ]
+  },
+  {
+    "xpath": "/html/body/ul/li[3]/text()",
+    "srcs": [
+      "Third thing"
+    ]
+  },
+  {
+    "xpath": "/html/body/p[5]/text()",
+    "srcs": [
+      "To learn more HTML/CSS, check out these",
+      "<a>",
+      "tutorials",
+      "</a>",
+      "!"
+    ]
+  }
+]

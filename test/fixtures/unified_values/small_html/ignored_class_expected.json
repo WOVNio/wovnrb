@@ -1,0 +1,13 @@
+[
+  {
+    "xpath": "/html/body/div/text()",
+    "srcs": [
+      "<span>",
+      "This is a",
+      "<a wovn-ignore>",
+      "</a>",
+      "text value!",
+      "</span>"
+    ]
+  }
+]
