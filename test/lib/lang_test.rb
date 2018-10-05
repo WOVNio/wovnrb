@@ -392,7 +392,7 @@ module Wovnrb
               </body></html>
 "
         when "unified_values"
-          body = <<~HTML
+          body = <<-HTML
         <html><body>
           <div>
             a <span>b</span> c
@@ -407,7 +407,7 @@ module Wovnrb
         HTML
 
       when "unified_values_ja"
-        body = <<~HTML
+        body = <<-HTML
 <html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head><body>
           <div><!--wovn-src:
             a -->\u3042<span><!--wovn-src:b-->\u3044</span><!--wovn-src: c

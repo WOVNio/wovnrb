@@ -11,7 +11,11 @@ module Wovnrb
         text_index_with_targets = DstSwappingTargetsCreator.new(@text_index).run!
 
         translated_nodes_with_targets.each do |translated_nodes_with_target|
-          dst_swapping_targets = text_index_with_targets[translated_nodes_with_target[:dst]]&.fetch(lang.lang_code, nil)&.first&.fetch('swapping_targets', nil)
+          dst_swapping_targets =
+              text_index_with_targets[translated_nodes_with_target[:dst]]
+                  .try(:fetch, lang.lang_code, nil)
+                  .try(:first)
+                  .try(:fetch, 'swapping_targets', nil)
           next unless dst_swapping_targets
 
           translated_nodes_with_target[:swapping_targets].each_with_index do |node_swapping_target, index|

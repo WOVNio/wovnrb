@@ -114,7 +114,7 @@ module Wovnrb
         end
 
         def add_previous_sibling(comment_node)
-          @added_empty_text&.add_previous_sibling(comment_node)
+          @added_empty_text.try(:add_previous_sibling, comment_node)
         end
 
         def content=(text)
