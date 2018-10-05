@@ -42,7 +42,7 @@ module Wovnrb
                 mold.push(data)
               end
 
-              mold.push('') if mold.last.match?(/\A<.+?>\z/)
+              mold.push('') if /\A<.+?>\z/ =~ mold.last
 
               value['swapping_targets'] = remove_tag_element(mold)
             end
@@ -64,7 +64,7 @@ module Wovnrb
 
           end_tag_of_wovn_ignore = nil if value == end_tag_of_wovn_ignore
 
-          if end_tag_of_wovn_ignore.nil? && !value.match?(/\A<.+?>\z/)
+          if end_tag_of_wovn_ignore.nil? && /\A<.+?>\z/ !~ value
             swapping_targets << value
           end
         end
