@@ -408,7 +408,7 @@ module Wovnrb
 
       when "unified_values_ja"
         body = <<~HTML
-<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=1.0.12\"> </script><link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head><body>
+<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head><body>
           <div><!--wovn-src:
             a -->\u3042<span><!--wovn-src:b-->\u3044</span><!--wovn-src: c
           -->\u3046</div>
