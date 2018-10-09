@@ -1,8 +1,8 @@
 module Wovnrb
   class ReplacerBase
-    def initialize(store, ignored_class_set = nil)
+    def initialize(store, ignored_class_set = [])
       @store = store
-      @ignored_class_set = Set.new(ignored_class_set || [])
+      @ignored_class_set = Set.new(ignored_class_set)
     end
 
     def replace(dom, lang)
