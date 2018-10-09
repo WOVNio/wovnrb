@@ -65,43 +65,35 @@ module Wovnrb
       errors = [];
       #if valid_token?(!settings.has_key?('project_token') || settings['project_token'].length < 5 || settings['project_token'].length > 6
       if !valid_token?(settings['project_token'])
-        valid = false
         errors.push("Project token #{settings['project_token']} is not valid.")
       end
       if settings.has_key?('ignore_paths') && !settings['ignore_paths'].kind_of?(Array)
-        valid = false
         errors.push("Ignore Paths #{settings['ignore_paths']} should be Array.")
       end
       if !settings.has_key?('url_pattern') || settings['url_pattern'].length == 0
-        valid = false
         errors.push("Url pattern #{settings['url_pattern']} is not valid.")
       end
       if !settings.has_key?('query') || !settings['query'].kind_of?(Array)
-        valid = false
         errors.push("query config #{settings['query']} is not valid.")
       end
       if !settings.has_key?('ignore_class') || !settings['ignore_class'].kind_of?(Array)
-        valid = false
         errors.push("ignore_class config #{settings['ignore_class']} should be Array.")
       end
       if !settings.has_key?('api_url') || settings['api_url'].length == 0
-        valid = false
         errors.push("API URL is not configured.")
       end
       if !settings.has_key?('default_lang') || settings['default_lang'].nil?
-        valid = false
         errors.push("Default lang #{settings['default_lang']} is not valid.")
       end
       if !settings.has_key?('supported_langs') || !settings['supported_langs'].kind_of?(Array) || settings['supported_langs'].size < 1
-        valid = false
         errors.push("Supported langs configuration is not valid.")
       end
       if !settings.has_key?('custom_lang_aliases') || !settings['custom_lang_aliases'].kind_of?(Hash)
-        valid = false
         errors.push("Custom lang aliases is not valid.")
       end
       # log errors
       if errors.length > 0
+        valid = false
         errors.each do |e|
           WovnLogger.instance.error(e)
         end
