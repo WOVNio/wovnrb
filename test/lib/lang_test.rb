@@ -1,6 +1,5 @@
 # -*- encoding: UTF-8 -*-
 require 'test_helper'
-require 'minitest/autorun'
 
 module Wovnrb
   class LangTest < WovnMiniTest
@@ -392,11 +391,43 @@ module Wovnrb
                 <div><p><a href=\"javascript:void(0)\"><!--wovn-src:Hello-->こんにちは</a></p></div>
               </body></html>
 "
+        when "unified_values"
+          body = <<-HTML
+        <html><body>
+          <div>
+            a <span>b</span> c
+          </div>
+          <div>
+            a<span>b</span>
+          </div>
+          <div>
+            <span> b </span>c
+          </div>
+</body></html>
+        HTML
+
+      when "unified_values_ja"
+        body = <<-HTML
+<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head><body>
+          <div><!--wovn-src:
+            a -->\u3042<span><!--wovn-src:b-->\u3044</span><!--wovn-src: c
+          -->\u3046</div>
+          <div><!--wovn-src:
+            a-->\u200B<span><!--wovn-src:b-->\u3044</span><!--wovn-src:-->\u3046
+          </div>
+          <div>
+            <!--wovn-src:-->\u3042<span><!--wovn-src: b -->\u3044</span><!--wovn-src:c
+          -->\u200B</div>
+
+</body></html>
+        HTML
+
         else # "" case
           body = "<html><body><h1>Mr. Belvedere Fan Club</h1>
                 <div><p>Hello</p></div>
               </body></html>"
       end
+
       return body
     end
 
@@ -411,6 +442,23 @@ module Wovnrb
         'Mr. Belvedere Fan Club' => {'ja' => [{'data' => 'ベルベデアさんファンクラブ'}]}
       }
       return values
+    end
+
+    def generate_unified_values
+      {
+          'html_text_vals' => {
+              'a<span>b</span>c' =>
+                  { 'ja' =>
+                        [{ 'data' => 'あ<span>い</span>う' }] },
+              'a<span>b</span>' =>
+                  { 'ja' =>
+                        [{ 'data' => '<span>い</span>う' }] },
+              '<span>b</span>c' =>
+                  { 'ja' =>
+                        [{ 'data' => 'あ<span>い</span>' }] }
+
+          }
+      }
     end
 
     def test_switch_dom_lang_for_simplified_chinese
@@ -463,6 +511,16 @@ module Wovnrb
       url = h.url
       swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)
       assert_equal(generate_body('translated_in_japanese'), swapped_body)
+    end
+
+    def test_switch_lang_unified_values
+      lang = Lang.new('ja')
+      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
+      dom = generate_dom('unified_values')
+      values = generate_unified_values
+      url = h.url
+      swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)
+      assert_equal(generate_body('unified_values_ja'), swapped_body)
     end
 
     def test_switch_lang_with_html_fragment

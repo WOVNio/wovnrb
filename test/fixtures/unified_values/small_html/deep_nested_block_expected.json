@@ -1,0 +1,8 @@
+[
+  {
+    "xpath": "/html/body/div/div/div/div/text()",
+    "srcs": [
+      "text value1"
+    ]
+  }
+]

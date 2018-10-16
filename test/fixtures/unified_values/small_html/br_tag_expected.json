@@ -1,0 +1,12 @@
+[
+  {
+    "xpath": "/html/body/div/text()",
+    "srcs": [
+      "<span>",
+      "text value1",
+      "<br>",
+      "text value2",
+      "</span>"
+    ]
+  }
+]

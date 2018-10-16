@@ -204,6 +204,7 @@ module Wovnrb
 
     def replace_dom_values(dom, values, store, url, headers)
       text_index = values['text_vals'] || {}
+      html_text_index = values['html_text_vals'] || {}
       src_index = values['img_vals'] || {}
       img_src_prefix = values['img_src_prefix'] || ''
       host_aliases = values['host_aliases'] || []
@@ -215,7 +216,11 @@ module Wovnrb
         replacers << LinkReplacer.new(store, pattern, headers)
       end
 
-      replacers << TextReplacer.new(store, text_index)
+      unless html_text_index.empty?
+        replacers << UnifiedValues::TextReplacer.new(store, html_text_index)
+      else
+        replacers << TextReplacer.new(store, text_index)
+      end
       replacers << MetaReplacer.new(store, text_index, pattern, headers)
       replacers << InputReplacer.new(store, text_index)
       replacers << ImageReplacer.new(store, url, text_index, src_index, img_src_prefix, host_aliases)
