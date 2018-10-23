@@ -157,34 +157,35 @@ module Wovnrb
       new_href
     end
 
-    def switch_dom_lang(dom, store, values, url, headers)
-      replace_dom_values(dom, values, store, url, headers)
+    # TODO: move code to keep somewhere else
+    # def switch_dom_lang(dom, store, values, url, headers)
+    #   replace_dom_values(dom, values, store, url, headers)
 
-      if dom.html?
-        # INSERT LANGUAGE METALINKS
-        parent_node = dom.at_css('head') || dom.at_css('body') || dom.at_css('html')
-        published_langs = get_langs(values)
-        all_langs = published_langs.add(store.settings['default_lang'])
-        all_langs.each do |l|
-          insert_node = Nokogiri::XML::Node.new('link', dom)
-          insert_node['rel'] = 'alternate'
-          insert_node['hreflang'] = Lang::iso_639_1_normalization(l)
-          insert_node['href'] = headers.redirect_location(l)
-          parent_node.add_child(insert_node)
-        end
+    #   if dom.html?
+    #     # INSERT LANGUAGE METALINKS
+    #     parent_node = dom.at_css('head') || dom.at_css('body') || dom.at_css('html')
+    #     published_langs = get_langs(values)
+    #     all_langs = published_langs.add(store.settings['default_lang'])
+    #     all_langs.each do |l|
+    #       insert_node = Nokogiri::XML::Node.new('link', dom)
+    #       insert_node['rel'] = 'alternate'
+    #       insert_node['hreflang'] = Lang::iso_639_1_normalization(l)
+    #       insert_node['href'] = headers.redirect_location(l)
+    #       parent_node.add_child(insert_node)
+    #     end
 
-        # set lang property on HTML tag
-        if dom.at_css('html') || dom.at_css('HTML')
-          (dom.at_css('html') || dom.at_css('HTML')).set_attribute('lang', Lang::iso_639_1_normalization(@lang_code))
-        end
-      end
+    #     # set lang property on HTML tag
+    #     if dom.at_css('html') || dom.at_css('HTML')
+    #       (dom.at_css('html') || dom.at_css('HTML')).set_attribute('lang', Lang::iso_639_1_normalization(@lang_code))
+    #     end
+    #   end
 
-      index_href = index_href_for_encoding_and_decoding(dom)
-      # NOTE: when we use `#to_html` with nokogiri, nokogiri encode all href.
-      #       but we want to keep original href as much as possible.
-      #       That's why we replace href with original href which added lang info by wovnrb like this after we used `to_html`
-      dom.to_html(save_with: 0).gsub(/href="([^"]*)"/) { |m| "href=\"#{index_href[$1] || $1}\"" }
-    end
+    #   index_href = index_href_for_encoding_and_decoding(dom)
+    #   # NOTE: when we use `#to_html` with nokogiri, nokogiri encode all href.
+    #   #       but we want to keep original href as much as possible.
+    #   #       That's why we replace href with original href which added lang info by wovnrb like this after we used `to_html`
+    #   dom.to_html(save_with: 0).gsub(/href="([^"]*)"/) { |m| "href=\"#{index_href[$1] || $1}\"" }
+    # end
 
     private
 

@@ -9,19 +9,6 @@ require 'json'
 require 'wovnrb/helpers/nokogumbo_helper'
 require 'wovnrb/api_data'
 require 'wovnrb/text_caches/cache_base'
-require 'wovnrb/html_replacers/replacer_base'
-require 'wovnrb/html_replacers/link_replacer'
-require 'wovnrb/html_replacers/text_replacer'
-require 'wovnrb/html_replacers/meta_replacer'
-require 'wovnrb/html_replacers/input_replacer'
-require 'wovnrb/html_replacers/image_replacer'
-require 'wovnrb/html_replacers/script_replacer'
-require 'wovnrb/html_replacers/unified_values/text_replacer'
-require 'wovnrb/html_replacers/unified_values/text_scraper'
-require 'wovnrb/html_replacers/unified_values/values_stack'
-require 'wovnrb/html_replacers/unified_values/element_category'
-require 'wovnrb/html_replacers/unified_values/dst_swapping_targets_creator'
-require 'wovnrb/html_replacers/unified_values/node_swapping_targets_creator'
 require 'wovnrb/railtie' if defined?(Rails)
 require 'wovnrb/version'
 
@@ -90,46 +77,47 @@ module Wovnrb
     end
 
     def switch_lang(body, values, url, lang=@store.settings['default_lang'], headers)
-      lang = Lang.new(lang)
-      ignore_all = false
-      new_body = []
+      # TODO
+      # lang = Lang.new(lang)
+      # ignore_all = false
+      # new_body = []
 
-      # generate full_body to intercept
-      full_body = ''
-      body.each { |b| full_body += b }
+      # # generate full_body to intercept
+      # full_body = ''
+      # body.each { |b| full_body += b }
 
-      [full_body].each do |b|
-        # temporarily remove noscripts
-        noscripts = []
-        b_without_noscripts = b
-        b.scan /<noscript.*?>.*?<\/noscript>/m do |match|
-          noscript_identifier = "<noscript wovn-id=\"#{noscripts.count}\"></noscript>"
-          noscripts << match
-          b_without_noscripts = b_without_noscripts.sub(match, noscript_identifier)
-        end
+      # [full_body].each do |b|
+      #   # temporarily remove noscripts
+      #   noscripts = []
+      #   b_without_noscripts = b
+      #   b.scan /<noscript.*?>.*?<\/noscript>/m do |match|
+      #     noscript_identifier = "<noscript wovn-id=\"#{noscripts.count}\"></noscript>"
+      #     noscripts << match
+      #     b_without_noscripts = b_without_noscripts.sub(match, noscript_identifier)
+      #   end
 
-        d = Helpers::NokogumboHelper::parse_html(b_without_noscripts)
+      #   d = Helpers::NokogumboHelper::parse_html(b_without_noscripts)
 
-        # If this page has wovn-ignore in the html tag, don't do anything
-        if ignore_all || !d.xpath('//html[@wovn-ignore]').empty? || is_amp_page?(d)
-          ignore_all = true
-          output = d.to_html(save_with: 0).gsub(/href="([^"]*)"/) { |m| "href=\"#{URI.decode($1)}\"" }
-          put_back_noscripts!(output, noscripts)
-          new_body.push(output)
-          next
-        end
+      #   # If this page has wovn-ignore in the html tag, don't do anything
+      #   if ignore_all || !d.xpath('//html[@wovn-ignore]').empty? || is_amp_page?(d)
+      #     ignore_all = true
+      #     output = d.to_html(save_with: 0).gsub(/href="([^"]*)"/) { |m| "href=\"#{URI.decode($1)}\"" }
+      #     put_back_noscripts!(output, noscripts)
+      #     new_body.push(output)
+      #     next
+      #   end
 
-        if must_translate?(d, values)
-          output = lang.switch_dom_lang(d, @store, values, url, headers)
-        else
-          ScriptReplacer.new(@store).replace(d, lang) if d.html?
-          output = d.to_html(save_with: 0)
-        end
-        put_back_noscripts!(output, noscripts)
-        new_body.push(output)
-      end
-      body.close if body.respond_to?(:close)
-      new_body
+      #   if must_translate?(d, values)
+      #     output = lang.switch_dom_lang(d, @store, values, url, headers)
+      #   else
+      #     ScriptReplacer.new(@store).replace(d, lang) if d.html?
+      #     output = d.to_html(save_with: 0)
+      #   end
+      #   put_back_noscripts!(output, noscripts)
+      #   new_body.push(output)
+      # end
+      # body.close if body.respond_to?(:close)
+      # new_body
     end
 
     private
