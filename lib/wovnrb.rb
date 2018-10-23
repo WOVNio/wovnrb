@@ -76,10 +76,10 @@ module Wovnrb
       string_body = body.reduce('') { |acc, chunk| acc += chunk }
       html_body = Helpers::NokogumboHelper::parse_html(string_body)
 
-      if !wovn_ignored?(html_body)
+      if !wovn_ignored?(html_body) && ! amp?(html_body)
         # TODO: insert fallback snippet
 
-        if translatable?(html_body)
+        if html_body.html? || @store.settings['translate_fragment']
           # TODO: remove ignored content
           translated_content = ApiTranslator.new(@store, headers).translate(url, string_body, lang)
           # TODO: put back ignored content
@@ -104,10 +104,6 @@ module Wovnrb
 
     def wovn_ignored?(body)
       !body.xpath('//html[@wovn-ignore]').empty?
-    end
-
-    def translatable?(body)
-      (body.html? || @store.settings['translate_fragment']) && !amp?(body)
     end
 
     # Checks if a given HTML body is an Accelerated Mobile Page (AMP).
