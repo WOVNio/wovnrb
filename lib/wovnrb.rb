@@ -7,7 +7,6 @@ require 'active_support'
 #require 'dom'
 require 'json'
 require 'wovnrb/helpers/nokogumbo_helper'
-require 'wovnrb/api_data'
 require 'wovnrb/text_caches/cache_base'
 require 'wovnrb/railtie' if defined?(Rails)
 require 'wovnrb/version'
@@ -57,17 +56,13 @@ module Wovnrb
         return output(headers, status, res_headers, body)
       end
 
-      # ApiData creates request for external server, but cannot use async.
-      # Because some server not allow multi thread. (env['async.callback'] is not supported at all Server).
-      api_data = ApiData.new(headers.redis_url, @store)
-      values = api_data.get_data
-
       url = {
         :protocol => headers.protocol,
         :host => headers.host,
         :pathname => headers.pathname
       }
-      body = switch_lang(body, values, url, lang, headers) unless status.to_s =~ /^1|302/
+      # TODO: body = ApiTranslator.new(store, headers).translate(body, lang) unless status.to_s =~ /^1|302/
+      # body = switch_lang(body, values, url, lang, headers) unless status.to_s =~ /^1|302/
 
       content_length = 0
       body.each { |b| content_length += b.respond_to?(:bytesize) ? b.bytesize : 0 }
@@ -125,23 +120,6 @@ module Wovnrb
     def output(headers, status, res_headers, body)
       headers.out(res_headers)
       [status, res_headers, body]
-    end
-
-    def must_translate?(dom, values)
-      can_translate = dom.html? ? true : @store.settings['translate_fragment']
-
-      can_translate && have_data?(values)
-    end
-
-    def have_data?(values)
-      values.count > 0
-    end
-
-    def put_back_noscripts!(output, noscripts)
-      noscripts.each_with_index do |noscript, index|
-        noscript_identifier = "<noscript wovn-id=\"#{index}\"></noscript>"
-        output.sub!(noscript_identifier, noscript)
-      end
     end
 
     # Checks if a given HTML body is an Accelerated Mobile Page (AMP).
