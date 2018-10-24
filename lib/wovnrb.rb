@@ -101,7 +101,7 @@ module Wovnrb
     end
 
     def needs_api?(html_body, headers)
-      headers.lang_code !== @store.settings['default_lang'] &&
+      headers.lang_code != @store.settings['default_lang'] &&
         (html_body.html? || @store.settings['translate_fragment'])
     end
 

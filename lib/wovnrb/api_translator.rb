@@ -1,6 +1,7 @@
 require 'addressable'
-require 'json'
 require 'digest'
+require 'json'
+require 'zlib'
 
 module Wovnrb
   class ApiTranslator
@@ -10,36 +11,59 @@ module Wovnrb
     end
 
     def translate(body)
-      request_pathname = generate_request_path(body, lang)
-      request_data = generate_request_data(body, lang)
+      http = prepare_connection
+      request = prepare_request(body)
 
-      http = Net::HTTP.new(api_uri.host, api_uri.port)
-      http.use_ssl = true if uri.scheme == 'https'
-      http.open_timeout = @store.settings['api_timeout_seconds']
-      http.read_timeout = @store.settings['api_timeout_seconds']
-
-      api_response = http.start do
-        headers = {
-          'Accept-Encoding' => 'gzip',
-          # TODO: 'application/octet-stream'
-          'Content-Type' => 'application/x-www-form-urlencoded',
-          'Content-Length' => request_data.bytesize
-        }
-        http.post(request_pathname, request_data, headers)
-      end
-
-      unless response.code == '200'
-        # TODO: handle error
+      begin
+        response = http.request(request)
+      rescue => e
+        # TODO: log???
         return body
       end
 
-      api_response.body
+      case response
+      when Net::HTTPSuccess
+        if response.header['Content-Encoding'] == 'gzip'
+          response_body = Zlib::GzipReader.new(StringIO.new(response.body)).read
+
+          JSON.parse(response_body)['body'] || body
+        else
+          # TODO: log???
+          body
+        end
+      else
+        # TODO: log???
+        body
+      end
     end
 
     private
 
+    def prepare_connection
+      http = Net::HTTP.new(api_uri.host, api_uri.port)
+
+      http.use_ssl = true if api_uri.scheme == 'https'
+      http.open_timeout = api_timeout
+      http.read_timeout = api_timeout
+
+      http
+    end
+
+    def prepare_request(body)
+      data = generate_request_data(body)
+      headers = {
+        'Accept-Encoding' => 'gzip',
+        'Content-Type' => 'application/x-www-form-urlencoded'
+      }
+      request = Net::HTTP::Post.new(generate_request_path(body), headers)
+
+      request.set_form_data(data)
+
+      request
+    end
+
     def generate_request_path(body)
-      "/translation?cache_key=#{generate_cache_key(body)}"
+      "/v0/translation?cache_key=#{generate_cache_key(body)}"
     end
 
     def generate_request_data(body)
@@ -58,23 +82,27 @@ module Wovnrb
       end
 
       # TODO: compress
-      hash_to_data_string(data)
+      data
     end
 
     def generate_cache_key(body)
-      cache_key_components = hash_to_data_string({
+      cache_key_components = {
         'token' => token,
         'settings_hash' => settings_hash,
         'body_hash' => Digest::MD5.hexdigest(body),
         'path' => page_pathname,
         'lang' => lang_code
-      )}
+      }.map { |k, v| "#{k}=#{v}" }.join('&')
 
       Addressable::URI.encode("(#{cache_key_components})")
     end
 
     def api_uri
       Addressable::URI.parse(@store.settings['api_url'])
+    end
+
+    def api_timeout
+      @store.settings['api_timeout_seconds']
     end
 
     def settings_hash
@@ -98,15 +126,11 @@ module Wovnrb
     end
 
     def page_url
-      @headers.unmasked_url
+      @headers.url_with_trailing_slash_if_present
     end
 
     def page_pathname
-      @headers.unmasked_pathname
-    end
-
-    def hash_to_data_string(data_hash)
-      data_hash.map { |k, v| "#{k}=#{v}" }.join('&')
+      @headers.pathname_with_trailing_slash_if_present
     end
   end
 end
