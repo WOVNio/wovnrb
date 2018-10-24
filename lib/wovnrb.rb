@@ -37,7 +37,6 @@ module Wovnrb
         redirect_headers = headers.redirect(@store.settings['default_lang'])
         return [307, redirect_headers, ['']]
       end
-      lang = headers.lang_code
 
       # pass to application
       status, res_headers, body = @app.call(headers.request_out)
@@ -57,12 +56,7 @@ module Wovnrb
         return output(headers, status, res_headers, body)
       end
 
-      url = {
-        :protocol => headers.protocol,
-        :host => headers.host,
-        :pathname => headers.pathname
-      }
-      body = switch_lang(body, url, lang, headers) unless status.to_s =~ /^1|302/
+      body = switch_lang(headers, body) unless status.to_s =~ /^1|302/
 
       content_length = 0
       body.each { |b| content_length += b.respond_to?(:bytesize) ? b.bytesize : 0 }
@@ -71,18 +65,22 @@ module Wovnrb
       output(headers, status, res_headers, body)
     end
 
-    def switch_lang(body, values, url, lang=@store.settings['default_lang'], headers)
+    def switch_lang(headers, body)
       translated_body = []
       string_body = body.reduce('') { |acc, chunk| acc += chunk }
       html_body = Helpers::NokogumboHelper::parse_html(string_body)
 
       if !wovn_ignored?(html_body) && ! amp?(html_body)
-        # TODO: insert fallback snippet
+        if html_body.html?
+          # TODO: set lang property to HTML
+          # TODO: insert hreflangs
+          # TODO: insert fallback snippet
+        end
 
-        if html_body.html? || @store.settings['translate_fragment']
-          # TODO: remove ignored content
-          translated_content = ApiTranslator.new(@store, headers).translate(url, string_body, lang)
-          # TODO: put back ignored content
+        if needs_api?(html_body, headers)
+          # TODO: remove ignored content UNLESS SETTING (SEE WOVN.php)
+          translated_content = ApiTranslator.new(@store, headers).translate(string_body)
+          # TODO: put back ignored content UNLESS SETTING (SEE WOVN.php)
           translated_body.push(translated_content)
         else
           translated_body.push(string_body)
@@ -102,8 +100,13 @@ module Wovnrb
       [status, res_headers, body]
     end
 
-    def wovn_ignored?(body)
-      !body.xpath('//html[@wovn-ignore]').empty?
+    def needs_api?(html_body, headers)
+      headers.lang_code !== @store.settings['default_lang'] &&
+        (html_body.html? || @store.settings['translate_fragment'])
+    end
+
+    def wovn_ignored?(html_body)
+      !html_body.xpath('//html[@wovn-ignore]').empty?
     end
 
     # Checks if a given HTML body is an Accelerated Mobile Page (AMP).
@@ -113,8 +116,8 @@ module Wovnrb
     # @param {Nokogiri::HTML5::Document} body The HTML body to check.
     #
     # @returns {Boolean} True is the HTML body is an AMP, false otherwise.
-    def amp?(body)
-      html_attributes = body.xpath('//html')[0].try(:attributes) || {}
+    def amp?(html_body)
+      html_attributes = html_body.xpath('//html')[0].try(:attributes) || {}
 
       html_attributes['amp'] || html_attributes["\u26A1"]
     end

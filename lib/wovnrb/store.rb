@@ -22,7 +22,7 @@ module Wovnrb
         'url_pattern_reg' => "/(?<lang>[^/.?]+)",
         'query' => [],
         'ignore_class' => [],
-        'api_url' => 'https://api.wovn.io/v0/values',
+        'api_url' => 'https://wovn.global.ssl.fastly.net/v0/',
         'api_timeout_seconds' => 0.5,
         'default_lang' => 'en',
         'supported_langs' => ['en'],
@@ -32,7 +32,6 @@ module Wovnrb
         'ttl_seconds' => nil,
         'use_proxy' => false,  # use env['HTTP_X_FORWARDED_HOST'] instead of env['HTTP_HOST'] and env['SERVER_NAME'] when this setting is true.
         'custom_lang_aliases' => {},
-        'wovn_dev_mode' => false,
         'translate_fragment' => true
       })
     end
@@ -153,22 +152,14 @@ module Wovnrb
       else
         @settings['test_mode'] = true
       end
-
-      if wovn_dev_mode? && @settings['api_url'] == Store.default_settings['api_url']
-        @settings['api_url'] = "#{wovn_protocol}://api.#{wovn_host}/v0/values"
-      end
-    end
-
-    def wovn_dev_mode?
-      @settings['wovn_dev_mode']
     end
 
     def wovn_protocol
-      wovn_dev_mode? ? 'http' : 'https'
+      'https'
     end
 
     def wovn_host
-      wovn_dev_mode? ? 'dev-wovn.io:3000' : 'wovn.io'
+      'wovn.io'
     end
 
     private

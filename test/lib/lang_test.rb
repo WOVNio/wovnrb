@@ -473,43 +473,5 @@ module Wovnrb
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
       assert_equal("http://staging-fr.wovn.io/topics/50", lang.add_lang_code("/topics/50", 'subdomain', h))
     end
-
-    # def test_switch_dom_lang_for_keeping_originl_encoding_decoding
-    #   lang = Lang.new('ja')
-    #   header = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings)
-    #   html = <<-HTML
-    #     <head>
-    #       <link rel="stylesheet" type="text/css" href="%3Ca%3E%E3%81%B5%E3%82%86%3C%2Fa%3E/theme.css">
-    #       <link rel="stylesheet" type="text/css" href="テスト.css">
-    #     </head>
-    #     <ul>
-    #       <li><a href="http://page.com/%e5%ba%83%e5%b0%be">encoded japanese path</a></li>
-    #       <li><a href="http://page.com/テスト/DxA9J">no encoded japanese path</a></li>
-    #       <li><a href="http://page.com/#DnE897">decoded invalid path</a></li>
-    #       <li><a href="http://page.com/%23DnE897">encoded invalid path</a>
-    #     </ul>
-    #   HTML
-
-    #   dom = Wovnrb.to_dom(html)
-    #   url = header.url
-
-    #   swapped_body = lang.switch_dom_lang(dom, Store.instance, generate_values, url, header)
-    #   assert(swapped_body.include?('<link rel="stylesheet" type="text/css" href="%3Ca%3E%E3%81%B5%E3%82%86%3C%2Fa%3E/theme.css">'))
-    #   assert(swapped_body.include?('<link rel="stylesheet" type="text/css" href="テスト.css">'))
-    #   assert(swapped_body.include?('<a href="http://page.com/ja/%e5%ba%83%e5%b0%be">encoded japanese path</a>'))
-    #   assert(swapped_body.include?('<a href="http://page.com/ja/テスト/DxA9J">no encoded japanese path</a>'))
-    #   assert(swapped_body.include?('<a href="http://page.com/ja/#DnE897">decoded invalid path</a>'))
-    #   assert(swapped_body.include?('<a href="http://page.com/ja/%23DnE897">encoded invalid path</a>'))
-    # end
-
-    # def test_switch_dom_lang_with_invalid_link
-    #   lang = Lang.new('en')
-    #   header = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings)
-    #   html = '<a href="※ http://invalid.example.com">無効なリンク</a>'
-    #   dom = Wovnrb.to_dom(html)
-    #   url = header.url
-    #   swapped_body = lang.switch_dom_lang(dom, Store.instance, generate_values, url, header)
-    #   assert(swapped_body.include?('html'))
-    # end
   end
 end
