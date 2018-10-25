@@ -11,11 +11,11 @@ module Wovnrb
     end
 
     def translate(body)
-      http = prepare_connection
+      connection = prepare_connection
       request = prepare_request(body)
 
       begin
-        response = http.request(request)
+        response = connection.request(request)
       rescue => e
         # TODO: log???
         return body
@@ -24,6 +24,7 @@ module Wovnrb
       case response
       when Net::HTTPSuccess
         if response.header['Content-Encoding'] == 'gzip'
+          # TODO: needs to close?
           response_body = Zlib::GzipReader.new(StringIO.new(response.body)).read
 
           JSON.parse(response_body)['body'] || body
@@ -40,30 +41,42 @@ module Wovnrb
     private
 
     def prepare_connection
-      http = Net::HTTP.new(api_uri.host, api_uri.port)
+      connection = Net::HTTP.new(api_uri.host, api_uri.port)
 
-      http.open_timeout = api_timeout
-      http.read_timeout = api_timeout
+      connection.open_timeout = api_timeout
+      connection.read_timeout = api_timeout
 
-      http
+      connection
     end
 
     def prepare_request(body)
-      data = generate_request_data(body)
+      data = compress_request_data(generate_request_data(body))
       headers = {
         'Accept-Encoding' => 'gzip',
-        'Content-Type' => 'application/x-www-form-urlencoded'
+        'Content-Type' => 'application/octet-stream',
+        'Content-Length' => data.bytesize.to_s
       }
       request = Net::HTTP::Post.new(generate_request_path(body), headers)
 
-      # TODO: compress
-      request.set_form_data(data)
+      request.body = data
 
       request
     end
 
     def generate_request_path(body)
       "#{api_uri.path.sub(/\/$/, '')}/translation?cache_key=#{generate_cache_key(body)}"
+    end
+
+    def generate_cache_key(body)
+      cache_key_components = {
+        'token' => token,
+        'settings_hash' => settings_hash,
+        'body_hash' => Digest::MD5.hexdigest(body),
+        'path' => page_pathname,
+        'lang' => lang_code
+      }.map { |k, v| "#{k}=#{v}" }.join('&')
+
+      CGI.escape("(#{cache_key_components})")
     end
 
     def generate_request_data(body)
@@ -84,16 +97,14 @@ module Wovnrb
       data
     end
 
-    def generate_cache_key(body)
-      cache_key_components = {
-        'token' => token,
-        'settings_hash' => settings_hash,
-        'body_hash' => Digest::MD5.hexdigest(body),
-        'path' => page_pathname,
-        'lang' => lang_code
-      }.map { |k, v| "#{k}=#{v}" }.join('&')
+    def compress_request_data(data_hash)
+      encoded_data_components = data_hash.map do |key, value|
+        "#{key}=#{CGI.escape(value)}"
+      end
 
-      Addressable::URI.encode("(#{cache_key_components})")
+      gzip = Zlib::GzipWriter.new(StringIO.new)
+      gzip << encoded_data_components.join('&')
+      gzip.close.string
     end
 
     def api_uri
