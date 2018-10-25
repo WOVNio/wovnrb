@@ -17,10 +17,12 @@ end
 require 'nokogumbo'
 require 'rack'
 require 'minitest/autorun'
+require 'mocha/minitest'
 require 'shoulda/context'
 require 'active_support'
 require 'active_support/core_ext'
 
+require 'wovnrb/api_translator'
 require 'wovnrb/headers'
 require 'wovnrb/lang'
 require 'wovnrb/store'

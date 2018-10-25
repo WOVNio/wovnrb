@@ -5,7 +5,6 @@ require 'wovnrb/store'
 require 'wovnrb/lang'
 require 'nokogumbo'
 require 'active_support'
-#require 'dom'
 require 'json'
 require 'wovnrb/helpers/nokogumbo_helper'
 require 'wovnrb/text_caches/cache_base'
@@ -70,7 +69,7 @@ module Wovnrb
       string_body = body.reduce('') { |acc, chunk| acc += chunk }
       html_body = Helpers::NokogumboHelper::parse_html(string_body)
 
-      if !wovn_ignored?(html_body) && ! amp?(html_body)
+      if !wovn_ignored?(html_body) && !amp?(html_body)
         if html_body.html?
           # TODO: set lang property to HTML
           # TODO: insert hreflangs
@@ -119,7 +118,7 @@ module Wovnrb
     def amp?(html_body)
       html_attributes = html_body.xpath('//html')[0].try(:attributes) || {}
 
-      html_attributes['amp'] || html_attributes["\u26A1"]
+      !!(html_attributes['amp'] || html_attributes["\u26A1"])
     end
   end
 end
