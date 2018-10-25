@@ -154,14 +154,6 @@ module Wovnrb
       end
     end
 
-    def wovn_protocol
-      'https'
-    end
-
-    def wovn_host
-      'wovn.io'
-    end
-
     private
 
     def stringify_keys!(h)
