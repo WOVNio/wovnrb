@@ -18,3 +18,4 @@ mkmf.log
 *.iml
 .ruby-version
 /*.gem
+wovn_error.log
