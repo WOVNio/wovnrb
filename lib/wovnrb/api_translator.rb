@@ -17,7 +17,7 @@ module Wovnrb
       begin
         response = connection.request(request)
       rescue => e
-        # TODO: log???
+        WovnLogger.error("\"#{e.message}\" error occurred when contacting WOVNio translation API")
         return body
       end
 
@@ -29,11 +29,11 @@ module Wovnrb
 
           JSON.parse(response_body)['body'] || body
         else
-          # TODO: log???
+          WovnLogger.error("Received invalid content (\"#{response.header['Content-Encoding']}\") from WOVNio translation API.")
           body
         end
       else
-        # TODO: log???
+        WovnLogger.error("Received \"#{response.message}\" from WOVNio translation API.")
         body
       end
     end
