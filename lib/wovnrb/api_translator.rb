@@ -42,7 +42,6 @@ module Wovnrb
     def prepare_connection
       http = Net::HTTP.new(api_uri.host, api_uri.port)
 
-      http.use_ssl = true if api_uri.scheme == 'https'
       http.open_timeout = api_timeout
       http.read_timeout = api_timeout
 
@@ -64,7 +63,7 @@ module Wovnrb
     end
 
     def generate_request_path(body)
-      "/v0/translation?cache_key=#{generate_cache_key(body)}"
+      "#{api_uri.path.sub(/\/$/, '')}/translation?cache_key=#{generate_cache_key(body)}"
     end
 
     def generate_request_data(body)

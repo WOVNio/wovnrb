@@ -22,7 +22,7 @@ module Wovnrb
         'url_pattern_reg' => "/(?<lang>[^/.?]+)",
         'query' => [],
         'ignore_class' => [],
-        'api_url' => 'https://wovn.global.ssl.fastly.net',
+        'api_url' => 'https://wovn.global.ssl.fastly.net/v0/',
         'api_timeout_seconds' => 0.5,
         'default_lang' => 'en',
         'supported_langs' => ['en'],
