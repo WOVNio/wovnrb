@@ -24,7 +24,6 @@ module Wovnrb
       case response
       when Net::HTTPSuccess
         if response.header['Content-Encoding'] == 'gzip'
-          # TODO: needs to close?
           response_body = Zlib::GzipReader.new(StringIO.new(response.body)).read
 
           JSON.parse(response_body)['body'] || body
