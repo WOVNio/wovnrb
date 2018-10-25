@@ -16,7 +16,7 @@ module Wovnrb
     end
 
     def test_translate_falls_back_to_original_body_if_api_response_is_not_compressed
-      assert_translation('test.html', 'test_translated.html', false, { encoding: 'unknown', status_code: 200 })
+      assert_translation('test.html', 'test_translated.html', false, { encoding: 'unknown' })
     end
 
     private
@@ -68,10 +68,10 @@ module Wovnrb
           'User-Agent' => 'Ruby'
         }
         compressed_response = compress("{\"body\":\"#{translated_html.gsub("\n", '\n')}\"}")
-        response_headers = { 'Content-Encoding' => response[:encoding] }
+        response_headers = { 'Content-Encoding' => response[:encoding] || 'gzip' }
         stub = stub_request(:post, api_url)
           .with(body: compressed_data, headers: headers)
-          .to_return(status: response[:status_code], body: compressed_response, headers: response_headers)
+          .to_return(status: response[:status_code] || 200, body: compressed_response, headers: response_headers)
 
         stub
       end
