@@ -136,7 +136,7 @@ module Wovnrb
     end
 
     def page_url
-      @headers.url_with_trailing_slash_if_present
+      "#{@headers.protocol}://#{@headers.url}"
     end
 
     def page_pathname

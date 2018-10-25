@@ -8,6 +8,7 @@ module Wovnrb
     attr_reader :host
     attr_reader :unmasked_pathname
     attr_reader :pathname
+    attr_reader :pathname_with_trailing_slash_if_present
     attr_reader :dirname
     attr_reader :redis_url
 
@@ -66,22 +67,9 @@ module Wovnrb
         @query = ''
       end
       @query = remove_lang(@query, self.lang_code)
+      @pathname_with_trailing_slash_if_present = @pathname
       @pathname = @pathname.gsub(/\/$/, '')
       @redis_url = "#{@host}#{@pathname}#{@query}"
-    end
-
-    def url_with_trailing_slash_if_present
-      url = "#{@host}#{@unmasked_pathname}#{(@query.length > 0 ? '?' : '') + @query}"
-
-      remove_lang(@unmasked_url, lang_code)
-    end
-
-    def pathname_with_trailing_slash_if_present
-      if @settings['url_pattern'] == 'path'
-        remove_lang(@unmasked_pathname, lang_code)
-      else
-        @unmasked_pathname
-      end
     end
 
     # Get the language code of the current request
