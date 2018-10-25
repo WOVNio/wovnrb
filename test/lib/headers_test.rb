@@ -144,7 +144,7 @@ module Wovnrb
 
     def test_pathname_with_trailing_slash_if_present_with_query_lang_when_trailing_slash_is_present
       headers = Wovnrb::Headers.new(
-        Wovnrb.get_env('REQUEST_URI' => 'http://ja.page.com/test/?wovn=ja'),
+        Wovnrb.get_env('REQUEST_URI' => 'http://page.com/test/?wovn=ja'),
         Wovnrb.get_settings('url_pattern' => 'query', 'url_pattern_reg' => '((\\?.*&)|\\?)wovn=(?<lang>[^&]+)(&|$)')
       )
 
