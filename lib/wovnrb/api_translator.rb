@@ -57,6 +57,7 @@ module Wovnrb
       }
       request = Net::HTTP::Post.new(generate_request_path(body), headers)
 
+      # TODO: compress
       request.set_form_data(data)
 
       request
@@ -81,7 +82,6 @@ module Wovnrb
         data.merge!('custom_lang_aliases' => JSON.dump(custom_lang_aliases))
       end
 
-      # TODO: compress
       data
     end
 
