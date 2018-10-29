@@ -23,11 +23,15 @@ module Wovnrb
 
       case response
       when Net::HTTPSuccess
-        if response.header['Content-Encoding'] == 'gzip'
-          response_body = Zlib::GzipReader.new(StringIO.new(response.body)).read
-
+        begin
+          response_body =
+            if response.header['Content-Encoding'] == 'gzip'
+              Zlib::GzipReader.new(StringIO.new(response.body)).read
+            else
+              response.body
+            end
           JSON.parse(response_body)['body'] || body
-        else
+        rescue
           WovnLogger.error("Received invalid content (\"#{response.header['Content-Encoding']}\") from WOVNio translation API.")
           body
         end

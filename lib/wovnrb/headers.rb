@@ -193,7 +193,7 @@ module Wovnrb
     # @param uri  [String] original URI
     # @param lang_code [String] language code
     # @return     [String] removed URI
-    def remove_lang(uri, lang=self.path_lang)
+    def remove_lang(uri, lang = self.path_lang)
       lang_code = Store.instance.settings['custom_lang_aliases'][lang] || lang
 
       # Do nothing if lang is empty.

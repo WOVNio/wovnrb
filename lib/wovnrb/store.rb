@@ -154,6 +154,19 @@ module Wovnrb
       end
     end
 
+    def custom_lang_aliases
+      @setttings['custom_lang_aliases'] || {}
+    end
+
+    def default_lang
+      @settings['default_lang']
+    end
+
+    def default_lang_alias
+      custom_alias = custom_lang_aliases[default_lang]
+      custom_alias ? custom_alias : default_lang
+    end
+
     private
 
     def stringify_keys!(h)

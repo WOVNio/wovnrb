@@ -3,6 +3,8 @@ require 'wovnrb/api_translator'
 require 'wovnrb/headers'
 require 'wovnrb/store'
 require 'wovnrb/lang'
+require 'wovnrb/services/html_converter'
+require 'wovnrb/services/html_replace_marker'
 require 'nokogumbo'
 require 'active_support'
 require 'json'
@@ -66,22 +68,26 @@ module Wovnrb
 
     def switch_lang(headers, body)
       translated_body = []
+
+      # Must use `.each` for to support multiple-chunks in Sinatra
       string_body = ''
       body.each { |chunk| string_body += chunk }
       html_body = Helpers::NokogumboHelper::parse_html(string_body)
 
       if !wovn_ignored?(html_body) && !amp?(html_body)
-        if html_body.html?
-          # TODO: set lang property to HTML
-          # TODO: insert hreflangs
-          # TODO: insert fallback snippet
-        end
+        html_converter = HtmlConverter.new(string_body, @store, headers)
+        string_body = html_converter.build if html_body.html?
 
         if needs_api?(html_body, headers)
-          # TODO: remove ignored content UNLESS SETTING (SEE WOVN.php)
-          translated_content = ApiTranslator.new(@store, headers).translate(string_body)
-          # TODO: put back ignored content UNLESS SETTING (SEE WOVN.php)
-          translated_body.push(translated_content)
+          converted_html, marker = html_converter.build_api_compatible_html
+          translated_content = ApiTranslator.new(@store, headers).translate(converted_html)
+          reverted_content =
+            if translated_content
+              marker.revert(translated_content)
+            else
+              marker.revert(converted_html)
+            end
+          translated_body.push(reverted_content)
         else
           translated_body.push(string_body)
         end
