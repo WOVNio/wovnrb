@@ -66,7 +66,8 @@ module Wovnrb
 
     def switch_lang(headers, body)
       translated_body = []
-      string_body = body.reduce('') { |acc, chunk| acc += chunk }
+      string_body = ''
+      body.each { |chunk| string_body += chunk }
       html_body = Helpers::NokogumboHelper::parse_html(string_body)
 
       if !wovn_ignored?(html_body) && !amp?(html_body)
