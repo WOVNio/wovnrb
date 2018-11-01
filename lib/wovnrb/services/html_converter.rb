@@ -35,18 +35,11 @@ module Wovnrb
       insert_snippet
     end
 
-    def traverse(node, marker)
-      transform_node(node, marker)
-      node.children.each do |child|
-        traverse(child, marker)
-      end
-    end
-
     def replace_dom(marker)
       strip_snippet
       strip_hreflangs if add_hreflang
 
-      traverse(@dom, marker)
+      @dom.traverse { |node| transform_node(node, marker) }
 
       insert_snippet(true)
       insert_hreflang_tags
@@ -86,7 +79,7 @@ module Wovnrb
       return unless classes.present?
 
       ignored_classes = @store.settings['ignore_class']
-      should_be_ignored = (ignored_classes.split(' ') & classes.split(' ')).present?
+      should_be_ignored = (ignored_classes & classes.split(' ')).present?
 
       put_replace_marker(node, marker) if should_be_ignored
     end
