@@ -2,15 +2,15 @@ require 'test_helper'
 
 module Wovnrb
   class HtmlConverterTest < WovnMiniTest
-    def test_api_build_compatible_html
-      converter = prepare_html_converter('<html><body><a>hello</a></body></html>', 'supported_langs': ['en', 'vi'])
+    def test_build_api_compatible_html
+      converter = prepare_html_converter('<html><body><a class="test">hello</a></body></html>', 'supported_langs': ['en', 'vi'])
       converted_html, _ = converter.build_api_compatible_html
 
-      expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.dev-wovn.io:3000/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><a>hello</a></body></html>"
+      expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.dev-wovn.io:3000/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><a class=\"test\">hello</a></body></html>"
       assert_equal(expected_html, converted_html)
     end
 
-    def test_api_build_compatible_html_not_fail_for_big_content
+    def test_build_api_compatible_html_not_fail_for_big_content
       long_string = 'a' * 60000
       converter = prepare_html_converter('<html><body><p>' + long_string + '</p></body></html>', 'supported_langs': ['en', 'vi'])
       converted_html, _ = converter.build_api_compatible_html
@@ -103,7 +103,7 @@ module Wovnrb
         'custom_lang_aliases' => {},
         'default_lang' => 'en',
         'url_pattern' => 'query',
-        'url_pattern_reg' => '((\?.*&)|\?)wovn=(?<lang>[^&]+)(&|$)',
+        'url_pattern_reg' => '((\?.*&)|\?)wovn=(?<lang>[^&]+)(&|)',
         'supported_langs' => ['en', 'fr', 'ja', 'vi']
       }
 
@@ -127,28 +127,13 @@ module Wovnrb
       HtmlConverter.new(get_dom(input_html), store, headers)
     end
 
-    def html
-      [
-        '<html><head><meta charset="utf-8">',
-        '<script src="//j.wovn.io/1" data-wovnio="key=4tok3n" async></script>',
-        '<link rel="alternate" href="/" hreflang="en">',
-        '<link rel="alternate" href="/ja" hreflang="ja">',
-        '</head>',
-        '<body>',
-        '<div>Simple content</div>',
-        '<div wovn-ignore>This content should be ignored</div>',
-        '</body>',
-        '</html>'
-      ].join()
-    end
-
     def store_headers_factory(setting_opts = {})
       setting_opts = {
         'project_token' => '123456',
         'custom_lang_aliases' => {},
         'default_lang' => 'en',
         'url_pattern' => 'query',
-        'url_pattern_reg' => '((\?.*&)|\?)wovn=(?<lang>[^&]+)(&|$)',
+        'url_pattern_reg' => '((\?.*&)|\?)wovn=(?<lang>[^&]+)(&|)',
         'supported_langs' => ['en', 'fr', 'ja', 'vi']
       }.merge(setting_opts)
 

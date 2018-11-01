@@ -18,7 +18,6 @@ module Wovnrb
     def build_api_compatible_html
       marker = HtmlReplaceMarker.new
       converted_html = replace_dom(marker)
-      converted_html = remove_backend_wovn_ignore_comment(converted_html, marker)
 
       [converted_html, marker]
     end
@@ -55,16 +54,6 @@ module Wovnrb
       html
     end
 
-    # Remove user specified content from <!--backend-wovn-ignore--> to <!--/backend-wovn-ignore'-->
-    def remove_backend_wovn_ignore_comment(html, marker)
-      ignore_mark = 'backend-wovn-ignore'
-      html.scan(/(<!--\s*#{Regexp.quote(ignore_mark)}\s*-->)(.+?)(<!--\s*\/#{Regexp.quote(ignore_mark)}\s*-->)/s) do |matches|
-        comment = matches[2]
-        key = marker.add_comment_value(comment)
-        matches[1] + key + matches[3]
-      end
-    end
-
     def transform_node(node, marker)
       strip_wovn_ignore(node, marker)
       strip_custom_ignore(node, marker)
@@ -97,7 +86,8 @@ module Wovnrb
       return unless classes.present?
 
       ignored_classes = @store.settings['ignore_class']
-      should_be_ignored = (ignored_classes.split(' ') & classes).present?
+      should_be_ignored = (ignored_classes.split(' ') & classes.split(' ')).present?
+
       put_replace_marker(node, marker) if should_be_ignored
     end
 
