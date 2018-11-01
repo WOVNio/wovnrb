@@ -167,6 +167,18 @@ module Wovnrb
       custom_alias ? custom_alias : default_lang
     end
 
+    def supported_langs
+      @settings['supported_langs'] || []
+    end
+
+    def wovn_host
+      if @settings['wovn_dev_mode']
+        'dev-wovn.io:3000'
+      else
+        'wovn.io'
+      end
+    end
+
     private
 
     def stringify_keys!(h)

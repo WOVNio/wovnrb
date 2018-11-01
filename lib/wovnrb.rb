@@ -75,19 +75,13 @@ module Wovnrb
       html_body = Helpers::NokogumboHelper::parse_html(string_body)
 
       if !wovn_ignored?(html_body) && !amp?(html_body)
-        html_converter = HtmlConverter.new(string_body, @store, headers)
+        html_converter = HtmlConverter.new(html_body, @store, headers)
         string_body = html_converter.build if html_body.html?
 
         if needs_api?(html_body, headers)
           converted_html, marker = html_converter.build_api_compatible_html
           translated_content = ApiTranslator.new(@store, headers).translate(converted_html)
-          reverted_content =
-            if translated_content
-              marker.revert(translated_content)
-            else
-              marker.revert(converted_html)
-            end
-          translated_body.push(reverted_content)
+          translated_body.push(marker.revert(translated_content))
         else
           translated_body.push(string_body)
         end

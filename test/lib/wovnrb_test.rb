@@ -18,14 +18,17 @@ class WovnrbTest < Minitest::Test
   end
 
   def test_switch_lang
-    body =  "<html><body><h1>Mr. Belvedere Fan Club</h1>
-                <div><p>Hello</p></div>
-              </body></html>"
+    body =  "<html lang=\"ja\"><body><h1>Mr. Belvedere Fan Club</h1><div><p>Hello</p></div></body></html>"
 
-    expected_body = "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head><body><h1><!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1>
-                <div><p><!--wovn-src:Hello-->こんにちは</p></div>
-              </body></html>
-"
+    expected_body = [
+        "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">",
+        "<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script>",
+        "<link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\">",
+        "<link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head>",
+        "<body><h1><!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1>",
+        "<div><p><!--wovn-src:Hello-->こんにちは</p></div>",
+        "</body></html>"
+    ].join
 
     assert_switch_lang('en', 'ja', [body], [expected_body], true)
   end
