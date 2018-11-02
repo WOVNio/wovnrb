@@ -1,11 +1,5 @@
-# -*- coding: utf-8 -*-
 require 'test_helper'
 require 'wovnrb'
-# require 'wovnrb/headers'
-# require 'minitest/autorun'
-# require 'webmock/minitest'
-# require 'rack'
-# require 'pry'
 
 class WovnrbTest < Minitest::Test
   def setup

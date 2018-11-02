@@ -11,10 +11,6 @@ module Wovnrb
       html
     end
 
-    def html
-      @dom.to_html(save_with: 0).strip
-    end
-
     def build_api_compatible_html
       marker = HtmlReplaceMarker.new
       converted_html = replace_dom(marker)
@@ -23,6 +19,10 @@ module Wovnrb
     end
 
     private
+
+    def html
+      @dom.to_html(save_with: 0).strip
+    end
 
     def transform_html
       replace_snippet

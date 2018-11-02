@@ -102,7 +102,7 @@ module Wovnrb
       converter.send(:replace_snippet)
 
       expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.dev-wovn.io:3000/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><script src=\"/a\"></script></head><body></body></html>"
-      assert_equal(expected_html, converter.html)
+      assert_equal(expected_html, converter.send(:html))
     end
 
     def test_replace_hreflangs
@@ -110,19 +110,11 @@ module Wovnrb
       converter.send(:replace_hreflangs)
 
       expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"fr\" href=\"http://my-site.com/?wovn=fr\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/?wovn=ja\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body></body></html>"
-      assert_equal(expected_html, converter.html)
+      assert_equal(expected_html, converter.send(:html))
     end
 
     def test_inject_lang_html_tag
-      settings = {
-        'project_token' => '123456',
-        'custom_lang_aliases' => {},
-        'default_lang' => 'en',
-        'url_pattern' => 'query',
-        'url_pattern_reg' => '((\?.*&)|\?)wovn=(?<lang>[^&]+)(&|)',
-        'supported_langs' => ['en', 'fr', 'ja', 'vi']
-      }
-
+      settings = default_store_settings
       store = Wovnrb::Store.instance
       store.update_settings(settings)
 
@@ -133,7 +125,7 @@ module Wovnrb
       converter = HtmlConverter.new(get_dom('<html><body>hello</body></html>'), store, headers)
       converter.send(:inject_lang_html_tag)
       expected_html = "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body>hello</body></html>"
-      assert_equal(expected_html, converter.html)
+      assert_equal(expected_html, converter.send(:html))
     end
 
     private
@@ -144,24 +136,27 @@ module Wovnrb
     end
 
     def store_headers_factory(setting_opts = {})
-      setting_opts = {
+      settings = default_store_settings.merge(setting_opts)
+      store = Wovnrb::Store.instance
+      store.update_settings(settings)
+
+      headers = Wovnrb::Headers.new(
+        Wovnrb.get_env('url' => "http://my-site.com"),
+        Wovnrb.get_settings(settings)
+      )
+
+      [store, headers]
+    end
+
+    def default_store_settings
+      {
         'project_token' => '123456',
         'custom_lang_aliases' => {},
         'default_lang' => 'en',
         'url_pattern' => 'query',
         'url_pattern_reg' => '((\?.*&)|\?)wovn=(?<lang>[^&]+)(&|)',
         'supported_langs' => ['en', 'fr', 'ja', 'vi']
-      }.merge(setting_opts)
-
-      store = Wovnrb::Store.instance
-      store.update_settings(setting_opts)
-
-      headers = Wovnrb::Headers.new(
-        Wovnrb.get_env('url' => "http://my-site.com"),
-        Wovnrb.get_settings(setting_opts)
-      )
-
-      [store, headers]
+      }
     end
 
     def get_dom(html)
