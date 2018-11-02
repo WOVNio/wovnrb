@@ -3,7 +3,7 @@ require 'test_helper'
 module Wovnrb
   class HtmlConverterTest < WovnMiniTest
     def test_build_api_compatible_html
-      converter = prepare_html_converter('<html><body><a class="test">hello</a></body></html>', 'supported_langs': ['en', 'vi'])
+      converter = prepare_html_converter('<html><body><a class="test">hello</a></body></html>', supported_langs: ['en', 'vi'])
       converted_html, _ = converter.build_api_compatible_html
 
       expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.dev-wovn.io:3000/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><a class=\"test\">hello</a></body></html>"
@@ -12,7 +12,7 @@ module Wovnrb
 
     def test_build_api_compatible_html_not_fail_for_big_content
       long_string = 'a' * 60000
-      converter = prepare_html_converter('<html><body><p>' + long_string + '</p></body></html>', 'supported_langs': ['en', 'vi'])
+      converter = prepare_html_converter('<html><body><p>' + long_string + '</p></body></html>', supported_langs: ['en', 'vi'])
       converted_html, _ = converter.build_api_compatible_html
 
       expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.dev-wovn.io:3000/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><p>" + long_string + '</p></body></html>'
@@ -44,7 +44,7 @@ module Wovnrb
     end
 
     def test_transform_html_with_empty_supported_langs
-      converter = prepare_html_converter('<html><body><a>hello</a></body></html>', 'supported_langs': [])
+      converter = prepare_html_converter('<html><body><a>hello</a></body></html>', supported_langs: [])
       translated_html = converter.build
 
       expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.dev-wovn.io:3000/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script></head><body><a>hello</a></body></html>"
@@ -52,7 +52,7 @@ module Wovnrb
     end
 
     def test_transform_html_with_head_tag
-      converter = prepare_html_converter('<html><head><title>TITLE</title></head><body><a>hello</a></body></html>', 'supported_langs': ['en', 'vi'])
+      converter = prepare_html_converter('<html><head><title>TITLE</title></head><body><a>hello</a></body></html>', supported_langs: ['en', 'vi'])
       translated_html = converter.build
 
       expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.dev-wovn.io:3000/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><title>TITLE</title><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><a>hello</a></body></html>"
@@ -60,7 +60,7 @@ module Wovnrb
     end
 
     def test_transform_html_without_body
-      converter = prepare_html_converter('<html>hello<a>world</a></html>', 'supported_langs': [])
+      converter = prepare_html_converter('<html>hello<a>world</a></html>', supported_langs: [])
       translated_html = converter.build
 
       expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.dev-wovn.io:3000/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script></head><body>hello<a>world</a></body></html>"
