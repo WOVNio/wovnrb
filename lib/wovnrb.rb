@@ -76,13 +76,13 @@ module Wovnrb
 
       if !wovn_ignored?(html_body) && !amp?(html_body)
         html_converter = HtmlConverter.new(html_body, @store, headers)
-        string_body = html_converter.build if html_body.html?
 
         if needs_api?(html_body, headers)
           converted_html, marker = html_converter.build_api_compatible_html
           translated_content = ApiTranslator.new(@store, headers).translate(converted_html)
           translated_body.push(marker.revert(translated_content))
         else
+          string_body = html_converter.build if html_body.html?
           translated_body.push(string_body)
         end
       else

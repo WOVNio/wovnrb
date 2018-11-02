@@ -137,6 +137,7 @@ module Wovnrb
 
     def insert_hreflang_tags
       parent_node = @dom.at_css('head') || @dom.at_css('body') || @dom.at_css('html')
+      return unless parent_node
 
       @store.supported_langs.each do |lang_code|
         insert_node = Nokogiri::XML::Node.new('link', @dom)
@@ -147,29 +148,6 @@ module Wovnrb
         parent_node.add_child(insert_node.to_s)
       end
     end
-
-    # def hreflang_tags(langs)
-    #   langs.map do |lang|
-    #     "<link rel=\"alternate\" hreflang=\"#{Lang::iso_639_1_normalization(lang)}\" href=\"#{hreflang(lang)}\">"
-    #   end
-    # end
-
-    # def hreflang_regex(langs)
-    #   /<link [^>]*hreflang=[\"']?#{Regexp.quote(langs.join('|'))}[\"']?(\s[^>]*)?\>/i
-    # end
-
-    # def parent_tags
-    #   [
-    #     /(<head\s?.*?>)/i,
-    #     /(<body\s?.*?>)/i,
-    #     /(<html\s?.*?>)/i
-    #   ]
-    # end
-
-    # def hreflang(lang_code)
-    #   # TODO: Refactor to put redirect_location logic to Url class
-    #   @headers.redirect_location(lang_code)
-    # end
 
     # Remove wovn snippet code from dom
     def strip_snippet
@@ -182,6 +160,7 @@ module Wovnrb
 
     def insert_snippet(adds_backend_error_mark = true)
       parent_node = @dom.at_css('head') || @dom.at_css('body') || @dom.at_css('html')
+      return unless parent_node
 
       insert_node = Nokogiri::XML::Node.new('script', @dom)
       insert_node['src'] = "//j.#{@store.wovn_host}/1"
@@ -197,24 +176,6 @@ module Wovnrb
         parent_node.add_child(insert_node)
       end
     end
-
-    # def snippet_regex
-    #   /<script[^>]*src=[^>]*j\.[^ '\">]*wovn\.io[^>]*><\/script>/i
-    # end
-
-    # def snippet_code(adds_backend_error_mark = false)
-    #   snippet_url =
-    #     if @store.settings['wovn_dev_mode'].present?
-    #       '//j.dev-wovn.io:3000/1'
-    #     else
-    #       '//j.wovn.io/1'
-    #     end
-    #   if adds_backend_error_mark
-    #     "<script src=\"#{snippet_url}\" data-wovnio=\"#{data_wovnio}\" data-wovnio-type=\"fallback_snippet\" async></script>"
-    #   else
-    #     "<script src=\"#{snippet_url}\" data-wovnio=\"#{data_wovnio}\" async></script>"
-    #   end
-    # end
 
     def data_wovnio
       token = @store.settings['project_token']
@@ -235,16 +196,5 @@ module Wovnrb
         ].join('&')
       )
     end
-
-    # def insert_after_tag(parent_tags, snippet)
-    #   parent_tags.each do |parent|
-    #     parent.match(@dom) do |match|
-    #       if match
-    #         @dom = @dom.sub(match[0], match[0] + snippet)
-    #         return
-    #       end
-    #     end
-    #   end
-    # end
   end
 end

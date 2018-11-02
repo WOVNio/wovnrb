@@ -1,8 +1,4 @@
 require 'test_helper'
-require 'wovnrb/headers'
-require 'wovnrb/lang'
-require 'minitest/autorun'
-require 'pry'
 
 module Wovnrb
   class LangTest < WovnMiniTest
