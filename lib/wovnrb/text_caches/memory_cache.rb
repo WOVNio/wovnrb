@@ -41,11 +41,11 @@ module Wovnrb
     end
 
     def compress(value)
-      LZ4::compress(value)
+      LZ4.compress(value)
     end
 
     def decompress(value)
-      LZ4::decompress(value, value.bytesize, 'UTF-8')
+      LZ4.decompress(value, value.bytesize, 'UTF-8')
     end
   end
 end

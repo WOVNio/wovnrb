@@ -11,8 +11,8 @@ module Wovnrb
       sub_directories = pattern.split('/**', -1)
       regexp = sub_directories.map do |sub_dir|
         sub_dir.split('*', -1)
-          .map {|p| Regexp.escape(p)}
-          .join('[^/]*')
+               .map { |p| Regexp.escape(p) }
+               .join('[^/]*')
       end.join('(/[^/]*)*')
 
       @regexp = Regexp.new("^#{regexp}$")
