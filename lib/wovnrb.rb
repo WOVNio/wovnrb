@@ -70,7 +70,7 @@ module Wovnrb
       body.each { |chunk| string_body += chunk }
       html_body = Helpers::NokogumboHelper::parse_html(string_body)
 
-      if !wovn_ignored?(html_body) && !amp?(html_body)
+      if !wovn_ignored?(html_body) && !amp_page?(html_body)
         if html_body.html?
           # TODO: set lang property to HTML
           # TODO: insert hreflangs
@@ -116,7 +116,7 @@ module Wovnrb
     # @param {Nokogiri::HTML5::Document} body The HTML body to check.
     #
     # @returns {Boolean} True is the HTML body is an AMP, false otherwise.
-    def amp?(html_body)
+    def amp_page?(html_body)
       html_attributes = html_body.xpath('//html')[0].try(:attributes) || {}
 
       !!(html_attributes['amp'] || html_attributes["\u26A1"])
