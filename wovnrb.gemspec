@@ -20,10 +20,6 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
-  #spec.require_paths = ["lib", "ext"]
-  #spec.extensions    = spec.files.grep(%r{/extconf\.rb$})
-  #spec.extensions    = %w[ext/dom/extconf.rb]
-  #spec.extensions    = spec.files.grep(%r{/extconf\.rb$})
 
   spec.add_dependency "nokogumbo", ">= 1.4.0", "< 2.0.0"
   spec.add_dependency "nokogiri", "~> 1.8.1"
@@ -35,9 +31,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.7"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "listen", "~> 3.0.6"
-  ##spec.add_development_dependency "mocha"
-  #spec.add_development_dependency "rspec"
-  #spec.add_development_dependency "rspec-nc"
+  spec.add_development_dependency "mocha"
   spec.add_development_dependency "test-unit"
   spec.add_development_dependency "test-unit-notify"
   spec.add_development_dependency "minitest"
@@ -47,10 +41,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pry"
   spec.add_development_dependency "pry-remote"
   spec.add_development_dependency "pry-nav"
-  spec.add_development_dependency "pry-byebug"
   spec.add_development_dependency "shoulda-context"
 
-  #spec.add_development_dependency "rice"
   spec.add_development_dependency "rake-compiler"
   spec.add_development_dependency "timecop"
 

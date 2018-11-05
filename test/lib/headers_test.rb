@@ -1,8 +1,4 @@
 require 'test_helper'
-require 'wovnrb/headers'
-require 'wovnrb/lang'
-require 'minitest/autorun'
-require 'pry'
 
 module Wovnrb
   class LangTest < WovnMiniTest
@@ -15,13 +11,6 @@ module Wovnrb
       h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings)
       refute_nil(h)
     end
-
-    # def test_initialize_env
-    #   env = Wovnrb.get_env
-    #   h = Wovnrb::Headers.new(env, {})
-    #   binding.pry
-    #   #assert_equal(''
-    # end
 
     def test_initialize_with_simple_url
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'https://wovn.io'), Wovnrb.get_settings)
@@ -108,6 +97,47 @@ module Wovnrb
       env = Wovnrb.get_env('url' => 'http://page.com', 'HTTP_X_FORWARDED_PROTO' => 'https')
       h = Wovnrb::Headers.new(env, Wovnrb.get_settings('query' => ['aaa']))
       assert_equal('https', h.protocol)
+    end
+
+    def test_pathname_with_trailing_slash_if_present_when_trailing_slash_is_not_present
+      env = Wovnrb.get_env('REQUEST_URI' => 'http://page.com/test')
+      headers = Wovnrb::Headers.new(env, Wovnrb.get_settings())
+
+      assert_equal('/test', headers.pathname_with_trailing_slash_if_present)
+    end
+
+    def test_pathname_with_trailing_slash_if_present_with_default_lang_when_trailing_slash_is_present
+      env = Wovnrb.get_env('REQUEST_URI' => 'http://page.com/test/')
+      headers = Wovnrb::Headers.new(env, Wovnrb.get_settings())
+
+      assert_equal('/test/', headers.pathname_with_trailing_slash_if_present)
+    end
+
+    def test_pathname_with_trailing_slash_if_present_with_subdomain_lang_when_trailing_slash_is_present
+      headers = Wovnrb::Headers.new(
+        Wovnrb.get_env('REQUEST_URI' => 'http://ja.page.com/test/'),
+        Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).')
+      )
+
+      assert_equal('/test/', headers.pathname_with_trailing_slash_if_present)
+    end
+
+    def test_pathname_with_trailing_slash_if_present_with_path_lang_when_trailing_slash_is_present
+      headers = Wovnrb::Headers.new(
+        Wovnrb.get_env('REQUEST_URI' => 'http://page.com/ja/test/'),
+        Wovnrb.get_settings('url_pattern' => 'path', 'url_pattern_reg' => '/(?<lang>[^/.?]+)')
+      )
+
+      assert_equal('/test/', headers.pathname_with_trailing_slash_if_present)
+    end
+
+    def test_pathname_with_trailing_slash_if_present_with_query_lang_when_trailing_slash_is_present
+      headers = Wovnrb::Headers.new(
+        Wovnrb.get_env('REQUEST_URI' => 'http://page.com/test/?wovn=ja'),
+        Wovnrb.get_settings('url_pattern' => 'query', 'url_pattern_reg' => '((\\?.*&)|\\?)wovn=(?<lang>[^&]+)(&|$)')
+      )
+
+      assert_equal('/test/', headers.pathname_with_trailing_slash_if_present)
     end
 
     #########################

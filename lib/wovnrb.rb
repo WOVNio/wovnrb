@@ -1,27 +1,15 @@
 require 'rack'
-require 'wovnrb/store'
+require 'wovnrb/api_translator'
 require 'wovnrb/headers'
+require 'wovnrb/store'
 require 'wovnrb/lang'
+require 'wovnrb/services/html_converter'
+require 'wovnrb/services/html_replace_marker'
 require 'nokogumbo'
 require 'active_support'
-#require 'dom'
 require 'json'
 require 'wovnrb/helpers/nokogumbo_helper'
-require 'wovnrb/api_data'
 require 'wovnrb/text_caches/cache_base'
-require 'wovnrb/html_replacers/replacer_base'
-require 'wovnrb/html_replacers/link_replacer'
-require 'wovnrb/html_replacers/text_replacer'
-require 'wovnrb/html_replacers/meta_replacer'
-require 'wovnrb/html_replacers/input_replacer'
-require 'wovnrb/html_replacers/image_replacer'
-require 'wovnrb/html_replacers/script_replacer'
-require 'wovnrb/html_replacers/unified_values/text_replacer'
-require 'wovnrb/html_replacers/unified_values/text_scraper'
-require 'wovnrb/html_replacers/unified_values/values_stack'
-require 'wovnrb/html_replacers/unified_values/element_category'
-require 'wovnrb/html_replacers/unified_values/dst_swapping_targets_creator'
-require 'wovnrb/html_replacers/unified_values/node_swapping_targets_creator'
 require 'wovnrb/railtie' if defined?(Rails)
 require 'wovnrb/version'
 
@@ -50,7 +38,6 @@ module Wovnrb
         redirect_headers = headers.redirect(@store.settings['default_lang'])
         return [307, redirect_headers, ['']]
       end
-      lang = headers.lang_code
 
       # pass to application
       status, res_headers, body = @app.call(headers.request_out)
@@ -70,17 +57,7 @@ module Wovnrb
         return output(headers, status, res_headers, body)
       end
 
-      # ApiData creates request for external server, but cannot use async.
-      # Because some server not allow multi thread. (env['async.callback'] is not supported at all Server).
-      api_data = ApiData.new(headers.redis_url, @store)
-      values = api_data.get_data
-
-      url = {
-        :protocol => headers.protocol,
-        :host => headers.host,
-        :pathname => headers.pathname
-      }
-      body = switch_lang(body, values, url, lang, headers) unless status.to_s =~ /^1|302/
+      body = switch_lang(headers, body) unless status.to_s =~ /^1|302/
 
       content_length = 0
       body.each { |b| content_length += b.respond_to?(:bytesize) ? b.bytesize : 0 }
@@ -89,47 +66,31 @@ module Wovnrb
       output(headers, status, res_headers, body)
     end
 
-    def switch_lang(body, values, url, lang=@store.settings['default_lang'], headers)
-      lang = Lang.new(lang)
-      ignore_all = false
-      new_body = []
+    def switch_lang(headers, body)
+      translated_body = []
 
-      # generate full_body to intercept
-      full_body = ''
-      body.each { |b| full_body += b }
+      # Must use `.each` for to support multiple-chunks in Sinatra
+      string_body = ''
+      body.each { |chunk| string_body += chunk }
+      html_body = Helpers::NokogumboHelper::parse_html(string_body)
 
-      [full_body].each do |b|
-        # temporarily remove noscripts
-        noscripts = []
-        b_without_noscripts = b
-        b.scan /<noscript.*?>.*?<\/noscript>/m do |match|
-          noscript_identifier = "<noscript wovn-id=\"#{noscripts.count}\"></noscript>"
-          noscripts << match
-          b_without_noscripts = b_without_noscripts.sub(match, noscript_identifier)
-        end
+      if !wovn_ignored?(html_body) && !amp_page?(html_body)
+        html_converter = HtmlConverter.new(html_body, @store, headers)
 
-        d = Helpers::NokogumboHelper::parse_html(b_without_noscripts)
-
-        # If this page has wovn-ignore in the html tag, don't do anything
-        if ignore_all || !d.xpath('//html[@wovn-ignore]').empty? || is_amp_page?(d)
-          ignore_all = true
-          output = d.to_html(save_with: 0).gsub(/href="([^"]*)"/) { |m| "href=\"#{URI.decode($1)}\"" }
-          put_back_noscripts!(output, noscripts)
-          new_body.push(output)
-          next
-        end
-
-        if must_translate?(d, values)
-          output = lang.switch_dom_lang(d, @store, values, url, headers)
+        if needs_api?(html_body, headers)
+          converted_html, marker = html_converter.build_api_compatible_html
+          translated_content = ApiTranslator.new(@store, headers).translate(converted_html)
+          translated_body.push(marker.revert(translated_content))
         else
-          ScriptReplacer.new(@store).replace(d, lang) if d.html?
-          output = d.to_html(save_with: 0)
+          string_body = html_converter.build if html_body.html?
+          translated_body.push(string_body)
         end
-        put_back_noscripts!(output, noscripts)
-        new_body.push(output)
+      else
+        translated_body.push(string_body)
       end
+
       body.close if body.respond_to?(:close)
-      new_body
+      translated_body
     end
 
     private
@@ -139,21 +100,13 @@ module Wovnrb
       [status, res_headers, body]
     end
 
-    def must_translate?(dom, values)
-      can_translate = dom.html? ? true : @store.settings['translate_fragment']
-
-      can_translate && have_data?(values)
+    def needs_api?(html_body, headers)
+      headers.lang_code != @store.settings['default_lang'] &&
+        (html_body.html? || @store.settings['translate_fragment'])
     end
 
-    def have_data?(values)
-      values.count > 0
-    end
-
-    def put_back_noscripts!(output, noscripts)
-      noscripts.each_with_index do |noscript, index|
-        noscript_identifier = "<noscript wovn-id=\"#{index}\"></noscript>"
-        output.sub!(noscript_identifier, noscript)
-      end
+    def wovn_ignored?(html_body)
+      !html_body.xpath('//html[@wovn-ignore]').empty?
     end
 
     # Checks if a given HTML body is an Accelerated Mobile Page (AMP).
@@ -163,10 +116,10 @@ module Wovnrb
     # @param {Nokogiri::HTML5::Document} body The HTML body to check.
     #
     # @returns {Boolean} True is the HTML body is an AMP, false otherwise.
-    def is_amp_page?(body)
-      html_attributes = body.xpath('//html')[0].try(:attributes) || {}
+    def amp_page?(html_body)
+      html_attributes = html_body.xpath('//html')[0].try(:attributes) || {}
 
-      html_attributes['amp'] || html_attributes["\u26A1"]
+      !!(html_attributes['amp'] || html_attributes["\u26A1"])
     end
   end
 end

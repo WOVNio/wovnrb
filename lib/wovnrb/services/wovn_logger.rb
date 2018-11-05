@@ -5,6 +5,12 @@ module Wovnrb
   class WovnLogger
     include Singleton
 
+    class << self
+      def error(message)
+        instance.error(message)
+      end
+    end
+
     def initialize
       path = Store.instance.settings['log_path']
       if path

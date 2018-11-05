@@ -8,6 +8,7 @@ module Wovnrb
     attr_reader :host
     attr_reader :unmasked_pathname
     attr_reader :pathname
+    attr_reader :pathname_with_trailing_slash_if_present
     attr_reader :dirname
     attr_reader :redis_url
 
@@ -66,6 +67,7 @@ module Wovnrb
         @query = ''
       end
       @query = remove_lang(@query, self.lang_code)
+      @pathname_with_trailing_slash_if_present = @pathname
       @pathname = @pathname.gsub(/\/$/, '')
       @redis_url = "#{@host}#{@pathname}#{@query}"
     end
@@ -185,12 +187,13 @@ module Wovnrb
       @env
     end
 
+    # TODO: this should be in Lang for reusability
     # Remove language code from the URI.
     #
     # @param uri  [String] original URI
     # @param lang_code [String] language code
     # @return     [String] removed URI
-    def remove_lang(uri, lang=self.path_lang)
+    def remove_lang(uri, lang = self.path_lang)
       lang_code = Store.instance.settings['custom_lang_aliases'][lang] || lang
 
       # Do nothing if lang is empty.
