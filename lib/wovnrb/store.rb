@@ -181,9 +181,9 @@ module Wovnrb
 
     private
 
-    def stringify_keys!(h)
-      h.keys.each do |k|
-        h[k.to_s] = h.delete(k)
+    def stringify_keys!(hash)
+      hash.keys.each do |k|
+        hash[k.to_s] = hash.delete(k)
       end
     end
   end

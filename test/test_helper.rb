@@ -106,8 +106,8 @@ module Wovnrb
     dom
   end
 
-  def get_dom(innerHTML)
-    to_dom("<html><body>#{innerHTML}</body></html>")
+  def get_dom(inner_html)
+    to_dom("<html><body>#{inner_html}</body></html>")
   end
 
   module_function :get_env, :get_settings, :to_dom, :get_dom

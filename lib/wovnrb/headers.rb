@@ -8,7 +8,6 @@ module Wovnrb
     attr_reader :unmasked_pathname
     attr_reader :pathname
     attr_reader :pathname_with_trailing_slash_if_present
-    attr_reader :dirname
     attr_reader :redis_url
 
     # Generates new instance of Wovnrb::Headers.
