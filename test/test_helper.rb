@@ -28,6 +28,8 @@ require 'wovnrb/headers'
 require 'wovnrb/lang'
 require 'wovnrb/store'
 require 'wovnrb/helpers/nokogumbo_helper'
+require 'wovnrb/services/html_converter'
+require 'wovnrb/services/html_replace_marker'
 
 module Wovnrb
   class WovnMiniTest < Minitest::Test

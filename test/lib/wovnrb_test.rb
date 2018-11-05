@@ -1,11 +1,5 @@
-# -*- coding: utf-8 -*-
 require 'test_helper'
 require 'wovnrb'
-require 'wovnrb/headers'
-require 'minitest/autorun'
-require 'webmock/minitest'
-require 'rack'
-require 'pry'
 
 class WovnrbTest < Minitest::Test
   def setup
@@ -18,21 +12,24 @@ class WovnrbTest < Minitest::Test
   end
 
   def test_switch_lang
-    body =  "<html><body><h1>Mr. Belvedere Fan Club</h1>
-                <div><p>Hello</p></div>
-              </body></html>"
+    body =  "<html lang=\"ja\"><body><h1>Mr. Belvedere Fan Club</h1><div><p>Hello</p></div></body></html>"
 
-    expected_body = "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head><body><h1><!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1>
-                <div><p><!--wovn-src:Hello-->こんにちは</p></div>
-              </body></html>
-"
+    expected_body = [
+        "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">",
+        "<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script>",
+        "<link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\">",
+        "<link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head>",
+        "<body><h1><!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1>",
+        "<div><p><!--wovn-src:Hello-->こんにちは</p></div>",
+        "</body></html>"
+    ].join
 
-    assert_switch_lang('en', 'ja', [body], [expected_body], true)
+    assert_switch_lang('en', 'ja', body, expected_body, true)
   end
 
   def test_switch_lang_of_html_fragment_with_japanese_translations
-    bodies = ['<span>Hello</span>']
-    expected_bodies = ['<span><!--wovn-src:Hello-->こんにちは</span>']
+    bodies = ['<span>Hello</span>'].join
+    expected_bodies = ['<span><!--wovn-src:Hello-->こんにちは</span>'].join
 
     assert_switch_lang('en', 'ja', bodies, expected_bodies, true)
   end
@@ -40,19 +37,18 @@ class WovnrbTest < Minitest::Test
   def test_switch_lang_splitted_body
     bodies =  ["<html><body><h1>Mr. Belvedere Fan Club</h1>",
                "<div><p>Hello</p></div>",
-               "</body></html>"]
-    expected_bodies = ["<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head><body><h1><!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1><div><p><!--wovn-src:Hello-->こんにちは</p></div></body></html>
-"]
+               "</body></html>"].join
+    expected_bodies = ["<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.dev-wovn.io:3000/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=ja&amp;amp;defaultLang=en&amp;amp;urlPattern=subdomain&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{Wovnrb::VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head><body><h1>Mr. Belvedere Fan Club</h1><div><p>Hello</p></div></body></html>"].join
 
     assert_switch_lang('en', 'ja', bodies, expected_bodies, true)
   end
 
   def test_switch_lang_of_html_fragment_in_splitted_body
-    bodies =  ['<select name="test"><option value="1">1</option>',
-               '<option value="2">2</option></select>']
-    expected_bodies = ['<select name="test"><option value="1">1</option><option value="2">2</option></select>']
+    body =  ['<select name="test"><option value="1">1</option>',
+             '<option value="2">2</option></select>'].join
+    expected_body = ['<select name="test"><option value="1">1</option><option value="2">2</option></select>'].join
 
-    assert_switch_lang('en', 'ja', bodies, expected_bodies, true)
+    assert_switch_lang('en', 'ja', body, expected_body, true)
   end
 
   def test_switch_lang_missing_values
@@ -64,7 +60,7 @@ class WovnrbTest < Minitest::Test
               </body></html>
 "
 
-    assert_switch_lang('en', 'ja', [body], [expected_body], true)
+    assert_switch_lang('en', 'ja', body, expected_body, true)
   end
 
   def test_switch_lang_on_fragment_with_translate_fragment_false
@@ -72,7 +68,7 @@ class WovnrbTest < Minitest::Test
                 <div><p>Hello</p></div>"
 
     Wovnrb::Store.instance.settings['translate_fragment'] = false
-    assert_switch_lang('en', 'ja', [body], [body], false)
+    assert_switch_lang('en', 'ja', body, body, false)
   end
 
   def test_switch_lang_on_fragment_with_translate_fragment_true
@@ -82,7 +78,7 @@ class WovnrbTest < Minitest::Test
                 <div><p><!--wovn-src:Hello-->こんにちは</p></div>"
 
     Wovnrb::Store.instance.settings['translate_fragment'] = true
-    assert_switch_lang('en', 'ja', [body], [expected_body], true)
+    assert_switch_lang('en', 'ja', body, expected_body, true)
   end
 
   def test_switch_lang_ignores_amp
@@ -96,7 +92,7 @@ class WovnrbTest < Minitest::Test
 </html>
 HTML
 
-    assert_switch_lang('en', 'ja', [body], [body], false)
+    assert_switch_lang('en', 'ja', body, body, false)
   end
 
   def test_switch_lang_ignores_amp_defined_with_symbol_attribute
@@ -109,35 +105,54 @@ HTML
 </html>
 HTML
 
-    assert_switch_lang('en', 'ja', [body], [body], false)
+    assert_switch_lang('en', 'ja', body, body, false)
   end
 
   private
 
-  def assert_switch_lang(original_lang, target_lang, bodies, expected_bodies, api_expected = true)
-    mock_translation_api_response(bodies, expected_bodies) if api_expected
-
+  def assert_switch_lang(original_lang, target_lang, body, expected_body, api_expected = true)
     subdomain = target_lang == original_lang ? '' : "#{target_lang}."
     interceptor = Wovnrb::Interceptor.new(get_app)
-    headers = Wovnrb::Headers.new(
-      Wovnrb.get_env('url' => "http://#{subdomain}page.com"),
-      Wovnrb.get_settings(
+
+    store, headers = store_headers_factory(subdomain, original_lang)
+    if api_expected
+      dom = Wovnrb::Helpers::NokogumboHelper::parse_html(body)
+      converter = Wovnrb::HtmlConverter.new(dom, store, headers)
+      apified_body, _ = converter.build_api_compatible_html
+      mock_translation_api_response(apified_body, expected_body)
+    end
+
+    actual_bodies = interceptor.switch_lang(headers, [body])
+
+    assert_same_elements([expected_body], actual_bodies)
+  end
+
+  def store_headers_factory(subdomain, original_lang)
+    settings = {
+        'project_token' => '123456',
+        'custom_lang_aliases' => {},
         'default_lang' => original_lang,
         'url_pattern' => 'subdomain',
         'url_pattern_reg' => '^(?<lang>[^.]+).'
-      )
-    )
-    actual_bodies = interceptor.switch_lang(headers, bodies)
+    }
 
-    assert_equal(expected_bodies, actual_bodies)
+    store = Wovnrb::Store.instance
+    store.update_settings(settings)
+
+    headers = Wovnrb::Headers.new(
+        Wovnrb.get_env('url' => "http://#{subdomain}page.com"),
+        Wovnrb.get_settings(settings)
+    )
+
+    [store, headers]
   end
 
-  def mock_translation_api_response(bodies, expected_bodies)
+  def mock_translation_api_response(body, expected_body)
     Wovnrb::ApiTranslator.any_instance
                          .expects(:translate)
                          .once
-                         .with(bodies.join(''))
-                         .returns(expected_bodies.join(''))
+                         .with(body)
+                         .returns(expected_body)
   end
 
   def get_app(opts={})

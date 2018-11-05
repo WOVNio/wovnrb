@@ -1,8 +1,4 @@
 require 'test_helper'
-require 'wovnrb/headers'
-require 'wovnrb/lang'
-require 'minitest/autorun'
-require 'pry'
 
 module Wovnrb
   class LangTest < WovnMiniTest
@@ -15,13 +11,6 @@ module Wovnrb
       h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings)
       refute_nil(h)
     end
-
-    # def test_initialize_env
-    #   env = Wovnrb.get_env
-    #   h = Wovnrb::Headers.new(env, {})
-    #   binding.pry
-    #   #assert_equal(''
-    # end
 
     def test_initialize_with_simple_url
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'https://wovn.io'), Wovnrb.get_settings)
