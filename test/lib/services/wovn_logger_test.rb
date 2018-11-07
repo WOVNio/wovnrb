@@ -9,24 +9,24 @@ module Wovnrb
 
     def test_initialize
       log_file_name = 'test_tmp.log'
-      Store.instance.update_settings({'log_path' => log_file_name})
+      Store.instance.update_settings('log_path' => log_file_name)
       WovnLogger.instance
-      assert(File.exists?(log_file_name))
+      assert(File.exist?(log_file_name))
       File.delete(log_file_name)
     end
 
     def test_initialize_without_path
-      Store.instance.update_settings({'log_path' => nil})
+      Store.instance.update_settings('log_path' => nil)
       WovnLogger.instance
       assert_equal($stderr, WovnLogger.instance.instance_variable_get(:@logger))
     end
 
     def test_initialize_with_invalid_path
       log_file_name = 'in/val/id/test_tmp.log'
-      Store.instance.update_settings({'log_path' => log_file_name})
+      Store.instance.update_settings('log_path' => log_file_name)
       WovnLogger.instance
-      assert_equal(false, File.exists?(log_file_name))
-      assert_equal(true, File.exists?('wovn_error.log'))
+      assert_equal(false, File.exist?(log_file_name))
+      assert_equal(true, File.exist?('wovn_error.log'))
       File.delete('wovn_error.log')
     end
 

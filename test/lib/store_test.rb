@@ -16,41 +16,41 @@ module Wovnrb
 
     def test_settings_user_token_retro_compatibility
       s = Wovnrb::Store.instance
-      s.update_settings({'user_token' => 'aaaaa'})
+      s.update_settings('user_token' => 'aaaaa')
       assert_equal('aaaaa', s.settings['project_token'])
-      assert(!s.settings.has_key?('user_token'))
+      assert(!s.settings.key?('user_token'))
     end
 
     def test_settings_project_token_set
       s = Wovnrb::Store.instance
-      s.update_settings({'project_token' => 'bbbbbb'})
+      s.update_settings('project_token' => 'bbbbbb')
       assert_equal('bbbbbb', s.settings['project_token'])
     end
 
     def test_settings_project_token_set_without_retro_compatibility
       s = Wovnrb::Store.instance
-      s.update_settings({'project_token' => 'bbbbbb', 'user_token' => 'aaaaa'})
+      s.update_settings('project_token' => 'bbbbbb', 'user_token' => 'aaaaa')
       assert_equal('bbbbbb', s.settings['project_token'])
-      assert(!s.settings.has_key?('user_token'))
+      assert(!s.settings.key?('user_token'))
     end
 
     def test_settings_url_pattern_path
       s = Wovnrb::Store.instance
-      s.update_settings({'url_pattern' => 'path'})
+      s.update_settings('url_pattern' => 'path')
       assert_equal('path', s.settings['url_pattern'])
       assert_equal('/(?<lang>[^/.?]+)', s.settings['url_pattern_reg'])
     end
 
     def test_settings_url_pattern_subdomain
       s = Wovnrb::Store.instance
-      s.update_settings({'url_pattern' => 'subdomain'})
+      s.update_settings('url_pattern' => 'subdomain')
       assert_equal("^(?<lang>[^.]+)\.", s.settings['url_pattern_reg'])
       assert_equal('subdomain', s.settings['url_pattern'])
     end
 
     def test_settings_url_pattern_query
       s = Wovnrb::Store.instance
-      s.update_settings({'url_pattern' => 'query'})
+      s.update_settings('url_pattern' => 'query')
       assert_equal('((\\?.*&)|\\?)wovn=(?<lang>[^&]+)(&|$)', s.settings['url_pattern_reg'])
       assert_equal('query', s.settings['url_pattern'])
     end
@@ -66,7 +66,7 @@ module Wovnrb
 
     def test_settings_ignore_paths
       s = Wovnrb::Store.instance
-      s.update_settings({'ignore_paths' => ['/api/**']})
+      s.update_settings('ignore_paths' => ['/api/**'])
       assert_equal(1, s.settings['ignore_globs'].size)
       assert_equal(true, s.settings['ignore_globs'].first.match?('/api/a/b'))
       assert_equal(false, s.settings['ignore_globs'].first.match?('/a/b'))
@@ -74,23 +74,23 @@ module Wovnrb
 
     def test_settings_ignore_paths_multiple
       s = Wovnrb::Store.instance
-      s.update_settings({'ignore_paths' => ['/api/a/**', '/api/b/**']})
+      s.update_settings('ignore_paths' => ['/api/a/**', '/api/b/**'])
       assert_equal(2, s.settings['ignore_globs'].size)
-      assert_equal(true, s.settings['ignore_globs'].any?{|g| g.match?('/api/a')})
-      assert_equal(true, s.settings['ignore_globs'].any?{|g| g.match?('/api/b')})
-      assert_equal(false, s.settings['ignore_globs'].any?{|g| g.match?('/api/c')})
+      assert_equal(true, s.settings['ignore_globs'].any? { |g| g.match?('/api/a') })
+      assert_equal(true, s.settings['ignore_globs'].any? { |g| g.match?('/api/b') })
+      assert_equal(false, s.settings['ignore_globs'].any? { |g| g.match?('/api/c') })
     end
 
     def test_settings_ignore_paths_empty
       s = Wovnrb::Store.instance
-      s.update_settings({'ignore_paths' => []})
+      s.update_settings('ignore_paths' => [])
       assert_equal([], s.settings['ignore_globs'])
     end
 
     def test_settings_invalid_ignore_paths
       mock = LogMock.mock_log
       store = Wovnrb::Store.instance
-      store.update_settings({'ignore_paths' => 'aaaa'})
+      store.update_settings('ignore_paths' => 'aaaa')
 
       assert_equal(false, store.valid_settings?)
       assert_equal(['Project token  is not valid.', 'Ignore Paths aaaa should be Array.'], mock.errors)
@@ -98,8 +98,8 @@ module Wovnrb
 
     def test_settings_ignore_glob_injection
       s = Wovnrb::Store.instance
-      s.update_settings({'ignore_paths' => nil})
-      s.update_settings({'ignore_globs' => [1, 2]})
+      s.update_settings('ignore_paths' => nil)
+      s.update_settings('ignore_globs' => [1, 2])
 
       assert_equal([], s.settings['ignore_globs'])
     end
@@ -121,7 +121,7 @@ module Wovnrb
     def test_invalid_token_nil
       mock = LogMock.mock_log
       store = Wovnrb::Store.instance
-      settings = {'not_a_token' => '12345'}
+      settings = { 'not_a_token' => '12345' }
 
       assert_equal(false, store.valid_token?(settings['token']))
     end
@@ -142,30 +142,30 @@ module Wovnrb
 
     def test_add_custom_lang_aliases_empty
       s = Wovnrb::Store.instance
-      s.update_settings({'custom_lang_aliases' => {}})
+      s.update_settings('custom_lang_aliases' => {})
 
       assert_equal({}, s.settings['custom_lang_aliases'])
     end
 
     def test_add_custom_lang_aliases_single_value
       s = Wovnrb::Store.instance
-      s.update_settings({'custom_lang_aliases' => {'ja' => 'staging-ja'}})
+      s.update_settings('custom_lang_aliases' => { 'ja' => 'staging-ja' })
 
-      assert_equal({'ja' => 'staging-ja'}, s.settings['custom_lang_aliases'])
+      assert_equal({ 'ja' => 'staging-ja' }, s.settings['custom_lang_aliases'])
     end
 
     def test_add_custom_lang_aliases_multiple_values
       s = Wovnrb::Store.instance
-      s.update_settings({'custom_lang_aliases' => {'ja' => 'staging-ja', 'en' => 'staging-en'}})
+      s.update_settings('custom_lang_aliases' => { 'ja' => 'staging-ja', 'en' => 'staging-en' })
 
-      assert_equal({'ja' => 'staging-ja', 'en' => 'staging-en'}, s.settings['custom_lang_aliases'])
+      assert_equal({ 'ja' => 'staging-ja', 'en' => 'staging-en' }, s.settings['custom_lang_aliases'])
     end
 
     def test_add_custom_lang_aliases_using_symbols
       s = Wovnrb::Store.instance
-      s.update_settings({'custom_lang_aliases' => {ja: 'staging-ja', en: 'staging-en'}})
+      s.update_settings('custom_lang_aliases' => { ja: 'staging-ja', en: 'staging-en' })
 
-      assert_equal({'ja' => 'staging-ja', 'en' => 'staging-en'}, s.settings['custom_lang_aliases'])
+      assert_equal({ 'ja' => 'staging-ja', 'en' => 'staging-en' }, s.settings['custom_lang_aliases'])
     end
   end
 end

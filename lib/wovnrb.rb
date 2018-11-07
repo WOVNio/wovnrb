@@ -15,26 +15,24 @@ require 'wovnrb/version'
 
 module Wovnrb
   class Interceptor
-    def initialize(app, opts={})
+    def initialize(app, opts = {})
       @app = app
       @store = Store.instance
-      opts = opts.each_with_object({}){|(k,v),memo| memo[k.to_s]=v}
+      opts = opts.each_with_object({}) { |(k, v), memo| memo[k.to_s] = v }
       @store.update_settings(opts)
       CacheBase.set_single(@store.settings)
     end
 
     def call(env)
       @store.settings.clear_dynamic_settings!
-      unless Store.instance.valid_settings?
-        return @app.call(env)
-      end
+      return @app.call(env) unless Store.instance.valid_settings?
+
       @env = env
       headers = Headers.new(env, @store.settings)
-      if @store.settings['test_mode'] && @store.settings['test_url'] != headers.url
-        return @app.call(env)
-      end
-      #redirect if the path is set to the default language (for SEO purposes)
-      if (headers.path_lang == @store.settings['default_lang'])
+      return @app.call(env) if @store.settings['test_mode'] && @store.settings['test_url'] != headers.url
+
+      # redirect if the path is set to the default language (for SEO purposes)
+      if headers.path_lang == @store.settings['default_lang']
         redirect_headers = headers.redirect(@store.settings['default_lang'])
         return [307, redirect_headers, ['']]
       end
@@ -42,26 +40,20 @@ module Wovnrb
       # pass to application
       status, res_headers, body = @app.call(headers.request_out)
 
-      unless res_headers["Content-Type"] =~ /html/
-        return output(headers, status, res_headers, body)
-      end
+      return output(headers, status, res_headers, body) unless res_headers['Content-Type'] =~ /html/
 
       request = Rack::Request.new(env)
 
-      if request.params['wovn_disable'] == true
-        return output(headers, status, res_headers, body)
-      end
+      return output(headers, status, res_headers, body) if request.params['wovn_disable'] == true
 
       @store.settings.update_dynamic_settings!(request.params)
-      if @store.settings['ignore_globs'].any?{|g| g.match?(headers.pathname)}
-        return output(headers, status, res_headers, body)
-      end
+      return output(headers, status, res_headers, body) if @store.settings['ignore_globs'].any? { |g| g.match?(headers.pathname) }
 
       body = switch_lang(headers, body) unless status.to_s =~ /^1|302/
 
       content_length = 0
       body.each { |b| content_length += b.respond_to?(:bytesize) ? b.bytesize : 0 }
-      res_headers["Content-Length"] = content_length.to_s
+      res_headers['Content-Length'] = content_length.to_s
 
       output(headers, status, res_headers, body)
     end
@@ -72,7 +64,7 @@ module Wovnrb
       # Must use `.each` for to support multiple-chunks in Sinatra
       string_body = ''
       body.each { |chunk| string_body += chunk }
-      html_body = Helpers::NokogumboHelper::parse_html(string_body)
+      html_body = Helpers::NokogumboHelper.parse_html(string_body)
 
       if !wovn_ignored?(html_body) && !amp_page?(html_body)
         html_converter = HtmlConverter.new(html_body, @store, headers)

@@ -13,7 +13,7 @@ module Wovnrb
     include Singleton
 
     def self.default_settings
-      Settings.new.merge({
+      Settings.new.merge(
         'project_token' => '',
         'log_path' => 'log/wovn_error.log',
         'ignore_paths' => [],
@@ -30,10 +30,10 @@ module Wovnrb
         'test_url' => '',
         'cache_megabytes' => nil,
         'ttl_seconds' => nil,
-        'use_proxy' => false,  # use env['HTTP_X_FORWARDED_HOST'] instead of env['HTTP_HOST'] and env['SERVER_NAME'] when this setting is true.
+        'use_proxy' => false, # use env['HTTP_X_FORWARDED_HOST'] instead of env['HTTP_HOST'] and env['SERVER_NAME'] when this setting is true.
         'custom_lang_aliases' => {},
         'translate_fragment' => true
-      })
+      )
     end
 
     def initialize
@@ -53,7 +53,7 @@ module Wovnrb
     #
     # @return [Boolean] Returns true if the token is valid, and false if it is not
     def valid_token?(token)
-      return !token.nil? && (token.length == 5 || token.length == 6)
+      !token.nil? && (token.length == 5 || token.length == 6)
     end
 
     # Returns true or false based on whether the settings are valid or not, logs any invalid settings to ../error.log
@@ -61,8 +61,8 @@ module Wovnrb
     # @return [Boolean] Returns true if the settings are valid, and false if they are not
     def valid_settings?
       valid = true
-      errors = [];
-      #if valid_token?(!settings.has_key?('project_token') || settings['project_token'].length < 5 || settings['project_token'].length > 6
+      errors = []
+      # if valid_token?(!settings.has_key?('project_token') || settings['project_token'].length < 5 || settings['project_token'].length > 6
       if !valid_token?(settings['project_token'])
         errors.push("Project token #{settings['project_token']} is not valid.")
       end
@@ -97,7 +97,7 @@ module Wovnrb
           WovnLogger.instance.error(e)
         end
       end
-      return valid
+      valid
     end
 
     # Returns the settings object, pulling from Rails config the first time this is called
@@ -147,11 +147,11 @@ module Wovnrb
         @settings['url_pattern_reg'] = "^(?<lang>[^.]+)\."
       end
 
-      if @settings['test_mode'] != true || @settings['test_mode'] != 'on'
-        @settings['test_mode'] = false
-      else
-        @settings['test_mode'] = true
-      end
+      @settings['test_mode'] = if @settings['test_mode'] != true || @settings['test_mode'] != 'on'
+                                 false
+                               else
+                                 true
+                               end
     end
 
     def custom_lang_aliases
@@ -164,7 +164,7 @@ module Wovnrb
 
     def default_lang_alias
       custom_alias = custom_lang_aliases[default_lang]
-      custom_alias ? custom_alias : default_lang
+      custom_alias || default_lang
     end
 
     def supported_langs
@@ -181,9 +181,9 @@ module Wovnrb
 
     private
 
-    def stringify_keys!(h)
-      h.keys.each do |k|
-        h[k.to_s] = h.delete(k)
+    def stringify_keys!(hash)
+      hash.keys.each do |k|
+        hash[k.to_s] = hash.delete(k)
       end
     end
   end

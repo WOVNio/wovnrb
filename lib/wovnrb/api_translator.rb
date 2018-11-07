@@ -89,9 +89,7 @@ module Wovnrb
         'body' => body
       }
 
-      unless custom_lang_aliases.empty?
-        data.merge!('custom_lang_aliases' => JSON.dump(custom_lang_aliases))
-      end
+      data['custom_lang_aliases'] = JSON.dump(custom_lang_aliases) unless custom_lang_aliases.empty?
 
       data
     end

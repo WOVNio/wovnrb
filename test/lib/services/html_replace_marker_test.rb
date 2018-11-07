@@ -58,7 +58,7 @@ module Wovnrb
         new_html = new_html.sub("hello_#{i}", key)
       end
 
-      assert_equal(false,new_html.include?('hello'))
+      assert_equal(false, new_html.include?('hello'))
       assert_equal(original_html, marker.revert(new_html))
     end
 

@@ -10,7 +10,7 @@ module Wovnrb
                 parse_fragment(html_string, encoding)
               end
 
-        return dom
+        dom
       end
 
       # https://www.rubydoc.info/gems/nokogumbo/Nokogiri/HTML5#fragment-class_method

@@ -55,18 +55,16 @@ module Wovnrb
     end
 
     def strip_script(node, marker)
-      if node.name.downcase == 'script'
-        put_replace_marker(node, marker)
-      end
+      put_replace_marker(node, marker) if node.name.casecmp('script').zero?
     end
 
     def strip_form(node, marker)
-      if node.name.downcase == 'form'
+      if node.name.casecmp('form').zero?
         put_replace_marker(node, marker)
         return
       end
 
-      if node.name.downcase == 'input' && node.get_attribute('type') == 'hidden'
+      if node.name.casecmp('input').zero? && node.get_attribute('type') == 'hidden'
         original_text = node.get_attribute('value')
         return if original_text.include?(HtmlReplaceMarker::KEY_PREFIX)
 
@@ -85,9 +83,7 @@ module Wovnrb
     end
 
     def strip_wovn_ignore(node, marker)
-      if node && node.get_attribute('wovn-ignore')
-        put_replace_marker(node, marker)
-      end
+      put_replace_marker(node, marker) if node && node.get_attribute('wovn-ignore')
     end
 
     def put_replace_marker(node, marker)
@@ -100,9 +96,7 @@ module Wovnrb
     def strip_hreflangs
       supported_langs = @store.supported_langs
       @dom.xpath('//link') do |node|
-        if node['hreflang'] && supported_langs.include?(Lang::iso_639_1_normalization(node['hreflang']))
-          node.remove
-        end
+        node.remove if node['hreflang'] && supported_langs.include?(Lang.iso_639_1_normalization(node['hreflang']))
       end
     end
 
@@ -152,9 +146,7 @@ module Wovnrb
     # Remove wovn snippet code from dom
     def strip_snippet
       @dom.xpath('//script').each do |script_node|
-        if script_node['src'] && script_node['src'] =~ /^\/\/j.(dev-)?wovn.io(:3000)?\//
-          script_node.remove
-        end
+        script_node.remove if script_node['src'] && script_node['src'] =~ /^\/\/j.(dev-)?wovn.io(:3000)?\//
       end
     end
 
@@ -170,7 +162,7 @@ module Wovnrb
       # do this so that there will be a closing tag (better compatibility with browsers)
       insert_node.content = ''
 
-      if parent_node.children.size > 0
+      if !parent_node.children.empty?
         parent_node.children.first.add_previous_sibling(insert_node)
       else
         parent_node.add_child(insert_node)
@@ -187,7 +179,7 @@ module Wovnrb
       CGI.escapeHTML(
         [
           "key=#{token}",
-          "backend=true",
+          'backend=true',
           "currentLang=#{current_lang}",
           "defaultLang=#{default_lang}",
           "urlPattern=#{url_pattern}",

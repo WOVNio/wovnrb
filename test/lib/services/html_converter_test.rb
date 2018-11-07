@@ -3,17 +3,17 @@ require 'test_helper'
 module Wovnrb
   class HtmlConverterTest < WovnMiniTest
     def test_build_api_compatible_html
-      converter = prepare_html_converter('<html><body><a class="test">hello</a></body></html>', supported_langs: ['en', 'vi'])
-      converted_html, _ = converter.build_api_compatible_html
+      converter = prepare_html_converter('<html><body><a class="test">hello</a></body></html>', supported_langs: %w[en vi])
+      converted_html, = converter.build_api_compatible_html
 
       expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.dev-wovn.io:3000/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><a class=\"test\">hello</a></body></html>"
       assert_equal(expected_html, converted_html)
     end
 
     def test_build_api_compatible_html_not_fail_for_big_content
-      long_string = 'a' * 60000
-      converter = prepare_html_converter('<html><body><p>' + long_string + '</p></body></html>', supported_langs: ['en', 'vi'])
-      converted_html, _ = converter.build_api_compatible_html
+      long_string = 'a' * 60_000
+      converter = prepare_html_converter('<html><body><p>' + long_string + '</p></body></html>', supported_langs: %w[en vi])
+      converted_html, = converter.build_api_compatible_html
 
       expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.dev-wovn.io:3000/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><p>" + long_string + '</p></body></html>'
       assert_equal(expected_html, converted_html)
@@ -29,14 +29,14 @@ module Wovnrb
       ].join
 
       converter = prepare_html_converter(html, ignore_class: ['ignore-me'])
-      converted_html, marker = converter.build_api_compatible_html
+      converted_html, = converter.build_api_compatible_html
 
       expected_convert_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.dev-wovn.io:3000/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"fr\" href=\"http://my-site.com/?wovn=fr\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/?wovn=ja\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><p>Hello <span wovn-ignore=\"\"><!-- __wovn-backend-ignored-key-0 --></span></p><p></p><div><span class=\"ignore-me\"><!-- __wovn-backend-ignored-key-1 --></span></div><span>Have a nice day!</span></body></html>"
       assert_equal(expected_convert_html, converted_html)
     end
 
     def test_transform_html
-      converter = prepare_html_converter('<html><body><a>hello</a></body></html>', supported_langs: %w(en vi))
+      converter = prepare_html_converter('<html><body><a>hello</a></body></html>', supported_langs: %w[en vi])
       translated_html = converter.build
 
       expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.dev-wovn.io:3000/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><a>hello</a></body></html>"
@@ -52,7 +52,7 @@ module Wovnrb
     end
 
     def test_transform_html_with_head_tag
-      converter = prepare_html_converter('<html><head><title>TITLE</title></head><body><a>hello</a></body></html>', supported_langs: ['en', 'vi'])
+      converter = prepare_html_converter('<html><head><title>TITLE</title></head><body><a>hello</a></body></html>', supported_langs: %w[en vi])
       translated_html = converter.build
 
       expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.dev-wovn.io:3000/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><title>TITLE</title><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><a>hello</a></body></html>"
@@ -71,7 +71,7 @@ module Wovnrb
       dom = get_dom('<html>hello<a>world</a></html>')
       settings = {
         'default_lang' => 'en',
-        'supported_langs' => %w(en ja vi),
+        'supported_langs' => %w[en ja vi],
         'url_pattern' => 'query'
       }
       store, headers = store_headers_factory(settings)
@@ -86,7 +86,7 @@ module Wovnrb
       dom = get_dom('<html>hello<a>world</a></html>')
       settings = {
         'default_lang' => 'en',
-        'supported_langs' => %w(en ja vi),
+        'supported_langs' => %w[en ja vi],
         'url_pattern' => 'path'
       }
       store, headers = store_headers_factory(settings)
@@ -109,7 +109,7 @@ module Wovnrb
       converter = prepare_html_converter('<html><head><link rel="alternate" hreflang="en" href="https://wovn.io/en/"></head></html>')
       converter.send(:replace_hreflangs)
 
-      expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"fr\" href=\"http://my-site.com/?wovn=fr\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/?wovn=ja\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body></body></html>"
+      expected_html = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><link rel="alternate" hreflang="en" href="http://my-site.com/"><link rel="alternate" hreflang="fr" href="http://my-site.com/?wovn=fr"><link rel="alternate" hreflang="ja" href="http://my-site.com/?wovn=ja"><link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi"></head><body></body></html>'
       assert_equal(expected_html, converter.send(:html))
     end
 
@@ -119,12 +119,12 @@ module Wovnrb
       store.update_settings(settings)
 
       headers = Wovnrb::Headers.new(
-        Wovnrb.get_env('url' => "http://my-site.com/?wovn=ja"),
+        Wovnrb.get_env('url' => 'http://my-site.com/?wovn=ja'),
         Wovnrb.get_settings(settings)
       )
       converter = HtmlConverter.new(get_dom('<html><body>hello</body></html>'), store, headers)
       converter.send(:inject_lang_html_tag)
-      expected_html = "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body>hello</body></html>"
+      expected_html = '<html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body>hello</body></html>'
       assert_equal(expected_html, converter.send(:html))
     end
 
@@ -141,7 +141,7 @@ module Wovnrb
       store.update_settings(settings)
 
       headers = Wovnrb::Headers.new(
-        Wovnrb.get_env('url' => "http://my-site.com"),
+        Wovnrb.get_env('url' => 'http://my-site.com'),
         Wovnrb.get_settings(settings)
       )
 
@@ -155,12 +155,12 @@ module Wovnrb
         'default_lang' => 'en',
         'url_pattern' => 'query',
         'url_pattern_reg' => '((\?.*&)|\?)wovn=(?<lang>[^&]+)(&|)',
-        'supported_langs' => ['en', 'fr', 'ja', 'vi']
+        'supported_langs' => %w[en fr ja vi]
       }
     end
 
     def get_dom(html)
-      Helpers::NokogumboHelper::parse_html(html)
+      Helpers::NokogumboHelper.parse_html(html)
     end
   end
 end

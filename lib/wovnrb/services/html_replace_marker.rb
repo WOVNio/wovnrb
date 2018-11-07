@@ -17,7 +17,7 @@ module Wovnrb
 
     def revert(marked_html)
       i = @mapped_values.size
-      while i > 0 do
+      while i > 0
         i -= 1
         key, value = @mapped_values[i]
         marked_html = marked_html.sub(key, value)
