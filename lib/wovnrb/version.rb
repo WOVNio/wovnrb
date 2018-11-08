@@ -1,3 +1,3 @@
 module Wovnrb
-  VERSION = '1.2.0-beta'.freeze
+  VERSION = '2.0.0-beta'.freeze
 end
