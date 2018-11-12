@@ -6,7 +6,7 @@ module Wovnrb
       converter = prepare_html_converter('<html><body><a class="test">hello</a></body></html>', supported_langs: %w[en vi])
       converted_html, = converter.build_api_compatible_html
 
-      expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.dev-wovn.io:3000/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><a class=\"test\">hello</a></body></html>"
+      expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><a class=\"test\">hello</a></body></html>"
       assert_equal(expected_html, converted_html)
     end
 
@@ -15,7 +15,7 @@ module Wovnrb
       converter = prepare_html_converter('<html><body><p>' + long_string + '</p></body></html>', supported_langs: %w[en vi])
       converted_html, = converter.build_api_compatible_html
 
-      expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.dev-wovn.io:3000/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><p>" + long_string + '</p></body></html>'
+      expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><p>" + long_string + '</p></body></html>'
       assert_equal(expected_html, converted_html)
     end
 
@@ -31,7 +31,7 @@ module Wovnrb
       converter = prepare_html_converter(html, ignore_class: ['ignore-me'])
       converted_html, = converter.build_api_compatible_html
 
-      expected_convert_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.dev-wovn.io:3000/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"fr\" href=\"http://my-site.com/?wovn=fr\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/?wovn=ja\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><p>Hello <span wovn-ignore=\"\"><!-- __wovn-backend-ignored-key-0 --></span></p><p></p><div><span class=\"ignore-me\"><!-- __wovn-backend-ignored-key-1 --></span></div><span>Have a nice day!</span></body></html>"
+      expected_convert_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"fr\" href=\"http://my-site.com/?wovn=fr\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/?wovn=ja\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><p>Hello <span wovn-ignore=\"\"><!-- __wovn-backend-ignored-key-0 --></span></p><p></p><div><span class=\"ignore-me\"><!-- __wovn-backend-ignored-key-1 --></span></div><span>Have a nice day!</span></body></html>"
       assert_equal(expected_convert_html, converted_html)
     end
 
@@ -39,7 +39,7 @@ module Wovnrb
       converter = prepare_html_converter('<html><body><a>hello</a></body></html>', supported_langs: %w[en vi])
       translated_html = converter.build
 
-      expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.dev-wovn.io:3000/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><a>hello</a></body></html>"
+      expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><a>hello</a></body></html>"
       assert_equal(expected_html, translated_html)
     end
 
@@ -47,7 +47,7 @@ module Wovnrb
       converter = prepare_html_converter('<html><body><a>hello</a></body></html>', supported_langs: [])
       translated_html = converter.build
 
-      expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.dev-wovn.io:3000/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script></head><body><a>hello</a></body></html>"
+      expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script></head><body><a>hello</a></body></html>"
       assert_equal(expected_html, translated_html)
     end
 
@@ -55,7 +55,7 @@ module Wovnrb
       converter = prepare_html_converter('<html><head><title>TITLE</title></head><body><a>hello</a></body></html>', supported_langs: %w[en vi])
       translated_html = converter.build
 
-      expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.dev-wovn.io:3000/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><title>TITLE</title><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><a>hello</a></body></html>"
+      expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><title>TITLE</title><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><a>hello</a></body></html>"
       assert_equal(expected_html, translated_html)
     end
 
@@ -63,7 +63,7 @@ module Wovnrb
       converter = prepare_html_converter('<html>hello<a>world</a></html>', supported_langs: [])
       translated_html = converter.build
 
-      expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.dev-wovn.io:3000/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script></head><body>hello<a>world</a></body></html>"
+      expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script></head><body>hello<a>world</a></body></html>"
       assert_equal(expected_html, translated_html)
     end
 
@@ -78,7 +78,7 @@ module Wovnrb
       converter = HtmlConverter.new(dom, store, headers)
       translated_html = converter.build
 
-      expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.dev-wovn.io:3000/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/?wovn=ja\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body>hello<a>world</a></body></html>"
+      expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/?wovn=ja\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body>hello<a>world</a></body></html>"
       assert_equal(expected_html, translated_html)
     end
 
@@ -93,7 +93,7 @@ module Wovnrb
       converter = HtmlConverter.new(dom, store, headers)
       translated_html = converter.build
 
-      expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.dev-wovn.io:3000/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=path&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/ja/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/vi/\"></head><body>hello<a>world</a></body></html>"
+      expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=path&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/ja/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/vi/\"></head><body>hello<a>world</a></body></html>"
       assert_equal(expected_html, translated_html)
     end
 
@@ -101,7 +101,7 @@ module Wovnrb
       converter = prepare_html_converter('<html><head><script src="/a"></script><script src="//j.wovn.io/1" async="true"</head></html>')
       converter.send(:replace_snippet)
 
-      expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.dev-wovn.io:3000/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><script src=\"/a\"></script></head><body></body></html>"
+      expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><script src=\"/a\"></script></head><body></body></html>"
       assert_equal(expected_html, converter.send(:html))
     end
 
