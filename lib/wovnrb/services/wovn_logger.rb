@@ -5,6 +5,12 @@ module Wovnrb
   class WovnLogger
     include Singleton
 
+    class << self
+      def error(message)
+        instance.error(message)
+      end
+    end
+
     def initialize
       path = Store.instance.settings['log_path']
       if path
@@ -26,9 +32,7 @@ module Wovnrb
 
     def set_logger(logger)
       [:error].each do |method|
-        unless logger.respond_to? method
-          raise 'not suite for logger'
-        end
+        raise 'not suite for logger' unless logger.respond_to? method
       end
 
       @logger = logger

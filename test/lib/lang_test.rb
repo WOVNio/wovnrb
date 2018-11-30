@@ -1,4 +1,3 @@
-# -*- encoding: UTF-8 -*-
 require 'test_helper'
 
 module Wovnrb
@@ -13,53 +12,53 @@ module Wovnrb
 
     def test_keys_exist
       Wovnrb::Lang::LANG.each do |k, l|
-        assert(l.has_key?(:name))
-        assert(l.has_key?(:code))
-        assert(l.has_key?(:en))
+        assert(l.key?(:name))
+        assert(l.key?(:code))
+        assert(l.key?(:en))
         assert_equal(k, l[:code])
       end
     end
 
     def test_iso_639_1_normalization
-       assert_equal('ar',       Lang::iso_639_1_normalization('ar'))
-       assert_equal('eu',       Lang::iso_639_1_normalization('eu'))
-       assert_equal('bn',       Lang::iso_639_1_normalization('bn'))
-       assert_equal('bg',       Lang::iso_639_1_normalization('bg'))
-       assert_equal('ca',       Lang::iso_639_1_normalization('ca'))
-       assert_equal('zh-Hans',  Lang::iso_639_1_normalization('zh-CHS'))
-       assert_equal('zh-Hant',  Lang::iso_639_1_normalization('zh-CHT'))
-       assert_equal('da',       Lang::iso_639_1_normalization('da'))
-       assert_equal('nl',       Lang::iso_639_1_normalization('nl'))
-       assert_equal('en',       Lang::iso_639_1_normalization('en'))
-       assert_equal('fi',       Lang::iso_639_1_normalization('fi'))
-       assert_equal('fr',       Lang::iso_639_1_normalization('fr'))
-       assert_equal('gl',       Lang::iso_639_1_normalization('gl'))
-       assert_equal('de',       Lang::iso_639_1_normalization('de'))
-       assert_equal('el',       Lang::iso_639_1_normalization('el'))
-       assert_equal('he',       Lang::iso_639_1_normalization('he'))
-       assert_equal('hu',       Lang::iso_639_1_normalization('hu'))
-       assert_equal('id',       Lang::iso_639_1_normalization('id'))
-       assert_equal('it',       Lang::iso_639_1_normalization('it'))
-       assert_equal('ja',       Lang::iso_639_1_normalization('ja'))
-       assert_equal('ko',       Lang::iso_639_1_normalization('ko'))
-       assert_equal('lv',       Lang::iso_639_1_normalization('lv'))
-       assert_equal('ms',       Lang::iso_639_1_normalization('ms'))
-       assert_equal('my',       Lang::iso_639_1_normalization('my'))
-       assert_equal('ne',       Lang::iso_639_1_normalization('ne'))
-       assert_equal('fa',       Lang::iso_639_1_normalization('fa'))
-       assert_equal('no',       Lang::iso_639_1_normalization('no'))
-       assert_equal('pl',       Lang::iso_639_1_normalization('pl'))
-       assert_equal('pt',       Lang::iso_639_1_normalization('pt'))
-       assert_equal('ru',       Lang::iso_639_1_normalization('ru'))
-       assert_equal('es',       Lang::iso_639_1_normalization('es'))
-       assert_equal('sw',       Lang::iso_639_1_normalization('sw'))
-       assert_equal('sv',       Lang::iso_639_1_normalization('sv'))
-       assert_equal('th',       Lang::iso_639_1_normalization('th'))
-       assert_equal('hi',       Lang::iso_639_1_normalization('hi'))
-       assert_equal('tr',       Lang::iso_639_1_normalization('tr'))
-       assert_equal('uk',       Lang::iso_639_1_normalization('uk'))
-       assert_equal('ur',       Lang::iso_639_1_normalization('ur'))
-       assert_equal('vi',       Lang::iso_639_1_normalization('vi'))
+      assert_equal('ar', Lang.iso_639_1_normalization('ar'))
+      assert_equal('eu',       Lang.iso_639_1_normalization('eu'))
+      assert_equal('bn',       Lang.iso_639_1_normalization('bn'))
+      assert_equal('bg',       Lang.iso_639_1_normalization('bg'))
+      assert_equal('ca',       Lang.iso_639_1_normalization('ca'))
+      assert_equal('zh-Hans',  Lang.iso_639_1_normalization('zh-CHS'))
+      assert_equal('zh-Hant',  Lang.iso_639_1_normalization('zh-CHT'))
+      assert_equal('da',       Lang.iso_639_1_normalization('da'))
+      assert_equal('nl',       Lang.iso_639_1_normalization('nl'))
+      assert_equal('en',       Lang.iso_639_1_normalization('en'))
+      assert_equal('fi',       Lang.iso_639_1_normalization('fi'))
+      assert_equal('fr',       Lang.iso_639_1_normalization('fr'))
+      assert_equal('gl',       Lang.iso_639_1_normalization('gl'))
+      assert_equal('de',       Lang.iso_639_1_normalization('de'))
+      assert_equal('el',       Lang.iso_639_1_normalization('el'))
+      assert_equal('he',       Lang.iso_639_1_normalization('he'))
+      assert_equal('hu',       Lang.iso_639_1_normalization('hu'))
+      assert_equal('id',       Lang.iso_639_1_normalization('id'))
+      assert_equal('it',       Lang.iso_639_1_normalization('it'))
+      assert_equal('ja',       Lang.iso_639_1_normalization('ja'))
+      assert_equal('ko',       Lang.iso_639_1_normalization('ko'))
+      assert_equal('lv',       Lang.iso_639_1_normalization('lv'))
+      assert_equal('ms',       Lang.iso_639_1_normalization('ms'))
+      assert_equal('my',       Lang.iso_639_1_normalization('my'))
+      assert_equal('ne',       Lang.iso_639_1_normalization('ne'))
+      assert_equal('fa',       Lang.iso_639_1_normalization('fa'))
+      assert_equal('no',       Lang.iso_639_1_normalization('no'))
+      assert_equal('pl',       Lang.iso_639_1_normalization('pl'))
+      assert_equal('pt',       Lang.iso_639_1_normalization('pt'))
+      assert_equal('ru',       Lang.iso_639_1_normalization('ru'))
+      assert_equal('es',       Lang.iso_639_1_normalization('es'))
+      assert_equal('sw',       Lang.iso_639_1_normalization('sw'))
+      assert_equal('sv',       Lang.iso_639_1_normalization('sv'))
+      assert_equal('th',       Lang.iso_639_1_normalization('th'))
+      assert_equal('hi',       Lang.iso_639_1_normalization('hi'))
+      assert_equal('tr',       Lang.iso_639_1_normalization('tr'))
+      assert_equal('uk',       Lang.iso_639_1_normalization('uk'))
+      assert_equal('ur',       Lang.iso_639_1_normalization('ur'))
+      assert_equal('vi',       Lang.iso_639_1_normalization('vi'))
     end
 
     def test_get_code_with_valid_code
@@ -93,128 +92,129 @@ module Wovnrb
     def test_add_lang_code
       lang = Lang.new('zh-cht')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://www.facebook.com", lang.add_lang_code("http://www.facebook.com", 'subdomain', h))
+      assert_equal('http://www.facebook.com', lang.add_lang_code('http://www.facebook.com', 'subdomain', h))
     end
 
     def test_add_lang_code_relative_slash_href_url_with_path
       lang = Lang.new('fr')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://fr.wovn.io/topics/44'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://fr.wovn.io/topics/50", lang.add_lang_code("/topics/50", 'subdomain', h))
+      assert_equal('http://fr.wovn.io/topics/50', lang.add_lang_code('/topics/50', 'subdomain', h))
     end
 
     def test_add_lang_code_relative_dot_href_url_with_path
       lang = Lang.new('fr')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://fr.wovn.io/topics/44'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://fr.wovn.io/topics/44/topics/50", lang.add_lang_code("./topics/50", 'subdomain', h))
+      assert_equal('http://fr.wovn.io/topics/44/topics/50', lang.add_lang_code('./topics/50', 'subdomain', h))
     end
 
     def test_add_lang_code_relative_two_dots_href_url_with_path
       lang = Lang.new('fr')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://fr.wovn.io/topics/44'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://fr.wovn.io/topics/50", lang.add_lang_code("../topics/50", 'subdomain', h))
+      assert_equal('http://fr.wovn.io/topics/50', lang.add_lang_code('../topics/50', 'subdomain', h))
     end
 
     def test_add_lang_code_trad_chinese
       lang = Lang.new('zh-cht')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://zh-cht.wovn.io/topics/31", lang.add_lang_code("http://wovn.io/topics/31", 'subdomain', h))
+      assert_equal('http://zh-cht.wovn.io/topics/31', lang.add_lang_code('http://wovn.io/topics/31', 'subdomain', h))
     end
 
     def test_add_lang_code_trad_chinese_2
       lang = Lang.new('zh-cht')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://zh-cht.wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://zh-cht.wovn.io/topics/31", lang.add_lang_code("/topics/31", 'subdomain', h))
+      assert_equal('http://zh-cht.wovn.io/topics/31', lang.add_lang_code('/topics/31', 'subdomain', h))
     end
 
     def test_add_lang_code_trad_chinese_lang_in_link_already
       lang = Lang.new('zh-cht')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://zh-cht.wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://zh-cht.wovn.io/topics/31", lang.add_lang_code("http://zh-cht.wovn.io/topics/31", 'subdomain', h))
+      assert_equal('http://zh-cht.wovn.io/topics/31', lang.add_lang_code('http://zh-cht.wovn.io/topics/31', 'subdomain', h))
     end
 
     def test_add_lang_code_no_protocol
       lang = Lang.new('zh-cht')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'https://zh-cht.google.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("//zh-cht.google.com", lang.add_lang_code("//google.com", 'subdomain', h))
+      assert_equal('//zh-cht.google.com', lang.add_lang_code('//google.com', 'subdomain', h))
     end
 
     def test_add_lang_code_no_protocol_2
       lang = Lang.new('zh-cht')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'https://zh-cht.wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("//google.com", lang.add_lang_code("//google.com", 'subdomain', h))
+      assert_equal('//google.com', lang.add_lang_code('//google.com', 'subdomain', h))
     end
 
     def test_add_lang_code_invalid_url
       lang = Lang.new('zh-cht')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://www.facebook.com/sharer.php?u=http://wovn.io/topics/50&amp;amp;t=Gourmet Tofu World: Vegetarian-Friendly Japanese Food is Here!", lang.add_lang_code("http://www.facebook.com/sharer.php?u=http://wovn.io/topics/50&amp;amp;t=Gourmet Tofu World: Vegetarian-Friendly Japanese Food is Here!", 'subdomain', h))
+      assert_equal('http://www.facebook.com/sharer.php?u=http://wovn.io/topics/50&amp;amp;t=Gourmet Tofu World: Vegetarian-Friendly Japanese Food is Here!', lang.add_lang_code('http://www.facebook.com/sharer.php?u=http://wovn.io/topics/50&amp;amp;t=Gourmet Tofu World: Vegetarian-Friendly Japanese Food is Here!', 'subdomain', h))
     end
 
     def test_add_lang_code_path_only_with_slash
       lang = Lang.new('zh-cht')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://zh-cht.wovn.io/topics/31", lang.add_lang_code("/topics/31", 'subdomain', h))
+      assert_equal('http://zh-cht.wovn.io/topics/31', lang.add_lang_code('/topics/31', 'subdomain', h))
     end
 
     def test_add_lang_code_path_only_no_slash
       lang = Lang.new('zh-cht')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://zh-cht.wovn.io/topics/31", lang.add_lang_code("topics/31", 'subdomain', h))
+      assert_equal('http://zh-cht.wovn.io/topics/31', lang.add_lang_code('topics/31', 'subdomain', h))
     end
 
     def test_add_lang_code_path_explicit_page_no_slash
       lang = Lang.new('zh-cht')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://zh-cht.wovn.io/topics/31.html", lang.add_lang_code("topics/31.html", 'subdomain', h))
+      assert_equal('http://zh-cht.wovn.io/topics/31.html', lang.add_lang_code('topics/31.html', 'subdomain', h))
     end
 
     def test_add_lang_code_path_explicit_page_with_slash
       lang = Lang.new('zh-cht')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://zh-cht.wovn.io/topics/31.html", lang.add_lang_code("/topics/31.html", 'subdomain', h))
+      assert_equal('http://zh-cht.wovn.io/topics/31.html', lang.add_lang_code('/topics/31.html', 'subdomain', h))
     end
 
     def test_add_lang_code_no_protocol_with_path_explicit_page
       lang = Lang.new('zh-cht')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("//www.google.com/topics/31.php", lang.add_lang_code("//www.google.com/topics/31.php", 'subdomain', h))
+      assert_equal('//www.google.com/topics/31.php', lang.add_lang_code('//www.google.com/topics/31.php', 'subdomain', h))
     end
 
     def test_add_lang_code_protocol_with_path_explicit_page
       lang = Lang.new('zh-cht')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://www.google.com/topics/31.php", lang.add_lang_code("http://www.google.com/topics/31.php", 'subdomain', h))
+      assert_equal('http://www.google.com/topics/31.php', lang.add_lang_code('http://www.google.com/topics/31.php', 'subdomain', h))
     end
 
     def test_add_lang_code_relative_path_double_period
       lang = Lang.new('zh-cht')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://zh-cht.wovn.io/topics/31", lang.add_lang_code("../topics/31", 'subdomain', h))
+      assert_equal('http://zh-cht.wovn.io/topics/31', lang.add_lang_code('../topics/31', 'subdomain', h))
     end
 
     def test_add_lang_code_relative_path_single_period
       lang = Lang.new('zh-cht')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://zh-cht.wovn.io/topics/31", lang.add_lang_code("./topics/31", 'subdomain', h))
+      assert_equal('http://zh-cht.wovn.io/topics/31', lang.add_lang_code('./topics/31', 'subdomain', h))
     end
 
     def test_add_lang_code_empty_href
       lang = Lang.new('zh-cht')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("", lang.add_lang_code("", 'subdomain', h))
+      assert_equal('', lang.add_lang_code('', 'subdomain', h))
     end
 
     def test_add_lang_code_hash_href
       lang = Lang.new('zh-cht')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("#", lang.add_lang_code("#", 'subdomain', h))
+      assert_equal('#', lang.add_lang_code('#', 'subdomain', h))
     end
 
     def test_add_lang_code_nil_href
       lang = Lang.new('en')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings)
-      assert_nil(lang.add_lang_code(nil,'path', h))
+      assert_nil(lang.add_lang_code(nil, 'path', h))
     end
+
     def test_add_lang_code_absolute_different_host
       lang = Lang.new('fr')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://google.com'), Wovnrb.get_settings)
@@ -329,70 +329,70 @@ module Wovnrb
       assert_equal('/fr/index.html', lang.add_lang_code('index.html', 'path', headers))
     end
 
-    def generate_body(param = "")
-      case param
-        when "ignore_parent"
-          body = "<html><body><h1>Mr. Belvedere Fan Club</h1>
-                <div wovn-ignore><p>Hello</p></div>
-              </body></html>"
-        when "ignore_everything"
-          body = "<html><body wovn-ignore><h1>Mr. Belvedere Fan Club</h1>
-                <div><p>Hello</p></div>
-              </body></html>"
-        when "ignore_parent_translated_in_japanese"
-          body = "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://ignore-page.com/\"></head><body><h1><!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1>
-                <div wovn-ignore=\"\"><p>Hello</p></div>
-              </body></html>
-"
-        when "translated_in_japanese"
-          body = "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head><body><h1><!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1>
-                <div><p><!--wovn-src:Hello-->こんにちは</p></div>
-              </body></html>
-"
-        when "ignore_everything_translated"
-          body = "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://ignore-page.com/\"></head><body wovn-ignore=\"\"><h1>Mr. Belvedere Fan Club</h1>
-                <div><p>Hello</p></div>
-              </body></html>
-"
-        when "empty"
-          body = "<html><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore><p>Hello</p></div></body></html>"
-        when "empty_single_quote"
-          body = "<html><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore=''><p>Hello</p></div></body></html>"
-        when "empty_double_quote"
-          body = "<html><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore=""><p>Hello</p></div></body></html>"
-        when "value_single_quote"
-          body = "<html><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore='value'><p>Hello</p></div></body></html>"
-        when "value_double_quote"
-          body = "<html><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore=\"value\"><p>Hello</p></div></body></html>"
-        when "empty_translated"
-          body = "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://ignore-page.com/\"></head><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore=\"\"><p>Hello</p></div></body></html>\n"
-        when "empty_single_quote_translated"
-          body = "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://ignore-page.com/\"></head><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore=\"\"><p>Hello</p></div></body></html>\n"
-        when "empty_double_quote_translated"
-          body = "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://ignore-page.com/\"></head><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore=\"\"><p>Hello</p></div></body></html>\n"
-        when "value_single_quote_translated"
-          body = "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://ignore-page.com/\"></head><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore=\"value\"><p>Hello</p></div></body></html>\n"
-        when "value_double_quote_translated"
-          body = "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://ignore-page.com/\"></head><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore=\"value\"><p>Hello</p></div></body></html>\n"
-        when "meta_img_alt_tags_translated"
-          body = "<html lang=\"ja\"><head><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta name=\"description\" content=\"こんにちは\">\n<meta name=\"title\" content=\"こんにちは\">\n<meta property=\"og:title\" content=\"こんにちは\">\n<meta property=\"og:description\" content=\"こんにちは\">\n<meta property=\"twitter:title\" content=\"こんにちは\">\n<meta property=\"twitter:description\" content=\"こんにちは\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head>\n<body><h1><!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1>\n<div><p><!--wovn-src:Hello-->こんにちは</p></div>\n<!--wovn-src:Hello--><img src=\"http://example.com/photo.png\" alt=\"こんにちは\">\n</body></html>\n"
-        when  "meta_img_alt_tags"
-          body = "<html><head><meta name =\"description\" content=\"Hello\">\n<meta name=\"title\" content=\"Hello\">\n<meta property=\"og:title\" content=\"Hello\">\n<meta property=\"og:description\" content=\"Hello\">\n<meta property=\"twitter:title\" content=\"Hello\">\n<meta property=\"twitter:description\" content=\"Hello\"></head>
-<body><h1>Mr. Belvedere Fan Club</h1>
-<div><p>Hello</p></div>
-<img src=\"http://example.com/photo.png\" alt=\"Hello\">
-</body></html>"
-        when  "a_href_javascript"
-          body = "<html><body><h1>Mr. Belvedere Fan Club</h1>
-                <div><p><a href=\"javascript:void(0)\">Hello</a></p></div>
-              </body></html>"
-        when  "a_href_javascript_translated"
-          body = "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head><body><h1><!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1>
-                <div><p><a href=\"javascript:void(0)\"><!--wovn-src:Hello-->こんにちは</a></p></div>
-              </body></html>
-"
-        when "unified_values"
-          body = <<-HTML
+    def generate_body(param = '')
+      body = case param
+             when 'ignore_parent'
+               "<html><body><h1>Mr. Belvedere Fan Club</h1>
+                     <div wovn-ignore><p>Hello</p></div>
+                   </body></html>"
+             when 'ignore_everything'
+               "<html><body wovn-ignore><h1>Mr. Belvedere Fan Club</h1>
+                     <div><p>Hello</p></div>
+                   </body></html>"
+             when 'ignore_parent_translated_in_japanese'
+               "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://ignore-page.com/\"></head><body><h1><!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1>
+                     <div wovn-ignore=\"\"><p>Hello</p></div>
+                   </body></html>
+       "
+             when 'translated_in_japanese'
+               "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head><body><h1><!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1>
+                     <div><p><!--wovn-src:Hello-->こんにちは</p></div>
+                   </body></html>
+       "
+             when 'ignore_everything_translated'
+               "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://ignore-page.com/\"></head><body wovn-ignore=\"\"><h1>Mr. Belvedere Fan Club</h1>
+                     <div><p>Hello</p></div>
+                   </body></html>
+       "
+             when 'empty'
+               '<html><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore><p>Hello</p></div></body></html>'
+             when 'empty_single_quote'
+               "<html><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore=''><p>Hello</p></div></body></html>"
+             when 'empty_double_quote'
+               '<html><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore=''><p>Hello</p></div></body></html>'
+             when 'value_single_quote'
+               "<html><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore='value'><p>Hello</p></div></body></html>"
+             when 'value_double_quote'
+               '<html><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore="value"><p>Hello</p></div></body></html>'
+             when 'empty_translated'
+               "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://ignore-page.com/\"></head><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore=\"\"><p>Hello</p></div></body></html>\n"
+             when 'empty_single_quote_translated'
+               "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://ignore-page.com/\"></head><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore=\"\"><p>Hello</p></div></body></html>\n"
+             when 'empty_double_quote_translated'
+               "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://ignore-page.com/\"></head><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore=\"\"><p>Hello</p></div></body></html>\n"
+             when 'value_single_quote_translated'
+               "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://ignore-page.com/\"></head><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore=\"value\"><p>Hello</p></div></body></html>\n"
+             when 'value_double_quote_translated'
+               "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://ignore-page.com/\"></head><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore=\"value\"><p>Hello</p></div></body></html>\n"
+             when 'meta_img_alt_tags_translated'
+               "<html lang=\"ja\"><head><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta name=\"description\" content=\"こんにちは\">\n<meta name=\"title\" content=\"こんにちは\">\n<meta property=\"og:title\" content=\"こんにちは\">\n<meta property=\"og:description\" content=\"こんにちは\">\n<meta property=\"twitter:title\" content=\"こんにちは\">\n<meta property=\"twitter:description\" content=\"こんにちは\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head>\n<body><h1><!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1>\n<div><p><!--wovn-src:Hello-->こんにちは</p></div>\n<!--wovn-src:Hello--><img src=\"http://example.com/photo.png\" alt=\"こんにちは\">\n</body></html>\n"
+             when  'meta_img_alt_tags'
+               "<html><head><meta name =\"description\" content=\"Hello\">\n<meta name=\"title\" content=\"Hello\">\n<meta property=\"og:title\" content=\"Hello\">\n<meta property=\"og:description\" content=\"Hello\">\n<meta property=\"twitter:title\" content=\"Hello\">\n<meta property=\"twitter:description\" content=\"Hello\"></head>
+       <body><h1>Mr. Belvedere Fan Club</h1>
+       <div><p>Hello</p></div>
+       <img src=\"http://example.com/photo.png\" alt=\"Hello\">
+       </body></html>"
+             when  'a_href_javascript'
+               "<html><body><h1>Mr. Belvedere Fan Club</h1>
+                     <div><p><a href=\"javascript:void(0)\">Hello</a></p></div>
+                   </body></html>"
+             when  'a_href_javascript_translated'
+               "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head><body><h1><!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1>
+                     <div><p><a href=\"javascript:void(0)\"><!--wovn-src:Hello-->こんにちは</a></p></div>
+                   </body></html>
+       "
+             when 'unified_values'
+               <<-HTML
         <html><body>
           <div>
             a <span>b</span> c
@@ -404,10 +404,10 @@ module Wovnrb
             <span> b </span>c
           </div>
 </body></html>
-        HTML
+               HTML
 
-      when "unified_values_ja"
-        body = <<-HTML
+             when 'unified_values_ja'
+               <<-HTML
 <html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head><body>
           <div><!--wovn-src:
             a -->\u3042<span><!--wovn-src:b-->\u3044</span><!--wovn-src: c
@@ -420,258 +420,58 @@ module Wovnrb
           -->\u200B</div>
 
 </body></html>
-        HTML
+               HTML
 
-        else # "" case
-          body = "<html><body><h1>Mr. Belvedere Fan Club</h1>
-                <div><p>Hello</p></div>
-              </body></html>"
-      end
+             else # "" case
+               "<html><body><h1>Mr. Belvedere Fan Club</h1>
+                       <div><p>Hello</p></div>
+                     </body></html>"
+             end
 
-      return body
+      body
     end
 
-    def generate_dom(param='')
+    def generate_dom(param = '')
       Wovnrb.to_dom(generate_body(param))
     end
 
     def generate_values
       values = {}
       values['text_vals'] = {
-        'Hello' => {'ja' => [{'data' => 'こんにちは'}]},
-        'Mr. Belvedere Fan Club' => {'ja' => [{'data' => 'ベルベデアさんファンクラブ'}]}
+        'Hello' => { 'ja' => [{ 'data' => 'こんにちは' }] },
+        'Mr. Belvedere Fan Club' => { 'ja' => [{ 'data' => 'ベルベデアさんファンクラブ' }] }
       }
-      return values
+      values
     end
 
     def generate_unified_values
       {
-          'html_text_vals' => {
-              'a<span>b</span>c' =>
-                  { 'ja' =>
-                        [{ 'data' => 'あ<span>い</span>う' }] },
-              'a<span>b</span>' =>
-                  { 'ja' =>
-                        [{ 'data' => '<span>い</span>う' }] },
-              '<span>b</span>c' =>
-                  { 'ja' =>
-                        [{ 'data' => 'あ<span>い</span>' }] }
+        'html_text_vals' => {
+          'a<span>b</span>c' =>
+                { 'ja' =>
+                      [{ 'data' => 'あ<span>い</span>う' }] },
+          'a<span>b</span>' =>
+                { 'ja' =>
+                      [{ 'data' => '<span>い</span>う' }] },
+          '<span>b</span>c' =>
+                { 'ja' =>
+                      [{ 'data' => 'あ<span>い</span>' }] }
 
-          }
+        }
       }
-    end
-
-    def test_switch_dom_lang_for_simplified_chinese
-      lang = Lang.new('zh-CHS')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      dom = generate_dom
-      values = generate_values
-      values['text_vals']['Simplified Chinese'] = {'zh-CHS' => [{data: 'test'}]}
-      url = h.url
-
-      swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)
-      assert(/hreflang="zh-Hans"/ =~ swapped_body)
-      assert(!(/hreflang="zh-CHS"/ =~ swapped_body))
-      assert(/html lang="zh-Hans"/ =~ swapped_body)
-      assert(!(/html lang="zh-CHS"/ =~ swapped_body))
-    end
-
-    def test_switch_dom_lang_for_traditional_chinese
-      lang = Lang.new('zh-CHT')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      dom = generate_dom
-      values = generate_values
-      values['text_vals']['Traditional Chinese'] = {'zh-CHT' => [{data: 'test'}]}
-      url = h.url
-
-      swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)
-      assert(/hreflang="zh-Hant"/ =~ swapped_body)
-      assert(!(/hreflang="zh-CHT"/ =~ swapped_body))
-      assert(/html lang="zh-Hant"/ =~ swapped_body)
-      assert(!(/html lang="zh-CHT"/ =~ swapped_body))
-    end
-
-    def test_switch_dom_lang_when_proxy_change_protocol
-      lang = Lang.new('en')
-      env = Wovnrb.get_env('url' => 'http://page.com', 'HTTP_X_FORWARDED_PROTO' => 'https')
-      header = Wovnrb::Headers.new(env, Wovnrb.get_settings)
-      html = '<html></html>'
-      dom = Wovnrb.to_dom(html)
-      url = header.url
-      swapped_body = lang.switch_dom_lang(dom, Store.instance, generate_values, url, header)
-      assert(swapped_body.include?('hreflang="ja" href="https://page.com/ja/"'))
-      assert(swapped_body.include?('hreflang="en" href="https://page.com/"'))
-    end
-
-    def test_switch_lang
-      lang = Lang.new('ja')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      dom = generate_dom
-      values = generate_values
-      url = h.url
-      swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)
-      assert_equal(generate_body('translated_in_japanese'), swapped_body)
-    end
-
-    def test_switch_lang_unified_values
-      lang = Lang.new('ja')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      dom = generate_dom('unified_values')
-      values = generate_unified_values
-      url = h.url
-      swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)
-      assert_equal(generate_body('unified_values_ja'), swapped_body)
-    end
-
-    def test_switch_lang_with_html_fragment
-      lang = Lang.new('ja')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      dom = Helpers::NokogumboHelper::parse_fragment('<span>Hello</span>')
-      values = generate_values
-      url = h.url
-      swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)
-      assert_equal('<span><!--wovn-src:Hello-->こんにちは</span>', swapped_body)
-    end
-
-    def test_switch_lang_href_javascript
-      lang = Lang.new('ja')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      dom = generate_dom('a_href_javascript')
-      values = generate_values
-      url = h.url
-      swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)
-      assert_equal(generate_body('a_href_javascript_translated'), swapped_body)
-    end
-
-    def test_switch_lang_meta_img_alt_tags
-      lang = Lang.new('ja')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      dom = generate_dom('meta_img_alt_tags')
-      values = generate_values
-      url = h.url
-      swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)
-      assert_equal(generate_body('meta_img_alt_tags_translated'), swapped_body)
-    end
-
-    def test_switch_lang_wovn_ignore
-      lang = Lang.new('ja')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://ignore-page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      dom = generate_dom('ignore_parent')
-      values = generate_values
-      url = h.url
-      swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)
-      assert_equal(generate_body('ignore_parent_translated_in_japanese'), swapped_body)
-    end
-
-    def test_switch_lang_wovn_ignore_everything
-      lang = Lang.new('ja')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://ignore-page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      dom = generate_dom('ignore_everything')
-      values = generate_values
-      url = h.url
-      swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)
-      assert_equal(generate_body('ignore_everything_translated'), swapped_body)
-    end
-
-    def test_switch_lang_wovn_ignore_empty
-      lang = Lang.new('ja')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://ignore-page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      dom = generate_dom('empty')
-      values = generate_values
-      url = h.url
-      swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)
-      assert_equal(generate_body('empty_translated'), swapped_body)
-    end
-
-    def test_switch_lang_wovn_ignore_empty_single_quote
-      lang = Lang.new('ja')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://ignore-page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      dom = generate_dom('empty_single_quote')
-      values = generate_values
-      url = h.url
-      swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)
-      assert_equal(generate_body('empty_single_quote_translated'), swapped_body)
-    end
-
-    def test_switch_lang_wovn_ignore_empty_double_quote
-      lang = Lang.new('ja')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://ignore-page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      dom = generate_dom('empty_double_quote')
-      values = generate_values
-      url = h.url
-      swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)
-      assert_equal(generate_body('empty_double_quote_translated'), swapped_body)
-    end
-
-    def test_switch_lang_wovn_ignore_value_single_quote
-      lang = Lang.new('ja')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://ignore-page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      dom = generate_dom('value_single_quote')
-      values = generate_values
-      url = h.url
-      swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)
-      assert_equal(generate_body('value_single_quote_translated'), swapped_body)
-    end
-
-    def test_switch_lang_wovn_ignore_value_double_quote
-      lang = Lang.new('ja')
-      h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://ignore-page.com'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      dom = generate_dom('value_double_quote')
-      values = generate_values
-      url = h.url
-      swapped_body = lang.switch_dom_lang(dom, Store.instance, values, url, h)
-      assert_equal(generate_body('value_double_quote_translated'), swapped_body)
     end
 
     def test_get_code_from_custom_lang
       store = Store.instance
-      store.settings['custom_lang_aliases'] = {'ja' => 'staging-ja'}
+      store.settings['custom_lang_aliases'] = { 'ja' => 'staging-ja' }
       assert_equal('ja', Wovnrb::Lang.get_code('staging-ja'))
     end
 
     def test_add_lang_code_with_custom_lang_aliases
       lang = Lang.new('fr')
-      Store.instance.update_settings({'custom_lang_aliases' => {'fr' => 'staging-fr'}})
+      Store.instance.update_settings('custom_lang_aliases' => { 'fr' => 'staging-fr' })
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
-      assert_equal("http://staging-fr.wovn.io/topics/50", lang.add_lang_code("/topics/50", 'subdomain', h))
-    end
-
-    def test_switch_dom_lang_for_keeping_originl_encoding_decoding
-      lang = Lang.new('ja')
-      header = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings)
-      html = <<-HTML
-        <head>
-          <link rel="stylesheet" type="text/css" href="%3Ca%3E%E3%81%B5%E3%82%86%3C%2Fa%3E/theme.css">
-          <link rel="stylesheet" type="text/css" href="テスト.css">
-        </head>
-        <ul>
-          <li><a href="http://page.com/%e5%ba%83%e5%b0%be">encoded japanese path</a></li>
-          <li><a href="http://page.com/テスト/DxA9J">no encoded japanese path</a></li>
-          <li><a href="http://page.com/#DnE897">decoded invalid path</a></li>
-          <li><a href="http://page.com/%23DnE897">encoded invalid path</a>
-        </ul>
-      HTML
-
-      dom = Wovnrb.to_dom(html)
-      url = header.url
-
-      swapped_body = lang.switch_dom_lang(dom, Store.instance, generate_values, url, header)
-      assert(swapped_body.include?('<link rel="stylesheet" type="text/css" href="%3Ca%3E%E3%81%B5%E3%82%86%3C%2Fa%3E/theme.css">'))
-      assert(swapped_body.include?('<link rel="stylesheet" type="text/css" href="テスト.css">'))
-      assert(swapped_body.include?('<a href="http://page.com/ja/%e5%ba%83%e5%b0%be">encoded japanese path</a>'))
-      assert(swapped_body.include?('<a href="http://page.com/ja/テスト/DxA9J">no encoded japanese path</a>'))
-      assert(swapped_body.include?('<a href="http://page.com/ja/#DnE897">decoded invalid path</a>'))
-      assert(swapped_body.include?('<a href="http://page.com/ja/%23DnE897">encoded invalid path</a>'))
-    end
-
-    def test_switch_dom_lang_with_invalid_link
-      lang = Lang.new('en')
-      header = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://page.com'), Wovnrb.get_settings)
-      html = '<a href="※ http://invalid.example.com">無効なリンク</a>'
-      dom = Wovnrb.to_dom(html)
-      url = header.url
-      swapped_body = lang.switch_dom_lang(dom, Store.instance, generate_values, url, header)
-      assert(swapped_body.include?('html'))
+      assert_equal('http://staging-fr.wovn.io/topics/50', lang.add_lang_code('/topics/50', 'subdomain', h))
     end
   end
 end

@@ -1,5 +1,5 @@
-#require "bundler/gem_tasks"
-#require 'rake/extensiontask'
+# require "bundler/gem_tasks"
+# require 'rake/extensiontask'
 require 'rake/testtask'
 require 'pry'
 
@@ -24,18 +24,17 @@ end
 desc 'Run tests'
 task :default => :test
 
-#Rake::ExtensionTask.new 'dom' do |ext|
+# Rake::ExtensionTask.new 'dom' do |ext|
 #  ext.lib_dir = 'lib/wovnrb'
-#end
+# end
 
-#gemspec = Gem::Specification.load('wovnrb.gemspec')
-#Rake::ExtensionTask.new do |ext|
-#	ext.name = 'dom'
-#	ext.source_pattern = "*.{cpp,h}"
-#	ext.ext_dir = 'ext/wovnrb'
-#	ext.lib_dir = 'lib/wovnrb'
-#	ext.gem_spec = gemspec
-#end
+# gemspec = Gem::Specification.load('wovnrb.gemspec')
+# Rake::ExtensionTask.new do |ext|
+#  ext.name = 'dom'
+#  ext.source_pattern = "*.{cpp,h}"
+#  ext.ext_dir = 'ext/wovnrb'
+#  ext.lib_dir = 'lib/wovnrb'
+#  ext.gem_spec = gemspec
+# end
 #
-#task :default => [:compile]
-
+# task :default => [:compile]

@@ -13,11 +13,12 @@ module Wovnrb
     @@singleton_cache = nil
     def self.get_single
       raise 'cache is not initialized' unless @@singleton_cache
+
       @@singleton_cache
     end
 
     def self.set_single(config)
-      @@singleton_cache = self.build(config)
+      @@singleton_cache = build(config)
     end
 
     def self.reset_cache

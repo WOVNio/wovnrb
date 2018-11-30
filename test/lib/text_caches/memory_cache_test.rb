@@ -1,4 +1,3 @@
-# -*- encoding: UTF-8 -*-
 require 'wovnrb/text_caches/cache_base'
 require 'wovnrb/text_caches/memory_cache'
 require 'minitest/autorun'
@@ -6,10 +5,10 @@ require 'timecop'
 
 class MemoryCacheTest < Minitest::Test
   def test_initialize
-    memory = Wovnrb::MemoryCache.new({
+    memory = Wovnrb::MemoryCache.new(
       'cache_megabytes' => 1,
       'ttl_seconds' => 1
-    })
+    )
     option = memory.options
     assert_equal(1.megabytes, option[:size])
     assert_equal(1.megabytes, option[:size])
@@ -17,18 +16,18 @@ class MemoryCacheTest < Minitest::Test
   end
 
   def test_initialize_without_cache_megabytes
-    memory = Wovnrb::MemoryCache.new({
+    memory = Wovnrb::MemoryCache.new(
       'ttl_seconds' => 1
-    })
+    )
     option = memory.options
     assert_equal(200.megabytes, option[:size])
     assert_equal(1.seconds, option[:expires_in])
   end
 
   def test_initialize_without_ttl
-    memory = Wovnrb::MemoryCache.new({
-      'cache_megabytes' => 1,
-    })
+    memory = Wovnrb::MemoryCache.new(
+      'cache_megabytes' => 1
+    )
     option = memory.options
     assert_equal(1.megabytes, option[:size])
     assert_equal(300.seconds, option[:expires_in])
@@ -75,9 +74,9 @@ class MemoryCacheTest < Minitest::Test
 
   def test_get_with_over_memory
     # ActiveSupport::Cache::MemoryStore has 240 bytes overhead per instance
-    memory = Wovnrb::MemoryCache.new({
-      'cache_megabytes' => 400.0 / 1000 / 1000,
-    })
+    memory = Wovnrb::MemoryCache.new(
+      'cache_megabytes' => 400.0 / 1000 / 1000
+    )
     memory.put('a', 'c')
     memory.put('b', 'd')
     assert_nil(memory.get('a'))

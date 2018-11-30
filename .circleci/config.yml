@@ -14,4 +14,5 @@ jobs:
           key: bundler-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
+      - run: bundle exec rubocop
       - run: bundle exec rake test

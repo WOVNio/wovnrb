@@ -13,7 +13,7 @@ class CacheBaseTest < Minitest::Test
 
   def test_build_with_invalid_strategy
     assert_raises RuntimeError do
-      Wovnrb::CacheBase.build({strategy: :invalid})
+      Wovnrb::CacheBase.build(strategy: :invalid)
     end
   end
 

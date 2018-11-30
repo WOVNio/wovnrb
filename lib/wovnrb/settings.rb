@@ -8,12 +8,14 @@ module Wovnrb
     def [](key)
       return @dynamic_settings[key] if @dynamic_settings.key?(key)
       return ignore_globs if key == 'ignore_globs'
+
       super(key)
     end
 
     def ignore_globs
       ignore_paths = self['ignore_paths']
-      return [] unless ignore_paths.kind_of?(Array)
+      return [] unless ignore_paths.is_a?(Array)
+
       ignore_paths.map { |pattern| Glob.new(pattern) }
     end
 
@@ -31,7 +33,7 @@ module Wovnrb
 
     DYNAMIC_KEYS = {
       'wovn_token' => 'project_token',
-      'wovn_ignore_paths' => 'ignore_paths',
-    }
+      'wovn_ignore_paths' => 'ignore_paths'
+    }.freeze
   end
 end

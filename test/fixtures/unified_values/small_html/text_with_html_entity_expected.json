@@ -1,8 +1,0 @@
-[
-  {
-    "xpath": "/html/body/p/text()",
-    "srcs": [
-      "This is &lt;a&gt; text value!"
-    ]
-  }
-]
