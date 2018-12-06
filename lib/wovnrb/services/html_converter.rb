@@ -66,9 +66,10 @@ module Wovnrb
 
       if node.name.casecmp('input').zero? && node.get_attribute('type') == 'hidden'
         original_text = node.get_attribute('value')
+        return if original_text.nil?
         return if original_text.include?(HtmlReplaceMarker::KEY_PREFIX)
 
-        node.set_attribute('value', marker.add_value(original_text))
+        node.set_attribute('value', marker.add_comment_value(original_text))
       end
     end
 
@@ -87,7 +88,7 @@ module Wovnrb
     end
 
     def put_replace_marker(node, marker)
-      original_text = node.inner_text
+      original_text = node.inner_html
       return if original_text.include?(HtmlReplaceMarker::KEY_PREFIX)
 
       node.inner_html = marker.add_comment_value(original_text)
