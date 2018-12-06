@@ -21,17 +21,49 @@ module Wovnrb
 
     def test_build_api_compatible_html_ignored_content_should_not_be_sent
       html = [
-        '<html><body>',
-        '<p>Hello <span wovn-ignore>WOVN</span><p>',
-        '<div><span class="ignore-me">should be ignored</span></div>',
-        '<span>Have a nice day!</span>',
-        '</body></html>'
+          '<html><body>',
+          '<p>Hello <span wovn-ignore>WOVN</span><p>',
+          '<div><span class="ignore-me">should be ignored</span></div>',
+          '<span>Have a nice day!</span>',
+          '</body></html>'
       ].join
 
       converter = prepare_html_converter(html, ignore_class: ['ignore-me'])
       converted_html, = converter.build_api_compatible_html
 
-      expected_convert_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"fr\" href=\"http://my-site.com/?wovn=fr\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/?wovn=ja\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><p>Hello <span wovn-ignore=\"\"><!-- __wovn-backend-ignored-key-0 --></span></p><p></p><div><span class=\"ignore-me\"><!-- __wovn-backend-ignored-key-1 --></span></div><span>Have a nice day!</span></body></html>"
+      expected_convert_html = "<html><head><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"fr\" href=\"http://my-site.com/?wovn=fr\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/?wovn=ja\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><p>Hello <span wovn-ignore=\"\"><!-- __wovn-backend-ignored-key-0 --></span></p><p></p><div><span class=\"ignore-me\"><!-- __wovn-backend-ignored-key-1 --></span></div><span>Have a nice day!</span></body></html>"
+      assert_equal(expected_convert_html, converted_html)
+    end
+
+    def test_build_api_compatible_html_form_should_not_be_sent
+      html = [
+          '<html><body>',
+          '<form action="/test" method="POST">',
+          '<input id="name" type="text">',
+          '<button type="submit">Submit</button>',
+          '</form>',
+          '</body></html>'
+      ].join
+
+      converter = prepare_html_converter(html, ignore_class: [])
+      converted_html, = converter.build_api_compatible_html
+
+      expected_convert_html = "<html><head><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"fr\" href=\"http://my-site.com/?wovn=fr\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/?wovn=ja\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><form action=\"/test\" method=\"POST\"><!-- __wovn-backend-ignored-key-0 --></form></body></html>"
+      assert_equal(expected_convert_html, converted_html)
+    end
+
+    def test_build_api_compatible_html_hidden_input_should_not_be_sent
+      html = [
+        '<html><body>',
+        '<input id="user-id" type="hidden" value="secret-id">',
+        '<input id="name" type="text" value="wovn.io">',
+        '</body></html>'
+      ].join
+
+      converter = prepare_html_converter(html, ignore_class: [])
+      converted_html, = converter.build_api_compatible_html
+
+      expected_convert_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=en&amp;amp;defaultLang=en&amp;amp;urlPattern=query&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"fr\" href=\"http://my-site.com/?wovn=fr\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/?wovn=ja\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><input id=\"user-id\" type=\"hidden\" value=\"<!-- __wovn-backend-ignored-key-0 -->\"><input id=\"name\" type=\"text\" value=\"wovn.io\"></body></html>"
       assert_equal(expected_convert_html, converted_html)
     end
 
