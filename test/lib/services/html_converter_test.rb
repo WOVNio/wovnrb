@@ -21,11 +21,11 @@ module Wovnrb
 
     def test_build_api_compatible_html_ignored_content_should_not_be_sent
       html = [
-          '<html><body>',
-          '<p>Hello <span wovn-ignore>WOVN</span><p>',
-          '<div><span class="ignore-me">should be ignored</span></div>',
-          '<span>Have a nice day!</span>',
-          '</body></html>'
+        '<html><body>',
+        '<p>Hello <span wovn-ignore>WOVN</span><p>',
+        '<div><span class="ignore-me">should be ignored</span></div>',
+        '<span>Have a nice day!</span>',
+        '</body></html>'
       ].join
 
       converter = prepare_html_converter(html, ignore_class: ['ignore-me'])
@@ -37,12 +37,12 @@ module Wovnrb
 
     def test_build_api_compatible_html_form_should_not_be_sent
       html = [
-          '<html><body>',
-          '<form action="/test" method="POST">',
-          '<input id="name" type="text">',
-          '<button type="submit">Submit</button>',
-          '</form>',
-          '</body></html>'
+        '<html><body>',
+        '<form action="/test" method="POST">',
+        '<input id="name" type="text">',
+        '<button type="submit">Submit</button>',
+        '</form>',
+        '</body></html>'
       ].join
 
       converter = prepare_html_converter(html, ignore_class: [])
