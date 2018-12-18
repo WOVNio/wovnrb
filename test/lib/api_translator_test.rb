@@ -20,8 +20,7 @@ module Wovnrb
     end
 
     def test_translate_accepts_uncompressed_response_from_api_in_dev_mode
-      store = Wovnrb::Store.instance.update_settings({ 'wovn_dev_mode' => true })
-
+      Wovnrb::Store.instance.update_settings('wovn_dev_mode' => true)
       assert_translation('test.html', 'test_translated.html', true, encoding: 'text/json')
     end
 

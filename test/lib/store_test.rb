@@ -107,7 +107,7 @@ module Wovnrb
     def test_default_dev_mode_settings
       store = Wovnrb::Store.instance
 
-      store.update_settings({ 'wovn_dev_mode' => true })
+      store.update_settings('wovn_dev_mode' => true)
 
       assert(store.dev_mode?)
       assert_equal('http://dev-wovn.io:3001/v0/', store.settings['api_url'])
@@ -117,11 +117,11 @@ module Wovnrb
     def test_dev_mode_not_overriding_settings
       store = Wovnrb::Store.instance
 
-      store.update_settings({
+      store.update_settings(
         'wovn_dev_mode' => true,
         'api_url' => 'http://my-test-api.wovn.io/v0/',
         'api_timeout_seconds' => 42
-      })
+      )
 
       assert(store.dev_mode?)
       assert_equal('http://my-test-api.wovn.io/v0/', store.settings['api_url'])
@@ -134,7 +134,7 @@ module Wovnrb
       assert_equal(false, store.settings['wovn_dev_mode'])
       assert(!store.dev_mode?)
 
-      store.update_settings({ 'wovn_dev_mode' => true })
+      store.update_settings('wovn_dev_mode' => true)
 
       assert_equal(true, store.settings['wovn_dev_mode'])
       assert(store.dev_mode?)
