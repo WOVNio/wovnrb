@@ -28,8 +28,12 @@ module Wovnrb
 
           JSON.parse(response_body)['body'] || body
         else
-          WovnLogger.error("Received invalid content (\"#{response.header['Content-Encoding']}\") from WOVNio translation API.")
-          body
+          if @store.dev_mode?
+            JSON.parse(response.body)['body'] || body
+          else
+            WovnLogger.error("Received invalid content (\"#{response.header['Content-Encoding']}\") from WOVNio translation API.")
+            body
+          end
         end
       else
         WovnLogger.error("Received \"#{response.message}\" from WOVNio translation API.")
