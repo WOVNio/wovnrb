@@ -13,7 +13,6 @@ module Wovnrb
       @headers = headers
     end
 
-
     def replace(dom, lang)
       base_url = base_href(dom)
 
@@ -35,11 +34,27 @@ module Wovnrb
 
     private
 
+    def wovn_ignore?(node)
+      return super(node) || is_ignored_href?(node.get_attribute('href'))
+    end
+
+    def is_ignored_href?(href)
+      if absolute_url?(href)
+        # TODO: check ignored_urls, then ignored_paths
+      end
+
+      return @store.ignored_paths.any? { |p| href =~ /#{p}/i }
+    end
+
     def adjust_link_by_base(href, base_url)
       return href if href =~ /^\//            # absolute path
-      return href if href =~ /^http(s?):\/\// # full url
+      return href if absolute_url?(href)
 
       File.join(base_url, href)
+    end
+
+    def absolute_url?(href)
+      return href =~ /^http(s?):\/\//
     end
 
     def is_file?(href)

@@ -1,8 +1,8 @@
 module Wovnrb
   class ReplacerBase
-    def initialize(store, ignored_class_set = [])
+    def initialize(store)
       @store = store
-      @ignored_class_set = Set.new(ignored_class_set)
+      @ignored_class_set = Set.new(@store.ignored_classes)
     end
 
     def replace(dom, lang)
@@ -19,12 +19,7 @@ module Wovnrb
 
       node_class = node.get_attribute('class')
       if node_class
-        classes = node_class.split
-        @store.settings['ignore_class'].each do |ignore_class|
-          if classes.include?(ignore_class)
-            return true
-          end
-        end
+        return node_class.split.any? { |c| @ignored_class_set.include?(c) }
       end
 
       wovn_ignore?(node.parent)

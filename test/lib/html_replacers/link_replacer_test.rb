@@ -3,9 +3,14 @@ require 'webmock/minitest'
 
 module Wovnrb
   class ReplacerBaseTest < WovnMiniTest
+    def before_setup
+      super
+
+      @store = Store.instance
+    end
+
     def test_replace
-      store = Store.instance
-      replacer = LinkReplacer.new(store, 'query', get_header)
+      replacer = LinkReplacer.new(@store, 'query', get_header)
       dom = Wovnrb.get_dom('<a href="/index.html">link text</a>')
       replacer.replace(dom, Lang.new('en'))
 
@@ -14,8 +19,7 @@ module Wovnrb
     end
 
     def test_replace_multiple
-      store = Store.instance
-      replacer = LinkReplacer.new(store, 'query', get_header)
+      replacer = LinkReplacer.new(@store, 'query', get_header)
       dom = Wovnrb.get_dom('<a href="/index.html">link text</a><div>aaa</div><a href="/index2.html">link text</a>')
       replacer.replace(dom, Lang.new('en'))
 
@@ -27,8 +31,7 @@ module Wovnrb
     end
 
     def test_replace_ignore
-      store = Store.instance
-      replacer = LinkReplacer.new(store, 'query', get_header)
+      replacer = LinkReplacer.new(@store, 'query', get_header)
       dom = Wovnrb.get_dom('<a wovn-ignore href="/index.html">link text</a>')
       replacer.replace(dom, Lang.new('en'))
 
@@ -36,9 +39,28 @@ module Wovnrb
       assert_equal('/index.html', link)
     end
 
+    def test_replace_ignored_class_is_not_replaced
+      @store.update_settings('ignore_class' => ['ignored-class'])
+      replacer = LinkReplacer.new(@store, 'query', get_header)
+      dom = Wovnrb.get_dom('<a class="ignored-class" href="/index.html">link text</a>')
+      replacer.replace(dom, Lang.new('en'))
+
+      link = dom.xpath('//a')[0].get_attribute('href')
+      assert_equal('/index.html', link)
+    end
+
+    def test_href_to_ignored_path_is_not_replaced
+      @store.update_settings('ignore_paths' => ['/ignored_path/'])
+      replacer = LinkReplacer.new(@store, 'query', get_header)
+      dom = Wovnrb.get_dom('<a href="/dir/ignored_path/index.html">link text</a>')
+      replacer.replace(dom, Lang.new('en'))
+
+      link = dom.xpath('//a')[0].get_attribute('href')
+      assert_equal('/dir/ignored_path/index.html', link)
+    end
+
     def test_replace_empty_javascript_link_query
-      store = Store.instance
-      replacer = LinkReplacer.new(store, 'query', get_header)
+      replacer = LinkReplacer.new(@store, 'query', get_header)
       dom = Wovnrb.get_dom('<a href="javascript:void(0);">link text</a>')
       replacer.replace(dom, Lang.new('en'))
 
@@ -47,8 +69,7 @@ module Wovnrb
     end
 
     def test_replace_javascript_code_link_query
-      store = Store.instance
-      replacer = LinkReplacer.new(store, 'query', get_header)
+      replacer = LinkReplacer.new(@store, 'query', get_header)
       dom = Wovnrb.get_dom('<a href="javascript:onclick($(\'.any\').slideToggle());">link text</a>')
       replacer.replace(dom, Lang.new('en'))
 
@@ -57,8 +78,7 @@ module Wovnrb
     end
 
     def test_replace_uppercased_javascript_code_link_query
-      store = Store.instance
-      replacer = LinkReplacer.new(store, 'query', get_header)
+      replacer = LinkReplacer.new(@store, 'query', get_header)
       dom = Wovnrb.get_dom('<a href="JAVASCRIPT:onclick($(\'.any\').slideToggle());">link text</a>')
       replacer.replace(dom, Lang.new('en'))
 
@@ -67,8 +87,7 @@ module Wovnrb
     end
 
     def test_replace_empty_javascript_link_path
-      store = Store.instance
-      replacer = LinkReplacer.new(store, 'path', get_header)
+      replacer = LinkReplacer.new(@store, 'path', get_header)
       dom = Wovnrb.get_dom('<a href="javascript:void(0);">link text</a>')
       replacer.replace(dom, Lang.new('en'))
 
@@ -77,8 +96,7 @@ module Wovnrb
     end
 
     def test_replace_javascript_code_link_path
-      store = Store.instance
-      replacer = LinkReplacer.new(store, 'path', get_header)
+      replacer = LinkReplacer.new(@store, 'path', get_header)
       dom = Wovnrb.get_dom('<a href="javascript:onclick($(\'.any\').slideToggle());">link text</a>')
       replacer.replace(dom, Lang.new('en'))
 
@@ -87,8 +105,7 @@ module Wovnrb
     end
 
     def test_replace_uppercased_javascript_code_link_path
-      store = Store.instance
-      replacer = LinkReplacer.new(store, 'path', get_header)
+      replacer = LinkReplacer.new(@store, 'path', get_header)
       dom = Wovnrb.get_dom('<a href="JAVASCRIPT:onclick($(\'.any\').slideToggle());">link text</a>')
       replacer.replace(dom, Lang.new('en'))
 
@@ -97,8 +114,7 @@ module Wovnrb
     end
 
     def test_replace_link_path
-      store = Store.instance
-      replacer = LinkReplacer.new(store, 'path', get_header)
+      replacer = LinkReplacer.new(@store, 'path', get_header)
       dom = Wovnrb.get_dom('<a href="/index.html">link text</a>')
       replacer.replace(dom, Lang.new('en'))
 
@@ -107,8 +123,7 @@ module Wovnrb
     end
 
     def test_replace_link_path_with_canonical
-      store = Store.instance
-      replacer = LinkReplacer.new(store, 'path', get_header)
+      replacer = LinkReplacer.new(@store, 'path', get_header)
       dom = Wovnrb.get_dom('<html><head><link rel="canonical" href="http://wovn.io/hello/index.html"></head><body>hello</body></html>')
       replacer.replace(dom, Lang.new('en'))
       canonical_href = dom.xpath('//link').find { |d| d.attributes['rel'].value == 'canonical' }.attributes['href'].value
@@ -116,8 +131,7 @@ module Wovnrb
     end
 
     def test_replace_link_with_style
-      store = Store.instance
-      replacer = LinkReplacer.new(store, 'path', get_header)
+      replacer = LinkReplacer.new(@store, 'path', get_header)
       dom = Wovnrb.get_dom('<html><head><link rel="stylesheet" type="text/css" href="http://wovn.io/hello/index.css"></head><body>hello</body></html>')
       replacer.replace(dom, Lang.new('en'))
       href = dom.xpath('//link').find { |d| d.attributes['rel'].value == 'stylesheet' }.attributes['href'].value
@@ -125,8 +139,7 @@ module Wovnrb
     end
 
     def test_replace_img_link_path
-      store = Store.instance
-      replacer = LinkReplacer.new(store, 'path', get_header)
+      replacer = LinkReplacer.new(@store, 'path', get_header)
       dom = Wovnrb.get_dom('<a href="http://wovn.io/index.jpg">link text</a>')
       replacer.replace(dom, Lang.new('ja'))
 
@@ -135,8 +148,7 @@ module Wovnrb
     end
 
     def test_replace_img_link_path_with_query_or_hash
-      store = Store.instance
-      replacer = LinkReplacer.new(store, 'path', get_header)
+      replacer = LinkReplacer.new(@store, 'path', get_header)
       dom = Wovnrb.get_dom('<a href="http://wovn.io/index.jpg?test=1">link text</a>')
       replacer.replace(dom, Lang.new('ja'))
 
@@ -151,8 +163,7 @@ module Wovnrb
     end
 
     def test_replace_audio_link_path
-      store = Store.instance
-      replacer = LinkReplacer.new(store, 'path', get_header)
+      replacer = LinkReplacer.new(@store, 'path', get_header)
       dom = Wovnrb.get_dom('<a href="/index.mp3">link text</a>')
       replacer.replace(dom, Lang.new('ja'))
 
@@ -161,8 +172,7 @@ module Wovnrb
     end
 
     def test_replace_audio_link_path_with_query_or_hash
-      store = Store.instance
-      replacer = LinkReplacer.new(store, 'path', get_header)
+      replacer = LinkReplacer.new(@store, 'path', get_header)
       dom = Wovnrb.get_dom('<a href="/index.mp3?test=1">link text</a>')
       replacer.replace(dom, Lang.new('ja'))
 
@@ -177,8 +187,7 @@ module Wovnrb
     end
 
     def test_replace_video_link_path
-      store = Store.instance
-      replacer = LinkReplacer.new(store, 'path', get_header)
+      replacer = LinkReplacer.new(@store, 'path', get_header)
       dom = Wovnrb.get_dom('<a href="/index.mpeg">link text</a>')
       replacer.replace(dom, Lang.new('ja'))
 
@@ -187,8 +196,7 @@ module Wovnrb
     end
 
     def test_replace_video_link_path_with_query_or_hash
-      store = Store.instance
-      replacer = LinkReplacer.new(store, 'path', get_header)
+      replacer = LinkReplacer.new(@store, 'path', get_header)
       dom = Wovnrb.get_dom('<a href="/index.mp4?test=1">link text</a>')
       replacer.replace(dom, Lang.new('ja'))
 
@@ -203,8 +211,7 @@ module Wovnrb
     end
 
     def test_replace_doc_link_path
-      store = Store.instance
-      replacer = LinkReplacer.new(store, 'path', get_header)
+      replacer = LinkReplacer.new(@store, 'path', get_header)
       dom = Wovnrb.get_dom('<a href="/index.pptx">link text</a>')
       replacer.replace(dom, Lang.new('ja'))
 
@@ -213,8 +220,7 @@ module Wovnrb
     end
 
     def test_replace_doc_link_path_with_query_or_hash
-      store = Store.instance
-      replacer = LinkReplacer.new(store, 'path', get_header)
+      replacer = LinkReplacer.new(@store, 'path', get_header)
       dom = Wovnrb.get_dom('<a href="/index.pptx?test=1">link text</a>')
       replacer.replace(dom, Lang.new('ja'))
 
@@ -229,8 +235,7 @@ module Wovnrb
     end
 
     def test_replace_javascript_link_subdomain
-      store = Store.instance
-      replacer = LinkReplacer.new(store, 'subdomain', get_header)
+      replacer = LinkReplacer.new(@store, 'subdomain', get_header)
       dom = Wovnrb.get_dom('<a href="javascript:void(0);">link text</a>')
       replacer.replace(dom, Lang.new('en'))
 
@@ -239,8 +244,7 @@ module Wovnrb
     end
 
     def test_replace_mustache
-      store = Store.instance
-      replacer = LinkReplacer.new(store, 'query', get_header)
+      replacer = LinkReplacer.new(@store, 'query', get_header)
       dom = Wovnrb.get_dom('<a href="{{hello}}">link text</a>')
       replacer.replace(dom, Lang.new('en'))
 
@@ -285,7 +289,6 @@ module Wovnrb
     end
 
     def test_base_href
-      store = Store.instance
       tests = [
         { pathname: '/dirname/index.php', base: '/absolute/path', expected_href: '/absolute/path' },
         { pathname: '/dirname/index.php', base: 'relative/path', expected_href: '/dirname/relative/path' },
@@ -299,7 +302,7 @@ module Wovnrb
       ]
 
       tests.each do |test|
-        replacer = LinkReplacer.new(store, 'path', get_header(url_pattern: 'path', pathname: test[:pathname]))
+        replacer = LinkReplacer.new(@store, 'path', get_header(url_pattern: 'path', pathname: test[:pathname]))
         dom = Wovnrb.get_dom("<base target=\"_blank\" href=\"#{test[:base]}\"><a href=\"/not_matter\">link text</a>")
         assert_equal(test[:expected_href], replacer.send(:base_href, dom))
       end
@@ -313,8 +316,7 @@ module Wovnrb
     end
 
     def create_dom_by_base(base:, href:)
-      store = Store.instance
-      replacer = LinkReplacer.new(store, 'path', get_header(url_pattern: 'path', pathname: '/sp/entry2017/m/index.php'))
+      replacer = LinkReplacer.new(@store, 'path', get_header(url_pattern: 'path', pathname: '/sp/entry2017/m/index.php'))
       dom = Wovnrb.get_dom("<base target=\"_blank\" href=\"#{base}\"><a href=\"#{href}\">link text</a>")
 
       [dom, replacer]
