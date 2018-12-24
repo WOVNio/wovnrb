@@ -59,6 +59,26 @@ module Wovnrb
       assert_equal('/dir/ignored_path/index.html', link)
     end
 
+    def test_href_to_ignored_url_is_not_replaced
+      @store.update_settings('ignored_urls' => ['http://ignoredsite.com'])
+      replacer = LinkReplacer.new(@store, 'query', get_header)
+      dom = Wovnrb.get_dom('<a href="http://ignoredsite.com/dir/index.html">link text</a>')
+      replacer.replace(dom, Lang.new('en'))
+
+      link = dom.xpath('//a')[0].get_attribute('href')
+      assert_equal('http://ignoredsite.com/dir/index.html', link)
+    end
+
+    def test_href_to_absolute_url_with_ignored_path_is_not_replaced
+      @store.update_settings('ignore_paths' => ['/ignored_path/'])
+      replacer = LinkReplacer.new(@store, 'query', get_header)
+      dom = Wovnrb.get_dom('<a href="http://ignoredsite.com/dir/ignored_path/index.html">link text</a>')
+      replacer.replace(dom, Lang.new('en'))
+
+      link = dom.xpath('//a')[0].get_attribute('href')
+      assert_equal('http://ignoredsite.com/dir/ignored_path/index.html', link)
+    end
+
     def test_replace_empty_javascript_link_query
       replacer = LinkReplacer.new(@store, 'query', get_header)
       dom = Wovnrb.get_dom('<a href="javascript:void(0);">link text</a>')

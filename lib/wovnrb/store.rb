@@ -171,6 +171,10 @@ module Wovnrb
       @settings['ignore_class']
     end
 
+    def ignored_urls
+      @settings['ignored_urls']
+    end
+
     def wovn_protocol
       wovn_dev_mode? ? 'http' : 'https'
     end

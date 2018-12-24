@@ -106,6 +106,20 @@ class WovnrbTest < Minitest::Test
     assert_requested(stub, :times => 0)
   end
 
+  def test_request_wovn_ignored_urls
+    settings = Wovnrb.get_settings
+    url = 'wovn.io/dashboard'
+    stub = stub_request(:get, "#{settings['api_url']}?token=#{settings['project_token']}&url=#{url}").
+        to_return(:body => '{"test_body": "a"}')
+
+    app = get_app(:params => {'wovn_ignore_urls' => [url]})
+    i = Wovnrb::Interceptor.new(app, settings)
+
+    env = Wovnrb.get_env
+    i.call(env)
+    assert_requested(stub, :times => 0)
+  end
+
   def test_request_wovn_disable
     settings = Wovnrb.get_settings
     token = settings['project_token']

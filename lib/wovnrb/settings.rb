@@ -32,6 +32,7 @@ module Wovnrb
     DYNAMIC_KEYS = {
       'wovn_token' => 'project_token',
       'wovn_ignore_paths' => 'ignore_paths',
+      'wovn_ignored_urls' => 'ignored_urls'
     }
   end
 end

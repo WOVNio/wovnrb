@@ -70,6 +70,10 @@ module Wovnrb
         return output(headers, status, res_headers, body)
       end
 
+      if @store.ignored_urls.any?{|ignored_url| headers.url =~ /#{ignored_url}/i}
+        return output(headers, status, res_headers, body)
+      end
+
       # ApiData creates request for external server, but cannot use async.
       # Because some server not allow multi thread. (env['async.callback'] is not supported at all Server).
       api_data = ApiData.new(headers.redis_url, @store)

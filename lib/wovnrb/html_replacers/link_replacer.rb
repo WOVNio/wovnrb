@@ -39,11 +39,13 @@ module Wovnrb
     end
 
     def is_ignored_href?(href)
+      result = false
       if absolute_url?(href)
-        # TODO: check ignored_urls, then ignored_paths
+        result ||= @store.ignored_urls.any? { |u| href =~ /#{u}/i }
       end
+      result ||= @store.ignored_paths.any? { |p| href =~ /#{p}/i }
 
-      return @store.ignored_paths.any? { |p| href =~ /#{p}/i }
+      result
     end
 
     def adjust_link_by_base(href, base_url)
