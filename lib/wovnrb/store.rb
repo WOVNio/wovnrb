@@ -153,6 +153,16 @@ module Wovnrb
                                else
                                  true
                                end
+
+      if @settings['wovn_dev_mode']
+        if @settings['api_url'] == self.class.default_settings['api_url']
+          @settings['api_url'] = 'http://dev-wovn.io:3001/v0/'
+        end
+
+        if @settings['api_timeout_seconds'] == self.class.default_settings['api_timeout_seconds']
+          @settings['api_timeout_seconds'] = 3
+        end
+      end
     end
 
     def custom_lang_aliases
@@ -178,6 +188,10 @@ module Wovnrb
       else
         'wovn.io'
       end
+    end
+
+    def dev_mode?
+      @settings['wovn_dev_mode']
     end
 
     private
