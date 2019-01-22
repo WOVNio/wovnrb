@@ -90,19 +90,19 @@ Set your WOVN.io Account's Project token. This parameter is required.
 
 This sets the Ruby application's default language. The default value is English ('en').
 
-If a requested page, where the default language's parameter is included in the URL, the request is redirected before translating. The default_lang parameter is used for this purpose.
+If, for a requested page, the default language parameter is included in the URL, the request is redirected before translating. The default_lang parameter is used for this purpose.
 
 If the default_lang is set to 'en', when receiving a request for the following URL,
 
 	https://wovn.io/en/contact
 
-The library will redirect to the following URL.
+Then the library will redirect to the following URL.
 
 	https://wovn.io/contact
 
 ### 2.3. supported_langs
 This tells the library which languages are being used on the website (including
-the original language). This setting allows for inserting metadata necessary to
+the original language). This setting allows for inserting metadata necessary for
 SEO (Search Engine Optimization).
 
 If your website is in English and you are using WOVN.io to localize it in
@@ -114,7 +114,7 @@ Japanese, then you should use the following setting:
 
 ### 2.4. url_pattern
 
-The Library works in the Ruby Application by adding new URLs to be translated. You can set the type of url with the url_pattern parameter. There are 3 types that can be set.
+The Library works in the Ruby Application by adding new URLs to be translated. You can set the type of url with the `url_pattern` parameter. There are 3 types that can be set.
 
 parameters  | Translated page's URL           | Notes
 ----------- | ------------------------------- | -------
@@ -142,7 +142,7 @@ If the `default_lang` is 'en', and the query is set to 'os', the above URL will 
 
 ### 2.6. ignore_class
 
-This sets "Ignore class" which prevent WOVN translating HTML elements that have a class contained in this array.
+This sets "Ignore class" which prevents WOVN from translating HTML elements that have a class contained in this array.
 
 ### 2.7. translate_fragment
 
