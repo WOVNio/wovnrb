@@ -38,7 +38,10 @@ Insert the following into either config/application.rb or config/environments/.
 ...
 
 config.wovnrb = {
-  :project_token => '2Wle3'
+  :project_token => 'EnS!t3',
+  :default_lang => 'en',
+  :supported_langs => ['en'],
+  :url_pattern => 'path'
 }
 
 ...
@@ -54,7 +57,10 @@ Insert the following into either the Application File or config.ru.
 require 'wovnrb'
 
 use Wovnrb::Interceptor, {
-  :project_token => '2Wle3'
+  :project_token => EnS!t3',
+  :default_lang => 'en',
+  :supported_langs => ['en'],
+  :url_pattern => 'path'
 }
 
 ...
@@ -69,9 +75,10 @@ WOVN.io Ruby Library's valid parameters are as follows.
 Parameter Name     | Required | Default Setting
 ------------------ | -------- | ----------------
 project_token      | yes      | ''
+default_lang       | yes      | 'en'
+supported_langs    | yes      | ['en']
 url_pattern        | yes      | 'path'
 query              |          | []
-default_lang       | yes      | 'en'
 ignore_class       |          | []
 translate_fragment |          | true
 
@@ -79,35 +86,7 @@ translate_fragment |          | true
 
 Set your WOVN.io Account's Project token. This parameter is required.
 
-### 2.2. url_pattern
-
-The Library works in the Ruby Application by adding new URL's to be translated. You can set the type of url with the url_pattern parameter. There are 3 types that can be set.
-
-parameters  | Translated page's URL           | Notes
------------ | ------------------------------- | -------
-'path'      | https://wovn.io/ja/contact      | Default Value. If no settings have been set, url_pattern defaults to this value.
-'subdomain' | https://ja.wovn.io/contact      | DNS settings must be set.
-'query'     | https://wovn.io/contact?wovn=ja | The least amount of changes to the application required to complete setup.
-
-※ The following is an example of a URL that has been translated by the library using the above URL's.
-
-	https://wovn.io/contact
-
-### 2.3. query
-
-WOVN.io ignores query parameters when searching translated page. If you want to add query parameter to translated page's URL, you should configure "query" parameter. (You need to configure WOVN.io too)
-
-	https://wovn.io/ja/contact?os=mac&keyboard=us
-
-If the defualt_lang is 'en', and the query is set to '', the above URL will be modified into the following URL to search for the page's translation.
-
-	https://wovn.io/contact
-
-If the default_lang is 'en', and the query is set to 'os', the above URL will be modified into the following URL to search for the page's translation.
-
-	https://wovn.io/contact?os=mac
-
-### 2.4. default_lang
+### 2.2. default_lang
 
 This sets the Ruby application's default language. The default value is English ('en').
 
@@ -121,11 +100,51 @@ The library will redirect to the following URL.
 
 	https://wovn.io/contact
 
-### 2.5 ignore_class
+### 2.3. supported_langs
+This tells the library which languages are being used on the website (including
+the original language). This setting allows for inserting metadata necessary to
+SEO (Search Engine Optimization).
+
+If your website is in English and you are using WOVN.io to localize it in
+Japanese, then you should use the following setting:
+```
+:supported_langs => ['en', 'ja']
+```
+**Note:** The order of the languages in the list does not matter.
+
+### 2.4. url_pattern
+
+The Library works in the Ruby Application by adding new URL's to be translated. You can set the type of url with the url_pattern parameter. There are 3 types that can be set.
+
+parameters  | Translated page's URL           | Notes
+----------- | ------------------------------- | -------
+'path'      | https://wovn.io/ja/contact      | Default Value. If no settings have been set, url_pattern defaults to this value.
+'subdomain' | https://ja.wovn.io/contact      | DNS settings must be set.
+'query'     | https://wovn.io/contact?wovn=ja | The least amount of changes to the application required to complete setup.
+
+※ The following is an example of a URL that has been translated by the library using the above URL's.
+
+	https://wovn.io/contact
+
+### 2.5. query
+
+WOVN.io ignores query parameters when searching translated page. If you want to add query parameter to translated page's URL, you should configure "query" parameter. (You need to configure WOVN.io too)
+
+	https://wovn.io/ja/contact?os=mac&keyboard=us
+
+If the defualt_lang is 'en', and the query is set to '', the above URL will be modified into the following URL to search for the page's translation.
+
+	https://wovn.io/contact
+
+If the default_lang is 'en', and the query is set to 'os', the above URL will be modified into the following URL to search for the page's translation.
+
+	https://wovn.io/contact?os=mac
+
+### 2.6. ignore_class
 
 This sets "Ignore class" which prevent WOVN translating HTML elements that have one of the array.
 
-### 2.6 translate_fragment
+### 2.7. translate_fragment
 
 This option allows to disable translating partial HTML content. By default,
 partial HTML content is translated but no widget snippet is added. Set
