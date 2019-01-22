@@ -57,7 +57,7 @@ Insert the following into either the Application File or config.ru.
 require 'wovnrb'
 
 use Wovnrb::Interceptor, {
-  :project_token => EnS!t3',
+  :project_token => 'EnS!t3',
   :default_lang => 'en',
   :supported_langs => ['en'],
   :url_pattern => 'path'
