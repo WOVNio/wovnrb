@@ -16,10 +16,10 @@ After logging into WOVN.io, add a page that you would like translated.
 
 ### 1.3. Ruby Application Settings
 
-To use the WOVN.io Ruby Library, insert the following line into your Ruby Application's Gemfile. WOVN.io currently supports version 0.2 and up.
+To use the WOVN.io Ruby Library, insert the following line into your Ruby Application's Gemfile. WOVN.io currently supports version 2.0.1 and up.
 
 ```ruby
-gem 'wovnrb', '>= 0.2'
+gem 'wovnrb', '>= 2.0.1'
 ```
 
 After setting the above, execute the following command to install the WOVN.io Ruby Library.
