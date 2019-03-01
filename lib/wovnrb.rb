@@ -41,7 +41,7 @@ module Wovnrb
       status, res_headers, body = @app.call(headers.request_out)
 
       return output(headers, status, res_headers, body) unless res_headers['Content-Type'] =~ /html/
-
+binding.pry
       request = Rack::Request.new(env)
 
       return output(headers, status, res_headers, body) if request.params['wovn_disable'] == true
