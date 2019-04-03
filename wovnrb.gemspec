@@ -40,6 +40,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'terminal-notifier'
   spec.add_development_dependency 'test-unit'
   spec.add_development_dependency 'test-unit-notify'
+  spec.add_development_dependency 'rb-readline'
 
   spec.add_development_dependency 'rake-compiler'
   spec.add_development_dependency 'rubocop'
