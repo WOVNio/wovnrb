@@ -40,6 +40,7 @@ module Wovnrb
 
       # pass to application
       status, res_headers, body = @app.call(headers.request_out)
+      res_headers['X-Wovn-Top'] = 'intercepted' if headers.debug_mode?
       headers.trace('receive from app: status ' + status.to_s)
 
       return output(headers, status, res_headers, body) unless res_headers['Content-Type'] =~ /html/
@@ -55,6 +56,8 @@ module Wovnrb
 
       headers.trace('switch lang')
       body = switch_lang(headers, body) unless status.to_s =~ /^1|302/
+
+      res_headers = headers.apply_custom_http_headers(res_headers) if headers.debug_mode?
 
       content_length = 0
       body.each { |b| content_length += b.respond_to?(:bytesize) ? b.bytesize : 0 }

@@ -248,5 +248,17 @@ module Wovnrb
 
       "\n<!--\n" + @trace_contents.join("\n") + "\n-->\n"
     end
+
+    def register_custom_http_header(key, value)
+      return unless key.present? && value.present?
+
+      @custom_headers ||= {}
+
+      @custom_headers[key] = value
+    end
+
+    def apply_custom_http_headers(res_headers)
+      res_headers.merge(@custom_headers)
+    end
   end
 end

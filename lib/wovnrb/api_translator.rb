@@ -23,6 +23,12 @@ module Wovnrb
       end
       @headers.trace('API connection established')
 
+      if response && @headers.debug_mode?
+        @headers.register_custom_http_header('X-Wovn-Cache', response['x-cache'])
+        @headers.register_custom_http_header('X-Wovn-Cache-Hits', response['x-cache-hits'])
+        @headers.register_custom_http_header('X-Wovn-Surrogate-Key', response['x-wovn-surrogate-key'])
+      end
+
       case response
       when Net::HTTPSuccess
         @headers.trace('API response successful: ' + response.message)
