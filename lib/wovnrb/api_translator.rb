@@ -80,9 +80,15 @@ module Wovnrb
         'body_hash' => Digest::MD5.hexdigest(body),
         'path' => page_pathname,
         'lang' => lang_code
-      }.map { |k, v| "#{k}=#{v}" }.join('&')
+      }
+      if @headers.disable_cache?
+        cache_key_components.merge!(
+          'disableCache' => Time.now.to_formatted_s(:number)
+        )
+      end
+      cache_key_string = cache_key_components.map { |k, v| "#{k}=#{v}" }.join('&')
 
-      CGI.escape("(#{cache_key_components})")
+      CGI.escape("(#{cache_key_string})")
     end
 
     def generate_request_data(body)

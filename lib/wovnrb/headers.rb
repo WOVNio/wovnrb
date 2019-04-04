@@ -227,6 +227,10 @@ module Wovnrb
       end
     end
 
+    def disable_cache?
+      @disable_cache || @env['QUERY_STRING'].match?('wovnDisableCache')
+    end
+
     def debug_mode?
       @debug_mode || @env['QUERY_STRING'].match?('wovnDebugMode')
     end
