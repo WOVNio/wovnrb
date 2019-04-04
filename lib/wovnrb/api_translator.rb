@@ -31,7 +31,7 @@ module Wovnrb
 
       case response
       when Net::HTTPSuccess
-        @headers.trace('API response successful: ' + response.message)
+        @headers.trace('API response successful: status ' + response.code)
         if response.header['Content-Encoding'] == 'gzip'
           response_body = Zlib::GzipReader.new(StringIO.new(response.body)).read
 
@@ -44,7 +44,7 @@ module Wovnrb
           body
         end
       else
-        @headers.trace('API response unsuccessful: ' + response.message)
+        @headers.trace('API response unsuccessful: status ' + response.code)
         WovnLogger.error("Received \"#{response.message}\" from WOVNio translation API.")
         body
       end
