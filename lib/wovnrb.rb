@@ -29,6 +29,7 @@ module Wovnrb
 
       @env = env
       headers = Headers.new(env, @store.settings)
+      headers.trace('wDM init')
       return @app.call(env) if @store.settings['test_mode'] && @store.settings['test_url'] != headers.url
 
       # redirect if the path is set to the default language (for SEO purposes)
@@ -39,6 +40,7 @@ module Wovnrb
 
       # pass to application
       status, res_headers, body = @app.call(headers.request_out)
+      headers.trace('receive from app: status ' + status.to_s)
 
       return output(headers, status, res_headers, body) unless res_headers['Content-Type'] =~ /html/
 
@@ -46,9 +48,12 @@ module Wovnrb
 
       return output(headers, status, res_headers, body) if request.params['wovn_disable'] == true
 
+      headers.trace('original token: ' + @store.settings['project_token'])
       @store.settings.update_dynamic_settings!(request.params)
+      headers.trace('dynamic token: ' + @store.settings['project_token'])
       return output(headers, status, res_headers, body) if @store.settings['ignore_globs'].any? { |g| g.match?(headers.pathname) }
 
+      headers.trace('switch lang')
       body = switch_lang(headers, body) unless status.to_s =~ /^1|302/
 
       content_length = 0
@@ -70,22 +75,42 @@ module Wovnrb
         html_converter = HtmlConverter.new(html_body, @store, headers)
 
         if needs_api?(html_body, headers)
+          headers.trace('process using API')
           converted_html, marker = html_converter.build_api_compatible_html
+          headers.trace('API compatible html ready')
+          investigate_apiready_content(converted_html, headers)
           translated_content = ApiTranslator.new(@store, headers).translate(converted_html)
+          investigate_translated_content(translated_content, headers)
           translated_body.push(marker.revert(translated_content))
         else
+          headers.trace('process without API')
           string_body = html_converter.build if html_body.html?
           translated_body.push(string_body)
         end
       else
+        headers.trace('no html processing')
         translated_body.push(string_body)
       end
+      headers.trace('html processing completed')
 
       body.close if body.respond_to?(:close)
+
+      translated_body.push(headers.read_trace_as_html_comment)
+
       translated_body
     end
 
     private
+
+    def investigate_apiready_content(html, headers)
+      has_fallback_snippet = html.match?(/data-wovnio-type="fallback_snippet"/)
+      headers.trace('API request has fallback snippet? ' + has_fallback_snippet.to_s)
+    end
+
+    def investigate_translated_content(html, headers)
+      has_fallback_snippet = html.match?(/data-wovnio-type="fallback_snippet"/)
+      headers.trace('API response has fallback snippet? ' + has_fallback_snippet.to_s)
+    end
 
     def output(headers, status, res_headers, body)
       headers.out(res_headers)

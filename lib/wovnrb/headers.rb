@@ -226,5 +226,23 @@ module Wovnrb
         '/'
       end
     end
+
+    def debug_mode?
+      @debug_mode || @env['QUERY_STRING'].match?('wovnDebugMode')
+    end
+
+    def trace(msg)
+      return unless debug_mode?
+
+      @trace_contents ||= []
+
+      @trace_contents.push(msg)
+    end
+
+    def read_trace_as_html_comment
+      return "\n<!--no-wDM-->\n" unless debug_mode?
+
+      "\n<!--\n" + @trace_contents.join("\n") + "\n-->\n"
+    end
   end
 end

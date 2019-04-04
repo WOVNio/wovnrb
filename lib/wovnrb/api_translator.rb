@@ -17,12 +17,15 @@ module Wovnrb
       begin
         response = connection.request(request)
       rescue => e
+        @headers.trace('API connection failure: ' + e.message)
         WovnLogger.error("\"#{e.message}\" error occurred when contacting WOVNio translation API")
         return body
       end
+      @headers.trace('API connection established')
 
       case response
       when Net::HTTPSuccess
+        @headers.trace('API response successful: ' + response.message)
         if response.header['Content-Encoding'] == 'gzip'
           response_body = Zlib::GzipReader.new(StringIO.new(response.body)).read
 
@@ -30,10 +33,12 @@ module Wovnrb
         elsif @store.dev_mode?
           JSON.parse(response.body)['body'] || body
         else
+          @headers.trace('API response content-encoding invalid: ' + response.header['Content-Encoding'])
           WovnLogger.error("Received invalid content (\"#{response.header['Content-Encoding']}\") from WOVNio translation API.")
           body
         end
       else
+        @headers.trace('API response unsuccessful: ' + response.message)
         WovnLogger.error("Received \"#{response.message}\" from WOVNio translation API.")
         body
       end
@@ -90,6 +95,12 @@ module Wovnrb
         'version' => VERSION,
         'body' => body
       }
+      if @headers.debug_mode?
+        data.merge!(
+          'debug_mode' => 'true',
+          'log_html' => 'true'
+        )
+      end
 
       data['custom_lang_aliases'] = JSON.dump(custom_lang_aliases) unless custom_lang_aliases.empty?
 
