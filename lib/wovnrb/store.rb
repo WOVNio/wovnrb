@@ -34,7 +34,6 @@ module Wovnrb
         'custom_lang_aliases' => {},
         'translate_fragment' => true,
         'debug_mode' => false,
-        'log_html' => false,
         'wovn_dev_mode' => false
       )
     end

@@ -64,6 +64,8 @@ module Wovnrb
       @pathname_with_trailing_slash_if_present = @pathname
       @pathname = @pathname.gsub(/\/$/, '')
       @redis_url = "#{@host}#{@pathname}#{@query}"
+      @trace_contents = []
+      @custom_headers = {}
     end
 
     # Get the language code of the current request
@@ -232,13 +234,11 @@ module Wovnrb
     end
 
     def debug_mode?
-      @debug_mode || @env['QUERY_STRING'].match?('wovnDebugMode')
+      @debug_mode || (@env['QUERY_STRING'].match?('wovnDebugMode') || @settings['debug_mode'])
     end
 
     def trace(msg)
       return unless debug_mode?
-
-      @trace_contents ||= []
 
       @trace_contents.push(msg)
     end
@@ -251,8 +251,6 @@ module Wovnrb
 
     def register_custom_http_header(key, value)
       return unless key.present? && value.present?
-
-      @custom_headers ||= {}
 
       @custom_headers[key] = value
     end
