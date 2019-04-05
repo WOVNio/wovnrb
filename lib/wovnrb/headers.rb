@@ -230,11 +230,11 @@ module Wovnrb
     end
 
     def disable_cache?
-      @disable_cache || @env['QUERY_STRING'].match?('wovnDisableCache')
+      @disable_cache || @env['QUERY_STRING']&.match?('wovnDisableCache')
     end
 
     def debug_mode?
-      @debug_mode || (@env['QUERY_STRING'].match?('wovnDebugMode') || @settings['debug_mode'])
+      @debug_mode || (@env['QUERY_STRING']&.match?('wovnDebugMode') || @settings['debug_mode'])
     end
 
     def trace(msg)
@@ -256,7 +256,7 @@ module Wovnrb
     end
 
     def apply_custom_http_headers(res_headers)
-      res_headers.merge(@custom_headers)
+      res_headers&.merge(@custom_headers)
     end
   end
 end
