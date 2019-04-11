@@ -38,7 +38,7 @@ class WovnrbTest < Minitest::Test
     bodies = ['<html><body><h1>Mr. Belvedere Fan Club</h1>',
               '<div><p>Hello</p></div>',
               '</body></html>'].join
-    expected_bodies = ["<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;amp;backend=true&amp;amp;currentLang=ja&amp;amp;defaultLang=en&amp;amp;urlPattern=subdomain&amp;amp;langCodeAliases={}&amp;amp;version=WOVN.rb_#{Wovnrb::VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head><body><h1>Mr. Belvedere Fan Club</h1><div><p>Hello</p></div></body></html>"].join
+    expected_bodies = ["<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=subdomain&amp;langCodeAliases={}&amp;version=WOVN.rb_#{Wovnrb::VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head><body><h1>Mr. Belvedere Fan Club</h1><div><p>Hello</p></div></body></html>"].join
 
     assert_switch_lang('en', 'ja', bodies, expected_bodies, true)
   end

@@ -36,6 +36,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'pry-nav'
   spec.add_development_dependency 'pry-remote'
   spec.add_development_dependency 'rake', '~> 10.0'
+  spec.add_development_dependency 'rb-readline'
   spec.add_development_dependency 'shoulda-context'
   spec.add_development_dependency 'terminal-notifier'
   spec.add_development_dependency 'test-unit'

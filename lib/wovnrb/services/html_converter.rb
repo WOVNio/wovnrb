@@ -177,17 +177,15 @@ module Wovnrb
       url_pattern = @store.settings['url_pattern']
       lang_code_aliases_json = JSON.generate(@store.settings['custom_lang_aliases'])
 
-      CGI.escapeHTML(
-        [
-          "key=#{token}",
-          'backend=true',
-          "currentLang=#{current_lang}",
-          "defaultLang=#{default_lang}",
-          "urlPattern=#{url_pattern}",
-          "langCodeAliases=#{lang_code_aliases_json}",
-          "version=WOVN.rb_#{VERSION}"
-        ].join('&')
-      )
+      [
+        "key=#{token}",
+        'backend=true',
+        "currentLang=#{current_lang}",
+        "defaultLang=#{default_lang}",
+        "urlPattern=#{url_pattern}",
+        "langCodeAliases=#{lang_code_aliases_json}",
+        "version=WOVN.rb_#{VERSION}"
+      ].join('&')
     end
   end
 end
