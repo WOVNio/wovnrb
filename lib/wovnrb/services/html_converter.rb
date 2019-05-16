@@ -84,7 +84,7 @@ module Wovnrb
     end
 
     def strip_wovn_ignore(node, marker)
-      put_replace_marker(node, marker) if node&.get_attribute('wovn-ignore')
+      put_replace_marker(node, marker) if node && node.get_attribute('wovn-ignore')
     end
 
     def put_replace_marker(node, marker)
