@@ -303,3 +303,6 @@ Style/FrozenStringLiteralComment:
 
 Style/NumericPredicate:
   Enabled: false
+
+Style/SafeNavigation:
+  Enabled: false

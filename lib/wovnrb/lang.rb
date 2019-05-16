@@ -109,7 +109,7 @@ module Wovnrb
           when 'subdomain'
             sub_d = href.match(/\/\/([^\.]*)\./)[1]
             sub_code = Lang.get_code(sub_d)
-            new_href = if sub_code&.casecmp(code_to_add)&.zero?
+            new_href = if sub_code && sub_code.casecmp(code_to_add).zero?
                          href.sub(Regexp.new(code_to_add, 'i'), code_to_add.downcase)
                        else
                          href.sub(/(\/\/)([^\.]*)/, '\1' + code_to_add.downcase + '.' + '\2')
