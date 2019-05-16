@@ -17,7 +17,7 @@ module Wovnrb
       begin
         response = connection.request(request)
       rescue => e
-        @headers.trace('API connection failure: ' + e.message)
+        @headers.trace('API connection failure: ' + e.message + ' (api_timeout=' + api_timeout.to_s + ')')
         WovnLogger.error("\"#{e.message}\" error occurred when contacting WOVNio translation API")
         return body
       end
