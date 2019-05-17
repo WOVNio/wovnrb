@@ -23,7 +23,7 @@ module Wovnrb
         'query' => [],
         'ignore_class' => [],
         'api_url' => 'https://wovn.global.ssl.fastly.net/v0/',
-        'api_timeout_seconds' => 0.5,
+        'api_timeout_seconds' => 1.0,
         'default_lang' => 'en',
         'supported_langs' => ['en'],
         'test_mode' => false,
@@ -160,7 +160,7 @@ module Wovnrb
         end
 
         if @settings['api_timeout_seconds'] == self.class.default_settings['api_timeout_seconds']
-          @settings['api_timeout_seconds'] = 3
+          @settings['api_timeout_seconds'] = 3.0
         end
       end
     end
