@@ -74,7 +74,8 @@ module Wovnrb
         'settings_hash' => settings_hash,
         'body_hash' => Digest::MD5.hexdigest(body),
         'path' => page_pathname,
-        'lang' => lang_code
+        'lang' => lang_code,
+        'version' => VERSION
       }.map { |k, v| "#{k}=#{v}" }.join('&')
 
       CGI.escape("(#{cache_key_components})")
