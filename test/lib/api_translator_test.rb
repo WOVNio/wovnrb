@@ -95,7 +95,7 @@ module Wovnrb
     def generate_cache_key(store, original_html)
       settings_hash = Digest::MD5.hexdigest(JSON.dump(store.settings))
       body_hash = Digest::MD5.hexdigest(original_html)
-      escaped_key = CGI.escape("token=123456&settings_hash=#{settings_hash}&body_hash=#{body_hash}&path=/test&lang=fr&version=#{VERSION}")
+      escaped_key = CGI.escape("token=123456&settings_hash=#{settings_hash}&body_hash=#{body_hash}&path=/test&lang=fr&version=wovnrb_#{VERSION}")
 
       "(#{escaped_key})"
     end
