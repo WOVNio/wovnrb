@@ -37,6 +37,12 @@ module Wovnrb
         return [307, redirect_headers, ['']]
       end
 
+      # if path containing language code is ignored, do nothing
+      if ignore_path?(headers.unmasked_pathname)
+        status, res_headers, body = @app.call(headers.request_out)
+
+        return output(headers, status, res_headers, body)
+      end
       # pass to application
       status, res_headers, body = @app.call(headers.request_out)
 
@@ -47,7 +53,7 @@ module Wovnrb
       return output(headers, status, res_headers, body) if request.params['wovn_disable'] == true
 
       @store.settings.update_dynamic_settings!(request.params)
-      return output(headers, status, res_headers, body) if @store.settings['ignore_globs'].any? { |g| g.match?(headers.pathname) }
+      return output(headers, status, res_headers, body) if ignore_path?(headers.pathname)
 
       body = switch_lang(headers, body) unless status.to_s =~ /^1|302/
 
@@ -99,6 +105,10 @@ module Wovnrb
 
     def wovn_ignored?(html_body)
       !html_body.xpath('//html[@wovn-ignore]').empty?
+    end
+
+    def ignore_path?(path)
+      @store.settings['ignore_globs'].any? { |g| g.match?(path) }
     end
 
     # Checks if a given HTML body is an Accelerated Mobile Page (AMP).
