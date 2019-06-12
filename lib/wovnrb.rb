@@ -29,16 +29,17 @@ module Wovnrb
 
       @env = env
       headers = Headers.new(env, @store.settings)
+      default_lang = @store.settings['default_lang']
       return @app.call(env) if @store.settings['test_mode'] && @store.settings['test_url'] != headers.url
 
       # redirect if the path is set to the default language (for SEO purposes)
-      if headers.path_lang == @store.settings['default_lang']
-        redirect_headers = headers.redirect(@store.settings['default_lang'])
+      if headers.path_lang == default_lang
+        redirect_headers = headers.redirect(default_lang)
         return [307, redirect_headers, ['']]
       end
 
       # if path containing language code is ignored, do nothing
-      if ignore_path?(headers.unmasked_pathname_without_trailing_slash)
+      if headers.lang_code != default_lang && ignore_path?(headers.unmasked_pathname_without_trailing_slash)
         status, res_headers, body = @app.call(env)
 
         return output(headers, status, res_headers, body)

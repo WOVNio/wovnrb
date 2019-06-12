@@ -162,6 +162,24 @@ HTML
     assert_call_affects_env(settings, env, false, true)
   end
 
+  def test_call_changes_environment_for_next_stack_call_with_path_ignored_without_language_code_in_original_language
+    settings = {
+      'project_token' => '123456',
+      'url_pattern' => 'path',
+      'default_lang' => 'ja',
+      'supported_langs' => ['ja', 'en'],
+      'ignore_paths' => ['/ignored']
+    }
+    env = {
+      'rack.input' => '',
+      'HTTP_HOST' => 'test.com',
+      'REQUEST_URI' => '/ignored',
+      'PATH_INFO' => '/ignored'
+    }
+
+    assert_call_affects_env(settings, env, false, true)
+  end
+
   def test_call_does_not_change_environment_for_next_stack_call_with_path_ignored
     settings = {
       'project_token' => '123456',
