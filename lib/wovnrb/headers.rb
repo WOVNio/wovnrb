@@ -65,6 +65,10 @@ module Wovnrb
       @redis_url = "#{@host}#{@pathname}#{@query}"
     end
 
+    def unmasked_pathname_without_trailing_slash
+      @unmasked_pathname.sub(/\/$/, '')
+    end
+
     # Get the language code of the current request
     #
     # @return [String] The lang code of the current page
