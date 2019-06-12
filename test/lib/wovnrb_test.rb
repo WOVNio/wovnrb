@@ -114,13 +114,13 @@ HTML
       'url_pattern' => 'path',
       'default_lang' => 'ja',
       'supported_langs' => ['ja', 'en'],
-      'ignore_paths' => ['/en/ignored/']
+      'ignore_paths' => ['/en/ignored']
     }
     env = {
       'rack.input' => '',
       'HTTP_HOST' => 'test.com',
-      'REQUEST_URI' => '/en/not_ignored/',
-      'PATH_INFO' => '/en/not_ignored/'
+      'REQUEST_URI' => '/en/not_ignored',
+      'PATH_INFO' => '/en/not_ignored'
     }
 
     assert_call_affects_env(settings, env, true, true)
@@ -132,13 +132,13 @@ HTML
       'url_pattern' => 'path',
       'default_lang' => 'ja',
       'supported_langs' => ['ja', 'en'],
-      'ignore_paths' => ['/en/ignored/']
+      'ignore_paths' => ['/en/ignored']
     }
     env = {
       'rack.input' => '',
       'HTTP_HOST' => 'test.com',
-      'REQUEST_URI' => '/ignored/',
-      'PATH_INFO' => '/ignored/'
+      'REQUEST_URI' => '/ignored',
+      'PATH_INFO' => '/ignored'
     }
 
     assert_call_affects_env(settings, env, false, true)
@@ -150,16 +150,16 @@ HTML
       'url_pattern' => 'path',
       'default_lang' => 'ja',
       'supported_langs' => ['ja', 'en'],
-      'ignore_paths' => ['/ignored/']
+      'ignore_paths' => ['/ignored']
     }
     env = {
       'rack.input' => '',
       'HTTP_HOST' => 'test.com',
-      'REQUEST_URI' => '/en/ignored/',
-      'PATH_INFO' => '/en/ignored/'
+      'REQUEST_URI' => '/en/ignored',
+      'PATH_INFO' => '/en/ignored'
     }
 
-    assert_call_affects_env(settings, env, true, true)
+    assert_call_affects_env(settings, env, false, true)
   end
 
   def test_call_does_not_change_environment_for_next_stack_call_with_path_ignored
@@ -168,13 +168,13 @@ HTML
       'url_pattern' => 'path',
       'default_lang' => 'ja',
       'supported_langs' => ['ja', 'en'],
-      'ignore_paths' => ['/en/ignored/']
+      'ignore_paths' => ['/en/ignored']
     }
     env = {
       'rack.input' => '',
       'HTTP_HOST' => 'test.com',
-      'REQUEST_URI' => '/en/ignored/',
-      'PATH_INFO' => '/en/ignored/'
+      'REQUEST_URI' => '/en/ignored',
+      'PATH_INFO' => '/en/ignored'
     }
 
     assert_call_affects_env(settings, env, false, false)
