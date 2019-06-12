@@ -39,7 +39,7 @@ module Wovnrb
 
       # if path containing language code is ignored, do nothing
       if ignore_path?(headers.unmasked_pathname)
-        status, res_headers, body = @app.call(headers.request_out)
+        status, res_headers, body = @app.call(env)
 
         return output(headers, status, res_headers, body)
       end
