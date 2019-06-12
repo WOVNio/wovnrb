@@ -113,7 +113,7 @@ HTML
       'project_token' => '123456',
       'url_pattern' => 'path',
       'default_lang' => 'ja',
-      'supported_langs' => ['ja', 'en'],
+      'supported_langs' => %w[ja en],
       'ignore_paths' => ['/en/ignored']
     }
     env = {
@@ -123,7 +123,7 @@ HTML
       'PATH_INFO' => '/en/not_ignored'
     }
 
-    assert_call_affects_env(settings, env, true, true)
+    assert_call_affects_env(settings, env, mock_api: true, affected: true)
   end
 
   def test_call_changes_environment_for_next_stack_call_with_path_ignored_with_language_code
@@ -131,7 +131,7 @@ HTML
       'project_token' => '123456',
       'url_pattern' => 'path',
       'default_lang' => 'ja',
-      'supported_langs' => ['ja', 'en'],
+      'supported_langs' => %w[ja en],
       'ignore_paths' => ['/en/ignored']
     }
     env = {
@@ -141,7 +141,7 @@ HTML
       'PATH_INFO' => '/ignored'
     }
 
-    assert_call_affects_env(settings, env, false, true)
+    assert_call_affects_env(settings, env, mock_api: false, affected: true)
   end
 
   def test_call_changes_environment_for_next_stack_call_with_path_ignored_without_language_code
@@ -149,7 +149,7 @@ HTML
       'project_token' => '123456',
       'url_pattern' => 'path',
       'default_lang' => 'ja',
-      'supported_langs' => ['ja', 'en'],
+      'supported_langs' => %w[ja en],
       'ignore_paths' => ['/ignored']
     }
     env = {
@@ -159,7 +159,7 @@ HTML
       'PATH_INFO' => '/en/ignored'
     }
 
-    assert_call_affects_env(settings, env, false, true)
+    assert_call_affects_env(settings, env, mock_api: false, affected: true)
   end
 
   def test_call_changes_environment_for_next_stack_call_with_path_ignored_without_language_code_in_original_language
@@ -167,7 +167,7 @@ HTML
       'project_token' => '123456',
       'url_pattern' => 'path',
       'default_lang' => 'ja',
-      'supported_langs' => ['ja', 'en'],
+      'supported_langs' => %w[ja en],
       'ignore_paths' => ['/ignored']
     }
     env = {
@@ -177,7 +177,7 @@ HTML
       'PATH_INFO' => '/ignored'
     }
 
-    assert_call_affects_env(settings, env, false, true)
+    assert_call_affects_env(settings, env, mock_api: false, affected: true)
   end
 
   def test_call_does_not_change_environment_for_next_stack_call_with_path_ignored
@@ -185,7 +185,7 @@ HTML
       'project_token' => '123456',
       'url_pattern' => 'path',
       'default_lang' => 'ja',
-      'supported_langs' => ['ja', 'en'],
+      'supported_langs' => %w[ja en],
       'ignore_paths' => ['/en/ignored']
     }
     env = {
@@ -195,23 +195,20 @@ HTML
       'PATH_INFO' => '/en/ignored'
     }
 
-    assert_call_affects_env(settings, env, false, false)
+    assert_call_affects_env(settings, env, mock_api: false, affected: false)
   end
 
   private
 
-  def assert_call_affects_env(settings, env, mock_api, affects)
+  def assert_call_affects_env(settings, env, mock_api:, affected:)
     app_mock = get_app
     sut = Wovnrb::Interceptor.new(app_mock, settings)
     unaffected_env = env
 
-    if mock_api
-      mock_translation_api_response('', '')
-    end
-
+    mock_translation_api_response('', '') if mock_api
     sut.call(env.clone)
 
-    assert_equal(unaffected_env != app_mock.env, affects)
+    assert_equal(unaffected_env != app_mock.env, affected)
   end
 
   def assert_switch_lang(original_lang, target_lang, body, expected_body, api_expected = true)

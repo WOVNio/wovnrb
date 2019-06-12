@@ -66,7 +66,7 @@ module Wovnrb
     end
 
     def unmasked_pathname_without_trailing_slash
-      @unmasked_pathname.sub(/\/$/, '')
+      @unmasked_pathname.chomp('/')
     end
 
     # Get the language code of the current request
