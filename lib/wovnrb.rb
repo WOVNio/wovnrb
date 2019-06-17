@@ -24,6 +24,8 @@ module Wovnrb
     end
 
     def call(env)
+      return @app.call(env) if Rack::Request.new(env).params['wovn_disable'] == true
+
       @store.settings.clear_dynamic_settings!
       return @app.call(env) unless Store.instance.valid_settings?
 

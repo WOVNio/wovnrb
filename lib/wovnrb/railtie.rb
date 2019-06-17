@@ -1,7 +1,9 @@
 module Wovnrb
   class Railtie < Rails::Railtie
     initializer 'wovnrb.configure_rails_initialization' do |app|
-      app.middleware.insert_before(0, Wovnrb::Interceptor)
+      previous_middleware = app.config.wovnrb.symbolize_keys[:previous_middleware] || 0
+
+      app.middleware.insert_before(previous_middleware, Wovnrb::Interceptor)
       # begin
       #  app.middleware.insert_before(Rack::Runtime, Wovnrb::Interceptor)
       # rescue
