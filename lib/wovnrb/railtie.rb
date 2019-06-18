@@ -9,9 +9,7 @@ module Wovnrb
 
   class Railtie < Rails::Railtie
     initializer 'wovnrb.configure_rails_initialization' do |app|
-      unless Wovnrb.middleware_inserted?(app)
-        app.middleware.insert_before(0, Wovnrb::Interceptor)
-      end
+      app.middleware.insert_before(0, Wovnrb::Interceptor) unless Wovnrb.middleware_inserted?(app)
     end
   end
 end
