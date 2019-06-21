@@ -1,18 +1,15 @@
 module Wovnrb
+  def self.middleware_inserted?(app)
+    app.middleware.send(:operations).each do |_, middlewares, _|
+      return true if middlewares.include?(Wovnrb::Interceptor)
+    end
+
+    false
+  end
+
   class Railtie < Rails::Railtie
     initializer 'wovnrb.configure_rails_initialization' do |app|
-      app.middleware.insert_before(0, Wovnrb::Interceptor)
-      # begin
-      #  app.middleware.insert_before(Rack::Runtime, Wovnrb::Interceptor)
-      # rescue
-      #  app.middleware.insert_before(0, Wovnrb::Interceptor)
-      # end
-
-      # if Rails.env.development? && config.respond_to?(:wovnrb)
-      #  config.after_initialize do
-      #    config.wovnrb[:project_token] = User.first.short_token
-      #  end
-      # end
+      app.middleware.insert_before(0, Wovnrb::Interceptor) unless Wovnrb.middleware_inserted?(app)
     end
   end
 end
