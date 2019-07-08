@@ -11,10 +11,15 @@ module Wovnrb
     end
 
     def test_build_api_compatible_html_with_custom_lang_param_name
-      converter = prepare_html_converter('<html><body><a class="test">hello</a></body></html>', supported_langs: %w[en vi], lang_param_name: 'lang')
+      settings = {
+        supported_langs: %w[en vi],
+        url_lang_pattern: 'query',
+        lang_param_name: 'lang'
+      }
+      converter = prepare_html_converter('<html><body><a class="test">hello</a></body></html>', settings)
       converted_html, = converter.build_api_compatible_html
 
-      expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={}&amp;langParamName=lang&amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><a class=\"test\">hello</a></body></html>"
+      expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={}&amp;langParamName=lang&amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?lang=vi\"></head><body><a class=\"test\">hello</a></body></html>"
       assert_equal(expected_html, converted_html)
     end
 
@@ -182,7 +187,7 @@ module Wovnrb
 
       headers = Wovnrb::Headers.new(
         Wovnrb.get_env('url' => 'http://my-site.com'),
-        Wovnrb.get_settings(settings)
+        store.settings
       )
 
       [store, headers]
