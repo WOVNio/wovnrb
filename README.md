@@ -78,6 +78,7 @@ project_token      | yes      | ''
 default_lang       | yes      | 'en'
 supported_langs    | yes      | ['en']
 url_pattern        | yes      | 'path'
+lang_param_anme    |          | 'wovn'
 query              |          | []
 ignore_class       |          | []
 translate_fragment |          | true
@@ -126,7 +127,17 @@ parameters  | Translated page's URL           | Notes
 
 	https://wovn.io/contact
 
-### 2.5. query
+### 2.5 lang_param_name
+This parameter is only valid for when `url_pattern_name` is set to `'query'`.
+
+It allows you to set the query parameter name for declaring the language of the
+page. The default value for this setting is `'wovn'`, such that a page URL in
+translated language English has the form
+`https://my-website.com/index.php?wovn=en`. If you instead set the value to
+`'lang'`, then the later URL example would have the form
+`https://my-website.com/index.php?lang=en`.
+
+### 2.6. query
 
 WOVN.io ignores query parameters when searching a translated page. If you want to add a query parameter to translated page's URL, you should configure the `query` parameter. (You need to configure WOVN.io too)
 
@@ -140,11 +151,11 @@ If the `default_lang` is 'en', and the query is set to 'os', the above URL will 
 
 	https://wovn.io/contact?os=mac
 
-### 2.6. ignore_class
+### 2.7. ignore_class
 
 This sets "Ignore class" which prevents WOVN from translating HTML elements that have a class contained in this array.
 
-### 2.7. translate_fragment
+### 2.8. translate_fragment
 
 This option allows to disable translating partial HTML content. By default,
 partial HTML content is translated but no widget snippet is added. Set
