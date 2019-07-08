@@ -78,7 +78,7 @@ project_token      | yes      | ''
 default_lang       | yes      | 'en'
 supported_langs    | yes      | ['en']
 url_pattern        | yes      | 'path'
-lang_param_anme    |          | 'wovn'
+lang_param_name    |          | 'wovn'
 query              |          | []
 ignore_class       |          | []
 translate_fragment |          | true
