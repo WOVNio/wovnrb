@@ -20,6 +20,7 @@ module Wovnrb
         'ignore_globs' => [],
         'url_pattern' => 'path',
         'url_pattern_reg' => "/(?<lang>[^/.?]+)",
+        'lang_param_name' => 'wovn',
         'query' => [],
         'ignore_class' => [],
         'api_url' => 'https://wovn.global.ssl.fastly.net/v0/',

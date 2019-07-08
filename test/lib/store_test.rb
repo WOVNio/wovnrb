@@ -55,6 +55,19 @@ module Wovnrb
       assert_equal('query', s.settings['url_pattern'])
     end
 
+    def test_lang_param_name_wovn_by_default
+      sut = Wovnrb::Store.instance
+
+      assert_equal('wovn', sut.settings['lang_param_name'])
+    end
+
+    def test_lang_param_name_update
+      sut = Wovnrb::Store.instance
+
+      sut.update_settings('lang_param_name' => 'lang')
+      assert_equal('lang', sut.settings['lang_param_name'])
+    end
+
     def test_invalid_settings
       mock = LogMock.mock_log
       store = Wovnrb::Store.instance
