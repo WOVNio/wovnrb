@@ -55,6 +55,15 @@ module Wovnrb
       assert_equal('query', s.settings['url_pattern'])
     end
 
+    def test_settings_url_pattern_query_with_lang_param_name
+      sut = Wovnrb::Store.instance
+
+      sut.update_settings('url_pattern' => 'query', 'lang_param_name' => 'lang')
+
+      assert_equal('((\\?.*&)|\\?)lang=(?<lang>[^&]+)(&|$)', sut.settings['url_pattern_reg'])
+      assert_equal('query', sut.settings['url_pattern'])
+    end
+
     def test_lang_param_name_wovn_by_default
       sut = Wovnrb::Store.instance
 

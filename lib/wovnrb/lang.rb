@@ -91,7 +91,9 @@ module Wovnrb
     def add_lang_code(href, pattern, headers)
       return href if href =~ /^(#.*)?$/
 
-      code_to_add = Store.instance.settings['custom_lang_aliases'][@lang_code] || @lang_code
+      settings = Store.instance.settings
+      code_to_add = settings['custom_lang_aliases'][@lang_code] || @lang_code
+      lang_param_name = settings['lang_param_name']
       # absolute links
       new_href = href
       if href && href =~ /^(https?:)?\/\//i
@@ -115,7 +117,7 @@ module Wovnrb
                          href.sub(/(\/\/)([^\.]*)/, '\1' + code_to_add.downcase + '.' + '\2')
                        end
           when 'query'
-            new_href = add_query_lang_code(href, code_to_add)
+            new_href = add_query_lang_code(href, code_to_add, lang_param_name)
           else # path
             new_href = href.sub(/([^\.]*\.[^\/]*)(\/|$)/, '\1/' + code_to_add + '/')
           end
@@ -139,7 +141,7 @@ module Wovnrb
                        lang_url + current_dir + '/' + href
                      end
         when 'query'
-          new_href = add_query_lang_code(href, code_to_add)
+          new_href = add_query_lang_code(href, code_to_add, lang_param_name)
         else # path
           if href =~ /^\//
             new_href = '/' + code_to_add + href
@@ -209,10 +211,10 @@ module Wovnrb
       langs
     end
 
-    def add_query_lang_code(href, lang_code)
+    def add_query_lang_code(href, lang_code, lang_param_name)
       query_separator = href =~ /\?/ ? '&' : '?'
 
-      href.sub(/(#|$)/, "#{query_separator}wovn=#{lang_code}\\1")
+      href.sub(/(#|$)/, "#{query_separator}#{lang_param_name}=#{lang_code}\\1")
     end
   end
 end

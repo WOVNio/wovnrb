@@ -144,7 +144,7 @@ module Wovnrb
       if @settings['url_pattern'] == 'path'
         @settings['url_pattern_reg'] = "/(?<lang>[^/.?]+)"
       elsif @settings['url_pattern'] == 'query'
-        @settings['url_pattern_reg'] = "((\\?.*&)|\\?)wovn=(?<lang>[^&]+)(&|$)"
+        @settings['url_pattern_reg'] = "((\\?.*&)|\\?)#{@settings['lang_param_name']}=(?<lang>[^&]+)(&|$)"
       elsif @settings['url_pattern'] == 'subdomain'
         @settings['url_pattern_reg'] = "^(?<lang>[^.]+)\."
       end

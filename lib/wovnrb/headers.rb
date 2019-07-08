@@ -133,10 +133,11 @@ module Wovnrb
         location = url
         case @settings['url_pattern']
         when 'query'
+          lang_param_name = @settings['lang_param_name']
           if location !~ /\?/
-            location = "#{location}?wovn=#{lang_code}"
-          else @env['REQUEST_URI'] !~ /(\?|&)wovn=/
-               location = "#{location}&wovn=#{lang_code}"
+            location = "#{location}?#{lang_param_name}=#{lang_code}"
+          else @env['REQUEST_URI'] !~ /(\?|&)#{lang_param_name}=/
+               location = "#{location}&#{lang_param_name}=#{lang_code}"
           end
         when 'subdomain'
           location = "#{lang_code.downcase}.#{location}"
@@ -187,7 +188,8 @@ module Wovnrb
 
       case @settings['url_pattern']
       when 'query'
-        return uri.sub(/(^|\?|&)wovn=#{lang_code}(&|$)/, '\1').gsub(/(\?|&)$/, '')
+        lang_param_name = @settings['lang_param_name']
+        return uri.sub(/(^|\?|&)#{lang_param_name}=#{lang_code}(&|$)/, '\1').gsub(/(\?|&)$/, '')
       when 'subdomain'
         rp = Regexp.new('(^|(//))' + lang_code + '\.', 'i')
         return uri.sub(rp, '\1')
@@ -208,7 +210,7 @@ module Wovnrb
                                  else
                                    '?'
                                  end
-          headers['Location'] += "wovn=#{lang_code}"
+          headers['Location'] += "#{@settings['lang_param_name']}=#{lang_code}"
         when 'subdomain'
           headers['Location'] = headers['Location'].sub(/\/\/([^.]+)/, '//' + lang_code + '.\1')
         # when 'path'
