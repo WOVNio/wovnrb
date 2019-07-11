@@ -44,7 +44,8 @@ module Wovnrb
         'custom_lang_aliases' => { 'ja' => 'Japanese' },
         'default_lang' => 'en',
         'url_pattern' => 'subdomain',
-        'url_pattern_reg' => '^(?<lang>[^.]+).'
+        'url_pattern_reg' => '^(?<lang>[^.]+).',
+        'lang_param_name' => 'lang'
       }
       store = Wovnrb::Store.instance
       store.update_settings(settings)
@@ -106,6 +107,7 @@ module Wovnrb
         'token' => '123456',
         'lang_code' => 'fr',
         'url_pattern' => 'subdomain',
+        'lang_param_name' => 'lang',
         'product' => 'WOVN.rb',
         'version' => VERSION,
         'body' => original_html,

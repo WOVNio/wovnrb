@@ -233,6 +233,18 @@ module Wovnrb
       assert_equal('http://fr.home.google.com', lang.add_lang_code('http://home.google.com', 'subdomain', headers))
     end
 
+    def test_add_lang_code_with_query_and_lang_param_name
+      Store.instance.update_settings('url_pattern_name' => 'query', 'lang_param_name' => 'lang')
+
+      sut = Lang.new('fr')
+      headers = Wovnrb::Headers.new(
+        Wovnrb.get_env('url' => 'http://google.com'),
+        Store.instance.settings
+      )
+
+      assert_equal('http://google.com?hey=yo&lang=fr', sut.add_lang_code('http://google.com?hey=yo', 'query', headers))
+    end
+
     def test_add_lang_code_absolute_query_no_query
       lang = Lang.new('fr')
       headers = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://google.com'), Wovnrb.get_settings)
