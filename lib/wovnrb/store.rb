@@ -20,6 +20,7 @@ module Wovnrb
         'ignore_globs' => [],
         'url_pattern' => 'path',
         'url_pattern_reg' => "/(?<lang>[^/.?]+)",
+        'lang_param_name' => 'wovn',
         'query' => [],
         'ignore_class' => [],
         'api_url' => 'https://wovn.global.ssl.fastly.net/v0/',
@@ -143,7 +144,7 @@ module Wovnrb
       if @settings['url_pattern'] == 'path'
         @settings['url_pattern_reg'] = "/(?<lang>[^/.?]+)"
       elsif @settings['url_pattern'] == 'query'
-        @settings['url_pattern_reg'] = "((\\?.*&)|\\?)wovn=(?<lang>[^&]+)(&|$)"
+        @settings['url_pattern_reg'] = "((\\?.*&)|\\?)#{@settings['lang_param_name']}=(?<lang>[^&]+)(&|$)"
       elsif @settings['url_pattern'] == 'subdomain'
         @settings['url_pattern_reg'] = "^(?<lang>[^.]+)\."
       end
