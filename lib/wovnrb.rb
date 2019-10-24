@@ -36,7 +36,7 @@ module Wovnrb
       headers = Headers.new(env, @store.settings)
       default_lang = @store.settings['default_lang']
 
-      puts "WOVNRB CALL pathname: #{headers.pathname} lang: #{headers.lang_code}"
+      puts "WOVNRB CALL #{headers.unmasked_url} lang: #{headers.lang_code}"
       puts 'WOVNRB: ENV[REQUEST_URI]='+  @env['REQUEST_URI']
 
       return @app.call(env) if @store.settings['test_mode'] && @store.settings['test_url'] != headers.url
@@ -47,14 +47,15 @@ module Wovnrb
         return [307, redirect_headers, ['']]
       end
 
-           # if path containing language code is ignored, do nothing
+      # if path containing language code is ignored, do nothing
       if headers.lang_code != default_lang && ignore_path?(headers.unmasked_pathname_without_trailing_slash)
-        status, res_headers, body = @app.call(env)
+        puts "WOVNRB: path is '#{headers.unmasked_pathname}' ignored: true"
+        puts "WOVNRB: calling application"
 
-        return output(headers, status, res_headers, body)
+        return @app.call(env)
       end
 
- puts "WOVNRB: pass to application"
+      puts "WOVNRB: pass to application"
       # pass to application
       status, res_headers, body = @app.call(headers.request_out)
 
@@ -70,7 +71,7 @@ module Wovnrb
 
       is_ignored = ignore_path?(headers.pathname)
 
-      puts "WOVNRB: path is '#{headers.pathname}' ignored: #{is_ignored}"
+      puts "WOVNRB: path is '#{headers.unmasked_pathname}' ignored: #{is_ignored}"
       return output(headers, status, res_headers, body) if ignore_path?(headers.pathname)
 
       body = switch_lang(headers, body) unless status.to_s =~ /^1|302/
@@ -129,7 +130,9 @@ module Wovnrb
     end
 
     def ignore_path?(path)
-      @store.settings['ignore_globs'].any? { |g| g.match?(path) }
+      result = @store.settings['ignore_globs'].any? { |g| g.match?(path) }
+      puts "WOVNRB: ignore_path?(#{path})=#{result} globs=#{@store.settings['ignore_globs'].to_s}"
+      result
     end
 
     # Checks if a given HTML body is an Accelerated Mobile Page (AMP).
