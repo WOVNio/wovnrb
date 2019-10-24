@@ -24,11 +24,18 @@ module Wovnrb
     end
 
     def call(env)
+
       @store.settings.clear_dynamic_settings!
       return @app.call(env) unless Store.instance.valid_settings?
 
       @env = env
+
+
       headers = Headers.new(env, @store.settings)
+
+      puts "WOVNRB CALL pathname: #{headers.pathname} lang: #{headers.lang_code}"
+      puts 'WOVNRB: ENV[REQUEST_URI]='+  @env['REQUEST_URI']
+
       return @app.call(env) if @store.settings['test_mode'] && @store.settings['test_url'] != headers.url
 
       # redirect if the path is set to the default language (for SEO purposes)
@@ -37,17 +44,27 @@ module Wovnrb
         return [307, redirect_headers, ['']]
       end
 
+      puts "WOVNRB: pass to application"
+
       # pass to application
       status, res_headers, body = @app.call(headers.request_out)
 
+      puts 'WOVNRB: ENV[REQUEST_URI]='+  @env['REQUEST_URI']
+
       return output(headers, status, res_headers, body) unless res_headers['Content-Type'] =~ /html/
-binding.pry
       request = Rack::Request.new(env)
 
       return output(headers, status, res_headers, body) if request.params['wovn_disable'] == true
 
       @store.settings.update_dynamic_settings!(request.params)
-      return output(headers, status, res_headers, body) if @store.settings['ignore_globs'].any? { |g| g.match?(headers.pathname) }
+
+      is_ignored = if @store.settings['ignore_globs'].any? { |g| g.match?(headers.pathname) }
+                     true
+                   else
+                     false
+                   end
+      puts "WOVNRB: path is '#{headers.pathname}' ignored: #{is_ignored}"
+      return output(headers, status, res_headers, body) if is_ignored
 
       body = switch_lang(headers, body) unless status.to_s =~ /^1|302/
 
@@ -88,7 +105,10 @@ binding.pry
     private
 
     def output(headers, status, res_headers, body)
+      puts "WOVNRB: output"
+      puts "WOVNRB: before modify: headers[Location]=#{res_headers['location']}"
       headers.out(res_headers)
+      puts "WOVNRB: after modify: headers[Location]=#{res_headers['location']}"
       [status, res_headers, body]
     end
 

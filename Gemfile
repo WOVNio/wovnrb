@@ -4,4 +4,7 @@ source 'https://rubygems.org'
 if RUBY_VERSION < '2.2.2'
   gem 'activesupport', '< 5.0.0'
 end
+
+gem 'pry'
+
 gemspec
