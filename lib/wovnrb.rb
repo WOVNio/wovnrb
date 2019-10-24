@@ -34,6 +34,7 @@ module Wovnrb
 
 
       headers = Headers.new(env, @store.settings)
+      default_lang = @store.settings['default_lang']
 
       puts "WOVNRB CALL pathname: #{headers.pathname} lang: #{headers.lang_code}"
       puts 'WOVNRB: ENV[REQUEST_URI]='+  @env['REQUEST_URI']
@@ -41,13 +42,19 @@ module Wovnrb
       return @app.call(env) if @store.settings['test_mode'] && @store.settings['test_url'] != headers.url
 
       # redirect if the path is set to the default language (for SEO purposes)
-      if headers.path_lang == @store.settings['default_lang']
-        redirect_headers = headers.redirect(@store.settings['default_lang'])
+      if headers.path_lang == default_lang
+        redirect_headers = headers.redirect(default_lang)
         return [307, redirect_headers, ['']]
       end
 
-      puts "WOVNRB: pass to application"
+           # if path containing language code is ignored, do nothing
+      if headers.lang_code != default_lang && ignore_path?(headers.unmasked_pathname_without_trailing_slash)
+        status, res_headers, body = @app.call(env)
 
+        return output(headers, status, res_headers, body)
+      end
+
+ puts "WOVNRB: pass to application"
       # pass to application
       status, res_headers, body = @app.call(headers.request_out)
 
@@ -61,13 +68,10 @@ module Wovnrb
 
       @store.settings.update_dynamic_settings!(request.params)
 
-      is_ignored = if @store.settings['ignore_globs'].any? { |g| g.match?(headers.pathname) }
-                     true
-                   else
-                     false
-                   end
+      is_ignored = ignore_path?(headers.pathname)
+
       puts "WOVNRB: path is '#{headers.pathname}' ignored: #{is_ignored}"
-      return output(headers, status, res_headers, body) if is_ignored
+      return output(headers, status, res_headers, body) if ignore_path?(headers.pathname)
 
       body = switch_lang(headers, body) unless status.to_s =~ /^1|302/
 
@@ -122,6 +126,10 @@ module Wovnrb
 
     def wovn_ignored?(html_body)
       !html_body.xpath('//html[@wovn-ignore]').empty?
+    end
+
+    def ignore_path?(path)
+      @store.settings['ignore_globs'].any? { |g| g.match?(path) }
     end
 
     # Checks if a given HTML body is an Accelerated Mobile Page (AMP).
