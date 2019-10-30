@@ -87,6 +87,7 @@ module Wovnrb
         'token' => token,
         'lang_code' => lang_code,
         'url_pattern' => url_pattern,
+        'lang_param_name' => lang_param_name,
         'product' => 'WOVN.rb',
         'version' => VERSION,
         'body' => body
@@ -129,6 +130,10 @@ module Wovnrb
 
     def url_pattern
       @store.settings['url_pattern']
+    end
+
+    def lang_param_name
+      @store.settings['lang_param_name']
     end
 
     def custom_lang_aliases

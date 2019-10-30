@@ -24,6 +24,9 @@ module Wovnrb
     end
 
     def call(env)
+      # disabled by previous Rack middleware
+      return @app.call(env) if Rack::Request.new(env).params['wovn_disable'] == true
+
       @store.settings.clear_dynamic_settings!
       return @app.call(env) unless Store.instance.valid_settings?
 
@@ -47,6 +50,7 @@ module Wovnrb
       # pass to application
       status, res_headers, body = @app.call(headers.request_out)
 
+      # disabled by next Rack middleware
       return output(headers, status, res_headers, body) unless res_headers['Content-Type'] =~ /html/
 
       request = Rack::Request.new(env)
