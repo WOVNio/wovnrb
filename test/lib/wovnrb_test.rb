@@ -108,7 +108,7 @@ HTML
     assert_switch_lang('en', 'ja', body, body, false)
   end
 
-  def test_call_changes_environment_for_next_stack_call_without_path_ignored
+  def test_call_without_path_ignored_should_change_environment
     settings = {
       'project_token' => '123456',
       'url_pattern' => 'path',
@@ -118,6 +118,8 @@ HTML
     }
     env = {
       'rack.input' => '',
+      'rack.request.query_string' => '',
+      'rack.request.query_hash' => {},
       'HTTP_HOST' => 'test.com',
       'REQUEST_URI' => '/en/not_ignored',
       'PATH_INFO' => '/en/not_ignored'
@@ -126,7 +128,7 @@ HTML
     assert_call_affects_env(settings, env, mock_api: true, affected: true)
   end
 
-  def test_call_changes_environment_for_next_stack_call_with_path_ignored_with_language_code
+  def test_call_with_path_ignored_with_language_code_should_change_environment
     settings = {
       'project_token' => '123456',
       'url_pattern' => 'path',
@@ -136,6 +138,8 @@ HTML
     }
     env = {
       'rack.input' => '',
+      'rack.request.query_string' => '',
+      'rack.request.query_hash' => {},
       'HTTP_HOST' => 'test.com',
       'REQUEST_URI' => '/ignored',
       'PATH_INFO' => '/ignored'
@@ -144,7 +148,7 @@ HTML
     assert_call_affects_env(settings, env, mock_api: false, affected: true)
   end
 
-  def test_call_changes_environment_for_next_stack_call_with_path_ignored_without_language_code
+  def test_call_with_path_ignored_without_language_code_should_change_environment
     settings = {
       'project_token' => '123456',
       'url_pattern' => 'path',
@@ -154,6 +158,8 @@ HTML
     }
     env = {
       'rack.input' => '',
+      'rack.request.query_string' => '',
+      'rack.request.query_hash' => {},
       'HTTP_HOST' => 'test.com',
       'REQUEST_URI' => '/en/ignored',
       'PATH_INFO' => '/en/ignored'
@@ -162,7 +168,7 @@ HTML
     assert_call_affects_env(settings, env, mock_api: false, affected: true)
   end
 
-  def test_call_changes_environment_for_next_stack_call_with_path_ignored_without_language_code_in_original_language
+  def test_call_with_path_ignored_without_language_code_in_original_language_should_change_environment
     settings = {
       'project_token' => '123456',
       'url_pattern' => 'path',
@@ -172,6 +178,8 @@ HTML
     }
     env = {
       'rack.input' => '',
+      'rack.request.query_string' => '',
+      'rack.request.query_hash' => {},
       'HTTP_HOST' => 'test.com',
       'REQUEST_URI' => '/ignored',
       'PATH_INFO' => '/ignored'
@@ -180,7 +188,7 @@ HTML
     assert_call_affects_env(settings, env, mock_api: false, affected: true)
   end
 
-  def test_call_does_not_change_environment_for_next_stack_call_with_path_ignored
+  def test_call_with_path_ignored_should_not_change_environment
     settings = {
       'project_token' => '123456',
       'url_pattern' => 'path',
@@ -190,6 +198,8 @@ HTML
     }
     env = {
       'rack.input' => '',
+      'rack.request.query_string' => '',
+      'rack.request.query_hash' => {},
       'HTTP_HOST' => 'test.com',
       'REQUEST_URI' => '/en/ignored',
       'PATH_INFO' => '/en/ignored'
