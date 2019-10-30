@@ -113,7 +113,7 @@ module Wovnrb
     end
 
     def ignore_path?(path)
-      @store.settings['ignore_globs'].any? { |g| g.match?(path) }
+      @store.settings['ignore_globs'].ignore?(path)
     end
 
     # Checks if a given HTML body is an Accelerated Mobile Page (AMP).

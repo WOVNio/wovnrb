@@ -207,19 +207,21 @@ module Wovnrb
       r = Regexp.new('//' + @host)
       lang_code = Store.instance.settings['custom_lang_aliases'][self.lang_code] || self.lang_code
       if lang_code != @settings['default_lang'] && headers.key?('Location') && headers['Location'] =~ r
-        case @settings['url_pattern']
-        when 'query'
-          headers['Location'] += if headers['Location'] =~ /\?/
-                                   '&'
-                                 else
-                                   '?'
-                                 end
-          headers['Location'] += "#{@settings['lang_param_name']}=#{lang_code}"
-        when 'subdomain'
-          headers['Location'] = headers['Location'].sub(/\/\/([^.]+)/, '//' + lang_code + '.\1')
-        # when 'path'
-        else
-          headers['Location'] = headers['Location'].sub(/(\/\/[^\/]+)/, '\1/' + lang_code)
+        unless @settings['ignore_globs'].ignore?(headers['Location'])
+          case @settings['url_pattern']
+          when 'query'
+            headers['Location'] += if headers['Location'] =~ /\?/
+                                     '&'
+                                   else
+                                     '?'
+                                   end
+            headers['Location'] += "#{@settings['lang_param_name']}=#{lang_code}"
+          when 'subdomain'
+            headers['Location'] = headers['Location'].sub(/\/\/([^.]+)/, '//' + lang_code + '.\1')
+          # when 'path'
+          else
+            headers['Location'] = headers['Location'].sub(/(\/\/[^\/]+)/, '\1/' + lang_code)
+          end
         end
       end
       headers
