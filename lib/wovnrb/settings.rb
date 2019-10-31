@@ -7,7 +7,7 @@ module Wovnrb
 
     def [](key)
       return @dynamic_settings[key] if @dynamic_settings.key?(key)
-      return ignore_globs if key == 'ignore_globs'
+      return IgnoreGlobsWrapper.new(ignore_globs) if key == 'ignore_globs'
 
       super(key)
     end
@@ -35,5 +35,13 @@ module Wovnrb
       'wovn_token' => 'project_token',
       'wovn_ignore_paths' => 'ignore_paths'
     }.freeze
+
+    class IgnoreGlobsWrapper < Array
+      def ignore?(uri)
+        path = Addressable::URI.parse(uri).path
+
+        any? { |glob| glob.match?(path) }
+      end
+    end
   end
 end

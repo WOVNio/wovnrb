@@ -39,7 +39,6 @@ module Wovnrb
               else
                 @env['HTTP_HOST']
               end
-      @env['wovnrb.target_lang'] = lang_code
       @host = settings['url_pattern'] == 'subdomain' ? remove_lang(@host, lang_code) : @host
       @pathname, @query = @env['REQUEST_URI'].split('?')
       @pathname = settings['url_pattern'] == 'path' ? remove_lang(@pathname, lang_code) : @pathname
@@ -64,6 +63,10 @@ module Wovnrb
       @pathname_with_trailing_slash_if_present = @pathname
       @pathname = @pathname.gsub(/\/$/, '')
       @redis_url = "#{@host}#{@pathname}#{@query}"
+    end
+
+    def unmasked_pathname_without_trailing_slash
+      @unmasked_pathname.chomp('/')
     end
 
     # Get the language code of the current request
@@ -150,6 +153,7 @@ module Wovnrb
     end
 
     def request_out(_def_lang = @settings['default_lang'])
+      @env['wovnrb.target_lang'] = lang_code
       case @settings['url_pattern']
       when 'query'
         @env['REQUEST_URI'] = remove_lang(@env['REQUEST_URI']) if @env.key?('REQUEST_URI')
@@ -203,19 +207,21 @@ module Wovnrb
       r = Regexp.new('//' + @host)
       lang_code = Store.instance.settings['custom_lang_aliases'][self.lang_code] || self.lang_code
       if lang_code != @settings['default_lang'] && headers.key?('Location') && headers['Location'] =~ r
-        case @settings['url_pattern']
-        when 'query'
-          headers['Location'] += if headers['Location'] =~ /\?/
-                                   '&'
-                                 else
-                                   '?'
-                                 end
-          headers['Location'] += "#{@settings['lang_param_name']}=#{lang_code}"
-        when 'subdomain'
-          headers['Location'] = headers['Location'].sub(/\/\/([^.]+)/, '//' + lang_code + '.\1')
-        # when 'path'
-        else
-          headers['Location'] = headers['Location'].sub(/(\/\/[^\/]+)/, '\1/' + lang_code)
+        unless @settings['ignore_globs'].ignore?(headers['Location'])
+          case @settings['url_pattern']
+          when 'query'
+            headers['Location'] += if headers['Location'] =~ /\?/
+                                     '&'
+                                   else
+                                     '?'
+                                   end
+            headers['Location'] += "#{@settings['lang_param_name']}=#{lang_code}"
+          when 'subdomain'
+            headers['Location'] = headers['Location'].sub(/\/\/([^.]+)/, '//' + lang_code + '.\1')
+          # when 'path'
+          else
+            headers['Location'] = headers['Location'].sub(/(\/\/[^\/]+)/, '\1/' + lang_code)
+          end
         end
       end
       headers

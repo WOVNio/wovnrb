@@ -59,7 +59,8 @@ module Wovnrb
   end
 
   def get_settings(options = {})
-    settings = {}
+    settings = Wovnrb::Store.default_settings
+
     settings['project_token'] = 'OHYx9'
     settings['url_pattern'] = 'path'
     settings['url_pattern_reg'] = '/(?<lang>[^/.?]+)'
@@ -68,7 +69,8 @@ module Wovnrb
     settings['api_url'] = 'http://localhost/v0/values'
     settings['default_lang'] = 'en'
     settings['supported_langs'] = %w[en ja]
-    settings.merge(options)
+
+    Wovnrb::Settings.new.merge(settings.merge(options))
   end
 
   def get_env(options = {})

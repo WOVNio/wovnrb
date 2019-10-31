@@ -82,6 +82,7 @@ lang_param_name    |          | 'wovn'
 query              |          | []
 ignore_class       |          | []
 translate_fragment |          | true
+ignore_paths       |          | []
 
 ### 2.1. project_token
 
@@ -160,6 +161,17 @@ This sets "Ignore class" which prevents WOVN from translating HTML elements that
 This option allows to disable translating partial HTML content. By default,
 partial HTML content is translated but no widget snippet is added. Set
 `translate_fragment` to `false` to prevent translating partial HTML content.
+
+### 2.9 ignore_paths
+
+This parameter tells WOVN.rb to not localize content withing given directories.
+
+The directories given will only be matched against the beginning of the URL path.
+
+For instance, if you want to not localize the admin directory of your website, you should add the following to you WOVN.rb configuration.
+```
+'ignore_paths' => ['/admin/']
+```
 
 ## 3. Contributing
 

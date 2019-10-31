@@ -279,6 +279,49 @@ module Wovnrb
       assert_equal('http://wovn.io/test', env['HTTP_REFERER'])
     end
 
+    def test_out_should_add_lang_code_to_redirection
+      sut = Wovnrb::Headers.new(
+        Wovnrb.get_env(
+          'SERVER_NAME' => 'wovn.io',
+          'REQUEST_URI' => '/ja/test',
+          'HTTP_REFERER' => 'http://wovn.io/ja/test'
+        ),
+        Wovnrb.get_settings(
+          'default_lang' => 'en',
+          'supported_langs' => %w[en ja],
+          'url_pattern' => 'path',
+          'url_pattern_reg' => '/(?<lang>[^/.?]+)'
+        )
+      )
+      headers = {
+        'Location' => 'http://wovn.io/'
+      }
+
+      assert_equal('http://wovn.io/ja/', sut.out(headers)['Location'])
+    end
+
+    def test_out_should_not_add_lang_code_to_ignored_redirection
+      sut = Wovnrb::Headers.new(
+        Wovnrb.get_env(
+          'SERVER_NAME' => 'wovn.io',
+          'REQUEST_URI' => '/ja/test',
+          'HTTP_REFERER' => 'http://wovn.io/ja/test'
+        ),
+        Wovnrb.get_settings(
+          'default_lang' => 'en',
+          'supported_langs' => %w[en ja],
+          'url_pattern' => 'path',
+          'url_pattern_reg' => '/(?<lang>[^/.?]+)',
+          'ignore_paths' => ['/static/']
+        )
+      )
+      headers = {
+        'Location' => 'http://wovn.io/static/'
+      }
+
+      assert_equal('http://wovn.io/static/', sut.out(headers)['Location'])
+    end
+
     def test_out_http_referer_subdomain_with_custom_lang_code
       Store.instance.update_settings('custom_lang_aliases' => { 'ja' => 'staging-ja' })
       h = Wovnrb::Headers.new(
