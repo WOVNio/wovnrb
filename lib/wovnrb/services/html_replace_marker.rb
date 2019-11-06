@@ -17,12 +17,12 @@ module Wovnrb
 
     def revert(marked_html)
       i = @mapped_values.size
+      marked_html = CGI.unescapeHTML(marked_html)
       while i > 0
         i -= 1
         key, value = @mapped_values[i]
-        marked_html = CGI.unescapeHTML(marked_html).sub(key, value)
+        marked_html = marked_html.sub(key, value)
       end
-
       marked_html
     end
 
