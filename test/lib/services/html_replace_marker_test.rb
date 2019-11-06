@@ -32,6 +32,24 @@ module Wovnrb
       assert_equal(original_html, marker.revert(new_html))
     end
 
+    def test_revert_input_value
+      marker = HtmlReplaceMarker.new
+      original_html = '<html><body><input type="hidden" value="please-revert"></body></html>'
+      key = marker.add_comment_value('please-revert')
+      new_html = original_html.sub('please-revert', key)
+      assert_equal("<html><body><input type=\"hidden\" value=\"#{key}\"></body></html>", new_html)
+      assert_equal(original_html, marker.revert(new_html))
+    end
+
+    def test_revert_input_empty_value
+      marker = HtmlReplaceMarker.new
+      original_html = '<html><body><input type="hidden" value=""></body></html>'
+      key = marker.add_comment_value('')
+      new_html = original_html.sub('value=""', "value=\"#{key}\"")
+      assert_equal("<html><body><input type=\"hidden\" value=\"#{key}\"></body></html>", new_html)
+      assert_equal(original_html, marker.revert(new_html))
+    end
+
     def test_revert_multiple_values
       marker = HtmlReplaceMarker.new
       original_html = '<html><body>hello<a>  replacement </a>world </body></html>'

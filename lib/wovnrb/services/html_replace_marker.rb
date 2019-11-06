@@ -20,7 +20,7 @@ module Wovnrb
       while i > 0
         i -= 1
         key, value = @mapped_values[i]
-        marked_html = marked_html.sub(key, value)
+        marked_html = CGI.unescapeHTML(marked_html).sub(key, value)
       end
 
       marked_html
