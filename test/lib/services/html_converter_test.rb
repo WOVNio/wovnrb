@@ -69,6 +69,8 @@ module Wovnrb
       html = [
         '<html><body>',
         '<input id="user-id" type="hidden" value="secret-id">',
+        '<input id="password" type="hidden" value="secret-password">',
+        '<input id="something" type="hidden" value="">',
         '<input id="name" type="text" value="wovn.io">',
         '</body></html>'
       ].join
@@ -76,7 +78,15 @@ module Wovnrb
       converter = prepare_html_converter(html, ignore_class: [])
       converted_html, = converter.build_api_compatible_html
 
-      expected_convert_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"fr\" href=\"http://my-site.com/?wovn=fr\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/?wovn=ja\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><input id=\"user-id\" type=\"hidden\" value=\"__wovn-backend-ignored-key-0\"><input id=\"name\" type=\"text\" value=\"wovn.io\"></body></html>"
+      expected_convert_html = [
+        '<html><head>',
+        "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"fr\" href=\"http://my-site.com/?wovn=fr\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/?wovn=ja\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body>",
+        '<input id="user-id" type="hidden" value="__wovn-backend-ignored-key-0">',
+        '<input id="password" type="hidden" value="__wovn-backend-ignored-key-1">',
+        '<input id="something" type="hidden" value="__wovn-backend-ignored-key-2">',
+        '<input id="name" type="text" value="wovn.io">',
+        '</body></html>'
+      ].join
       assert_equal(expected_convert_html, converted_html)
     end
 
