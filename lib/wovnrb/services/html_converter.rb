@@ -69,7 +69,7 @@ module Wovnrb
         return if original_text.nil?
         return if original_text.include?(HtmlReplaceMarker::KEY_PREFIX)
 
-        node.set_attribute('value', marker.add_comment_value(original_text))
+        node.set_attribute('value', marker.add_value(original_text))
       end
     end
 

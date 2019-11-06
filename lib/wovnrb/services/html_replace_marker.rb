@@ -15,9 +15,15 @@ module Wovnrb
       key
     end
 
+    def add_value(value)
+      key = generate_key
+      @mapped_values << [key, value]
+
+      key
+    end
+
     def revert(marked_html)
       i = @mapped_values.size
-      marked_html = CGI.unescapeHTML(marked_html)
       while i > 0
         i -= 1
         key, value = @mapped_values[i]
