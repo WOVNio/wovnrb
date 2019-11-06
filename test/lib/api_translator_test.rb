@@ -19,6 +19,11 @@ module Wovnrb
       assert_translation('test.html', 'test_translated.html', false, encoding: 'unknown')
     end
 
+    def test_translate_accepts_uncompressed_response_from_api_in_dev_mode
+      Wovnrb::Store.instance.update_settings('wovn_dev_mode' => true)
+      assert_translation('test.html', 'test_translated.html', true, encoding: 'text/json')
+    end
+
     private
 
     def assert_translation(original_html_fixture, translated_html_fixture, success_expected, response = { encoding: 'gzip', status_code: 200 })
@@ -39,7 +44,8 @@ module Wovnrb
         'custom_lang_aliases' => { 'ja' => 'Japanese' },
         'default_lang' => 'en',
         'url_pattern' => 'subdomain',
-        'url_pattern_reg' => '^(?<lang>[^.]+).'
+        'url_pattern_reg' => '^(?<lang>[^.]+).',
+        'lang_param_name' => 'lang'
       }
       store = Wovnrb::Store.instance
       store.update_settings(settings)
@@ -58,7 +64,12 @@ module Wovnrb
     def stub_translation_api_request(store, headers, original_html, translated_html, response)
       if response
         cache_key = generate_cache_key(store, original_html)
-        api_url = "wovn.global.ssl.fastly.net/v0/translation?cache_key=#{cache_key}"
+        api_host = if store.dev_mode?
+                     'dev-wovn.io:3001'
+                   else
+                     'wovn.global.ssl.fastly.net'
+                   end
+        api_url = "http://#{api_host}/v0/translation?cache_key=#{cache_key}"
         compressed_data = compress(generate_data(original_html))
         headers = {
           'Accept' => '*/*',
@@ -67,11 +78,16 @@ module Wovnrb
           'Content-Type' => 'application/octet-stream',
           'User-Agent' => 'Ruby'
         }
-        compressed_response = compress("{\"body\":\"#{translated_html.gsub("\n", '\n')}\"}")
+        stub_response_json = "{\"body\":\"#{translated_html.gsub("\n", '\n')}\"}"
+        stub_response = if store.dev_mode?
+                          stub_response_json
+                        else
+                          compress(stub_response_json)
+                        end
         response_headers = { 'Content-Encoding' => response[:encoding] || 'gzip' }
         stub = stub_request(:post, api_url)
                .with(body: compressed_data, headers: headers)
-               .to_return(status: response[:status_code] || 200, body: compressed_response, headers: response_headers)
+               .to_return(status: response[:status_code] || 200, body: stub_response, headers: response_headers)
 
         stub
       end
@@ -80,7 +96,7 @@ module Wovnrb
     def generate_cache_key(store, original_html)
       settings_hash = Digest::MD5.hexdigest(JSON.dump(store.settings))
       body_hash = Digest::MD5.hexdigest(original_html)
-      escaped_key = CGI.escape("token=123456&settings_hash=#{settings_hash}&body_hash=#{body_hash}&path=/test&lang=fr")
+      escaped_key = CGI.escape("token=123456&settings_hash=#{settings_hash}&body_hash=#{body_hash}&path=/test&lang=fr&version=wovnrb_#{VERSION}")
 
       "(#{escaped_key})"
     end
@@ -91,6 +107,7 @@ module Wovnrb
         'token' => '123456',
         'lang_code' => 'fr',
         'url_pattern' => 'subdomain',
+        'lang_param_name' => 'lang',
         'product' => 'WOVN.rb',
         'version' => VERSION,
         'body' => original_html,

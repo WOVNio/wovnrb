@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'nokogumbo', '>= 1.4.0', '< 2.0.0'
   spec.add_dependency 'rack'
 
-  spec.add_development_dependency 'bundler', '~> 1.7'
+  spec.add_development_dependency 'bundler', '>= 1.7'
   spec.add_development_dependency 'guard'
   spec.add_development_dependency 'guard-rspec'
   spec.add_development_dependency 'listen', '~> 3.0.6'
@@ -36,6 +36,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'pry-nav'
   spec.add_development_dependency 'pry-remote'
   spec.add_development_dependency 'rake', '~> 10.0'
+  spec.add_development_dependency 'rb-readline'
   spec.add_development_dependency 'shoulda-context'
   spec.add_development_dependency 'terminal-notifier'
   spec.add_development_dependency 'test-unit'

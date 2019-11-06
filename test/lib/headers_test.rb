@@ -1,7 +1,7 @@
 require 'test_helper'
 
 module Wovnrb
-  class LangTest < WovnMiniTest
+  class HeadersTest < WovnMiniTest
     #########################
     # INITIALIZE
     #########################
@@ -151,13 +151,31 @@ module Wovnrb
       assert_equal('http://ja.wovn.io/contact', h.redirect_location('ja'))
     end
 
-    def test_redirect_location_without_custom_lang_code
+    def test_redirect_location_with_custom_lang_code
       Store.instance.update_settings('custom_lang_aliases' => { 'ja' => 'staging-ja' })
       h = Wovnrb::Headers.new(
         Wovnrb.get_env('url' => 'http://wovn.io/contact', 'HTTP_X_FORWARDED_HOST' => 'wovn.io'),
         Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).')
       )
       assert_equal('http://staging-ja.wovn.io/contact', h.redirect_location('ja'))
+    end
+
+    def test_redirect_location_without_lang_param_name
+      Store.instance.update_settings('url_pattern' => 'query')
+      sut = Wovnrb::Headers.new(
+        Wovnrb.get_env('url' => 'http://wovn.io/contact', 'HTTP_X_FORWARDED_HOST' => 'wovn.io'),
+        Store.instance.settings
+      )
+      assert_equal('http://wovn.io/contact?wovn=ja', sut.redirect_location('ja'))
+    end
+
+    def test_redirect_location_with_lang_param_name
+      Store.instance.update_settings('url_pattern' => 'query', 'lang_param_name' => 'lang')
+      sut = Wovnrb::Headers.new(
+        Wovnrb.get_env('url' => 'http://wovn.io/contact', 'HTTP_X_FORWARDED_HOST' => 'wovn.io'),
+        Store.instance.settings
+      )
+      assert_equal('http://wovn.io/contact?lang=ja', sut.redirect_location('ja'))
     end
 
     #########################
@@ -259,6 +277,49 @@ module Wovnrb
       )
       env = h.request_out('ja')
       assert_equal('http://wovn.io/test', env['HTTP_REFERER'])
+    end
+
+    def test_out_should_add_lang_code_to_redirection
+      sut = Wovnrb::Headers.new(
+        Wovnrb.get_env(
+          'SERVER_NAME' => 'wovn.io',
+          'REQUEST_URI' => '/ja/test',
+          'HTTP_REFERER' => 'http://wovn.io/ja/test'
+        ),
+        Wovnrb.get_settings(
+          'default_lang' => 'en',
+          'supported_langs' => %w[en ja],
+          'url_pattern' => 'path',
+          'url_pattern_reg' => '/(?<lang>[^/.?]+)'
+        )
+      )
+      headers = {
+        'Location' => 'http://wovn.io/'
+      }
+
+      assert_equal('http://wovn.io/ja/', sut.out(headers)['Location'])
+    end
+
+    def test_out_should_not_add_lang_code_to_ignored_redirection
+      sut = Wovnrb::Headers.new(
+        Wovnrb.get_env(
+          'SERVER_NAME' => 'wovn.io',
+          'REQUEST_URI' => '/ja/test',
+          'HTTP_REFERER' => 'http://wovn.io/ja/test'
+        ),
+        Wovnrb.get_settings(
+          'default_lang' => 'en',
+          'supported_langs' => %w[en ja],
+          'url_pattern' => 'path',
+          'url_pattern_reg' => '/(?<lang>[^/.?]+)',
+          'ignore_paths' => ['/static/']
+        )
+      )
+      headers = {
+        'Location' => 'http://wovn.io/static/'
+      }
+
+      assert_equal('http://wovn.io/static/', sut.out(headers)['Location'])
     end
 
     def test_out_http_referer_subdomain_with_custom_lang_code
@@ -368,6 +429,17 @@ module Wovnrb
         )
       )
       headers = h.out(h.request_out('ja'))
+      assert_equal('ja', headers['wovnrb.target_lang'])
+    end
+
+    def test_out_with_wovn_target_lang_header_using_query_with_lang_param_name
+      Store.instance.update_settings('url_pattern' => 'query', 'lang_param_name' => 'lang')
+      sut = Wovnrb::Headers.new(
+        Wovnrb.get_env('REQUEST_URI' => 'test?lang=ja', 'HTTP_REFERER' => 'http://wovn.io/test'),
+        Store.instance.settings
+      )
+      headers = sut.out(sut.request_out('ja'))
+
       assert_equal('ja', headers['wovnrb.target_lang'])
     end
 
@@ -6182,6 +6254,25 @@ module Wovnrb
         assert_equal('wovn.io/', uri_without_scheme)
 
         uri_with_scheme = h.remove_lang("https://wovn.io?wovn=#{key}", key)
+        assert_equal('https://wovn.io', uri_with_scheme)
+      end
+    end
+
+    def test_remove_lang_query_with_lang_param_name
+      sut = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings('url_pattern' => 'query', 'lang_param_name' => 'lang'))
+
+      keys = Wovnrb::Lang::LANG.keys
+      assert_equal(39, keys.size)
+
+      for key in keys
+        uri_without_custom_lang_param = "wovn.io/?wovn=#{key}"
+        unchanged_uri = sut.remove_lang(uri_without_custom_lang_param, key)
+        assert_equal(uri_without_custom_lang_param, unchanged_uri)
+
+        uri_without_scheme = sut.remove_lang("wovn.io/?lang=#{key}", key)
+        assert_equal('wovn.io/', uri_without_scheme)
+
+        uri_with_scheme = sut.remove_lang("https://wovn.io?lang=#{key}", key)
         assert_equal('https://wovn.io', uri_with_scheme)
       end
     end

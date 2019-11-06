@@ -101,6 +101,8 @@ Metrics/BlockNesting:
 # Configuration parameters: CountComments.
 Metrics/ClassLength:
   Max: 4997
+  Exclude:
+    - 'test/lib/headers_test.rb'
 
 # Offense count: 14
 Metrics/CyclomaticComplexity:
@@ -232,15 +234,6 @@ Style/NegatedIf:
   Exclude:
     - 'lib/wovnrb/store.rb'
 
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: AutoCorrect, EnforcedStyle, IgnoredMethods.
-# SupportedStyles: predicate, comparison
-Style/NumericPredicate:
-  Exclude:
-    - 'spec/**/*'
-    - 'lib/wovnrb/store.rb'
-
 # Offense count: 9
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
@@ -306,3 +299,12 @@ Style/ZeroLengthPredicate:
 # URISchemes: http, https
 Metrics/LineLength:
   Max: 1424
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/NumericPredicate:
+  Enabled: false
+
+Style/SafeNavigation:
+  Enabled: false
