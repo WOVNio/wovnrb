@@ -27,6 +27,34 @@ class WovnrbTest < Minitest::Test
     assert_switch_lang('en', 'ja', body, expected_body, true)
   end
 
+  def test_switch_lang_with_input_tags
+    body = [
+      '<html lang="ja">',
+      '<body>',
+      '<input type="hidden" value="test1">',
+      '<input type="hidden" value="test2">',
+      '<input type="hidden" value="">',
+      '<input value="test3">',
+      '</body></html>'
+    ].join
+
+    expected_body = [
+      '<html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">',
+      "<script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&backend=true&currentLang=ja&defaultLang=en&urlPattern=path&langCodeAliases={}&version=#{Wovnrb::VERSION}\"> </script>",
+      '<link rel="alternate" hreflang="ja" href="http://ja.page.com/">',
+      '<link rel="alternate" hreflang="en" href="http://page.com/"></head>',
+      '<body>',
+      '<input type="hidden" value="test1">',
+      '<input type="hidden" value="test2">',
+      '<input type="hidden" value="">',
+      '<input value="test3">',
+      '<p><!--wovn-src:Hello-->こんにちは</p>',
+      '</body></html>'
+    ].join
+
+    assert_switch_lang('en', 'ja', body, expected_body, true)
+  end
+
   def test_switch_lang_of_html_fragment_with_japanese_translations
     bodies = ['<span>Hello</span>'].join
     expected_bodies = ['<span><!--wovn-src:Hello-->こんにちは</span>'].join

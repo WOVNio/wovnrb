@@ -15,6 +15,13 @@ module Wovnrb
       key
     end
 
+    def add_value(value)
+      key = generate_key
+      @mapped_values << [key, value]
+
+      key
+    end
+
     def revert(marked_html)
       i = @mapped_values.size
       while i > 0
@@ -22,7 +29,6 @@ module Wovnrb
         key, value = @mapped_values[i]
         marked_html = marked_html.sub(key, value)
       end
-
       marked_html
     end
 
