@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'activesupport'
   spec.add_dependency 'addressable'
   spec.add_dependency 'lz4-ruby'
-  spec.add_dependency 'nokogiri', '~> 1.8.1'
+  spec.add_dependency 'nokogiri', '>= 1.10.4'
   spec.add_dependency 'nokogumbo', '>= 1.4.0', '< 2.0.0'
   spec.add_dependency 'rack'
 
