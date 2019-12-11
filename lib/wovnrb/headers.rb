@@ -193,13 +193,13 @@ module Wovnrb
       case @settings['url_pattern']
       when 'query'
         lang_param_name = @settings['lang_param_name']
-        return uri.sub(/(^|\?|&)#{lang_param_name}=#{lang_code}(&|$)/, '\1').gsub(/(\?|&)$/, '')
+        uri.sub(/(^|\?|&)#{lang_param_name}=#{lang_code}(&|$)/, '\1').gsub(/(\?|&)$/, '')
       when 'subdomain'
         rp = Regexp.new('(^|(//))' + lang_code + '\.', 'i')
-        return uri.sub(rp, '\1')
+        uri.sub(rp, '\1')
       # when 'path'
       else
-        return uri.sub(/\/#{lang_code}(\/|$)/, '/')
+        uri.sub(/\/#{lang_code}(\/|$)/, '/')
       end
     end
 
