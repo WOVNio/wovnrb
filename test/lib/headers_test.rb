@@ -139,6 +139,31 @@ module Wovnrb
       assert_equal('/test/', headers.pathname_with_trailing_slash_if_present)
     end
 
+    # Issue for: https://github.com/WOVNio/wovnrb/issues/156
+    def test_pathname_for_unencoded_url
+      Store.instance.update_settings('url_pattern' => 'query', 'lang_param_name' => 'lang')
+      h = Wovnrb::Headers.new(
+        Wovnrb.get_env('REQUEST_URI' => '/v0/download_html?url=https://wovn.io/'),
+        Store.instance.settings
+      )
+
+      assert_equal('/v0/download_html', h.pathname)
+      assert_equal('/v0/download_html', h.pathname_with_trailing_slash_if_present)
+      assert_equal('wovn.io/v0/download_html?url=https://wovn.io/', h.url)
+    end
+
+    def test_pathname_for_unencoded_url_with_http_scheme
+      Store.instance.update_settings('url_pattern' => 'query', 'lang_param_name' => 'lang')
+      h = Wovnrb::Headers.new(
+        Wovnrb.get_env('REQUEST_URI' => 'https://wovn.io/v0/download_html?url=https://wovn.io/'),
+        Store.instance.settings
+      )
+
+      assert_equal('/v0/download_html', h.pathname)
+      assert_equal('/v0/download_html', h.pathname_with_trailing_slash_if_present)
+      assert_equal('wovn.io/v0/download_html?url=https://wovn.io/', h.url)
+    end
+
     #########################
     # REDIRECT_LOCATION
     #########################
