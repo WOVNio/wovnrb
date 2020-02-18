@@ -139,7 +139,6 @@ module Wovnrb
       assert_equal('/test/', headers.pathname_with_trailing_slash_if_present)
     end
 
-    # Issue for: https://github.com/WOVNio/wovnrb/issues/156
     def test_pathname_for_unencoded_url
       Store.instance.update_settings('url_pattern' => 'query', 'lang_param_name' => 'lang')
       h = Wovnrb::Headers.new(
