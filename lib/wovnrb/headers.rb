@@ -30,7 +30,7 @@ module Wovnrb
       end
       # REQUEST_URI is expected to not contain the server name
       # heroku contains http://...
-      @env['REQUEST_URI'] = @env['REQUEST_URI'].sub(/^.*:\/\/[^\/]+/, '') if @env['REQUEST_URI'] =~ /:\/\//
+      @env['REQUEST_URI'] = @env['REQUEST_URI'].sub(/^https?:\/\/[^\/]+/, '') if @env['REQUEST_URI'] =~ /^https?:\/\//
       @unmasked_pathname = @env['REQUEST_URI'].split('?')[0]
       @unmasked_pathname += '/' unless @unmasked_pathname =~ /\/$/ || @unmasked_pathname =~ /\/[^\/.]+\.[^\/.]+$/
       @unmasked_url = "#{@protocol}://#{@unmasked_host}#{@unmasked_pathname}"
