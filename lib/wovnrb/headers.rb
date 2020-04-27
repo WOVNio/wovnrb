@@ -98,27 +98,7 @@ module Wovnrb
       @path_lang
     end
 
-    def browser_lang
-      if @browser_lang.nil?
-        match = (@env['HTTP_COOKIE'] || '').match(/wovn_selected_lang\s*=\s*(?<lang>[^;\s]+)/)
-        if match && match[:lang] && Lang.get_lang(match[:lang])
-          @browser_lang = match[:lang]
-        else
-          # IS THIS RIGHT?
-          @browser_lang = ''
-          accept_langs = (@env['HTTP_ACCEPT_LANGUAGE'] || '').split(/[,;]/)
-          accept_langs.each do |l|
-            if Lang.get_lang(l)
-              @browser_lang = l
-              break
-            end
-          end
-        end
-      end
-      @browser_lang
-    end
-
-    def redirect(lang = browser_lang)
+    def redirect(lang)
       redirect_headers = {}
       redirect_headers['location'] = redirect_location(lang)
       redirect_headers['content-length'] = '0'
