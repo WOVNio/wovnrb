@@ -76,7 +76,8 @@ module Wovnrb
       'tr' => { name: 'Türkçe',                   code: 'tr',         en: 'Turkish' },
       'uk' => { name: 'Українська',               code: 'uk',         en: 'Ukrainian' },
       'ur' => { name: 'اردو',                      code: 'ur',         en: 'Urdu' },
-      'vi' => { name: 'Tiếng Việt',               code: 'vi',         en: 'Vietnamese' }
+      'vi' => { name: 'Tiếng Việt',               code: 'vi',         en: 'Vietnamese' },
+      'km' => { name: 'ភាសាខ្មែរ',               code: 'km',         en: 'Khmer' }
     }.freeze
 
     # Provides the ISO639-1 code for a given lang code.
