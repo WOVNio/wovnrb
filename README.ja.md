@@ -1,5 +1,7 @@
 # WOVN.io Ruby Library
 
+For English users: [English](README.en.md)
+
 WOVN.io Rubyライブラリは、翻訳を提供するためにWOVN.ioを利用したライブラリです。  
 WOVN.io Ruby ライブラリは Rack Middleware としてパッケージ化されています。
 
