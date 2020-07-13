@@ -36,6 +36,7 @@ module Wovnrb
       html = [
         '<html><body>',
         '<p>Hello <span wovn-ignore>WOVN</span><p>',
+        '<p>Hello <span data-wovn-ignore>WOVN</span><p>',
         '<div><span class="ignore-me">should be ignored</span></div>',
         '<span>Have a nice day!</span>',
         '</body></html>'
@@ -44,7 +45,7 @@ module Wovnrb
       converter = prepare_html_converter(html, ignore_class: ['ignore-me'])
       converted_html, = converter.build_api_compatible_html
 
-      expected_convert_html = "<html><head><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"fr\" href=\"http://my-site.com/?wovn=fr\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/?wovn=ja\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><p>Hello <span wovn-ignore=\"\"><!-- __wovn-backend-ignored-key-0 --></span></p><p></p><div><span class=\"ignore-me\"><!-- __wovn-backend-ignored-key-1 --></span></div><span>Have a nice day!</span></body></html>"
+      expected_convert_html = "<html><head><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=WOVN.rb_2.2.5\" data-wovnio-type=\"fallback_snippet\"></script><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"fr\" href=\"http://my-site.com/?wovn=fr\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/?wovn=ja\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body><p>Hello <span wovn-ignore=\"\"><!-- __wovn-backend-ignored-key-0 --></span></p><p></p><p>Hello <span data-wovn-ignore=\"\"><!-- __wovn-backend-ignored-key-1 --></span></p><p></p><div><span class=\"ignore-me\"><!-- __wovn-backend-ignored-key-2 --></span></div><span>Have a nice day!</span></body></html>"
       assert_equal(expected_convert_html, converted_html)
     end
 
