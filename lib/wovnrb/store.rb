@@ -185,7 +185,7 @@ module Wovnrb
 
     def wovn_host
       if @settings['wovn_dev_mode']
-        'dev-wovn.io:3000'
+        'dev-wovn.io'
       else
         'wovn.io'
       end
