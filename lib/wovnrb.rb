@@ -109,7 +109,7 @@ module Wovnrb
     end
 
     def wovn_ignored?(html_body)
-      !html_body.xpath('//html[@wovn-ignore]').empty? && !html_body.xpath('//html[@data-wovn-ignore]').empty?
+      !html_body.xpath('//html[@wovn-ignore or @data-wovn-ignore]').empty?
     end
 
     def ignore_path?(path)
