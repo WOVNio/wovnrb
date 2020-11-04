@@ -6214,7 +6214,7 @@ module Wovnrb
       h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings)
 
       keys = Wovnrb::Lang::LANG.keys
-      assert_equal(75, keys.size)
+      assert_equal(77, keys.size)
 
       for key in keys
         uri_without_scheme = h.remove_lang("wovn.io/#{key}", key)
@@ -6228,7 +6228,7 @@ module Wovnrb
     def test_remove_lang_path_with_nil_lang
       h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings)
       keys = Wovnrb::Lang::LANG.keys
-      assert_equal(75, keys.size)
+      assert_equal(77, keys.size)
 
       uri_without_scheme = h.remove_lang('wovn.io', nil)
       assert_equal('wovn.io', uri_without_scheme)
@@ -6251,7 +6251,7 @@ module Wovnrb
       h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings('url_pattern' => 'query'))
 
       keys = Wovnrb::Lang::LANG.keys
-      assert_equal(75, keys.size)
+      assert_equal(77, keys.size)
 
       for key in keys
         uri_without_scheme = h.remove_lang("wovn.io/?wovn=#{key}", key)
@@ -6266,7 +6266,7 @@ module Wovnrb
       sut = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings('url_pattern' => 'query', 'lang_param_name' => 'lang'))
 
       keys = Wovnrb::Lang::LANG.keys
-      assert_equal(75, keys.size)
+      assert_equal(77, keys.size)
 
       for key in keys
         uri_without_custom_lang_param = "wovn.io/?wovn=#{key}"
@@ -6284,7 +6284,7 @@ module Wovnrb
     def test_remove_lang_query_with_nil_lang
       h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings('url_pattern' => 'query'))
       keys = Wovnrb::Lang::LANG.keys
-      assert_equal(75, keys.size)
+      assert_equal(77, keys.size)
 
       uri_without_scheme = h.remove_lang('wovn.io', nil)
       assert_equal('wovn.io', uri_without_scheme)
@@ -6307,7 +6307,7 @@ module Wovnrb
       h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings('url_pattern' => 'subdomain'))
 
       keys = Wovnrb::Lang::LANG.keys
-      assert_equal(75, keys.size)
+      assert_equal(77, keys.size)
 
       for key in keys
         uri_without_scheme = h.remove_lang("#{key.downcase}.wovn.io/", key)
@@ -6321,7 +6321,7 @@ module Wovnrb
     def test_remove_lang_subdomain_with_nil_lang
       h = Wovnrb::Headers.new(Wovnrb.get_env, Wovnrb.get_settings('url_pattern' => 'subdomain'))
       keys = Wovnrb::Lang::LANG.keys
-      assert_equal(75, keys.size)
+      assert_equal(77, keys.size)
 
       uri_without_scheme = h.remove_lang('wovn.io', nil)
       assert_equal('wovn.io', uri_without_scheme)
