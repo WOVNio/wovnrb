@@ -175,12 +175,12 @@ module Wovnrb
       store.update_settings(settings)
 
       headers = Wovnrb::Headers.new(
-        Wovnrb.get_env('url' => 'http://my-site.com/?wovn=ja'),
+        Wovnrb.get_env('url' => 'http://my-site.com/'),
         Wovnrb.get_settings(settings)
       )
       converter = HtmlConverter.new(get_dom('<html><body>hello</body></html>'), store, headers)
       converter.send(:inject_lang_html_tag)
-      expected_html = '<html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body>hello</body></html>'
+      expected_html = '<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body>hello</body></html>'
       assert_equal(expected_html, converter.send(:html))
     end
 
