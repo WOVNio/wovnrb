@@ -43,6 +43,7 @@ module Wovnrb
 
       insert_snippet(true)
       insert_hreflang_tags
+      inject_lang_html_tag
 
       html
     end
@@ -108,15 +109,9 @@ module Wovnrb
     def inject_lang_html_tag
       root = @dom.at_css('html')
       return unless root
+      return if root['lang']
 
-      current_lang = @headers.lang_code
-      default_lang = @store.default_lang
-
-      if current_lang != default_lang
-        root['lang'] = current_lang
-      else
-        root.delete('lang')
-      end
+      root['lang'] = @store.default_lang
     end
 
     def replace_hreflangs
