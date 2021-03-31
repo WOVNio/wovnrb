@@ -8,7 +8,6 @@ module Wovnrb
     attr_reader :unmasked_pathname
     attr_reader :pathname
     attr_reader :pathname_with_trailing_slash_if_present
-    attr_reader :redis_url
 
     # Generates new instance of Wovnrb::Headers.
     # Its parameters are set by parsing env variable.
@@ -62,7 +61,6 @@ module Wovnrb
       @query = remove_lang(@query, lang_code)
       @pathname_with_trailing_slash_if_present = @pathname
       @pathname = @pathname.gsub(/\/$/, '')
-      @redis_url = "#{@host}#{@pathname}#{@query}"
     end
 
     def unmasked_pathname_without_trailing_slash
