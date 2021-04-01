@@ -181,6 +181,7 @@ Style/Documentation:
     - 'lib/wovnrb/services/html_converter.rb'
     - 'lib/wovnrb/services/html_replace_marker.rb'
     - 'lib/wovnrb/services/wovn_logger.rb'
+    - 'lib/wovnrb/configuration.rb'
     - 'lib/wovnrb/settings.rb'
     - 'lib/wovnrb/store.rb'
     - 'lib/wovnrb/text_caches/cache_base.rb'

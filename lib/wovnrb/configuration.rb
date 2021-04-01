@@ -1,12 +1,12 @@
 module Wovnrb
   class << self
     def configuration
-      return @configuration ||= Configuration.new
+      @configuration ||= Configuration.new
     end
   end
 
   def self.configure
-    yield(self.configuration)
+    yield(configuration)
   end
 
   class Configuration
