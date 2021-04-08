@@ -24,6 +24,7 @@ module Wovnrb
         'query' => [],
         'ignore_class' => [],
         'api_url' => 'https://wovn.global.ssl.fastly.net/v0/',
+        'api_url_versioned_widget' => 'https://wovn.global.ssl.fastly.net/widget',
         'api_timeout_seconds' => 1.0,
         'default_lang' => 'en',
         'supported_langs' => ['en'],
