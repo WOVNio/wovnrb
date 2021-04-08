@@ -47,6 +47,8 @@ config.wovnrb = {
 ...
 ```
 
+The WOVN.rb Rails middleware must also be installed. See See [2.10 - install_middleware](#2.10-install_middleware)
+
 * If you're using Sinatra
 
 Insert the following into either the Application File or config.ru.
@@ -83,6 +85,7 @@ query              |          | []
 ignore_class       |          | []
 translate_fragment |          | true
 ignore_paths       |          | []
+install_middleware |          | true
 
 ### 2.1. project_token
 
@@ -171,4 +174,24 @@ The directories given will only be matched against the beginning of the URL path
 For instance, if you want to not localize the admin directory of your website, you should add the following to you WOVN.rb configuration.
 ```
 'ignore_paths' => ['/admin/']
+```
+
+### 2.10 install_middleware
+
+When using WOVN.rb in a Rails environment, this parameter controls whether the WOVN.rb middleware will be automatically installed or not.
+
+By default, WOVN.rb is installed as the first middleware.
+If you are using Rack::Deflater or other middleware that needs to be executed first, set this parameter to `false` and manually insert the middleware appropriately.
+
+```ruby
+  config.middleware.use Rack::Deflater
+  config.middleware.insert_after Rack::Deflater, Wovnrb::Interceptor
+
+  config.wovnrb = {
+    :project_token => 'EnS!t3',
+    :default_lang => 'en',
+    :supported_langs => ['en'],
+    :url_pattern => 'path',
+    :install_middleware => false
+  }
 ```
