@@ -47,7 +47,7 @@ config.wovnrb = {
 ...
 ```
 
-The WOVN.rb Rails middleware must also be installed. See See [2.10 - install_middleware](#2.10-install_middleware)
+The WOVN.rb Rails middleware must also be installed. See [2.10 - install_middleware](#2.10-install_middleware)
 
 * If you're using Sinatra
 
@@ -180,8 +180,9 @@ For instance, if you want to not localize the admin directory of your website, y
 
 When using WOVN.rb in a Rails environment, this parameter controls whether the WOVN.rb middleware will be automatically installed or not.
 
-By default, WOVN.rb is installed as the first middleware.
+By default, WOVN.rb is automatically installed as the first middleware.
 If you are using Rack::Deflater or other middleware that needs to be executed first, set this parameter to `false` and manually insert the middleware appropriately.
+WOVN.rb needs to be added after any compression middleware.
 
 ```ruby
   config.middleware.use Rack::Deflater
