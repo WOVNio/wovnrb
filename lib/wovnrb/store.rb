@@ -157,7 +157,7 @@ module Wovnrb
 
       if @settings['wovn_dev_mode']
         if @settings['api_url'] == self.class.default_settings['api_url']
-          @settings['api_url'] = 'http://dev-wovn.io:3001/v0/'
+          @settings['api_url'] = 'http://dev-wovn.io:3001'
         end
 
         if @settings['api_timeout_seconds'] == self.class.default_settings['api_timeout_seconds']
