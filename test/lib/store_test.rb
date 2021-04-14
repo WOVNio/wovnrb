@@ -133,7 +133,7 @@ module Wovnrb
 
       assert(store.dev_mode?)
       assert_equal('dev-wovn.io', store.wovn_host)
-      assert_equal('http://dev-wovn.io:3001/v0/', store.settings['api_url'])
+      assert_equal('http://dev-wovn.io:3001', store.settings['api_url'])
       assert_equal(3, store.settings['api_timeout_seconds'])
     end
 

@@ -142,8 +142,12 @@ module Wovnrb
     # Remove wovn snippet code from dom
     def strip_snippet
       @dom.xpath('//script').each do |script_node|
-        script_node.remove if script_node['src'] && script_node['src'] =~ /^\/\/j.(dev-)?wovn.io(:3000)?\//
+        script_node.remove if (script_node['src'] && widget_urls.any? { |url| script_node['src'].include? url }) || script_node['data-wovnio'].present?
       end
+    end
+
+    def widget_urls
+      [@store.settings['api_url'] + '/widget', 'j.wovn.io', 'j.dev-wovn.io:3000']
     end
 
     def insert_snippet(adds_backend_error_mark = true)
