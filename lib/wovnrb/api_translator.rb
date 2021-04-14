@@ -109,7 +109,7 @@ module Wovnrb
     end
 
     def api_uri
-      Addressable::URI.parse(@store.settings['api_url'])
+      Addressable::URI.parse(@store.settings['api_url'] + '/v0/')
     end
 
     def api_timeout
