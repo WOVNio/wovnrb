@@ -154,11 +154,17 @@ module Wovnrb
     end
 
     def test_replace_snippet
-      converter = prepare_html_converter('<html><head><script src="/a"></script><script src="//j.wovn.io/1" async="true"</head></html>')
+      converter = prepare_html_converter('<html><head>
+        <script src="/a"></script>
+        <script src="//j.wovn.io/1" async="true">
+        <script src="//j.wovn.io/1" data-wovnio="key=2wpv0n" async></script>
+        <script src="https//cdn.wovn.io/" data-wovnio="key=2wpv0n async></script>
+        <script src="https://wovn.global.ssl.fastly.net/widget/abcdef></script>
+        </head></html>')
       converter.send(:replace_snippet)
 
       expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><script src=\"/a\"></script></head><body></body></html>"
-      assert_equal(expected_html, converter.send(:html))
+      assert_equal(expected_html.gsub(/\s+/, ''), converter.send(:html).gsub(/\s+/, ''))
     end
 
     def test_replace_hreflangs

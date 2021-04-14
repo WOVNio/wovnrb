@@ -23,7 +23,7 @@ module Wovnrb
         'lang_param_name' => 'wovn',
         'query' => [],
         'ignore_class' => [],
-        'api_url' => 'https://wovn.global.ssl.fastly.net/v0/',
+        'api_url' => 'https://wovn.global.ssl.fastly.net',
         'api_timeout_seconds' => 1.0,
         'default_lang' => 'en',
         'supported_langs' => ['en'],
@@ -157,7 +157,7 @@ module Wovnrb
 
       if @settings['wovn_dev_mode']
         if @settings['api_url'] == self.class.default_settings['api_url']
-          @settings['api_url'] = 'http://dev-wovn.io:3001/v0/'
+          @settings['api_url'] = 'http://dev-wovn.io:3001'
         end
 
         if @settings['api_timeout_seconds'] == self.class.default_settings['api_timeout_seconds']
