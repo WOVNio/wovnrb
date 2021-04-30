@@ -308,3 +308,7 @@ Style/NumericPredicate:
 
 Style/SafeNavigation:
   Enabled: false
+
+AllCops:
+  Exclude:
+    - 'docker/**/*'
