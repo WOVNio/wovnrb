@@ -312,3 +312,4 @@ Style/SafeNavigation:
 AllCops:
   Exclude:
     - 'docker/**/*'
+    - 'vendor/**/*'
