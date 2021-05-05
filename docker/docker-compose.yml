@@ -1,0 +1,11 @@
+version: '3'
+services:
+  rails:
+    container_name: wovntest-rails
+    build:
+      context: ./rails
+      dockerfile: Dockerfile
+    ports:
+      - 4000:4000
+    volumes:
+      - ../:/usr/src/app/wovnrb
