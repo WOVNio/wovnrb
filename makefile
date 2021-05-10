@@ -1,5 +1,4 @@
 DOCKER_COMPOSE_YML = docker/docker-compose.yml
-DOCKER_IMAGE = php:7.4-apache
 
 .PHONY: build stop start clean
 
