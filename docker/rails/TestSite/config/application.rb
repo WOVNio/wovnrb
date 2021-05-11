@@ -11,14 +11,12 @@ module TestSite
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
 
-    config.middleware.use Wovnrb::Interceptor
-
     config.wovnrb = {
       :project_token => 'EnS!t3',
       :default_lang => 'en',
-      :supported_langs => ['en', 'ja'],
+      :supported_langs => ['en', 'ja', 'fr'],
       :url_pattern => 'path',
-      :install_middleware => false
+      :install_middleware => true
     }
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
