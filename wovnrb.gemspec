@@ -5,11 +5,11 @@ require 'wovnrb/version'
 Gem::Specification.new do |spec|
   spec.name          = 'wovnrb'
   spec.version       = Wovnrb::VERSION
-  spec.authors       = ['Jeff Sandford', 'Antoine David']
-  spec.email         = ['jeff@wovn.io']
+  spec.authors       = ['Wovn Technologies, Inc.']
+  spec.email         = ['dev@wovn.io']
   spec.summary       = 'Gem for WOVN.io'
   spec.description   = 'Ruby gem for WOVN backend on Rack.'
-  spec.homepage      = ''
+  spec.homepage      = 'https://wovn.io'
   spec.license       = 'MIT'
 
   files = `git ls-files -z`.split("\x0")
