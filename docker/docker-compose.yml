@@ -9,3 +9,8 @@ services:
       - 4000:4000
     volumes:
       - ../:/usr/src/app/wovnrb
+    networks:
+      - backend-network
+networks:
+  backend-network:
+    name: 'backend-network'
