@@ -298,7 +298,7 @@ Style/ZeroLengthPredicate:
 # Offense count: 1436
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
-Metrics/LineLength:
+Layout/LineLength:
   Max: 1424
 
 Style/FrozenStringLiteralComment:
