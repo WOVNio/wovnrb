@@ -9,18 +9,6 @@
 Gemspec/RequiredRubyVersion:
   Enabled: false
 
-# Offense count: 1
-# Cop supports --auto-correct.
-Layout/EmptyLinesAroundAccessModifier:
-  Exclude:
-    - 'lib/wovnrb/text_caches/memory_cache.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Layout/EmptyLinesAroundMethodBody:
-  Exclude:
-    - 'test/lib/text_caches/memory_cache_test.rb'
-
 # Offense count: 11
 # Cop supports --auto-correct.
 # Configuration parameters: AllowForAlignment, ForceEqualSignAlignment.
@@ -28,13 +16,9 @@ Layout/ExtraSpacing:
   Exclude:
     - 'lib/wovnrb/lang.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, IndentationWidth.
-# SupportedStyles: special_inside_parentheses, consistent, align_braces
-Layout/FirstHashElementIndentation:
+Style/HashEachMethods:
   Exclude:
-    - 'lib/wovnrb/text_caches/cache_base.rb'
+    - 'lib/wovnrb/store.rb'
 
 # Offense count: 4
 # Cop supports --auto-correct.
@@ -44,13 +28,6 @@ Layout/HeredocIndentation:
   Exclude:
     - 'test/lib/lang_test.rb'
     - 'test/lib/wovnrb_test.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: AllowForAlignment.
-Layout/SpaceAroundOperators:
-  Exclude:
-    - 'lib/wovnrb/text_caches/memory_cache.rb'
 
 # Offense count: 3
 # Configuration parameters: AllowSafeAssignment.
@@ -72,13 +49,6 @@ Lint/ElseLayout:
 Lint/ImplicitStringConcatenation:
   Exclude:
     - 'test/lib/lang_test.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: AllowUnusedKeywordArguments, IgnoreEmptyMethods.
-Lint/UnusedMethodArgument:
-  Exclude:
-    - 'lib/wovnrb/text_caches/cache_base.rb'
 
 # Offense count: 5
 Lint/UselessAssignment:
@@ -126,7 +96,6 @@ Metrics/PerceivedComplexity:
 Naming/AccessorMethodName:
   Exclude:
     - 'lib/wovnrb/services/wovn_logger.rb'
-    - 'lib/wovnrb/text_caches/cache_base.rb'
 
 # Offense count: 120
 # Configuration parameters: .
@@ -157,12 +126,6 @@ Style/CaseEquality:
 Style/ClassCheck:
   Exclude:
     - 'lib/wovnrb/store.rb'
-
-# Offense count: 6
-Style/ClassVars:
-  Exclude:
-    - 'lib/wovnrb/text_caches/cache_base.rb'
-    - 'lib/wovnrb/text_caches/memory_cache.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.

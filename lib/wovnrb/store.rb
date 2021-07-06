@@ -195,11 +195,9 @@ module Wovnrb
     private
 
     def stringify_keys!(hash)
-      # rubocop:disable  Style/HashEachMethods
       hash.keys.each do |k|
         hash[k.to_s] = hash.delete(k)
       end
-      # rubocop:enable  Style/HashEachMethods
     end
   end
 end
