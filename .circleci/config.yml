@@ -13,9 +13,7 @@ jobs:
       - image: cimg/ruby:<< parameters.ruby-version >>
     steps:
       - checkout
-      - ruby/install-deps:
-          bundler-version: '1.17.1'
-          with-cache: false
+      - run: bundle install --path vendor/bundle --jobs=4
       - run: bundle exec rubocop
       - run: bundle exec rake test
 
