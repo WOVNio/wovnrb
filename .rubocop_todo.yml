@@ -188,8 +188,6 @@ Style/Documentation:
     - 'lib/wovnrb/services/wovn_logger.rb'
     - 'lib/wovnrb/settings.rb'
     - 'lib/wovnrb/store.rb'
-    - 'lib/wovnrb/text_caches/cache_base.rb'
-    - 'lib/wovnrb/text_caches/memory_cache.rb'
 
 # Offense count: 2
 Style/DoubleNegation:
@@ -229,7 +227,6 @@ Style/IfUnlessModifier:
     - 'Rakefile'
     - 'lib/wovnrb/helpers/nokogumbo_helper.rb'
     - 'lib/wovnrb/store.rb'
-    - 'lib/wovnrb/text_caches/memory_cache.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.
@@ -246,7 +243,6 @@ Style/NegatedIf:
 Style/PreferredHashMethods:
   Exclude:
     - 'lib/wovnrb/store.rb'
-    - 'lib/wovnrb/text_caches/memory_cache.rb'
 
 # Offense count: 2
 # Cop supports --auto-correct.
