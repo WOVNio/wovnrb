@@ -26,7 +26,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'nokogiri', '>= 1.8.1'
   spec.add_dependency 'nokogumbo', '>= 1.4.0', '< 2.0.0'
   spec.add_dependency 'rack'
-  spec.add_dependency 'ruby', '>= 2.5'
 
   spec.add_development_dependency 'bundler', '>= 1.7'
   spec.add_development_dependency 'guard'
