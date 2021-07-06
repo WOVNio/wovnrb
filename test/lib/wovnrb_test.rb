@@ -24,7 +24,7 @@ class WovnrbTest < Minitest::Test
       '</body></html>'
     ].join
 
-    assert_switch_lang('en', 'ja', body, expected_body, true)
+    assert_switch_lang('en', 'ja', body, expected_body, api_expected: true)
   end
 
   def test_switch_lang_with_input_tags
@@ -52,14 +52,14 @@ class WovnrbTest < Minitest::Test
       '</body></html>'
     ].join
 
-    assert_switch_lang('en', 'ja', body, expected_body, true)
+    assert_switch_lang('en', 'ja', body, expected_body, api_expected: true)
   end
 
   def test_switch_lang_of_html_fragment_with_japanese_translations
     bodies = ['<span>Hello</span>'].join
     expected_bodies = ['<span><!--wovn-src:Hello-->こんにちは</span>'].join
 
-    assert_switch_lang('en', 'ja', bodies, expected_bodies, true)
+    assert_switch_lang('en', 'ja', bodies, expected_bodies, api_expected: true)
   end
 
   def test_switch_lang_splitted_body
@@ -68,7 +68,7 @@ class WovnrbTest < Minitest::Test
               '</body></html>'].join
     expected_bodies = ["<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=subdomain&amp;langCodeAliases={}&amp;version=WOVN.rb_#{Wovnrb::VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head><body><h1>Mr. Belvedere Fan Club</h1><div><p>Hello</p></div></body></html>"].join
 
-    assert_switch_lang('en', 'ja', bodies, expected_bodies, true)
+    assert_switch_lang('en', 'ja', bodies, expected_bodies, api_expected: true)
   end
 
   def test_switch_lang_of_html_fragment_in_splitted_body
@@ -76,7 +76,7 @@ class WovnrbTest < Minitest::Test
             '<option value="2">2</option></select>'].join
     expected_body = ['<select name="test"><option value="1">1</option><option value="2">2</option></select>'].join
 
-    assert_switch_lang('en', 'ja', body, expected_body, true)
+    assert_switch_lang('en', 'ja', body, expected_body, api_expected: true)
   end
 
   def test_switch_lang_missing_values
@@ -88,7 +88,7 @@ class WovnrbTest < Minitest::Test
               </body></html>
 "
 
-    assert_switch_lang('en', 'ja', body, expected_body, true)
+    assert_switch_lang('en', 'ja', body, expected_body, api_expected: true)
   end
 
   def test_switch_lang_on_fragment_with_translate_fragment_false
@@ -96,7 +96,7 @@ class WovnrbTest < Minitest::Test
                 <div><p>Hello</p></div>"
 
     Wovnrb::Store.instance.settings['translate_fragment'] = false
-    assert_switch_lang('en', 'ja', body, body, false)
+    assert_switch_lang('en', 'ja', body, body, api_expected: false)
   end
 
   def test_switch_lang_on_fragment_with_translate_fragment_true
@@ -106,7 +106,7 @@ class WovnrbTest < Minitest::Test
                 <div><p><!--wovn-src:Hello-->こんにちは</p></div>"
 
     Wovnrb::Store.instance.settings['translate_fragment'] = true
-    assert_switch_lang('en', 'ja', body, expected_body, true)
+    assert_switch_lang('en', 'ja', body, expected_body, api_expected: true)
   end
 
   def test_switch_lang_ignores_amp
@@ -120,7 +120,7 @@ class WovnrbTest < Minitest::Test
 </html>
 HTML
 
-    assert_switch_lang('en', 'ja', body, body, false)
+    assert_switch_lang('en', 'ja', body, body, api_expected: false)
   end
 
   def test_switch_lang_ignores_amp_defined_with_symbol_attribute
@@ -133,7 +133,7 @@ HTML
 </html>
 HTML
 
-    assert_switch_lang('en', 'ja', body, body, false)
+    assert_switch_lang('en', 'ja', body, body, api_expected: false)
   end
 
   def test_call_without_path_ignored_should_change_environment
@@ -249,7 +249,7 @@ HTML
     assert_equal(unaffected_env != app_mock.env, affected)
   end
 
-  def assert_switch_lang(original_lang, target_lang, body, expected_body, api_expected = true)
+  def assert_switch_lang(original_lang, target_lang, body, expected_body, api_expected: true)
     subdomain = target_lang == original_lang ? '' : "#{target_lang}."
     interceptor = Wovnrb::Interceptor.new(get_app)
 
@@ -303,7 +303,7 @@ HTML
 
     def initialize(opts = {})
       @params = {}
-      if opts.key?(:params) && opts[:params].class == Hash
+      if opts.key?(:params) && opts[:params].instance_of?(Hash)
         opts[:params].each do |key, val|
           @params[key] = val
         end

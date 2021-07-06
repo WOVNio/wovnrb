@@ -1,13 +1,6 @@
 module Wovnrb
   class Headers
-    attr_reader :unmasked_url
-    attr_reader :url
-    attr_reader :protocol
-    attr_reader :unmasked_host
-    attr_reader :host
-    attr_reader :unmasked_pathname
-    attr_reader :pathname
-    attr_reader :pathname_with_trailing_slash_if_present
+    attr_reader :unmasked_url, :url, :protocol, :unmasked_host, :host, :unmasked_pathname, :pathname, :pathname_with_trailing_slash_if_present
 
     # Generates new instance of Wovnrb::Headers.
     # Its parameters are set by parsing env variable.
@@ -42,8 +35,10 @@ module Wovnrb
       @pathname, @query = @env['REQUEST_URI'].split('?')
       @pathname = settings['url_pattern'] == 'path' ? remove_lang(@pathname, lang_code) : @pathname
       @query ||= ''
-      @url = "#{@host}#{@pathname}#{(!@query.empty? ? '?' : '') + remove_lang(@query, lang_code)}"
-      if !settings['query'].empty?
+      @url = "#{@host}#{@pathname}#{(@query.empty? ? '' : '?') + remove_lang(@query, lang_code)}"
+      if settings['query'].empty?
+        @query = ''
+      else
         query_vals = []
         settings['query'].each do |qv|
           rx = Regexp.new("(^|&)(?<query_val>#{qv}[^&]+)(&|$)")
@@ -55,8 +50,6 @@ module Wovnrb
                  else
                    ''
                  end
-      else
-        @query = ''
       end
       @query = remove_lang(@query, lang_code)
       @pathname_with_trailing_slash_if_present = @pathname
@@ -115,10 +108,10 @@ module Wovnrb
         case @settings['url_pattern']
         when 'query'
           lang_param_name = @settings['lang_param_name']
-          if location !~ /\?/
-            location = "#{location}?#{lang_param_name}=#{lang_code}"
-          else @env['REQUEST_URI'] !~ /(\?|&)#{lang_param_name}=/
+          if location =~ /\?/ @env['REQUEST_URI'] !~ /(\?|&)#{lang_param_name}=/
                location = "#{location}&#{lang_param_name}=#{lang_code}"
+          else
+            location = "#{location}?#{lang_param_name}=#{lang_code}"
           end
         when 'subdomain'
           location = "#{lang_code.downcase}.#{location}"
@@ -173,7 +166,7 @@ module Wovnrb
         lang_param_name = @settings['lang_param_name']
         uri.sub(/(^|\?|&)#{lang_param_name}=#{lang_code}(&|$)/, '\1').gsub(/(\?|&)$/, '')
       when 'subdomain'
-        rp = Regexp.new('(^|(//))' + lang_code + '\.', 'i')
+        rp = Regexp.new("(^|(//))#{lang_code}\\.", 'i')
         uri.sub(rp, '\1')
       # when 'path'
       else
@@ -182,10 +175,9 @@ module Wovnrb
     end
 
     def out(headers)
-      r = Regexp.new('//' + @host)
+      r = Regexp.new("//#{@host}")
       lang_code = Store.instance.settings['custom_lang_aliases'][self.lang_code] || self.lang_code
-      if lang_code != @settings['default_lang'] && headers.key?('Location') && headers['Location'] =~ r
-        unless @settings['ignore_globs'].ignore?(headers['Location'])
+      if lang_code != @settings['default_lang'] && headers.key?('Location') && headers['Location'] =~ r && !@settings['ignore_globs'].ignore?(headers['Location'])
           case @settings['url_pattern']
           when 'query'
             headers['Location'] += if headers['Location'] =~ /\?/
@@ -195,13 +187,12 @@ module Wovnrb
                                    end
             headers['Location'] += "#{@settings['lang_param_name']}=#{lang_code}"
           when 'subdomain'
-            headers['Location'] = headers['Location'].sub(/\/\/([^.]+)/, '//' + lang_code + '.\1')
+            headers['Location'] = headers['Location'].sub(/\/\/([^.]+)/, "//#{lang_code}.\\1")
           # when 'path'
           else
-            headers['Location'] = headers['Location'].sub(/(\/\/[^\/]+)/, '\1/' + lang_code)
+            headers['Location'] = headers['Location'].sub(/(\/\/[^\/]+)/, "\\1/#{lang_code}")
           end
         end
-      end
       headers
     end
 

@@ -85,11 +85,10 @@ module Wovnrb
                           compress(stub_response_json)
                         end
         response_headers = { 'Content-Encoding' => response[:encoding] || 'gzip' }
-        stub = stub_request(:post, api_url)
-               .with(body: compressed_data, headers: headers)
-               .to_return(status: response[:status_code] || 200, body: stub_response, headers: response_headers)
+        stub_request(:post, api_url)
+          .with(body: compressed_data, headers: headers)
+          .to_return(status: response[:status_code] || 200, body: stub_response, headers: response_headers)
 
-        stub
       end
     end
 

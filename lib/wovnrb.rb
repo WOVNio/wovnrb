@@ -18,7 +18,7 @@ module Wovnrb
     def initialize(app, opts = {})
       @app = app
       @store = Store.instance
-      opts = opts.each_with_object({}) { |(k, v), memo| memo[k.to_s] = v }
+      opts = opts.transform_keys(&:to_s)
       @store.update_settings(opts)
       CacheBase.set_single(@store.settings)
     end

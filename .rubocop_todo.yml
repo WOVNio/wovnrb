@@ -310,6 +310,7 @@ Style/SafeNavigation:
   Enabled: false
 
 AllCops:
+  NewCops: enable
   Exclude:
     - 'docker/**/*'
     - 'vendor/**/*'

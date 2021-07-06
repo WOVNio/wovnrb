@@ -146,46 +146,47 @@ module Wovnrb
         if uri.host.downcase === headers.host.downcase
           case pattern
           when 'subdomain'
-            sub_d = href.match(/\/\/([^\.]*)\./)[1]
+            sub_d = href.match(/\/\/([^.]*)\./)[1]
             sub_code = Lang.get_code(sub_d)
             new_href = if sub_code && sub_code.casecmp(code_to_add).zero?
                          href.sub(Regexp.new(code_to_add, 'i'), code_to_add.downcase)
                        else
-                         href.sub(/(\/\/)([^\.]*)/, '\1' + code_to_add.downcase + '.' + '\2')
+                         href.sub(/(\/\/)([^.]*)/, "\\1#{code_to_add.downcase}.\\2")
                        end
           when 'query'
             new_href = add_query_lang_code(href, code_to_add, lang_param_name)
           else # path
-            new_href = href.sub(/([^\.]*\.[^\/]*)(\/|$)/, '\1/' + code_to_add + '/')
+            new_href = href.sub(/([^.]*\.[^\/]*)(\/|$)/, "\\1/#{code_to_add}/")
           end
         end
       elsif href
         case pattern
         when 'subdomain'
-          lang_url = headers.protocol + '://' + code_to_add.downcase + '.' + headers.host
-          current_dir = headers.pathname.sub(/[^\/]*\.[^\.]{2,6}$/, '')
-          new_href = if href =~ /^\.\..*$/
+          lang_url = "#{headers.protocol}://#{code_to_add.downcase}.#{headers.host}"
+          current_dir = headers.pathname.sub(/[^\/]*\.[^.]{2,6}$/, '')
+          new_href = case href
+                     when /^\.\..*$/
                        # ../path
-                       lang_url + '/' + href.gsub(/^\.\.\//, '')
-                     elsif href =~ /^\..*$/
+                       "#{lang_url}/#{href.gsub(/^\.\.\//, '')}"
+                     when /^\..*$/
                        # ./path
-                       lang_url + current_dir + '/' + href.gsub(/^\.\//, '')
-                     elsif href =~ /^\/.*$/
+                       "#{lang_url}#{current_dir}/#{href.gsub(/^\.\//, '')}"
+                     when /^\/.*$/
                        # /path
                        lang_url + href
                      else
                        # path
-                       lang_url + current_dir + '/' + href
+                       "#{lang_url}#{current_dir}/#{href}"
                      end
         when 'query'
           new_href = add_query_lang_code(href, code_to_add, lang_param_name)
         else # path
           if href =~ /^\//
-            new_href = '/' + code_to_add + href
+            new_href = "/#{code_to_add}#{href}"
           else
-            current_dir = headers.pathname.sub(/[^\/]*\.[^\.]{2,6}$/, '')
+            current_dir = headers.pathname.sub(/[^\/]*\.[^.]{2,6}$/, '')
             current_dir = '/' if current_dir == ''
-            new_href = '/' + code_to_add + current_dir + href
+            new_href = "/#{code_to_add}#{current_dir}#{href}"
           end
         end
       end

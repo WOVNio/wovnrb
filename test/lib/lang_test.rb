@@ -21,9 +21,10 @@ module Wovnrb
 
     def test_iso_639_1_normalization
       Wovnrb::Lang::LANG.each do |_, l|
-        if l[:code] == 'zh-CHS'
+        case l[:code]
+        when 'zh-CHS'
           assert_equal('zh-Hans',  Lang.iso_639_1_normalization('zh-CHS'))
-        elsif l[:code] == 'zh-CHT'
+        when 'zh-CHT'
           assert_equal('zh-Hant',  Lang.iso_639_1_normalization('zh-CHT'))
         else
           assert_equal(l[:code], Lang.iso_639_1_normalization(l[:code]))
@@ -309,138 +310,6 @@ module Wovnrb
       lang = Lang.new('fr')
       headers = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://google.com/'), Wovnrb.get_settings)
       assert_equal('/fr/index.html', lang.add_lang_code('index.html', 'path', headers))
-    end
-
-    def generate_body(param = '')
-      body = case param
-             when 'ignore_parent'
-               "<html><body><h1>Mr. Belvedere Fan Club</h1>
-                     <div wovn-ignore><p>Hello</p></div>
-                   </body></html>"
-             when 'ignore_everything'
-               "<html><body wovn-ignore><h1>Mr. Belvedere Fan Club</h1>
-                     <div><p>Hello</p></div>
-                   </body></html>"
-             when 'ignore_parent_translated_in_japanese'
-               "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://ignore-page.com/\"></head><body><h1><!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1>
-                     <div wovn-ignore=\"\"><p>Hello</p></div>
-                   </body></html>
-       "
-             when 'translated_in_japanese'
-               "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head><body><h1><!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1>
-                     <div><p><!--wovn-src:Hello-->こんにちは</p></div>
-                   </body></html>
-       "
-             when 'ignore_everything_translated'
-               "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://ignore-page.com/\"></head><body wovn-ignore=\"\"><h1>Mr. Belvedere Fan Club</h1>
-                     <div><p>Hello</p></div>
-                   </body></html>
-       "
-             when 'empty'
-               '<html><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore><p>Hello</p></div></body></html>'
-             when 'empty_single_quote'
-               "<html><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore=''><p>Hello</p></div></body></html>"
-             when 'empty_double_quote'
-               '<html><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore=''><p>Hello</p></div></body></html>'
-             when 'value_single_quote'
-               "<html><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore='value'><p>Hello</p></div></body></html>"
-             when 'value_double_quote'
-               '<html><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore="value"><p>Hello</p></div></body></html>'
-             when 'empty_translated'
-               "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://ignore-page.com/\"></head><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore=\"\"><p>Hello</p></div></body></html>\n"
-             when 'empty_single_quote_translated'
-               "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://ignore-page.com/\"></head><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore=\"\"><p>Hello</p></div></body></html>\n"
-             when 'empty_double_quote_translated'
-               "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://ignore-page.com/\"></head><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore=\"\"><p>Hello</p></div></body></html>\n"
-             when 'value_single_quote_translated'
-               "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://ignore-page.com/\"></head><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore=\"value\"><p>Hello</p></div></body></html>\n"
-             when 'value_double_quote_translated'
-               "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.ignore-page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://ignore-page.com/\"></head><body><h1>Mr.BelvedereFanClub</h1><div wovn-ignore=\"value\"><p>Hello</p></div></body></html>\n"
-             when 'meta_img_alt_tags_translated'
-               "<html lang=\"ja\"><head><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><meta name=\"description\" content=\"こんにちは\">\n<meta name=\"title\" content=\"こんにちは\">\n<meta property=\"og:title\" content=\"こんにちは\">\n<meta property=\"og:description\" content=\"こんにちは\">\n<meta property=\"twitter:title\" content=\"こんにちは\">\n<meta property=\"twitter:description\" content=\"こんにちは\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head>\n<body><h1><!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1>\n<div><p><!--wovn-src:Hello-->こんにちは</p></div>\n<!--wovn-src:Hello--><img src=\"http://example.com/photo.png\" alt=\"こんにちは\">\n</body></html>\n"
-             when  'meta_img_alt_tags'
-               "<html><head><meta name =\"description\" content=\"Hello\">\n<meta name=\"title\" content=\"Hello\">\n<meta property=\"og:title\" content=\"Hello\">\n<meta property=\"og:description\" content=\"Hello\">\n<meta property=\"twitter:title\" content=\"Hello\">\n<meta property=\"twitter:description\" content=\"Hello\"></head>
-       <body><h1>Mr. Belvedere Fan Club</h1>
-       <div><p>Hello</p></div>
-       <img src=\"http://example.com/photo.png\" alt=\"Hello\">
-       </body></html>"
-             when  'a_href_javascript'
-               "<html><body><h1>Mr. Belvedere Fan Club</h1>
-                     <div><p><a href=\"javascript:void(0)\">Hello</a></p></div>
-                   </body></html>"
-             when  'a_href_javascript_translated'
-               "<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.page.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head><body><h1><!--wovn-src:Mr. Belvedere Fan Club-->ベルベデアさんファンクラブ</h1>
-                     <div><p><a href=\"javascript:void(0)\"><!--wovn-src:Hello-->こんにちは</a></p></div>
-                   </body></html>
-       "
-             when 'unified_values'
-               <<-HTML
-        <html><body>
-          <div>
-            a <span>b</span> c
-          </div>
-          <div>
-            a<span>b</span>
-          </div>
-          <div>
-            <span> b </span>c
-          </div>
-</body></html>
-               HTML
-
-             when 'unified_values_ja'
-               <<-HTML
-<html lang=\"ja\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;version=#{Wovnrb::VERSION}\"> </script><link rel=\"alternate\" hreflang=\"en\" href=\"http://page.com/\"></head><body>
-          <div><!--wovn-src:
-            a -->\u3042<span><!--wovn-src:b-->\u3044</span><!--wovn-src: c
-          -->\u3046</div>
-          <div><!--wovn-src:
-            a-->\u200B<span><!--wovn-src:b-->\u3044</span><!--wovn-src:-->\u3046
-          </div>
-          <div>
-            <!--wovn-src:-->\u3042<span><!--wovn-src: b -->\u3044</span><!--wovn-src:c
-          -->\u200B</div>
-
-</body></html>
-               HTML
-
-             else # "" case
-               "<html><body><h1>Mr. Belvedere Fan Club</h1>
-                       <div><p>Hello</p></div>
-                     </body></html>"
-             end
-
-      body
-    end
-
-    def generate_dom(param = '')
-      Wovnrb.to_dom(generate_body(param))
-    end
-
-    def generate_values
-      values = {}
-      values['text_vals'] = {
-        'Hello' => { 'ja' => [{ 'data' => 'こんにちは' }] },
-        'Mr. Belvedere Fan Club' => { 'ja' => [{ 'data' => 'ベルベデアさんファンクラブ' }] }
-      }
-      values
-    end
-
-    def generate_unified_values
-      {
-        'html_text_vals' => {
-          'a<span>b</span>c' =>
-                { 'ja' =>
-                      [{ 'data' => 'あ<span>い</span>う' }] },
-          'a<span>b</span>' =>
-                { 'ja' =>
-                      [{ 'data' => '<span>い</span>う' }] },
-          '<span>b</span>c' =>
-                { 'ja' =>
-                      [{ 'data' => 'あ<span>い</span>' }] }
-
-        }
-      }
     end
 
     def test_get_code_from_custom_lang

@@ -31,7 +31,7 @@ module Wovnrb
     private
     def merge_setting(original_config, merging_config)
       config = original_config.clone
-      config.keys.each do |key|
+      config.each_key do |key|
         key_string = key.to_s
         if merging_config.has_key?(key_string) && merging_config[key_string].present?
           config[key] = merging_config[key_string]

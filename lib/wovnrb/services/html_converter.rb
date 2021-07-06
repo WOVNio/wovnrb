@@ -79,7 +79,7 @@ module Wovnrb
       return unless classes.present?
 
       ignored_classes = @store.settings['ignore_class']
-      should_be_ignored = (ignored_classes & classes.split(' ')).present?
+      should_be_ignored = (ignored_classes & classes.split).present?
 
       put_replace_marker(node, marker) if should_be_ignored
     end
@@ -147,7 +147,7 @@ module Wovnrb
     end
 
     def widget_urls
-      [@store.settings['api_url'] + '/widget', 'j.wovn.io', 'j.dev-wovn.io:3000']
+      ["#{@store.settings['api_url']}/widget", 'j.wovn.io', 'j.dev-wovn.io:3000']
     end
 
     def insert_snippet(adds_backend_error_mark = true)
@@ -162,10 +162,10 @@ module Wovnrb
       # do this so that there will be a closing tag (better compatibility with browsers)
       insert_node.content = ''
 
-      if !parent_node.children.empty?
-        parent_node.children.first.add_previous_sibling(insert_node)
-      else
+      if parent_node.children.empty?
         parent_node.add_child(insert_node)
+      else
+        parent_node.children.first.add_previous_sibling(insert_node)
       end
     end
 

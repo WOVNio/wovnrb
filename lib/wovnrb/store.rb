@@ -141,19 +141,16 @@ module Wovnrb
       end
       @settings.delete('user_token')
 
-      if @settings['url_pattern'] == 'path'
+      case @settings['url_pattern']
+      when 'path'
         @settings['url_pattern_reg'] = "/(?<lang>[^/.?]+)"
-      elsif @settings['url_pattern'] == 'query'
+      when 'query'
         @settings['url_pattern_reg'] = "((\\?.*&)|\\?)#{@settings['lang_param_name']}=(?<lang>[^&]+)(&|$)"
-      elsif @settings['url_pattern'] == 'subdomain'
+      when 'subdomain'
         @settings['url_pattern_reg'] = "^(?<lang>[^.]+)\."
       end
 
-      @settings['test_mode'] = if @settings['test_mode'] != true || @settings['test_mode'] != 'on'
-                                 false
-                               else
-                                 true
-                               end
+      @settings['test_mode'] = !(@settings['test_mode'] != true || @settings['test_mode'] != 'on')
 
       if @settings['wovn_dev_mode']
         if @settings['api_url'] == self.class.default_settings['api_url']
@@ -198,7 +195,7 @@ module Wovnrb
     private
 
     def stringify_keys!(hash)
-      hash.keys.each do |k|
+      hash.each_key do |k|
         hash[k.to_s] = hash.delete(k)
       end
     end
