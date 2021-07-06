@@ -119,6 +119,8 @@ Metrics/MethodLength:
 # Offense count: 12
 Metrics/PerceivedComplexity:
   Max: 22
+  Exclude:
+    - 'lib/wovnrb/headers.rb'
 
 # Offense count: 3
 Naming/AccessorMethodName:

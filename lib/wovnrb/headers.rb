@@ -5,7 +5,6 @@ module Wovnrb
     # Generates new instance of Wovnrb::Headers.
     # Its parameters are set by parsing env variable.
 
-    # rubocop:disable Metrics/PerceivedComplexity
     def initialize(env, settings)
       request = Rack::Request.new(env)
 
@@ -56,7 +55,6 @@ module Wovnrb
       @pathname_with_trailing_slash_if_present = @pathname
       @pathname = @pathname.gsub(/\/$/, '')
     end
-    # rubocop:enable Metrics/PerceivedComplexity
 
     def unmasked_pathname_without_trailing_slash
       @unmasked_pathname.chomp('/')
