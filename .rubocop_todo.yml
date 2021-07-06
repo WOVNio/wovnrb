@@ -6,6 +6,9 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
+Gemspec/RequiredRubyVersion:
+  Enabled: false
+
 # Offense count: 1
 # Cop supports --auto-correct.
 Layout/EmptyLinesAroundAccessModifier:
@@ -311,7 +314,6 @@ Style/SafeNavigation:
 
 AllCops:
   NewCops: enable
-  TargetRubyVersion: 2.5
   Exclude:
     - 'docker/**/*'
     - 'vendor/**/*'
