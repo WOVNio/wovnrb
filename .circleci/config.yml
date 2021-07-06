@@ -14,7 +14,7 @@ jobs:
     steps:
       - checkout
       - ruby/install-deps:
-          bundler-version: '1.17.2'
+          bundler-version: '1.17.1'
           with-cache: false
       - run: bundle exec rubocop
       - run: bundle exec rake test
