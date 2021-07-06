@@ -311,6 +311,7 @@ Style/SafeNavigation:
 
 AllCops:
   NewCops: enable
+  TargetRubyVersion: 2.5
   Exclude:
     - 'docker/**/*'
     - 'vendor/**/*'

@@ -4,7 +4,8 @@ module Wovnrb
 
     # Generates new instance of Wovnrb::Headers.
     # Its parameters are set by parsing env variable.
-    #
+
+    # rubocop:disable Metrics/PerceivedComplexity
     def initialize(env, settings)
       request = Rack::Request.new(env)
 
@@ -45,16 +46,17 @@ module Wovnrb
           m = @query.match(rx)
           query_vals.push(m[:query_val]) if m && m[:query_val]
         end
-        @query = if !query_vals.empty?
-                   "?#{query_vals.sort.join('&')}"
-                 else
+        @query = if query_vals.empty?
                    ''
+                 else
+                   "?#{query_vals.sort.join('&')}"
                  end
       end
       @query = remove_lang(@query, lang_code)
       @pathname_with_trailing_slash_if_present = @pathname
       @pathname = @pathname.gsub(/\/$/, '')
     end
+    # rubocop:enable Metrics/PerceivedComplexity
 
     def unmasked_pathname_without_trailing_slash
       @unmasked_pathname.chomp('/')
@@ -108,11 +110,11 @@ module Wovnrb
         case @settings['url_pattern']
         when 'query'
           lang_param_name = @settings['lang_param_name']
-          if location =~ /\?/ @env['REQUEST_URI'] !~ /(\?|&)#{lang_param_name}=/
-               location = "#{location}&#{lang_param_name}=#{lang_code}"
-          else
-            location = "#{location}?#{lang_param_name}=#{lang_code}"
-          end
+          location = if location =~ /\?/
+                       "#{location}&#{lang_param_name}=#{lang_code}"
+                     else
+                       "#{location}?#{lang_param_name}=#{lang_code}"
+                     end
         when 'subdomain'
           location = "#{lang_code.downcase}.#{location}"
         # when 'path'
@@ -178,21 +180,21 @@ module Wovnrb
       r = Regexp.new("//#{@host}")
       lang_code = Store.instance.settings['custom_lang_aliases'][self.lang_code] || self.lang_code
       if lang_code != @settings['default_lang'] && headers.key?('Location') && headers['Location'] =~ r && !@settings['ignore_globs'].ignore?(headers['Location'])
-          case @settings['url_pattern']
-          when 'query'
-            headers['Location'] += if headers['Location'] =~ /\?/
-                                     '&'
-                                   else
-                                     '?'
-                                   end
-            headers['Location'] += "#{@settings['lang_param_name']}=#{lang_code}"
-          when 'subdomain'
-            headers['Location'] = headers['Location'].sub(/\/\/([^.]+)/, "//#{lang_code}.\\1")
-          # when 'path'
-          else
-            headers['Location'] = headers['Location'].sub(/(\/\/[^\/]+)/, "\\1/#{lang_code}")
-          end
+        case @settings['url_pattern']
+        when 'query'
+          headers['Location'] += if headers['Location'] =~ /\?/
+                                   '&'
+                                 else
+                                   '?'
+                                 end
+          headers['Location'] += "#{@settings['lang_param_name']}=#{lang_code}"
+        when 'subdomain'
+          headers['Location'] = headers['Location'].sub(/\/\/([^.]+)/, "//#{lang_code}.\\1")
+        # when 'path'
+        else
+          headers['Location'] = headers['Location'].sub(/(\/\/[^\/]+)/, "\\1/#{lang_code}")
         end
+      end
       headers
     end
 

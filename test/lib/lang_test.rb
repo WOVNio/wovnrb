@@ -90,7 +90,7 @@ module Wovnrb
       assert_equal('http://zh-cht.wovn.io/topics/31', lang.add_lang_code('http://wovn.io/topics/31', 'subdomain', h))
     end
 
-    def test_add_lang_code_trad_chinese_2
+    def test_add_lang_code_trad_chinese2
       lang = Lang.new('zh-cht')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'http://zh-cht.wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
       assert_equal('http://zh-cht.wovn.io/topics/31', lang.add_lang_code('/topics/31', 'subdomain', h))
@@ -108,7 +108,7 @@ module Wovnrb
       assert_equal('//zh-cht.google.com', lang.add_lang_code('//google.com', 'subdomain', h))
     end
 
-    def test_add_lang_code_no_protocol_2
+    def test_add_lang_code_no_protocol2
       lang = Lang.new('zh-cht')
       h = Wovnrb::Headers.new(Wovnrb.get_env('url' => 'https://zh-cht.wovn.io'), Wovnrb.get_settings('url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).'))
       assert_equal('//google.com', lang.add_lang_code('//google.com', 'subdomain', h))

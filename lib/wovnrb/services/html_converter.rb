@@ -41,7 +41,7 @@ module Wovnrb
 
       @dom.traverse { |node| transform_node(node, marker) }
 
-      insert_snippet(true)
+      insert_snippet(adds_backend_error_mark: true)
       insert_hreflang_tags
       inject_lang_html_tag
 
@@ -150,7 +150,7 @@ module Wovnrb
       ["#{@store.settings['api_url']}/widget", 'j.wovn.io', 'j.dev-wovn.io:3000']
     end
 
-    def insert_snippet(adds_backend_error_mark = true)
+    def insert_snippet(adds_backend_error_mark: true)
       parent_node = @dom.at_css('head') || @dom.at_css('body') || @dom.at_css('html')
       return unless parent_node
 
