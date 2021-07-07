@@ -11,6 +11,7 @@ Gem::Specification.new do |spec|
   spec.description   = 'Ruby gem for WOVN backend on Rack.'
   spec.homepage      = 'https://wovn.io'
   spec.license       = 'MIT'
+  spec.required_ruby_version = '>= 2.5'
 
   files = `git ls-files -z`.split("\x0")
   files.delete('BEFORE_PUSHING')

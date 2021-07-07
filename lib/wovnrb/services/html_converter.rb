@@ -41,7 +41,7 @@ module Wovnrb
 
       @dom.traverse { |node| transform_node(node, marker) }
 
-      insert_snippet(true)
+      insert_snippet(adds_backend_error_mark: true)
       insert_hreflang_tags
       inject_lang_html_tag
 
@@ -79,7 +79,7 @@ module Wovnrb
       return unless classes.present?
 
       ignored_classes = @store.settings['ignore_class']
-      should_be_ignored = (ignored_classes & classes.split(' ')).present?
+      should_be_ignored = (ignored_classes & classes.split).present?
 
       put_replace_marker(node, marker) if should_be_ignored
     end
@@ -147,10 +147,10 @@ module Wovnrb
     end
 
     def widget_urls
-      [@store.settings['api_url'] + '/widget', 'j.wovn.io', 'j.dev-wovn.io:3000']
+      ["#{@store.settings['api_url']}/widget", 'j.wovn.io', 'j.dev-wovn.io:3000']
     end
 
-    def insert_snippet(adds_backend_error_mark = true)
+    def insert_snippet(adds_backend_error_mark: true)
       parent_node = @dom.at_css('head') || @dom.at_css('body') || @dom.at_css('html')
       return unless parent_node
 
@@ -162,10 +162,10 @@ module Wovnrb
       # do this so that there will be a closing tag (better compatibility with browsers)
       insert_node.content = ''
 
-      if !parent_node.children.empty?
-        parent_node.children.first.add_previous_sibling(insert_node)
-      else
+      if parent_node.children.empty?
         parent_node.add_child(insert_node)
+      else
+        parent_node.children.first.add_previous_sibling(insert_node)
       end
     end
 
