@@ -9,7 +9,6 @@ require 'nokogumbo'
 require 'active_support'
 require 'json'
 require 'wovnrb/helpers/nokogumbo_helper'
-require 'wovnrb/text_caches/cache_base'
 require 'wovnrb/railtie' if defined?(Rails)
 require 'wovnrb/version'
 
@@ -18,9 +17,8 @@ module Wovnrb
     def initialize(app, opts = {})
       @app = app
       @store = Store.instance
-      opts = opts.each_with_object({}) { |(k, v), memo| memo[k.to_s] = v }
+      opts = opts.transform_keys(&:to_s)
       @store.update_settings(opts)
-      CacheBase.set_single(@store.settings)
     end
 
     def call(env)

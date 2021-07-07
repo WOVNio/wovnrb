@@ -2,15 +2,13 @@ module Wovnrb
   module Helpers
     module NokogumboHelper
       def parse_html(html_string, encoding = 'UTF-8')
-        dom = if html_string.strip[0..999] =~ /<html/i
-                d = Nokogiri::HTML5(html_string)
-                d.encoding = encoding
-                d
-              else
-                parse_fragment(html_string, encoding)
-              end
-
-        dom
+        if html_string.strip[0..999] =~ /<html/i
+          d = Nokogiri::HTML5(html_string)
+          d.encoding = encoding
+          d
+        else
+          parse_fragment(html_string, encoding)
+        end
       end
 
       # https://www.rubydoc.info/gems/nokogumbo/Nokogiri/HTML5#fragment-class_method
