@@ -1,18 +1,29 @@
-version: 2
+version: 2.1
+
+orbs:
+  # https://github.com/CircleCI-Public/ruby-orb
+  ruby: circleci/ruby@1.1
 
 jobs:
-  build:
+  test:
+    parameters:
+      ruby-version:
+        type: string
     docker:
-      - image: circleci/ruby:2.5.4
+      - image: cimg/ruby:<< parameters.ruby-version >>
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - bundler-
       - run: bundle install --path vendor/bundle --jobs=4
-      - save_cache:
-          key: bundler-{{ checksum "Gemfile.lock" }}
-          paths:
-            - vendor/bundle
       - run: bundle exec rubocop
       - run: bundle exec rake test
+
+# https://circleci.com/blog/circleci-matrix-jobs/
+workflows:
+  build_and_test:
+    jobs:
+      - test:
+          matrix:
+            parameters:
+              # https://github.com/CircleCI-Public/cimg-ruby
+              # only supports the last three ruby versions
+              ruby-version: ["2.5", "2.6", "2.7"]
