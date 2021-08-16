@@ -26,4 +26,4 @@ workflows:
             parameters:
               # https://github.com/CircleCI-Public/cimg-ruby
               # only supports the last three ruby versions
-              ruby-version: ["2.5", "2.6", "2.7"]
+              ruby-version: ["2.5.9", "2.6.7", "2.7.3"]
