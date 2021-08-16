@@ -15,6 +15,7 @@ jobs:
       - checkout
       - run: bundle install --path vendor/bundle --jobs=4
       - run: bundle exec rubocop
+      - run: export N=1
       - run: bundle exec rake test
 
 # https://circleci.com/blog/circleci-matrix-jobs/
