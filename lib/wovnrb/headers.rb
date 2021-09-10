@@ -31,10 +31,9 @@ module Wovnrb
               else
                 @env['HTTP_HOST']
               end
-
-      @host = remove_lang(@host, lang_code) unless settings['url_pattern'] == 'subdomain'
+      @host = settings['url_pattern'] == 'subdomain' ? remove_lang(@host, lang_code) : @host
       @pathname, @query = @env['REQUEST_URI'].split('?')
-      @pathname = remove_lang(@pathname, lang_code) unless settings['url_pattern'] == 'path'
+      @pathname = settings['url_pattern'] == 'path' ? remove_lang(@pathname, lang_code) : @pathname
       @query ||= ''
       @url = "#{@host}#{@pathname}#{(@query.empty? ? '' : '?') + remove_lang(@query, lang_code)}"
       if settings['query'].empty?
