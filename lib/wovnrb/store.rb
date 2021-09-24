@@ -34,6 +34,7 @@ module Wovnrb
         'use_proxy' => false, # use env['HTTP_X_FORWARDED_HOST'] instead of env['HTTP_HOST'] and env['SERVER_NAME'] when this setting is true.
         'custom_lang_aliases' => {},
         'translate_fragment' => true,
+        'widget_url' => 'https://j.wovn.io/1',
         'wovn_dev_mode' => false
       )
     end
@@ -180,12 +181,8 @@ module Wovnrb
       @settings['supported_langs'] || []
     end
 
-    def wovn_host
-      if @settings['wovn_dev_mode']
-        'dev-wovn.io'
-      else
-        'wovn.io'
-      end
+    def widget_url
+      @settings['widget_url'] || 'https://j.wovn.io/1'
     end
 
     def dev_mode?

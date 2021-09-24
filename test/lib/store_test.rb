@@ -126,15 +126,17 @@ module Wovnrb
       assert_equal([], s.settings['ignore_globs'])
     end
 
-    def test_default_dev_mode_settings
+    def test_widget_url_settings
       store = Wovnrb::Store.instance
 
-      store.update_settings('wovn_dev_mode' => true)
+      store.update_settings('widget_url' => nil)
+      assert_equal('https://j.wovn.io/1', store.widget_url)
 
-      assert(store.dev_mode?)
-      assert_equal('dev-wovn.io', store.wovn_host)
-      assert_equal('http://dev-wovn.io:3001', store.settings['api_url'])
-      assert_equal(3, store.settings['api_timeout_seconds'])
+      store.update_settings('widget_url' => 'https://j.wovn.io/1')
+      assert_equal('https://j.wovn.io/1', store.widget_url)
+
+      store.update_settings('widget_url' => 'http://j.dev-wovn.io:3000/1')
+      assert_equal('http://j.dev-wovn.io:3000/1', store.widget_url)
     end
 
     def test_dev_mode_not_overriding_settings
