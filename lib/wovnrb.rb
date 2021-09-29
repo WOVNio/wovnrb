@@ -80,7 +80,7 @@ module Wovnrb
 
         if needs_api?(html_body, headers)
           converted_html, marker = html_converter.build_api_compatible_html
-          translated_content = ApiTranslator.new(@store, headers, SecureRandom.uuid).translate(converted_html)
+          translated_content = ApiTranslator.new(@store, headers, WovnLogger.uuid).translate(converted_html)
           translated_body.push(marker.revert(translated_content))
         else
           string_body = html_converter.build if html_body.html?

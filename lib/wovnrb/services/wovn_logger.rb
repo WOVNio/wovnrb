@@ -3,15 +3,22 @@ require 'logger' unless defined?(Logger)
 
 module Wovnrb
   class WovnLogger
+    attr_reader :uuid
+
     include Singleton
 
     class << self
       def error(message)
         instance.error(message)
       end
+
+      def uuid()
+        instance.uuid
+      end
     end
 
     def initialize
+      @uuid = SecureRandom.uuid
       path = Store.instance.settings['log_path']
       if path
         begin
@@ -40,9 +47,9 @@ module Wovnrb
 
     def error(message)
       if @logger == $stderr
-        @logger.puts "Wovnrb Error: #{message}"
+        @logger.puts "[#{@uuid}] Wovnrb Error: #{message}"
       else
-        @logger.error message
+        @logger.error "[#{@uuid}] #{message}"
       end
     end
   end
