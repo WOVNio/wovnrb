@@ -5,9 +5,10 @@ require 'zlib'
 
 module Wovnrb
   class ApiTranslator
-    def initialize(store, headers)
+    def initialize(store, headers, uuid)
       @store = store
       @headers = headers
+      @uuid = uuid
     end
 
     def translate(body)
@@ -55,7 +56,8 @@ module Wovnrb
       headers = {
         'Accept-Encoding' => 'gzip',
         'Content-Type' => 'application/octet-stream',
-        'Content-Length' => data.bytesize.to_s
+        'Content-Length' => data.bytesize.to_s,
+        'X-Request-Id' => @uuid
       }
       request = Net::HTTP::Post.new(generate_request_path(body), headers)
 

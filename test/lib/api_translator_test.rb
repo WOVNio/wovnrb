@@ -53,7 +53,7 @@ module Wovnrb
         Wovnrb.get_env('url' => 'http://fr.wovn.io/test'),
         Wovnrb.get_settings(settings)
       )
-      api_translator = ApiTranslator.new(store, headers)
+      api_translator = ApiTranslator.new(store, headers, 'ABCD')
       translation_request_stub = stub_translation_api_request(store, headers, original_html, translated_html, response)
 
       actual_translated_html = api_translator.translate(original_html)
