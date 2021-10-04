@@ -78,12 +78,14 @@ module Wovnrb
     end
 
     def test_invalid_settings
-      mock = LogMock.mock_log
-      store = Wovnrb::Store.instance
-      valid = store.valid_settings?
+      SecureRandom.stub(:uuid, 'a') do
+        mock = LogMock.mock_log
+        store = Wovnrb::Store.instance
+        valid = store.valid_settings?
 
-      assert_equal(false, valid)
-      assert_equal(['Project token  is not valid.'], mock.errors)
+        assert_equal(false, valid)
+        assert_equal(['[a] Project token  is not valid.'], mock.errors)
+      end
     end
 
     def test_settings_ignore_paths
@@ -110,12 +112,14 @@ module Wovnrb
     end
 
     def test_settings_invalid_ignore_paths
-      mock = LogMock.mock_log
-      store = Wovnrb::Store.instance
-      store.update_settings('ignore_paths' => 'aaaa')
+      SecureRandom.stub(:uuid, 'a') do
+        mock = LogMock.mock_log
+        store = Wovnrb::Store.instance
+        store.update_settings('ignore_paths' => 'aaaa')
 
-      assert_equal(false, store.valid_settings?)
-      assert_equal(['Project token  is not valid.', 'Ignore Paths aaaa should be Array.'], mock.errors)
+        assert_equal(false, store.valid_settings?)
+        assert_equal(['[a] Project token  is not valid.', 'Ignore Paths aaaa should be Array.'], mock.errors)
+      end
     end
 
     def test_settings_ignore_glob_injection

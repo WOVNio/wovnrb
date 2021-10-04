@@ -31,9 +31,11 @@ module Wovnrb
     end
 
     def test_error
-      mock = LogMock.mock_log
-      WovnLogger.instance.error('aaa')
-      assert_equal(['aaa'], mock.errors)
+      SecureRandom.stub(:uuid, 'a') do
+        mock = LogMock.mock_log
+        WovnLogger.instance.error('aaa')
+        assert_equal(['[a] aaa'], mock.errors)
+      end
     end
   end
 end
