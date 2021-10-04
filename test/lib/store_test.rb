@@ -118,7 +118,7 @@ module Wovnrb
         store.update_settings('ignore_paths' => 'aaaa')
 
         assert_equal(false, store.valid_settings?)
-        assert_equal(['[a] Project token  is not valid.', 'Ignore Paths aaaa should be Array.'], mock.errors)
+        assert_equal(['[a] Project token  is not valid.', '[a] Ignore Paths aaaa should be Array.'], mock.errors)
       end
     end
 
