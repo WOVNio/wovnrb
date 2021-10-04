@@ -12,7 +12,7 @@ module Wovnrb
         instance.error(message)
       end
 
-      def uuid()
+      def uuid
         instance.uuid
       end
     end
