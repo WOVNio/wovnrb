@@ -52,25 +52,44 @@ module Wovnrb
     end
 
     def prepare_request(body)
-      data = compress_request_data(generate_request_data(body))
-      headers = {
+      if @store.compress_api_request?
+        gzip_request(body)
+      else
+        json_request(body)
+      end
+    end
+
+    def gzip_request(html_body)
+      api_params = build_api_params(html_body)
+      compressed_body = compress_request_data(api_params)
+      request = Net::HTTP::Post.new(request_path(html_body), {
         'Accept-Encoding' => 'gzip',
         'Content-Type' => 'application/octet-stream',
-        'Content-Length' => data.bytesize.to_s,
+        'Content-Length' => compressed_body.bytesize.to_s,
         'X-Request-Id' => @uuid
-      }
-      request = Net::HTTP::Post.new(generate_request_path(body), headers)
-
-      request.body = data
+      })
+      request.body = compressed_body
 
       request
     end
 
-    def generate_request_path(body)
-      "#{api_uri.path.sub(/\/$/, '')}/translation?cache_key=#{generate_cache_key(body)}"
+    def json_request(html_body)
+      api_params = build_api_params(html_body)
+      request = Net::HTTP::Post.new(request_path(html_body), {
+        'Accept-Encoding' => 'gzip',
+        'Content-Type' => 'application/json',
+        'X-Request-Id' => @uuid
+      })
+      request.body = api_params.to_json
+
+      request
     end
 
-    def generate_cache_key(body)
+    def request_path(body)
+      "#{api_uri.path}/translation?cache_key=#{cache_key(body)}"
+    end
+
+    def cache_key(body)
       cache_key_components = {
         'token' => token,
         'settings_hash' => settings_hash,
@@ -83,8 +102,8 @@ module Wovnrb
       CGI.escape("(#{cache_key_components})")
     end
 
-    def generate_request_data(body)
-      data = {
+    def build_api_params(body)
+      result = {
         'url' => page_url,
         'token' => token,
         'lang_code' => lang_code,
@@ -95,9 +114,9 @@ module Wovnrb
         'body' => body
       }
 
-      data['custom_lang_aliases'] = JSON.dump(custom_lang_aliases) unless custom_lang_aliases.empty?
+      result['custom_lang_aliases'] = JSON.dump(custom_lang_aliases) unless custom_lang_aliases.empty?
 
-      data
+      result
     end
 
     def compress_request_data(data_hash)
@@ -111,7 +130,7 @@ module Wovnrb
     end
 
     def api_uri
-      Addressable::URI.parse("#{@store.settings['api_url']}/v0/")
+      Addressable::URI.parse("#{@store.settings['api_url']}/v0")
     end
 
     def api_timeout

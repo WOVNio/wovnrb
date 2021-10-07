@@ -35,7 +35,8 @@ module Wovnrb
         'custom_lang_aliases' => {},
         'translate_fragment' => true,
         'widget_url' => 'https://j.wovn.io/1',
-        'wovn_dev_mode' => false
+        'wovn_dev_mode' => false,
+        'compress_api_request' => true
       )
     end
 
@@ -179,6 +180,10 @@ module Wovnrb
 
     def supported_langs
       @settings['supported_langs'] || []
+    end
+
+    def compress_api_request?
+      @settings['compress_api_request']
     end
 
     def widget_url
