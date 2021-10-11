@@ -52,7 +52,7 @@ module Wovnrb
     end
 
     def prepare_request(body)
-      if @store.compress_api_request?
+      if @store.compress_api_requests?
         gzip_request(body)
       else
         json_request(body)
@@ -63,11 +63,11 @@ module Wovnrb
       api_params = build_api_params(html_body)
       compressed_body = compress_request_data(api_params)
       request = Net::HTTP::Post.new(request_path(html_body), {
-        'Accept-Encoding' => 'gzip',
-        'Content-Type' => 'application/octet-stream',
-        'Content-Length' => compressed_body.bytesize.to_s,
-        'X-Request-Id' => @uuid
-      })
+                                      'Accept-Encoding' => 'gzip',
+                                      'Content-Type' => 'application/octet-stream',
+                                      'Content-Length' => compressed_body.bytesize.to_s,
+                                      'X-Request-Id' => @uuid
+                                    })
       request.body = compressed_body
 
       request
@@ -76,10 +76,10 @@ module Wovnrb
     def json_request(html_body)
       api_params = build_api_params(html_body)
       request = Net::HTTP::Post.new(request_path(html_body), {
-        'Accept-Encoding' => 'gzip',
-        'Content-Type' => 'application/json',
-        'X-Request-Id' => @uuid
-      })
+                                      'Accept-Encoding' => 'gzip',
+                                      'Content-Type' => 'application/json',
+                                      'X-Request-Id' => @uuid
+                                    })
       request.body = api_params.to_json
 
       request

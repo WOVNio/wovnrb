@@ -27,7 +27,7 @@ module Wovnrb
     end
 
     def test_translate_without_api_compression_sends_json
-      Wovnrb::Store.instance.update_settings('compress_api_request' => false)
+      Wovnrb::Store.instance.update_settings('compress_api_requests' => false)
       sut, store, headers = create_sut
       html_body = 'foo'
 
@@ -53,7 +53,7 @@ module Wovnrb
                          'product' => 'WOVN.rb',
                          'version' => VERSION,
                          'body' => 'foo',
-                         'custom_lang_aliases' =>  { 'ja' => 'Japanese' }.to_json
+                         'custom_lang_aliases' => { 'ja' => 'Japanese' }.to_json
                        }.to_json,
                        :times => 1
     end
