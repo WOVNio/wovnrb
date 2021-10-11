@@ -65,6 +65,7 @@ module Wovnrb
       request = Net::HTTP::Post.new(request_path(html_body), {
                                       'Accept-Encoding' => 'gzip',
                                       'Content-Type' => 'application/octet-stream',
+                                      'Content-Encoding' => 'gzip',
                                       'Content-Length' => compressed_body.bytesize.to_s,
                                       'X-Request-Id' => @uuid
                                     })
