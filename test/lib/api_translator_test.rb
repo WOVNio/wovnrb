@@ -1,7 +1,7 @@
 require 'test_helper'
 
 module Wovnrb
-  REQUEST_UUID = 'ABCD'
+  REQUEST_UUID = 'ABCD'.freeze
 
   class ApiTranslatorTest < WovnMiniTest
     def test_translate
@@ -28,7 +28,7 @@ module Wovnrb
 
     def test_translate_without_api_compression_sends_json
       Wovnrb::Store.instance.update_settings('compress_api_requests' => false)
-      sut, store, headers = create_sut
+      sut, _store, _headers = create_sut
       html_body = 'foo'
 
       stub_request(:post, %r{http://wovn\.global\.ssl\.fastly\.net/v0/translation\?cache_key=.*})
@@ -37,14 +37,14 @@ module Wovnrb
       sut.translate(html_body)
 
       assert_requested :post, %r{http://wovn\.global\.ssl\.fastly\.net/v0/translation\?cache_key=.*},
-                       :headers => {
+                       headers: {
                          'Accept' => '*/*',
                          'Accept-Encoding' => 'gzip',
                          'Content-Type' => 'application/json',
                          'User-Agent' => 'Ruby',
                          'X-Request-Id' => REQUEST_UUID
                        },
-                       :body => {
+                       body: {
                          'url' => 'http://wovn.io/test',
                          'token' => '123456',
                          'lang_code' => 'fr',
@@ -55,7 +55,7 @@ module Wovnrb
                          'body' => 'foo',
                          'custom_lang_aliases' => { 'ja' => 'Japanese' }.to_json
                        }.to_json,
-                       :times => 1
+                       times: 1
     end
 
     private
