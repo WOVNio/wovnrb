@@ -1,6 +1,8 @@
 require 'test_helper'
 
 module Wovnrb
+  REQUEST_UUID = 'ABCD'.freeze
+
   class ApiTranslatorTest < WovnMiniTest
     def test_translate
       assert_translation('test.html', 'test_translated.html', true)
@@ -24,6 +26,38 @@ module Wovnrb
       assert_translation('test.html', 'test_translated.html', true, encoding: 'text/json')
     end
 
+    def test_translate_without_api_compression_sends_json
+      Wovnrb::Store.instance.update_settings('compress_api_requests' => false)
+      sut, _store, _headers = create_sut
+      html_body = 'foo'
+
+      stub_request(:post, %r{http://wovn\.global\.ssl\.fastly\.net/v0/translation\?cache_key=.*})
+        .to_return(status: 200, body: { 'body' => 'translated_body' }.to_json)
+
+      sut.translate(html_body)
+
+      assert_requested :post, %r{http://wovn\.global\.ssl\.fastly\.net/v0/translation\?cache_key=.*},
+                       headers: {
+                         'Accept' => '*/*',
+                         'Accept-Encoding' => 'gzip',
+                         'Content-Type' => 'application/json',
+                         'User-Agent' => 'Ruby',
+                         'X-Request-Id' => REQUEST_UUID
+                       },
+                       body: {
+                         'url' => 'http://wovn.io/test',
+                         'token' => '123456',
+                         'lang_code' => 'fr',
+                         'url_pattern' => 'subdomain',
+                         'lang_param_name' => 'lang',
+                         'product' => 'WOVN.rb',
+                         'version' => VERSION,
+                         'body' => 'foo',
+                         'custom_lang_aliases' => { 'ja' => 'Japanese' }.to_json
+                       }.to_json,
+                       times: 1
+    end
+
     private
 
     def assert_translation(original_html_fixture, translated_html_fixture, success_expected, response = { encoding: 'gzip', status_code: 200 })
@@ -39,6 +73,15 @@ module Wovnrb
     end
 
     def translate(original_html, translated_html, response)
+      api_translator, store, headers = create_sut
+      translation_request_stub = stub_translation_api_request(store, headers, original_html, translated_html, response)
+
+      actual_translated_html = api_translator.translate(original_html)
+      assert_requested(translation_request_stub, times: 1) if translation_request_stub
+      actual_translated_html
+    end
+
+    def create_sut
       settings = {
         'project_token' => '123456',
         'custom_lang_aliases' => { 'ja' => 'Japanese' },
@@ -53,12 +96,9 @@ module Wovnrb
         Wovnrb.get_env('url' => 'http://fr.wovn.io/test'),
         Wovnrb.get_settings(settings)
       )
-      api_translator = ApiTranslator.new(store, headers, 'ABCD')
-      translation_request_stub = stub_translation_api_request(store, headers, original_html, translated_html, response)
+      api_translator = ApiTranslator.new(store, headers, REQUEST_UUID)
 
-      actual_translated_html = api_translator.translate(original_html)
-      assert_requested(translation_request_stub, times: 1) if translation_request_stub
-      actual_translated_html
+      [api_translator, store, headers]
     end
 
     def stub_translation_api_request(store, headers, original_html, translated_html, response)
