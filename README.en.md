@@ -39,8 +39,8 @@ Insert the following into either config/application.rb or config/environments/.
 
 config.wovnrb = {
   :project_token => 'EnS!t3',
-  :default_lang => 'en',
-  :supported_langs => ['en'],
+  :default_lang => 'ja',
+  :supported_langs => ['ja', en'],
   :url_pattern => 'path'
 }
 
@@ -60,8 +60,8 @@ require 'wovnrb'
 
 use Wovnrb::Interceptor, {
   :project_token => 'EnS!t3',
-  :default_lang => 'en',
-  :supported_langs => ['en'],
+  :default_lang => 'ja',
+  :supported_langs => ['ja', 'en'],
   :url_pattern => 'path'
 }
 
@@ -77,8 +77,8 @@ The following is a list of the WOVN.io Ruby Library's valid parameters.
 Parameter Name        | Required | Default Setting
 ----------------------| -------- | ----------------
 project_token         | yes      | ''
-default_lang          | yes      | 'en'
-supported_langs       | yes      | ['en']
+default_lang          | yes      | 'ja'
+supported_langs       | yes      | ['ja', 'en']
 url_pattern           | yes      | 'path'
 lang_param_name       |          | 'wovn'
 query                 |          | []
