@@ -77,7 +77,7 @@ module Wovnrb
     end
 
     def translate(original_html, translated_html, response, compress_data: true)
-      api_translator, store, headers = create_sut
+      api_translator, store, _headers = create_sut
       translation_request_stub = stub_translation_api_request(store, original_html, translated_html, response, compress_data: compress_data)
 
       actual_translated_html = api_translator.translate(original_html)
