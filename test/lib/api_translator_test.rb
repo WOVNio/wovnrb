@@ -78,7 +78,7 @@ module Wovnrb
 
     def translate(original_html, translated_html, response, compress_data: true)
       api_translator, store, headers = create_sut
-      translation_request_stub = stub_translation_api_request(store, headers, original_html, translated_html, response, compress_data: compress_data)
+      translation_request_stub = stub_translation_api_request(store, original_html, translated_html, response, compress_data: compress_data)
 
       actual_translated_html = api_translator.translate(original_html)
       assert_requested(translation_request_stub, times: 1) if translation_request_stub
@@ -105,7 +105,7 @@ module Wovnrb
       [api_translator, store, headers]
     end
 
-    def stub_translation_api_request(store, headers, original_html, translated_html, response, compress_data: true)
+    def stub_translation_api_request(store, original_html, translated_html, response, compress_data: true)
       if response
         cache_key = generate_cache_key(store, original_html)
         api_host = if store.dev_mode?
