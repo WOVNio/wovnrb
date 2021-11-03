@@ -10,24 +10,24 @@ module Wovnrb
 
     def test_translate_falls_back_to_original_body_if_exception
       Net::HTTP.any_instance.expects(:request).raises
-      assert_translation('test.html', 'test_translated.html', false, nil)
+      assert_translation('test.html', 'test_translated.html', false, response: nil)
     end
 
     def test_translate_falls_back_to_original_body_if_api_error
-      assert_translation('test.html', 'test_translated.html', false, status_code: 500)
+      assert_translation('test.html', 'test_translated.html', false, response: { encoding: 'text/json', status_code: 500 })
     end
 
     def test_translate_continues_if_api_response_is_not_compressed
-      assert_translation('test.html', 'test_translated.html', true, encoding: 'unknown', compress_data: false)
+      assert_translation('test.html', 'test_translated.html', true, response: { encoding: 'unknown', status: 200 }, compress_data: false)
     end
 
     def test_translate_continues_if_api_response_is_compressed
-      assert_translation('test.html', 'test_translated.html', true, encoding: 'unknown')
+      assert_translation('test.html', 'test_translated.html', true, response: { encoding: 'unknown', status: 200 })
     end
 
     def test_translate_accepts_uncompressed_response_from_api_in_dev_mode
       Wovnrb::Store.instance.update_settings('wovn_dev_mode' => true)
-      assert_translation('test.html', 'test_translated.html', true, encoding: 'text/json', compress_data: false)
+      assert_translation('test.html', 'test_translated.html', true, response: { encoding: 'text/json', status: 200 }, compress_data: false)
     end
 
     def test_translate_without_api_compression_sends_json
@@ -64,10 +64,10 @@ module Wovnrb
 
     private
 
-    def assert_translation(original_html_fixture, translated_html_fixture, success_expected, response = { encoding: 'gzip', status_code: 200 })
+    def assert_translation(original_html_fixture, translated_html_fixture, success_expected, response: { encoding: 'gzip', status_code: 200 }, compress_data: true)
       original_html = File.read("test/fixtures/html/#{original_html_fixture}")
       translated_html = File.read("test/fixtures/html/#{translated_html_fixture}")
-      actual_translated_html = translate(original_html, translated_html, response)
+      actual_translated_html = translate(original_html, translated_html, response, compress_data: compress_data)
 
       if success_expected
         assert_equal(actual_translated_html, translated_html)
