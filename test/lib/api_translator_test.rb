@@ -17,8 +17,8 @@ module Wovnrb
       assert_translation('test.html', 'test_translated.html', false, status_code: 500)
     end
 
-    def test_translate_falls_back_to_original_body_if_api_response_is_not_compressed
-      assert_translation('test.html', 'test_translated.html', false, encoding: 'unknown')
+    def test_translate_continues_if_api_response_is_not_compressed
+      assert_translation('test.html', 'test_translated.html', true, encoding: 'unknown')
     end
 
     def test_translate_accepts_uncompressed_response_from_api_in_dev_mode
