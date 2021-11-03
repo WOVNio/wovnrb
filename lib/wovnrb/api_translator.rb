@@ -25,12 +25,15 @@ module Wovnrb
       case response
       when Net::HTTPSuccess
         begin
-          return JSON.parse(response.body)['body'] || body if @store.dev_mode?
-
-          response_body = Zlib::GzipReader.new(StringIO.new(response.body)).read
-          JSON.parse(response_body)['body'] || body
+          raw_response_body = @store.dev_mode? ? response.body : Zlib::GzipReader.new(StringIO.new(response.body)).read
         rescue Zlib::GzipFile::Error
-          JSON.parse(response.body)['body'] || body
+          raw_response_body = response.body
+        end
+
+        begin
+          JSON.parse(raw_response_body)['body'] || body
+        rescue JSON::JSONError
+          body
         end
       else
         WovnLogger.error("HTML-swapper call failed. Received \"#{response.message}\" from WOVNio translation API.")
