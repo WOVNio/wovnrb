@@ -155,7 +155,7 @@ module Wovnrb
       return unless parent_node
 
       insert_node = Nokogiri::XML::Node.new('script', @dom)
-      insert_node['src'] = "//j.#{@store.wovn_host}/1"
+      insert_node['src'] = @store.widget_url
       insert_node['async'] = true
       insert_node['data-wovnio'] = data_wovnio
       insert_node['data-wovnio-type'] = 'fallback_snippet' if adds_backend_error_mark

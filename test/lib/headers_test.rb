@@ -170,7 +170,7 @@ module Wovnrb
         Wovnrb.get_env('url' => 'http://wovn.io/contact', 'HTTP_X_FORWARDED_HOST' => 'wovn.io'),
         Store.instance.settings
       )
-      assert_equal('http://wovn.io/contact?wovn=ja', sut.redirect_location('ja'))
+      assert_equal('http://wovn.io/contact?wovn=en', sut.redirect_location('en'))
     end
 
     def test_redirect_location_with_lang_param_name
@@ -179,7 +179,7 @@ module Wovnrb
         Wovnrb.get_env('url' => 'http://wovn.io/contact', 'HTTP_X_FORWARDED_HOST' => 'wovn.io'),
         Store.instance.settings
       )
-      assert_equal('http://wovn.io/contact?lang=ja', sut.redirect_location('ja'))
+      assert_equal('http://wovn.io/contact?lang=en', sut.redirect_location('en'))
     end
 
     #########################

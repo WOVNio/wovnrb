@@ -25,8 +25,8 @@ module Wovnrb
         'ignore_class' => [],
         'api_url' => 'https://wovn.global.ssl.fastly.net',
         'api_timeout_seconds' => 1.0,
-        'default_lang' => 'en',
-        'supported_langs' => ['en'],
+        'default_lang' => 'ja',
+        'supported_langs' => %w[en ja],
         'test_mode' => false,
         'test_url' => '',
         'cache_megabytes' => nil,
@@ -34,7 +34,9 @@ module Wovnrb
         'use_proxy' => false, # use env['HTTP_X_FORWARDED_HOST'] instead of env['HTTP_HOST'] and env['SERVER_NAME'] when this setting is true.
         'custom_lang_aliases' => {},
         'translate_fragment' => true,
-        'wovn_dev_mode' => false
+        'widget_url' => 'https://j.wovn.io/1',
+        'wovn_dev_mode' => false,
+        'compress_api_requests' => true
       )
     end
 
@@ -180,12 +182,12 @@ module Wovnrb
       @settings['supported_langs'] || []
     end
 
-    def wovn_host
-      if @settings['wovn_dev_mode']
-        'dev-wovn.io'
-      else
-        'wovn.io'
-      end
+    def compress_api_requests?
+      @settings['compress_api_requests']
+    end
+
+    def widget_url
+      @settings['widget_url'] || 'https://j.wovn.io/1'
     end
 
     def dev_mode?

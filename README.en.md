@@ -39,8 +39,8 @@ Insert the following into either config/application.rb or config/environments/.
 
 config.wovnrb = {
   :project_token => 'EnS!t3',
-  :default_lang => 'en',
-  :supported_langs => ['en'],
+  :default_lang => 'ja',
+  :supported_langs => ['ja', en'],
   :url_pattern => 'path'
 }
 
@@ -60,8 +60,8 @@ require 'wovnrb'
 
 use Wovnrb::Interceptor, {
   :project_token => 'EnS!t3',
-  :default_lang => 'en',
-  :supported_langs => ['en'],
+  :default_lang => 'ja',
+  :supported_langs => ['ja', 'en'],
   :url_pattern => 'path'
 }
 
@@ -74,18 +74,19 @@ After completing setup, start the Ruby Application, and make sure the WOVN.io li
 
 The following is a list of the WOVN.io Ruby Library's valid parameters.
 
-Parameter Name     | Required | Default Setting
------------------- | -------- | ----------------
-project_token      | yes      | ''
-default_lang       | yes      | 'en'
-supported_langs    | yes      | ['en']
-url_pattern        | yes      | 'path'
-lang_param_name    |          | 'wovn'
-query              |          | []
-ignore_class       |          | []
-translate_fragment |          | true
-ignore_paths       |          | []
-install_middleware |          | true
+Parameter Name        | Required | Default Setting
+----------------------| -------- | ----------------
+project_token         | yes      | ''
+default_lang          | yes      | 'ja'
+supported_langs       | yes      | ['ja', 'en']
+url_pattern           | yes      | 'path'
+lang_param_name       |          | 'wovn'
+query                 |          | []
+ignore_class          |          | []
+translate_fragment    |          | true
+ignore_paths          |          | []
+install_middleware    |          | true
+compress_api_requests |          | true
 
 ### 2.1. project_token
 
@@ -196,3 +197,7 @@ WOVN.rb needs to be added after any compression middleware.
     :install_middleware => false
   }
 ```
+
+### 2.11 compress_api_requests
+
+By default, requests to the translation API will be sent with gzip compression. Set to false to disable compression.
