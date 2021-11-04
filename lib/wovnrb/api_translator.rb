@@ -24,18 +24,19 @@ module Wovnrb
 
       case response
       when Net::HTTPSuccess
-        if response.header['Content-Encoding'] == 'gzip'
-          response_body = Zlib::GzipReader.new(StringIO.new(response.body)).read
+        begin
+          raw_response_body = @store.dev_mode? ? response.body : Zlib::GzipReader.new(StringIO.new(response.body)).read
+        rescue Zlib::GzipFile::Error
+          raw_response_body = response.body
+        end
 
-          JSON.parse(response_body)['body'] || body
-        elsif @store.dev_mode?
-          JSON.parse(response.body)['body'] || body
-        else
-          WovnLogger.error("Received invalid content (\"#{response.header['Content-Encoding']}\") from WOVNio translation API.")
+        begin
+          JSON.parse(raw_response_body)['body'] || body
+        rescue JSON::JSONError
           body
         end
       else
-        WovnLogger.error("Received \"#{response.message}\" from WOVNio translation API.")
+        WovnLogger.error("HTML-swapper call failed. Received \"#{response.message}\" from WOVNio translation API.")
         body
       end
     end
