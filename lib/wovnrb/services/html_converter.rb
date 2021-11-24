@@ -21,6 +21,10 @@ module Wovnrb
     private
 
     def html
+      # Ensure a Content-Type declaration in the header. This mimics Nokogumbo
+      # 1.5.0 default serialization behavior.
+      @dom.meta_encoding = 'UTF-8'
+
       @dom.to_html(save_with: 0).strip
     end
 
