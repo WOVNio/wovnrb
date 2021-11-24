@@ -12,6 +12,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://wovn.io'
   spec.license       = 'MIT'
   spec.required_ruby_version = '>= 2.5'
+  spec.metadata['rubygems_mfa_required'] = 'true'
 
   files = `git ls-files -z`.split("\x0")
   files.delete('BEFORE_PUSHING')
