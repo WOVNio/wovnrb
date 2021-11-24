@@ -18,11 +18,11 @@ module Wovnrb
                        end
       unless @env.key?('REQUEST_URI')
         # Add '/' to PATH_INFO as a possible fix for pow server
-        @env['REQUEST_URI'] = (@env['PATH_INFO'] =~ /^[^\/]/ ? '/' : '') + @env['PATH_INFO'] + (@env['QUERY_STRING'].empty? ? '' : "?#{@env['QUERY_STRING']}")
+        @env['REQUEST_URI'] = (/^[^\/]/.match?(@env['PATH_INFO']) ? '/' : '') + @env['PATH_INFO'] + (@env['QUERY_STRING'].empty? ? '' : "?#{@env['QUERY_STRING']}")
       end
       # REQUEST_URI is expected to not contain the server name
       # heroku contains http://...
-      @env['REQUEST_URI'] = @env['REQUEST_URI'].sub(/^https?:\/\/[^\/]+/, '') if @env['REQUEST_URI'] =~ /^https?:\/\//
+      @env['REQUEST_URI'] = @env['REQUEST_URI'].sub(/^https?:\/\/[^\/]+/, '') if /^https?:\/\//.match?(@env['REQUEST_URI'])
       @unmasked_pathname = @env['REQUEST_URI'].split('?')[0]
       @unmasked_pathname += '/' unless @unmasked_pathname =~ /\/$/ || @unmasked_pathname =~ /\/[^\/.]+\.[^\/.]+$/
       @unmasked_url = "#{@protocol}://#{@unmasked_host}#{@unmasked_pathname}"
@@ -108,7 +108,7 @@ module Wovnrb
         case @settings['url_pattern']
         when 'query'
           lang_param_name = @settings['lang_param_name']
-          location = if location =~ /\?/
+          location = if /\?/.match?(location)
                        "#{location}&#{lang_param_name}=#{lang_code}"
                      else
                        "#{location}?#{lang_param_name}=#{lang_code}"
@@ -180,7 +180,7 @@ module Wovnrb
       if lang_code != @settings['default_lang'] && headers.key?('Location') && headers['Location'] =~ r && !@settings['ignore_globs'].ignore?(headers['Location'])
         case @settings['url_pattern']
         when 'query'
-          headers['Location'] += if headers['Location'] =~ /\?/
+          headers['Location'] += if /\?/.match?(headers['Location'])
                                    '&'
                                  else
                                    '?'
