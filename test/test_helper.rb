@@ -14,7 +14,7 @@ SimpleCov.start do
   track_files 'lib/**/*.rb'
 end
 
-require 'nokogumbo'
+require 'nokogiri'
 require 'rack'
 require 'minitest/autorun'
 require 'mocha/minitest'
