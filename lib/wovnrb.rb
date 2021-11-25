@@ -49,7 +49,7 @@ module Wovnrb
       status, res_headers, body = @app.call(headers.request_out)
 
       # disabled by next Rack middleware
-      return output(headers, status, res_headers, body) unless res_headers['Content-Type'] =~ /html/
+      return output(headers, status, res_headers, body) unless /html/.match?(res_headers['Content-Type'])
 
       request = Rack::Request.new(env)
 
@@ -58,7 +58,7 @@ module Wovnrb
       @store.settings.update_dynamic_settings!(request.params)
       return output(headers, status, res_headers, body) if ignore_path?(headers.pathname)
 
-      body = switch_lang(headers, body) unless status.to_s =~ /^1|302/
+      body = switch_lang(headers, body) unless /^1|302/.match?(status.to_s)
 
       content_length = 0
       body.each { |b| content_length += b.respond_to?(:bytesize) ? b.bytesize : 0 }

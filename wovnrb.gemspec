@@ -45,6 +45,7 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'rake-compiler'
   spec.add_development_dependency 'rubocop'
+  spec.add_development_dependency 'rubocop-performance'
   spec.add_development_dependency 'timecop'
 
   # NOTE; it need to use webmock 2.3.2 for avoiding error when we use ruby 2.4.x.

@@ -126,7 +126,7 @@ module Wovnrb
     # @param  [Wovnrb::Header] headers instance of Wovn::Header. It generates new env variable for original request.
     # @return [String]                 URL added langauge code.
     def add_lang_code(href, pattern, headers)
-      return href if href =~ /^(#.*)?$/
+      return href if /^(#.*)?$/.match?(href)
 
       settings = Store.instance.settings
       code_to_add = settings['custom_lang_aliases'][@lang_code] || @lang_code
@@ -181,7 +181,7 @@ module Wovnrb
         when 'query'
           new_href = add_query_lang_code(href, code_to_add, lang_param_name)
         else # path
-          if href =~ /^\//
+          if /^\//.match?(href)
             new_href = "/#{code_to_add}#{href}"
           else
             current_dir = headers.pathname.sub(/[^\/]*\.[^.]{2,6}$/, '')
@@ -250,7 +250,7 @@ module Wovnrb
     end
 
     def add_query_lang_code(href, lang_code, lang_param_name)
-      query_separator = href =~ /\?/ ? '&' : '?'
+      query_separator = /\?/.match?(href) ? '&' : '?'
 
       href.sub(/(#|$)/, "#{query_separator}#{lang_param_name}=#{lang_code}\\1")
     end
