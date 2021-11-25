@@ -2,7 +2,7 @@ module Wovnrb
   module Helpers
     module NokogumboHelper
       def parse_html(html_string, encoding = 'UTF-8')
-        if html_string.strip[0..999] =~ /<html/i
+        if /<html/i.match?(html_string.strip[0..999])
           d = Nokogiri::HTML5(html_string)
           d.encoding = encoding
           d
