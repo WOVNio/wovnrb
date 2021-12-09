@@ -122,12 +122,8 @@ module Wovnrb
     end
 
     def compress_request_data(data_hash)
-      encoded_data_components = data_hash.map do |key, value|
-        "#{key}=#{CGI.escape(value)}"
-      end
-
       gzip = Zlib::GzipWriter.new(StringIO.new)
-      gzip << encoded_data_components.join('&')
+      gzip << data_hash
       gzip.close.string
     end
 
