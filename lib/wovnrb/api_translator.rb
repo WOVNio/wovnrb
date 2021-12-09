@@ -62,10 +62,10 @@ module Wovnrb
 
     def gzip_request(html_body)
       api_params = build_api_params(html_body)
-      compressed_body = compress_request_data(api_params)
+      compressed_body = compress_request_data(api_params.to_json)
       request = Net::HTTP::Post.new(request_path(html_body), {
                                       'Accept-Encoding' => 'gzip',
-                                      'Content-Type' => 'application/octet-stream',
+                                      'Content-Type' => 'application/json',
                                       'Content-Encoding' => 'gzip',
                                       'Content-Length' => compressed_body.bytesize.to_s,
                                       'X-Request-Id' => @uuid
