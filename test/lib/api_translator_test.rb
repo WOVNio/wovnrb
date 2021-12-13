@@ -119,7 +119,8 @@ module Wovnrb
           'Accept' => '*/*',
           'Accept-Encoding' => 'gzip',
           'Content-Length' => compressed_data.bytesize,
-          'Content-Type' => 'application/octet-stream',
+          'Content-Type' => 'application/json',
+          'Content-Encoding' => 'gzip',
           'User-Agent' => 'Ruby'
         }
         stub_response_json = "{\"body\":\"#{translated_html.gsub("\n", '\n')}\"}"
