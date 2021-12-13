@@ -122,9 +122,7 @@ module Wovnrb
     end
 
     def compress_request_data(data_hash)
-      gzip = Zlib::GzipWriter.new(StringIO.new)
-      gzip << data_hash
-      gzip.close.string
+      ActiveSupport::Gzip.compress(data_hash)
     end
 
     def api_uri

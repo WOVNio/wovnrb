@@ -157,13 +157,11 @@ module Wovnrb
         'custom_lang_aliases' => '{"ja":"Japanese"}'
       }
 
-      data.map { |key, value| "#{key}=#{CGI.escape(value)}" }.join('&')
+      data.to_json
     end
 
     def compress(string)
-      gzip = Zlib::GzipWriter.new(StringIO.new)
-      gzip << string
-      gzip.close.string
+      ActiveSupport::Gzip.compress(string)
     end
   end
 end
