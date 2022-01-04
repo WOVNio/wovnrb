@@ -114,7 +114,7 @@ module Wovnrb
     # Load Rails config.wovnrb
     #
     def load_settings
-      if Object.const_defined?('Rails') && Rails.configuration.respond_to?(:wovnrb)
+      if Object.const_defined?(:Rails) && Rails.configuration.respond_to?(:wovnrb)
         @config_loaded = true
         update_settings(Rails.configuration.wovnrb)
       end

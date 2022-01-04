@@ -119,7 +119,8 @@ module Wovnrb
           'Accept' => '*/*',
           'Accept-Encoding' => 'gzip',
           'Content-Length' => compressed_data.bytesize,
-          'Content-Type' => 'application/octet-stream',
+          'Content-Type' => 'application/json',
+          'Content-Encoding' => 'gzip',
           'User-Agent' => 'Ruby'
         }
         stub_response_json = "{\"body\":\"#{translated_html.gsub("\n", '\n')}\"}"
@@ -157,13 +158,11 @@ module Wovnrb
         'custom_lang_aliases' => '{"ja":"Japanese"}'
       }
 
-      data.map { |key, value| "#{key}=#{CGI.escape(value)}" }.join('&')
+      data.to_json
     end
 
     def compress(string)
-      gzip = Zlib::GzipWriter.new(StringIO.new)
-      gzip << string
-      gzip.close.string
+      ActiveSupport::Gzip.compress(string)
     end
   end
 end
