@@ -1,0 +1,50 @@
+{
+  "executionRoleArn": "arn:aws:iam::257024234524:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "wovnrb",
+      "cpu": 0,
+      "image": "<PLACEHOLDER_IMAGE_NAME>",
+      "mountPoints": [],
+      "workingDirectory": "/var/www/equalizer",
+      "command": [],
+      "linuxParameters": {
+        "initProcessEnabled": true
+      },
+      "environment": [],
+      "ulimits": [
+        {
+          "name": "nofile",
+          "softLimit": 65535,
+          "hardLimit": 65535
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/wovnrb",
+          "awslogs-region": "<us-west-2>",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "portMappings": [
+        {
+          "hostPort": 4000,
+          "protocol": "tcp",
+          "containerPort": 4000
+        }
+      ],
+      "volumesFrom": [],
+      "stopTimeout": 120,
+      "healthCheck": {},
+      "essential": true
+    }
+  ],
+  "placementConstraints": [],
+  "cpu": "1024",
+  "memory": "2048",
+  "requiresCompatibilities": [ "FARGATE" ],
+  "family": "wovnrb",
+  "networkMode": "awsvpc",
+  "volumes": []
+}
