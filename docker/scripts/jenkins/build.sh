@@ -32,8 +32,8 @@ set -x
 tag_and_push_image "${AWS_REGION}" "${REPO_NAME_WOVNRB}" "${image_tag}" "staging"
 tag_and_push_image "${AWS_REGION}" "${REPO_NAME_NGINX}" "${image_tag}" "staging"
 
-sed -i '.bak' "s#wovnrb:latest#"${REPO_NAME_WOVNRB}":"${image_tag}"#g" taskdef.json
-sed -i '.bak' "s#wovnrb-nginx:latest#"${REPO_NAME_NGINX}":"${image_tag}"#g" taskdef.json
+sed -i "s#wovnrb:latest#"${REPO_NAME_WOVNRB}":"${image_tag}"#g" taskdef.json
+sed -i "s#wovnrb-nginx:latest#"${REPO_NAME_NGINX}":"${image_tag}"#g" taskdef.json
 
 TASKDEF_REVISION=$(aws ecs register-task-definition \
                          --profile "${AWS_PROFILE}" --region "${AWS_REGION}" \
