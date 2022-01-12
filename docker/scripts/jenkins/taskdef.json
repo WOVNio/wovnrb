@@ -4,7 +4,7 @@
     {
       "name": "wovnrb-nginx",
       "cpu": 0,
-      "image": "257024234524.dkr.ecr.us-west-2.amazonaws.com/wovnrb-nginx:0d96ae6",
+      "image": "257024234524.dkr.ecr.us-west-2.amazonaws.com/wovnrb-nginx:latest",
       "mountPoints": [],
       "ulimits": [
         {
@@ -45,7 +45,7 @@
     {
       "name": "wovnrb",
       "cpu": 0,
-      "image": "257024234524.dkr.ecr.us-west-2.amazonaws.com/wovnrb:0d96ae6",
+      "image": "<PLACEHOLDER_IMAGE_NAME>",
       "mountPoints": [],
       "workingDirectory": "/usr/src/app",
       "linuxParameters": {
