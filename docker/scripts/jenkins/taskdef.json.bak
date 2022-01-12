@@ -45,7 +45,7 @@
     {
       "name": "wovnrb",
       "cpu": 0,
-      "image": "257024234524.dkr.ecr.us-west-2.amazonaws.com/wovnrb:6bb93b6",
+      "image": "257024234524.dkr.ecr.us-west-2.amazonaws.com/wovnrb:36d9648",
       "mountPoints": [],
       "workingDirectory": "/usr/src/app",
       "linuxParameters": {

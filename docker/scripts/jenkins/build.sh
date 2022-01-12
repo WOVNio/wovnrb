@@ -11,7 +11,15 @@ PROJECT_DIR=$(dirname "$0")/../../../
 commit_hash=$(git rev-parse --short HEAD)
 image_tag="${commit_hash}"
 
-sh ${PROJECT_DIR}/docker/rails/build.sh "${REPO_NAME_WOVNRB}":"${image_tag}"
+PROJECT_TOKEN=$1
+DEFAULT_LANG=$2
+SUPPORTED_LANGS=$3
+
+sed -i "s#<PROJECT_TOKEN>#${PROJECT_TOKEN}#g" ${PROJECT_DIR}/docker/rails/TestSite/config/application.rb
+sed -i "s#<DEFAULT_LANG>#${DEFAULT_LANG}#g" ${PROJECT_DIR}/docker/rails/TestSite/config/application.rb
+sed -i "s#<SUPPORTED_LANGS>#${SUPPORTED_LANGS}#g" ${PROJECT_DIR}/docker/rails/TestSite/config/application.rb
+
+sh ${PROJECT_DIR}/build.sh "${REPO_NAME_WOVNRB}":"${image_tag}"
 sh ${PROJECT_DIR}/docker/nginx/build.sh "${REPO_NAME_NGINX}":"${image_tag}"
 
 source tag_and_push_image.sh
@@ -24,7 +32,7 @@ set -x
 tag_and_push_image "${AWS_REGION}" "${REPO_NAME_WOVNRB}" "${image_tag}" "staging"
 tag_and_push_image "${AWS_REGION}" "${REPO_NAME_NGINX}" "${image_tag}" "staging"
 
-sed -i '.bak' "s#<PLACEHOLDER_IMAGE_NAME>#"${ECR_HOST}"/"${REPO_NAME_WOVNRB}":"${image_tag}"#g" taskdef.json
+sed -i '.bak' "s#wovnrb:latest#"${REPO_NAME_WOVNRB}":"${image_tag}"#g" taskdef.json
 sed -i '.bak' "s#wovnrb-nginx:latest#"${REPO_NAME_NGINX}":"${image_tag}"#g" taskdef.json
 
 TASKDEF_REVISION=$(aws ecs register-task-definition \
