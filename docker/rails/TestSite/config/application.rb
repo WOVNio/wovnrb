@@ -10,11 +10,12 @@ module TestSite
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
+    config.hosts.clear
 
     config.wovnrb = {
-      :project_token => 'EnS!t3',
-      :default_lang => 'en',
-      :supported_langs => ['en', 'ja', 'fr'],
+      :project_token => '<PROJECT_TOKEN>',
+      :default_lang => '<DEFAULT_LANG>',
+      :supported_langs => [<SUPPORTED_LANGS>],
       :url_pattern => 'path',
       :install_middleware => true
     }
