@@ -1,0 +1,99 @@
+{
+  "executionRoleArn": "arn:aws:iam::257024234524:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "wovnrb-nginx",
+      "cpu": 0,
+      "image": "257024234524.dkr.ecr.us-west-2.amazonaws.com/wovnrb-nginx:0d96ae6",
+      "mountPoints": [],
+      "ulimits": [
+        {
+          "name": "nofile",
+          "softLimit": 65535,
+          "hardLimit": 65535
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/wovnrb",
+          "awslogs-region": "us-west-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "essential": true,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "protocol": "tcp",
+          "containerPort": 80
+        },
+        {
+          "hostPort": 40022,
+          "protocol": "tcp",
+          "containerPort": 40022
+        }
+      ],
+      "stopTimeout": 120,
+      "dependsOn": [
+        {
+          "containerName": "wovnrb",
+          "condition": "HEALTHY"
+        }
+      ]
+    },
+    {
+      "name": "wovnrb",
+      "cpu": 0,
+      "image": "257024234524.dkr.ecr.us-west-2.amazonaws.com/wovnrb:0d96ae6",
+      "mountPoints": [],
+      "workingDirectory": "/usr/src/app",
+      "linuxParameters": {
+        "initProcessEnabled": true
+      },
+      "environment": [],
+      "ulimits": [
+        {
+          "name": "nofile",
+          "softLimit": 65535,
+          "hardLimit": 65535
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/wovnrb",
+          "awslogs-region": "us-west-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "portMappings": [
+        {
+          "hostPort": 4000,
+          "protocol": "tcp",
+          "containerPort": 4000
+        }
+      ],
+      "volumesFrom": [],
+      "stopTimeout": 120,
+      "healthCheck": {
+        "retries": 3,
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:4000/ || exit 1"
+        ],
+        "timeout": 20,
+        "interval": 60,
+        "startPeriod": 180
+      },
+      "essential": true
+    }
+  ],
+  "placementConstraints": [],
+  "cpu": "1024",
+  "memory": "2048",
+  "requiresCompatibilities": [ "FARGATE" ],
+  "family": "wovnrb",
+  "networkMode": "awsvpc",
+  "volumes": []
+}
