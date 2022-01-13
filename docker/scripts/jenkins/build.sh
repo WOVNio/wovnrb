@@ -35,6 +35,7 @@ tag_and_push_image "${AWS_REGION}" "${REPO_NAME_NGINX}" "${image_tag}" "staging"
 sed -i "s#wovnrb:latest#"${REPO_NAME_WOVNRB}":"${image_tag}"#g" ${PROJECT_DIR}/docker/scripts/jenkins/taskdef.json
 sed -i "s#wovnrb-nginx:latest#"${REPO_NAME_NGINX}":"${image_tag}"#g" ${PROJECT_DIR}/docker/scripts/jenkins/taskdef.json
 
+cd ${PROJECT_DIR}/docker/scripts/jenkins/
 TASKDEF_REVISION=$(aws ecs register-task-definition \
                          --profile "${AWS_PROFILE}" --region "${AWS_REGION}" \
                          --cli-input-json file://$(pwd)/taskdef.json \
