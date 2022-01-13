@@ -13,9 +13,9 @@ module TestSite
     config.hosts.clear
 
     config.wovnrb = {
-      :project_token => '<PROJECT_TOKEN>',
-      :default_lang => '<DEFAULT_LANG>',
-      :supported_langs => [<SUPPORTED_LANGS>],
+      :project_token => '1S6qyK',
+      :default_lang => 'en',
+      :supported_langs => ['en','ja'],
       :url_pattern => 'path',
       :install_middleware => true
     }
