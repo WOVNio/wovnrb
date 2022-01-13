@@ -19,8 +19,7 @@ sed -i "s#<PROJECT_TOKEN>#${PROJECT_TOKEN}#g" ${PROJECT_DIR}/docker/rails/TestSi
 sed -i "s#<DEFAULT_LANG>#${DEFAULT_LANG}#g" ${PROJECT_DIR}/docker/rails/TestSite/config/application.rb
 sed -i "s#<SUPPORTED_LANGS>#${SUPPORTED_LANGS}#g" ${PROJECT_DIR}/docker/rails/TestSite/config/application.rb
 
-cd ${PROJECT_DIR}
-echo "$(PWD)"
+
 sh ${PROJECT_DIR}/build.sh "${REPO_NAME_WOVNRB}":"${image_tag}"
 sh ${PROJECT_DIR}/docker/nginx/build.sh "${REPO_NAME_NGINX}":"${image_tag}"
 
