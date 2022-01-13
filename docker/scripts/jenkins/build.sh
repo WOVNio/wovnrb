@@ -23,6 +23,7 @@ sed -i "s#<SUPPORTED_LANGS>#${SUPPORTED_LANGS}#g" ${PROJECT_DIR}/docker/rails/Te
 sh ${PROJECT_DIR}/build.sh "${REPO_NAME_WOVNRB}":"${image_tag}"
 sh ${PROJECT_DIR}/docker/nginx/build.sh "${REPO_NAME_NGINX}":"${image_tag}"
 
+cd $(dirname $0)
 source tag_and_push_image.sh
 
 set +x
