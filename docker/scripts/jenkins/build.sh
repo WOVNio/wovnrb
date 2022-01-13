@@ -11,15 +11,6 @@ PROJECT_DIR=$(dirname "$0")/../../..
 commit_hash=$(git rev-parse --short HEAD)
 image_tag="${commit_hash}"
 
-PROJECT_TOKEN=$1
-DEFAULT_LANG=$2
-SUPPORTED_LANGS=$3
-
-sed -i "s#<PROJECT_TOKEN>#${PROJECT_TOKEN}#g" ${PROJECT_DIR}/docker/rails/TestSite/config/application.rb
-sed -i "s#<DEFAULT_LANG>#${DEFAULT_LANG}#g" ${PROJECT_DIR}/docker/rails/TestSite/config/application.rb
-sed -i "s#<SUPPORTED_LANGS>#${SUPPORTED_LANGS}#g" ${PROJECT_DIR}/docker/rails/TestSite/config/application.rb
-
-
 sh ${PROJECT_DIR}/build.sh "${REPO_NAME_WOVNRB}":"${image_tag}"
 sh ${PROJECT_DIR}/docker/nginx/build.sh "${REPO_NAME_NGINX}":"${image_tag}"
 
@@ -41,3 +32,4 @@ TASKDEF_REVISION=$(aws ecs register-task-definition \
                          --cli-input-json file://$(pwd)/taskdef.json \
                       | jq ."taskDefinition.revision")
 echo "${TASKDEF_REVISION}"
+cd -
