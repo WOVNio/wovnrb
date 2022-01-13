@@ -6,7 +6,7 @@ export ECR_HOST="257024234524.dkr.ecr.us-west-2.amazonaws.com"
 export REPO_NAME_WOVNRB="wovnrb"
 export REPO_NAME_NGINX="wovnrb-nginx"
 export CLUSTER_NAME="wovn-library-testing"
-PROJECT_DIR=$(dirname "$0")/../../../
+PROJECT_DIR=$(dirname "$0")/../../..
 
 commit_hash=$(git rev-parse --short HEAD)
 image_tag="${commit_hash}"
@@ -24,7 +24,6 @@ sh ${PROJECT_DIR}/docker/nginx/build.sh "${REPO_NAME_NGINX}":"${image_tag}"
 
 source tag_and_push_image.sh
 
-# login docker to ECR repository (DO NOT LOG COMMAND INCLUDING TOKEN)
 set +x
 $(aws ecr get-login --no-include-email --region "${AWS_REGION}" --profile "${AWS_PROFILE}")
 set -x
