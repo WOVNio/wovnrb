@@ -1,5 +1,5 @@
 class CustomResponseController < ApplicationController
-  skip_before_action :verify_authenticity_token2
+  skip_before_action :verify_authenticity_token
 
   def make_response
     response_args_json = params[:response]
