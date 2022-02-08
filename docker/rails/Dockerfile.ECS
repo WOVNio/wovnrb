@@ -6,7 +6,6 @@ COPY docker/rails/TestSite .
 COPY lib ./wovnrb/lib
 COPY Gemfile ./wovnrb/
 COPY wovnrb.gemspec ./wovnrb/
-RUN echo "$(ls wovnrb/)"
 
 RUN gem update --system && gem uninstall bundler && \
     rm /usr/local/bin/bundle && rm /usr/local/bin/bundler
