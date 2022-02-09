@@ -151,7 +151,7 @@ module Wovnrb
 
       canonical_url = canonical_node['href']
       lang = Lang.new(@headers.path_lang)
-      translated_canonical_url = lang.add_lang_code(canonical_url,@store.settings['url_pattern'], @headers)
+      translated_canonical_url = lang.add_lang_code(canonical_url, @store.settings['url_pattern'], @headers)
       canonical_node['href'] = translated_canonical_url
     end
 
