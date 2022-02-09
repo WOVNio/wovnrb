@@ -54,6 +54,7 @@ module Wovnrb
                          'lang_code' => 'fr',
                          'url_pattern' => 'subdomain',
                          'lang_param_name' => 'lang',
+                         'translate_canonical_tag' => true,
                          'product' => 'WOVN.rb',
                          'version' => VERSION,
                          'body' => 'foo',

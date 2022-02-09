@@ -203,5 +203,15 @@ module Wovnrb
         '/'
       end
     end
+
+    def search_engine_bot?
+      return false unless @env.key?('HTTP_USER_AGENT')
+
+      bots = %w[Googlebot/ bingbot/ YandexBot/ YandexWebmaster/ DuckDuckBot-Https/ Baiduspider/ Slurp Yahoo]
+      bots.each do |bot|
+        return true if @env['HTTP_USER_AGENT'].include?(bot)
+      end
+      false
+    end
   end
 end

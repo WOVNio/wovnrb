@@ -32,6 +32,7 @@ module Wovnrb
       replace_snippet
       replace_hreflangs
       inject_lang_html_tag
+      translate_canonical_tag if @store.settings['translate_canonical_tag']
     end
 
     def replace_snippet
@@ -48,6 +49,7 @@ module Wovnrb
       insert_snippet(adds_backend_error_mark: true)
       insert_hreflang_tags
       inject_lang_html_tag
+      translate_canonical_tag if @store.settings['translate_canonical_tag']
 
       html
     end
@@ -141,6 +143,16 @@ module Wovnrb
 
         parent_node.add_child(insert_node.to_s)
       end
+    end
+
+    def translate_canonical_tag
+      canonical_node = @dom.at_css('link[rel="canonical"]')
+      return unless canonical_node
+
+      canonical_url = canonical_node['href']
+      lang = Lang.new(@headers.path_lang)
+      translated_canonical_url = lang.add_lang_code(canonical_url,@store.settings['url_pattern'], @headers)
+      canonical_node['href'] = translated_canonical_url
     end
 
     # Remove wovn snippet code from dom

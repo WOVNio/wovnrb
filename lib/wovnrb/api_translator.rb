@@ -111,6 +111,7 @@ module Wovnrb
         'lang_code' => lang_code,
         'url_pattern' => url_pattern,
         'lang_param_name' => lang_param_name,
+        'translate_canonical_tag' => translate_canonical_tag,
         'product' => 'WOVN.rb',
         'version' => VERSION,
         'body' => body
@@ -130,7 +131,7 @@ module Wovnrb
     end
 
     def api_timeout
-      @store.settings['api_timeout_seconds']
+      @headers.search_engine_bot? ? @store.settings['api_timeout_search_engine_bots'] : @store.settings['api_timeout_seconds']
     end
 
     def settings_hash
@@ -155,6 +156,10 @@ module Wovnrb
 
     def custom_lang_aliases
       @store.settings['custom_lang_aliases']
+    end
+
+    def translate_canonical_tag
+      @store.settings['translate_canonical_tag']
     end
 
     def page_url
