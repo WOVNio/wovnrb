@@ -1,9 +1,10 @@
 module Wovnrb
   class HtmlConverter
-    def initialize(dom, store, headers)
+    def initialize(dom, store, headers, url_lang_switcher)
       @dom = dom
       @headers = headers
       @store = store
+      @url_lang_switcher = url_lang_switcher
     end
 
     def build
@@ -149,9 +150,12 @@ module Wovnrb
       canonical_node = @dom.at_css('link[rel="canonical"]')
       return unless canonical_node
 
+      lang_code = @headers.lang_code
+      return if lang_code == @store.settings['default_lang'] && @store.settings['custom_lang_aliases'][lang_code].nil?
+
       canonical_url = canonical_node['href']
-      lang = Lang.new(@headers.path_lang)
-      translated_canonical_url = lang.add_lang_code(canonical_url, @store.settings['url_pattern'], @headers)
+
+      translated_canonical_url = @url_lang_switcher.add_lang_code(canonical_url, lang_code, @headers)
       canonical_node['href'] = translated_canonical_url
     end
 

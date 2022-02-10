@@ -76,7 +76,8 @@ module Wovnrb
       html_body = Helpers::NokogumboHelper.parse_html(string_body)
 
       if !wovn_ignored?(html_body) && !amp_page?(html_body)
-        html_converter = HtmlConverter.new(html_body, @store, headers)
+        url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(@store)
+        html_converter = HtmlConverter.new(html_body, @store, headers, url_lang_switcher)
 
         if needs_api?(html_body, headers)
           converted_html, marker = html_converter.build_api_compatible_html

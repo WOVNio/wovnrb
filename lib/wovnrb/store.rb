@@ -168,7 +168,7 @@ module Wovnrb
     end
 
     def custom_lang_aliases
-      @setttings['custom_lang_aliases'] || {}
+      @settings['custom_lang_aliases'] || {}
     end
 
     def default_lang

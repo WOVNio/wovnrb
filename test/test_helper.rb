@@ -30,6 +30,8 @@ require 'wovnrb/store'
 require 'wovnrb/helpers/nokogumbo_helper'
 require 'wovnrb/services/html_converter'
 require 'wovnrb/services/html_replace_marker'
+require 'wovnrb/url_language_switcher'
+require 'wovnrb/services/url'
 
 module Wovnrb
   class WovnMiniTest < Minitest::Test

@@ -56,6 +56,10 @@ module Wovnrb
       @pathname = @pathname.gsub(/\/$/, '')
     end
 
+    def url_with_scheme
+      "#{@protocol}://#{@url}"
+    end
+
     def unmasked_pathname_without_trailing_slash
       @unmasked_pathname.chomp('/')
     end
@@ -212,6 +216,12 @@ module Wovnrb
         return true if @env['HTTP_USER_AGENT'].include?(bot)
       end
       false
+    end
+
+    def to_absolute_path(path)
+      absolute_path = path.blank? ? '/' : path
+      absolute_path = absolute_path.starts_with?('/') ? absolute_path : URL.join_paths(dirname, absolute_path)
+      URL.normalize_path_slash(path, absolute_path)
     end
   end
 end

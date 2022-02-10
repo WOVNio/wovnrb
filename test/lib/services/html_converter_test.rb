@@ -131,7 +131,8 @@ module Wovnrb
         'url_pattern' => 'query'
       }
       store, headers = store_headers_factory(settings)
-      converter = HtmlConverter.new(dom, store, headers)
+      url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
+      converter = HtmlConverter.new(dom, store, headers, url_lang_switcher)
       translated_html = converter.build
 
       expected_html = "<html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"https://j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/?wovn=ja\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body>hello<a>world</a></body></html>"
@@ -139,7 +140,7 @@ module Wovnrb
     end
 
     def test_transform_html_on_target_lang_translate_canonical_tag
-      dom = get_dom('<html><head><link rel="canonical" href="http://my-site.com" /></head><body></body></html>')
+      dom = get_dom('<html><head><link rel="canonical" href="http://my-site.com/" /></head><body></body></html>')
       settings = {
         'default_lang' => 'en',
         'supported_langs' => %w[en ja vi],
@@ -147,10 +148,63 @@ module Wovnrb
         'translate_canonical_tag' => true
       }
       store, headers = store_headers_factory(settings, 'http://my-site.com/vi/')
-      converter = HtmlConverter.new(dom, store, headers)
+      url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
+      converter = HtmlConverter.new(dom, store, headers, url_lang_switcher)
       translated_html = converter.build
 
       expected_html = "<html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"https://j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=vi&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"canonical\" href=\"http://my-site.com/vi/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/ja/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/vi/\"></head><body></body></html>"
+      assert_equal(expected_html, translated_html)
+    end
+
+    def test_transform_html_on_default_lang_do_not_change_canonical_tag_path_pattern
+      dom = get_dom('<html><head><link rel="canonical" href="http://my-site.com/" /></head><body></body></html>')
+      settings = {
+        'default_lang' => 'en',
+        'supported_langs' => %w[en ja vi],
+        'url_pattern' => 'path',
+        'translate_canonical_tag' => true
+      }
+      store, headers = store_headers_factory(settings, 'http://my-site.com/')
+      url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
+      converter = HtmlConverter.new(dom, store, headers, url_lang_switcher)
+      translated_html = converter.build
+
+      expected_html = "<html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"https://j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"canonical\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/ja/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/vi/\"></head><body></body></html>"
+      assert_equal(expected_html, translated_html)
+    end
+
+    def test_transform_html_on_default_lang_do_not_change_canonical_tag_query_pattern
+      dom = get_dom('<html><head><link rel="canonical" href="http://my-site.com/" /></head><body></body></html>')
+      settings = {
+        'default_lang' => 'en',
+        'supported_langs' => %w[en ja vi],
+        'url_pattern' => 'query',
+        'translate_canonical_tag' => true
+      }
+      store, headers = store_headers_factory(settings, 'http://my-site.com/')
+      url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
+      converter = HtmlConverter.new(dom, store, headers, url_lang_switcher)
+      translated_html = converter.build
+
+      expected_html = "<html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"https://j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"canonical\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/?wovn=ja\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body></body></html>"
+      assert_equal(expected_html, translated_html)
+    end
+
+    def test_transform_html_on_default_lang_with_default_lang_alias
+      dom = get_dom('<html><head><link rel="canonical" href="http://my-site.com/" /></head><body></body></html>')
+      settings = {
+        'default_lang' => 'en',
+        'supported_langs' => %w[en ja vi],
+        'url_pattern' => 'query',
+        'translate_canonical_tag' => true,
+        'custom_lang_aliases' => { 'en' => 'english' }
+      }
+      store, headers = store_headers_factory(settings, 'http://my-site.com/')
+      url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
+      converter = HtmlConverter.new(dom, store, headers, url_lang_switcher)
+      translated_html = converter.build
+
+      expected_html = '<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script src="https://j.wovn.io/1" async="true" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={&quot;en&quot;:&quot;english&quot;}&amp;langParamName=wovn&amp;version=WOVN.rb_3.5.0" data-wovnio-type="fallback_snippet"></script><link rel="canonical" href="http://my-site.com/?wovn=english"><link rel="alternate" hreflang="en" href="http://my-site.com/"><link rel="alternate" hreflang="ja" href="http://my-site.com/?wovn=ja"><link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi"></head><body></body></html>'
       assert_equal(expected_html, translated_html)
     end
 
@@ -163,7 +217,8 @@ module Wovnrb
         'translate_canonical_tag' => false
       }
       store, headers = store_headers_factory(settings, 'http://my-site.com/vi/')
-      converter = HtmlConverter.new(dom, store, headers)
+      url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
+      converter = HtmlConverter.new(dom, store, headers, url_lang_switcher)
       translated_html = converter.build
 
       expected_html = "<html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"https://j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=vi&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"canonical\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/ja/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/vi/\"></head><body></body></html>"
@@ -178,7 +233,8 @@ module Wovnrb
         'url_pattern' => 'path'
       }
       store, headers = store_headers_factory(settings)
-      converter = HtmlConverter.new(dom, store, headers)
+      url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
+      converter = HtmlConverter.new(dom, store, headers, url_lang_switcher)
       translated_html = converter.build
 
       expected_html = "<html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"https://j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/ja/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/vi/\"></head><body>hello<a>world</a></body></html>"
@@ -216,7 +272,8 @@ module Wovnrb
         Wovnrb.get_env('url' => 'http://my-site.com/'),
         Wovnrb.get_settings(settings)
       )
-      converter = HtmlConverter.new(get_dom('<html><body>hello</body></html>'), store, headers)
+      url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
+      converter = HtmlConverter.new(get_dom('<html><body>hello</body></html>'), store, headers, url_lang_switcher)
       converter.send(:inject_lang_html_tag)
       expected_html = '<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body>hello</body></html>'
       assert_equal(expected_html, converter.send(:html))
@@ -231,7 +288,8 @@ module Wovnrb
         Wovnrb.get_env('url' => 'http://my-site.com/'),
         Wovnrb.get_settings(settings)
       )
-      converter = HtmlConverter.new(get_dom('<html lang="th"><body>hello</body></html>'), store, headers)
+      url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
+      converter = HtmlConverter.new(get_dom('<html lang="th"><body>hello</body></html>'), store, headers, url_lang_switcher)
       converter.send(:inject_lang_html_tag)
       expected_html = '<html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body>hello</body></html>'
       assert_equal(expected_html, converter.send(:html))
@@ -246,7 +304,8 @@ module Wovnrb
         Wovnrb.get_env('url' => 'http://my-site.com/?wovn=fr'),
         store.settings
       )
-      converter = HtmlConverter.new(get_dom('<html lang="th"><head><link rel="canonical" href="http://my-site.com" /></head><body>hello</body></html>'), store, headers)
+      url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
+      converter = HtmlConverter.new(get_dom('<html lang="th"><head><link rel="canonical" href="http://my-site.com" /></head><body>hello</body></html>'), store, headers, url_lang_switcher)
       converter.send(:translate_canonical_tag)
       expected_html = '<html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><link rel="canonical" href="http://my-site.com?wovn=fr"></head><body>hello</body></html>'
       assert_equal(expected_html, converter.send(:html))
@@ -262,9 +321,28 @@ module Wovnrb
         Wovnrb.get_env('url' => 'http://my-site.com/fr/'),
         store.settings
       )
-      converter = HtmlConverter.new(get_dom('<html lang="th"><head><link rel="canonical" href="http://my-site.com" /></head><body>hello</body></html>'), store, headers)
+      url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
+      converter = HtmlConverter.new(get_dom('<html lang="th"><head><link rel="canonical" href="http://my-site.com/" /></head><body>hello</body></html>'), store, headers, url_lang_switcher)
       converter.send(:translate_canonical_tag)
       expected_html = '<html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><link rel="canonical" href="http://my-site.com/fr/"></head><body>hello</body></html>'
+      assert_equal(expected_html, converter.send(:html))
+    end
+
+    def test_translate_canonical_tag_path_pattern_already_has_lang_code
+      # NOTE: this behavior is not correct, but it is the same as html-swapper
+      settings = default_store_settings
+      settings['url_pattern'] = 'path'
+      store = Wovnrb::Store.instance
+      store.update_settings(settings)
+
+      headers = Wovnrb::Headers.new(
+        Wovnrb.get_env('url' => 'http://my-site.com/fr/'),
+        store.settings
+      )
+      url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
+      converter = HtmlConverter.new(get_dom('<html lang="th"><head><link rel="canonical" href="http://my-site.com/fr/" /></head><body>hello</body></html>'), store, headers, url_lang_switcher)
+      converter.send(:translate_canonical_tag)
+      expected_html = '<html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><link rel="canonical" href="http://my-site.com/fr/fr/"></head><body>hello</body></html>'
       assert_equal(expected_html, converter.send(:html))
     end
 
@@ -272,7 +350,8 @@ module Wovnrb
 
     def prepare_html_converter(input_html, store_options = {})
       store, headers = store_headers_factory(store_options)
-      HtmlConverter.new(get_dom(input_html), store, headers)
+      url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
+      HtmlConverter.new(get_dom(input_html), store, headers, url_lang_switcher)
     end
 
     def store_headers_factory(setting_opts = {}, url = 'http://my-site.com')
