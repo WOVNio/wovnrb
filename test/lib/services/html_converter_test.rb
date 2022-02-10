@@ -2,7 +2,7 @@ require 'test_helper'
 
 module Wovnrb
   class HtmlConverterTest < WovnMiniTest
-    def test_build_api_compatible_html
+    test 'build API compatible html' do
       converter = prepare_html_converter('<html><body><a class="test">hello</a></body></html>', supported_langs: %w[en vi])
       converted_html, = converter.build_api_compatible_html
 
@@ -10,7 +10,7 @@ module Wovnrb
       assert_equal(expected_html, converted_html)
     end
 
-    def test_build_api_compatible_html_with_custom_lang_param_name
+    test 'build API compatible html - with custom lang param name' do
       settings = {
         supported_langs: %w[en vi],
         url_lang_pattern: 'query',
@@ -23,7 +23,7 @@ module Wovnrb
       assert_equal(expected_html, converted_html)
     end
 
-    def test_build_api_compatible_html_not_fail_for_big_content
+    test 'build API compatible html - excessively large HTML' do
       long_string = 'a' * 60_000
       converter = prepare_html_converter("<html><body><p>#{long_string}</p></body></html>", supported_langs: %w[en vi])
       converted_html, = converter.build_api_compatible_html
@@ -32,7 +32,7 @@ module Wovnrb
       assert_equal(expected_html, converted_html)
     end
 
-    def test_build_api_compatible_html_ignored_content_should_not_be_sent
+    test 'build API compatible html - ignored content should not be sent' do
       html = [
         '<html><body>',
         '<p>Hello <span wovn-ignore>WOVN</span><p>',
@@ -49,7 +49,7 @@ module Wovnrb
       assert_equal(expected_convert_html, converted_html)
     end
 
-    def test_build_api_compatible_html_form_should_not_be_sent
+    test 'build API compatible html - do not send html form' do
       html = [
         '<html><body>',
         '<form action="/test" method="POST">',
@@ -66,7 +66,7 @@ module Wovnrb
       assert_equal(expected_convert_html, converted_html)
     end
 
-    def test_build_api_compatible_html_hidden_input_should_not_be_sent
+    test 'build API compatible html - do not send hidden form input' do
       html = [
         '<html><body>',
         '<input id="user-id" type="hidden" value="secret-id">',
@@ -91,7 +91,7 @@ module Wovnrb
       assert_equal(expected_convert_html, converted_html)
     end
 
-    def test_transform_html
+    test 'Transform HTML' do
       converter = prepare_html_converter('<html><body><a>hello</a></body></html>', supported_langs: %w[en vi])
       translated_html = converter.build
 
@@ -99,7 +99,7 @@ module Wovnrb
       assert_equal(expected_html, translated_html)
     end
 
-    def test_transform_html_with_empty_supported_langs
+    test 'Transform HTML - with empty supported langs' do
       converter = prepare_html_converter('<html><body><a>hello</a></body></html>', supported_langs: [])
       translated_html = converter.build
 
@@ -107,7 +107,7 @@ module Wovnrb
       assert_equal(expected_html, translated_html)
     end
 
-    def test_transform_html_with_head_tag
+    test 'Transform HTML - with head tag' do
       converter = prepare_html_converter('<html><head><title>TITLE</title></head><body><a>hello</a></body></html>', supported_langs: %w[en vi])
       translated_html = converter.build
 
@@ -115,7 +115,7 @@ module Wovnrb
       assert_equal(expected_html, translated_html)
     end
 
-    def test_transform_html_without_body
+    test 'Transform HTML - without body' do
       converter = prepare_html_converter('<html>hello<a>world</a></html>', supported_langs: [])
       translated_html = converter.build
 
@@ -123,7 +123,7 @@ module Wovnrb
       assert_equal(expected_html, translated_html)
     end
 
-    def test_transform_html_on_default_lang_with_query_pattern_and_supported_lang
+    test 'Transform HTML - default lang - with query pattern and supported langs defined' do
       dom = get_dom('<html>hello<a>world</a></html>')
       settings = {
         'default_lang' => 'en',
@@ -139,7 +139,7 @@ module Wovnrb
       assert_equal(expected_html, translated_html)
     end
 
-    def test_transform_html_on_target_lang_translate_canonical_tag
+    test 'Transform HTML - canonical tag - target lang - should translate' do
       dom = get_dom('<html><head><link rel="canonical" href="http://my-site.com/" /></head><body></body></html>')
       settings = {
         'default_lang' => 'en',
@@ -156,7 +156,7 @@ module Wovnrb
       assert_equal(expected_html, translated_html)
     end
 
-    def test_transform_html_on_default_lang_do_not_change_canonical_tag_path_pattern
+    test 'Transform HTML - canonical tag - default lang - path pattern - no need to translate' do
       dom = get_dom('<html><head><link rel="canonical" href="http://my-site.com/" /></head><body></body></html>')
       settings = {
         'default_lang' => 'en',
@@ -173,7 +173,7 @@ module Wovnrb
       assert_equal(expected_html, translated_html)
     end
 
-    def test_transform_html_on_default_lang_do_not_change_canonical_tag_query_pattern
+    test 'Transform HTML - canonical tag - default lang - query pattern - no need to translate' do
       dom = get_dom('<html><head><link rel="canonical" href="http://my-site.com/" /></head><body></body></html>')
       settings = {
         'default_lang' => 'en',
@@ -190,7 +190,7 @@ module Wovnrb
       assert_equal(expected_html, translated_html)
     end
 
-    def test_transform_html_on_default_lang_with_default_lang_alias
+    test 'Transform HTML - canonical tag - default lang - has default lang alias - should use alias' do
       dom = get_dom('<html><head><link rel="canonical" href="http://my-site.com/" /></head><body></body></html>')
       settings = {
         'default_lang' => 'en',
@@ -208,7 +208,7 @@ module Wovnrb
       assert_equal(expected_html, translated_html)
     end
 
-    def test_transform_html_on_target_lang_do_not_translate_canonical_tag
+    test 'Transform HTML - canonical tag - disabled - do not translate' do
       dom = get_dom('<html><head><link rel="canonical" href="http://my-site.com/" /></head><body></body></html>')
       settings = {
         'default_lang' => 'en',
@@ -225,7 +225,7 @@ module Wovnrb
       assert_equal(expected_html, translated_html)
     end
 
-    def test_transform_html_on_default_lang_with_path_pattern_and_supported_lang
+    test 'Transform HTML - default lang - with path pattern and supported langs defined' do
       dom = get_dom('<html>hello<a>world</a></html>')
       settings = {
         'default_lang' => 'en',
@@ -241,7 +241,7 @@ module Wovnrb
       assert_equal(expected_html, translated_html)
     end
 
-    def test_replace_snippet
+    test 'replace_snippet' do
       converter = prepare_html_converter('<html><head>
         <script src="/a"></script>
         <script src="//j.wovn.io/1" async="true">
@@ -255,7 +255,7 @@ module Wovnrb
       assert_equal(expected_html.gsub(/\s+/, ''), converter.send(:html).gsub(/\s+/, ''))
     end
 
-    def test_replace_hreflangs
+    test 'replace_hreflangs' do
       converter = prepare_html_converter('<html><head><link rel="alternate" hreflang="en" href="https://wovn.io/en/"></head></html>')
       converter.send(:replace_hreflangs)
 
@@ -263,7 +263,7 @@ module Wovnrb
       assert_equal(expected_html, converter.send(:html))
     end
 
-    def test_inject_lang_html_tag_with_no_lang_in_html_tag
+    test 'inject_lang_html_tag - with no lang in HTML tag' do
       settings = default_store_settings
       store = Wovnrb::Store.instance
       store.update_settings(settings)
@@ -279,7 +279,7 @@ module Wovnrb
       assert_equal(expected_html, converter.send(:html))
     end
 
-    def test_inject_lang_html_tag_with_lang_in_html_tag
+    test 'inject_lang_html_tag - with lang in HTML tag' do
       settings = default_store_settings
       store = Wovnrb::Store.instance
       store.update_settings(settings)
@@ -295,7 +295,7 @@ module Wovnrb
       assert_equal(expected_html, converter.send(:html))
     end
 
-    def test_translate_canonical_tag
+    test 'translate_canonical_tag' do
       settings = default_store_settings
       store = Wovnrb::Store.instance
       store.update_settings(settings)
@@ -311,7 +311,7 @@ module Wovnrb
       assert_equal(expected_html, converter.send(:html))
     end
 
-    def test_translate_canonical_tag_path_pattern
+    test 'translate_canonical_tag - path pattern' do
       settings = default_store_settings
       settings['url_pattern'] = 'path'
       store = Wovnrb::Store.instance
@@ -328,7 +328,7 @@ module Wovnrb
       assert_equal(expected_html, converter.send(:html))
     end
 
-    def test_translate_canonical_tag_path_pattern_already_has_lang_code
+    test 'translate_canonical_tag - canonical tag is already translated' do
       # NOTE: this behavior is not correct, but it is the same as html-swapper
       settings = default_store_settings
       settings['url_pattern'] = 'path'
