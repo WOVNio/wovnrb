@@ -249,21 +249,46 @@ module Wovnrb
         <script src="https//cdn.wovn.io/" data-wovnio="key=2wpv0n async></script>
         <script src="https://wovn.global.ssl.fastly.net/widget/abcdef></script>
         </head></html>')
-      converter.send(:replace_snippet)
-
-      expected_html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"https://j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><script src=\"/a\"></script></head><body></body></html>"
-      assert_equal(expected_html.gsub(/\s+/, ''), converter.send(:html).gsub(/\s+/, ''))
+      translated_html = converter.build
+      dom = Helpers::NokogumboHelper.parse_html(translated_html)
+      scripts = dom.css('script')
+      assert_equal(2, scripts.length)
+      expected_wovn_script = '<script src="https://j.wovn.io/1" async="true" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=WOVN.rb_3.5.0" data-wovnio-type="fallback_snippet"></script>'
+      assert_equal(expected_wovn_script, scripts.first.to_html)
     end
 
     test 'replace_hreflangs' do
       converter = prepare_html_converter('<html><head><link rel="alternate" hreflang="en" href="https://wovn.io/en/"></head></html>')
-      converter.send(:replace_hreflangs)
-
-      expected_html = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><link rel="alternate" hreflang="en" href="http://my-site.com/"><link rel="alternate" hreflang="fr" href="http://my-site.com/?wovn=fr"><link rel="alternate" hreflang="ja" href="http://my-site.com/?wovn=ja"><link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi"></head><body></body></html>'
-      assert_equal(expected_html, converter.send(:html))
+      translated_html = converter.build
+      dom = Helpers::NokogumboHelper.parse_html(translated_html)
+      href_langs = dom.css('link[rel="alternate"]')
+      assert_equal(4, href_langs.length)
+      expected_href_langs = {
+        'en' =>
+          {
+            'href' => 'http://my-site.com/'
+          },
+        'fr' =>
+          {
+            'href' => 'http://my-site.com/?wovn=fr'
+          },
+        'ja' =>
+          {
+            'href' => 'http://my-site.com/?wovn=ja'
+          },
+        'vi' =>
+          {
+            'href' => 'http://my-site.com/?wovn=vi'
+          }
+      }
+      href_langs.each do |node|
+        assertions = expected_href_langs[node['hreflang']]
+        assert_not_nil(assertions)
+        assert_equal(assertions['href'], node['href'])
+      end
     end
 
-    test 'inject_lang_html_tag - with no lang in HTML tag' do
+    test 'inject_lang_html_tag - with no lang in HTML tag - should inject' do
       settings = default_store_settings
       store = Wovnrb::Store.instance
       store.update_settings(settings)
@@ -274,12 +299,12 @@ module Wovnrb
       )
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
       converter = HtmlConverter.new(get_dom('<html><body>hello</body></html>'), store, headers, url_lang_switcher)
-      converter.send(:inject_lang_html_tag)
-      expected_html = '<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body>hello</body></html>'
-      assert_equal(expected_html, converter.send(:html))
+      translated_html = converter.build
+      dom = Helpers::NokogumboHelper.parse_html(translated_html)
+      assert_equal('en', dom.at_css('html')['lang'])
     end
 
-    test 'inject_lang_html_tag - with lang in HTML tag' do
+    test 'inject_lang_html_tag - with lang in HTML tag - do not override' do
       settings = default_store_settings
       store = Wovnrb::Store.instance
       store.update_settings(settings)
@@ -290,9 +315,9 @@ module Wovnrb
       )
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
       converter = HtmlConverter.new(get_dom('<html lang="th"><body>hello</body></html>'), store, headers, url_lang_switcher)
-      converter.send(:inject_lang_html_tag)
-      expected_html = '<html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body>hello</body></html>'
-      assert_equal(expected_html, converter.send(:html))
+      translated_html = converter.build
+      dom = Helpers::NokogumboHelper.parse_html(translated_html)
+      assert_equal('th', dom.at_css('html')['lang'])
     end
 
     test 'translate_canonical_tag' do
@@ -306,9 +331,11 @@ module Wovnrb
       )
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
       converter = HtmlConverter.new(get_dom('<html lang="th"><head><link rel="canonical" href="http://my-site.com" /></head><body>hello</body></html>'), store, headers, url_lang_switcher)
-      converter.send(:translate_canonical_tag)
-      expected_html = '<html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><link rel="canonical" href="http://my-site.com?wovn=fr"></head><body>hello</body></html>'
-      assert_equal(expected_html, converter.send(:html))
+      translated_html = converter.build
+      dom = Helpers::NokogumboHelper.parse_html(translated_html)
+      canonical_tag = dom.at_css('link[rel="canonical"]')
+      assert_not_nil(canonical_tag)
+      assert_equal('http://my-site.com?wovn=fr', canonical_tag['href'])
     end
 
     test 'translate_canonical_tag - path pattern' do
@@ -323,9 +350,11 @@ module Wovnrb
       )
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
       converter = HtmlConverter.new(get_dom('<html lang="th"><head><link rel="canonical" href="http://my-site.com/" /></head><body>hello</body></html>'), store, headers, url_lang_switcher)
-      converter.send(:translate_canonical_tag)
-      expected_html = '<html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><link rel="canonical" href="http://my-site.com/fr/"></head><body>hello</body></html>'
-      assert_equal(expected_html, converter.send(:html))
+      translated_html = converter.build
+      dom = Helpers::NokogumboHelper.parse_html(translated_html)
+      canonical_tag = dom.at_css('link[rel="canonical"]')
+      assert_not_nil(canonical_tag)
+      assert_equal('http://my-site.com/fr/', canonical_tag['href'])
     end
 
     test 'translate_canonical_tag - canonical tag is already translated' do
@@ -341,9 +370,11 @@ module Wovnrb
       )
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
       converter = HtmlConverter.new(get_dom('<html lang="th"><head><link rel="canonical" href="http://my-site.com/fr/" /></head><body>hello</body></html>'), store, headers, url_lang_switcher)
-      converter.send(:translate_canonical_tag)
-      expected_html = '<html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><link rel="canonical" href="http://my-site.com/fr/fr/"></head><body>hello</body></html>'
-      assert_equal(expected_html, converter.send(:html))
+      translated_html = converter.build
+      dom = Helpers::NokogumboHelper.parse_html(translated_html)
+      canonical_tag = dom.at_css('link[rel="canonical"]')
+      assert_not_nil(canonical_tag)
+      assert_equal('http://my-site.com/fr/fr/', canonical_tag['href'])
     end
 
     private
