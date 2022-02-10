@@ -34,7 +34,7 @@ require 'wovnrb/url_language_switcher'
 require 'wovnrb/services/url'
 
 module Wovnrb
-  class WovnMiniTest < Minitest::Test
+  class WovnMiniTest < ActiveSupport::TestCase
     def before_setup
       super
       Wovnrb::Store.instance.reset
