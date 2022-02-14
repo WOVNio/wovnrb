@@ -74,7 +74,7 @@ module Wovnrb
 
       case @store.url_pattern
       when 'subdomain'
-        "#{headers.scheme}://#{code_to_add.downcase}.#{headers.host}#{abs_path}"
+        "#{headers.protocol}://#{code_to_add.downcase}.#{headers.host}#{abs_path}"
       when 'query'
         add_query_lang_code(href, code_to_add)
       else # path

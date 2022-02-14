@@ -196,6 +196,10 @@ module Wovnrb
       @settings['wovn_dev_mode']
     end
 
+    def url_pattern
+      @settings['url_pattern']
+    end
+
     private
 
     def stringify_keys!(hash)

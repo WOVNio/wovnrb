@@ -201,8 +201,8 @@ module Wovnrb
     end
 
     def dirname
-      if pathname.include?('/')
-        pathname.end_with?('/') ? pathname : pathname[0, pathname.rindex('/') + 1]
+      if pathname_with_trailing_slash_if_present.include?('/')
+        pathname_with_trailing_slash_if_present.end_with?('/') ? pathname_with_trailing_slash_if_present : pathname_with_trailing_slash_if_present[0, pathname_with_trailing_slash_if_present.rindex('/') + 1]
       else
         '/'
       end
