@@ -6,7 +6,7 @@ module Wovnrb
       lang_code = 'zh-cht'
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.tips')
+      store, headers = store_headers_factory(store_options, 'http://favy.tips')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('http://www.facebook.com', lang_code, headers)
@@ -19,7 +19,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.tips/topics/44')
+      store, headers = store_headers_factory(store_options, 'http://favy.tips/topics/44')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('/topics/50', lang_code, headers)
@@ -32,7 +32,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.tips/topics/44')
+      store, headers = store_headers_factory(store_options, 'http://favy.tips/topics/44')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('./topics/50', lang_code, headers)
@@ -45,7 +45,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.tips/topics/44')
+      store, headers = store_headers_factory(store_options, 'http://favy.tips/topics/44')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('../topics/50', lang_code, headers)
@@ -58,7 +58,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.tips')
+      store, headers = store_headers_factory(store_options, 'http://favy.tips')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('http://favy.tips/topics/31', lang_code, headers)
@@ -66,12 +66,12 @@ module Wovnrb
       assert_equal('http://zh-cht.favy.tips/topics/31', res)
     end
 
-    def test_add_lang_code_trad_chinese_2
+    def test_add_lang_code_trad_chinese_two
       lang_code = 'zh-cht'
 
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.tips')
+      store, headers = store_headers_factory(store_options, 'http://favy.tips')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('/topics/31', lang_code, headers)
@@ -84,7 +84,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.tips')
+      store, headers = store_headers_factory(store_options, 'http://favy.tips')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('http://zh-cht.favy.tips/topics/31', lang_code, headers)
@@ -97,7 +97,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'https://google.com')
+      store, headers = store_headers_factory(store_options, 'https://google.com')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('//google.com', lang_code, headers)
@@ -105,12 +105,12 @@ module Wovnrb
       assert_equal('//zh-cht.google.com', res)
     end
 
-    def test_add_lang_code_no_protocol_2
+    def test_add_lang_code_no_protocol_two
       lang_code = 'zh-cht'
 
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'https://favy.tips')
+      store, headers = store_headers_factory(store_options, 'https://favy.tips')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('//google.com', lang_code, headers)
@@ -122,7 +122,7 @@ module Wovnrb
       lang_code = 'zh-cht'
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'https://favy.tips')
+      store, headers = store_headers_factory(store_options, 'https://favy.tips')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('http://www.facebook.com/sharer.php?u=http://favy.tips/topics/50&amp;amp;t=Gourmet Tofu World: Vegetarian-Friendly Japanese Food is Here!', lang_code, headers)
@@ -135,7 +135,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.tips')
+      store, headers = store_headers_factory(store_options, 'http://favy.tips')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('/topics/31', lang_code, headers)
@@ -147,7 +147,7 @@ module Wovnrb
       lang_code = 'zh-cht'
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.tips')
+      store, headers = store_headers_factory(store_options, 'http://favy.tips')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('topics/31', lang_code, headers)
@@ -160,7 +160,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.tips')
+      store, headers = store_headers_factory(store_options, 'http://favy.tips')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('topics/31.html', lang_code, headers)
@@ -173,7 +173,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.tips')
+      store, headers = store_headers_factory(store_options, 'http://favy.tips')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('/topics/31.html', lang_code, headers)
@@ -186,7 +186,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.tips')
+      store, headers = store_headers_factory(store_options, 'http://favy.tips')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('//www.google.com/topics/31.php', lang_code, headers)
@@ -199,7 +199,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.tips')
+      store, headers = store_headers_factory(store_options, 'http://favy.tips')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('http://www.google.com/topics/31.php', lang_code, headers)
@@ -212,7 +212,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.tips')
+      store, headers = store_headers_factory(store_options, 'http://favy.tips')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('../topics/31', lang_code, headers)
@@ -225,7 +225,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.tips')
+      store, headers = store_headers_factory(store_options, 'http://favy.tips')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('./topics/31', lang_code, headers)
@@ -238,7 +238,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.tips')
+      store, headers = store_headers_factory(store_options, 'http://favy.tips')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('', lang_code, headers)
@@ -251,7 +251,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.tips')
+      store, headers = store_headers_factory(store_options, 'http://favy.tips')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('#', lang_code, headers)
@@ -263,7 +263,7 @@ module Wovnrb
       lang_code = 'en'
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.tips')
+      store, headers = store_headers_factory(store_options, 'http://favy.tips')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code(nil, lang_code, headers)
@@ -275,7 +275,7 @@ module Wovnrb
       lang_code = 'fr'
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com')
+      store, headers = store_headers_factory(store_options, 'http://google.com')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('http://yahoo.co.jp', lang_code, headers)
@@ -287,7 +287,7 @@ module Wovnrb
       lang_code = 'fr'
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com')
+      store, headers = store_headers_factory(store_options, 'http://google.com')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('http://google.com', lang_code, headers)
@@ -300,7 +300,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://home.google.com')
+      store, headers = store_headers_factory(store_options, 'http://home.google.com')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('http://home.google.com', lang_code, headers)
@@ -313,7 +313,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'query' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com')
+      store, headers = store_headers_factory(store_options, 'http://google.com')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('http://google.com', lang_code, headers)
@@ -326,7 +326,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'query' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com')
+      store, headers = store_headers_factory(store_options, 'http://google.com')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('http://google.com?hey=yo', lang_code, headers)
@@ -339,7 +339,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'query' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com')
+      store, headers = store_headers_factory(store_options, 'http://google.com')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('http://google.com#test', lang_code, headers)
@@ -352,7 +352,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'query', 'lang_param_name' => 'test_param' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com')
+      store, headers = store_headers_factory(store_options, 'http://google.com')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('http://google.com', lang_code, headers)
@@ -365,7 +365,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'query', 'lang_param_name' => 'test_param' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com')
+      store, headers = store_headers_factory(store_options, 'http://google.com')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('http://google.com?hey=yo', lang_code, headers)
@@ -378,7 +378,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'query', 'lang_param_name' => 'test_param' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com')
+      store, headers = store_headers_factory(store_options, 'http://google.com')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('http://google.com#test', lang_code, headers)
@@ -391,7 +391,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'path' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com')
+      store, headers = store_headers_factory(store_options, 'http://google.com')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('http://google.com', lang_code, headers)
@@ -404,7 +404,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'path' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com/dir1/dir2')
+      store, headers = store_headers_factory(store_options, 'http://google.com/dir1/dir2')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       assert_equal('http://google.com/fr', url_lang_switcher.add_lang_code('http://google.com', lang_code, headers))
@@ -417,7 +417,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'path' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com')
+      store, headers = store_headers_factory(store_options, 'http://google.com')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('http://google.com/index.html', lang_code, headers)
@@ -430,7 +430,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'path' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com')
+      store, headers = store_headers_factory(store_options, 'http://google.com')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('http://google.com/index.html?foo=bar#hash', lang_code, headers)
@@ -443,7 +443,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'path' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com')
+      store, headers = store_headers_factory(store_options, 'http://google.com')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('http://google.com/hello/long/path/index.html', lang_code, headers)
@@ -456,7 +456,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com')
+      store, headers = store_headers_factory(store_options, 'http://google.com')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('/', lang_code, headers)
@@ -469,7 +469,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com')
+      store, headers = store_headers_factory(store_options, 'http://google.com')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('/index.html', lang_code, headers)
@@ -482,7 +482,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'subdomain' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com')
+      store, headers = store_headers_factory(store_options, 'http://google.com')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('index.html', lang_code, headers)
@@ -495,7 +495,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'query' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com')
+      store, headers = store_headers_factory(store_options, 'http://google.com')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('/index.html', lang_code, headers)
@@ -508,7 +508,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'query' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com')
+      store, headers = store_headers_factory(store_options, 'http://google.com')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('/index.html?hey=yo', lang_code, headers)
@@ -521,7 +521,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'query' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com')
+      store, headers = store_headers_factory(store_options, 'http://google.com')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('/index.html?hey=yo', lang_code, headers)
@@ -534,7 +534,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'query', 'lang_param_name' => 'test_param' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com')
+      store, headers = store_headers_factory(store_options, 'http://google.com')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('/index.html', lang_code, headers)
@@ -547,7 +547,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'query', 'lang_param_name' => 'test_param' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com')
+      store, headers = store_headers_factory(store_options, 'http://google.com')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('/index.html?hey=yo', lang_code, headers)
@@ -560,7 +560,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'query', 'lang_param_name' => 'test_param' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com')
+      store, headers = store_headers_factory(store_options, 'http://google.com')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('/index.html?hey=yo#hey', lang_code, headers)
@@ -573,7 +573,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'path' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com')
+      store, headers = store_headers_factory(store_options, 'http://google.com')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('/index.html', lang_code, headers)
@@ -586,7 +586,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'path' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com/hello/tab.html')
+      store, headers = store_headers_factory(store_options, 'http://google.com/hello/tab.html')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('index.html', lang_code, headers)
@@ -599,7 +599,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'path' }
 
-      store, headers = store_headers_factory(store_options, url = 'https://pre.avex.jp/wovn_aaa/news/')
+      store, headers = store_headers_factory(store_options, 'https://pre.avex.jp/wovn_aaa/news/')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('../news/', lang_code, headers)
@@ -612,7 +612,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'path' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com/hello/tab.html')
+      store, headers = store_headers_factory(store_options, 'http://google.com/hello/tab.html')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('hey/index.html', lang_code, headers)
@@ -625,7 +625,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'path' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://google.com/')
+      store, headers = store_headers_factory(store_options, 'http://google.com/')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('index.html', lang_code, headers)
@@ -638,7 +638,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'path' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.co.jp')
+      store, headers = store_headers_factory(store_options, 'http://favy.co.jp')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('/page', lang_code, headers)
@@ -651,7 +651,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'path' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.co.jp')
+      store, headers = store_headers_factory(store_options, 'http://favy.co.jp')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('/page?user=tom', lang_code, headers)
@@ -664,7 +664,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'path' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.co.jp')
+      store, headers = store_headers_factory(store_options, 'http://favy.co.jp')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('/?user=tom', lang_code, headers)
@@ -677,7 +677,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'path' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.co.jp')
+      store, headers = store_headers_factory(store_options, 'http://favy.co.jp')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('/#top', lang_code, headers)
@@ -690,7 +690,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'path' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.co.jp')
+      store, headers = store_headers_factory(store_options, 'http://favy.co.jp')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('http://favy.co.jp/page', lang_code, headers)
@@ -703,7 +703,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'path' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.co.jp')
+      store, headers = store_headers_factory(store_options, 'http://favy.co.jp')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('http://favy.co.jp?user=tom', lang_code, headers)
@@ -716,7 +716,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'path' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.co.jp')
+      store, headers = store_headers_factory(store_options, 'http://favy.co.jp')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('http://favy.co.jp/?user=tom', lang_code, headers)
@@ -729,7 +729,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'path' }
 
-      store, headers = store_headers_factory(store_options, url = 'http://favy.co.jp')
+      store, headers = store_headers_factory(store_options, 'http://favy.co.jp')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       res = url_lang_switcher.add_lang_code('http://favy.co.jp#top', lang_code, headers)
@@ -744,7 +744,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'path', 'custom_lang_aliases' => lang_aliases }
 
-      store, headers = store_headers_factory(store_options, url = 'http://www.example.com/th/')
+      store, headers = store_headers_factory(store_options, 'http://www.example.com/th/')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       href_no_trailing_slash = 'http://www.example.com/en'
@@ -752,7 +752,6 @@ module Wovnrb
 
       assert_equal('http://www.example.com/th', url_lang_switcher.add_lang_code(href_no_trailing_slash, 'th', headers))
       assert_equal('http://www.example.com/th/', url_lang_switcher.add_lang_code(href_trailing_slash, 'th', headers))
-
     end
 
     def test_add_lang_code__absolute_path_with_default_lang_alias__replaces_lang_code
@@ -762,7 +761,7 @@ module Wovnrb
 
       store_options = { 'url_pattern' => 'path', 'custom_lang_aliases' => lang_aliases }
 
-      store, headers = store_headers_factory(store_options, url = 'http://www.example.com/th/')
+      store, headers = store_headers_factory(store_options, 'http://www.example.com/th/')
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
 
       href_no_trailing_slash = '/en'
