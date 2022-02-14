@@ -1,3 +1,5 @@
+require 'wovnrb/services/url'
+
 module Wovnrb
   # URL Language switching helper, ported from html-swapper
   class UrlLanguageSwitcher
