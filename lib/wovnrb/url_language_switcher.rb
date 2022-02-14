@@ -62,7 +62,7 @@ module Wovnrb
     end
 
     def internal_link?(absolute_uri, host_name)
-      absolute_uri.host == host_name
+      absolute_uri.host == host_name.split(':')[0]
     end
 
     def add_lang_code_relative_url(href, code_to_add, headers)
