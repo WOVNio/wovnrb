@@ -204,7 +204,7 @@ module Wovnrb
       converter = HtmlConverter.new(dom, store, headers, url_lang_switcher)
       translated_html = converter.build
 
-      expected_html = '<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script src="https://j.wovn.io/1" async="true" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={&quot;en&quot;:&quot;english&quot;}&amp;langParamName=wovn&amp;version=WOVN.rb_3.5.0" data-wovnio-type="fallback_snippet"></script><link rel="canonical" href="http://my-site.com/?wovn=english"><link rel="alternate" hreflang="en" href="http://my-site.com/"><link rel="alternate" hreflang="ja" href="http://my-site.com/?wovn=ja"><link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi"></head><body></body></html>'
+      expected_html = "<html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"https://j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={&quot;en&quot;:&quot;english&quot;}&amp;langParamName=wovn&amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"canonical\" href=\"http://my-site.com/?wovn=english\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/?wovn=ja\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body></body></html>"
       assert_equal(expected_html, translated_html)
     end
 
@@ -253,7 +253,7 @@ module Wovnrb
       dom = Helpers::NokogumboHelper.parse_html(translated_html)
       scripts = dom.css('script')
       assert_equal(2, scripts.length)
-      expected_wovn_script = '<script src="https://j.wovn.io/1" async="true" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=WOVN.rb_3.5.0" data-wovnio-type="fallback_snippet"></script>'
+      expected_wovn_script = "<script src=\"https://j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script>"
       assert_equal(expected_wovn_script, scripts.first.to_html)
     end
 
