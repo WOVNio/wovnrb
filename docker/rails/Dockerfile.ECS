@@ -1,0 +1,17 @@
+FROM ruby:2.6.5
+
+WORKDIR /usr/src/app
+
+COPY docker/rails/TestSite .
+COPY lib ./wovnrb/lib
+COPY Gemfile ./wovnrb/
+COPY wovnrb.gemspec ./wovnrb/
+
+RUN gem update --system && gem uninstall bundler && \
+    rm /usr/local/bin/bundle && rm /usr/local/bin/bundler
+RUN gem install bundler:2.1.4 && bundle install
+RUN apt update -y && apt install npm -y && apt-get install openssh-server -y && apt-get install vim -y
+RUN npm install --global yarn
+RUN yarn install --check-files
+
+CMD ["/bin/bash", "start_rails.sh"]
