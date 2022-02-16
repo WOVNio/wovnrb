@@ -56,6 +56,10 @@ module Wovnrb
       @pathname = @pathname.gsub(/\/$/, '')
     end
 
+    def url_with_scheme
+      "#{@protocol}://#{@url}"
+    end
+
     def unmasked_pathname_without_trailing_slash
       @unmasked_pathname.chomp('/')
     end
@@ -197,11 +201,24 @@ module Wovnrb
     end
 
     def dirname
-      if pathname.include?('/')
-        pathname.end_with?('/') ? pathname : pathname[0, pathname.rindex('/') + 1]
+      if pathname_with_trailing_slash_if_present.include?('/')
+        pathname_with_trailing_slash_if_present.end_with?('/') ? pathname_with_trailing_slash_if_present : pathname_with_trailing_slash_if_present[0, pathname_with_trailing_slash_if_present.rindex('/') + 1]
       else
         '/'
       end
+    end
+
+    def search_engine_bot?
+      return false unless @env.key?('HTTP_USER_AGENT')
+
+      bots = %w[Googlebot/ bingbot/ YandexBot/ YandexWebmaster/ DuckDuckBot-Https/ Baiduspider/ Slurp Yahoo]
+      bots.any? { |bot| @env['HTTP_USER_AGENT'].include?(bot) }
+    end
+
+    def to_absolute_path(path)
+      absolute_path = path.blank? ? '/' : path
+      absolute_path = absolute_path.starts_with?('/') ? absolute_path : URL.join_paths(dirname, absolute_path)
+      URL.normalize_path_slash(path, absolute_path)
     end
   end
 end

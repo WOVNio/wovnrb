@@ -25,6 +25,7 @@ module Wovnrb
         'ignore_class' => [],
         'api_url' => 'https://wovn.global.ssl.fastly.net',
         'api_timeout_seconds' => 1.0,
+        'api_timeout_search_engine_bots' => 5.0,
         'default_lang' => 'ja',
         'supported_langs' => %w[en ja],
         'test_mode' => false,
@@ -36,7 +37,8 @@ module Wovnrb
         'translate_fragment' => true,
         'widget_url' => 'https://j.wovn.io/1',
         'wovn_dev_mode' => false,
-        'compress_api_requests' => true
+        'compress_api_requests' => true,
+        'translate_canonical_tag' => true
       )
     end
 
@@ -166,7 +168,7 @@ module Wovnrb
     end
 
     def custom_lang_aliases
-      @setttings['custom_lang_aliases'] || {}
+      @settings['custom_lang_aliases'] || {}
     end
 
     def default_lang
@@ -192,6 +194,10 @@ module Wovnrb
 
     def dev_mode?
       @settings['wovn_dev_mode']
+    end
+
+    def url_pattern
+      @settings['url_pattern']
     end
 
     private

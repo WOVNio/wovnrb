@@ -256,7 +256,8 @@ HTML
     store, headers = store_headers_factory(subdomain, original_lang)
     if api_expected
       dom = Wovnrb::Helpers::NokogumboHelper.parse_html(body)
-      converter = Wovnrb::HtmlConverter.new(dom, store, headers)
+      url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
+      converter = Wovnrb::HtmlConverter.new(dom, store, headers, url_lang_switcher)
       apified_body, = converter.build_api_compatible_html
       mock_translation_api_response(apified_body, expected_body)
     end

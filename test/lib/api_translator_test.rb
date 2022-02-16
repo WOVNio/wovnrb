@@ -54,12 +54,53 @@ module Wovnrb
                          'lang_code' => 'fr',
                          'url_pattern' => 'subdomain',
                          'lang_param_name' => 'lang',
+                         'translate_canonical_tag' => true,
                          'product' => 'WOVN.rb',
                          'version' => VERSION,
                          'body' => 'foo',
                          'custom_lang_aliases' => { 'ja' => 'Japanese' }.to_json
                        }.to_json,
                        times: 1
+    end
+
+    def test_api_timeout_is_search_engine_user_higher_default
+      settings = {
+        'project_token' => '123456',
+        'custom_lang_aliases' => { 'ja' => 'Japanese' },
+        'default_lang' => 'en',
+        'url_pattern' => 'subdomain',
+        'url_pattern_reg' => '^(?<lang>[^.]+).',
+        'lang_param_name' => 'lang'
+      }
+      store = Wovnrb::Store.instance
+      store.update_settings(settings)
+      headers = Wovnrb::Headers.new(
+        Wovnrb.get_env('url' => 'http://fr.wovn.io/test', 'HTTP_USER_AGENT' => 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'),
+        Wovnrb.get_settings(settings)
+      )
+      api_translator = ApiTranslator.new(store, headers, REQUEST_UUID)
+      assert_equal(5.0, api_translator.send(:api_timeout))
+    end
+
+    def test_api_timeout_no_user_agent_use_normal_default
+      settings = {
+        'project_token' => '123456',
+        'custom_lang_aliases' => { 'ja' => 'Japanese' },
+        'default_lang' => 'en',
+        'url_pattern' => 'subdomain',
+        'url_pattern_reg' => '^(?<lang>[^.]+).',
+        'lang_param_name' => 'lang'
+      }
+      store = Wovnrb::Store.instance
+      store.update_settings(settings)
+      env = Wovnrb.get_env('url' => 'http://fr.wovn.io/test')
+      env.delete('HTTP_USER_AGENT')
+      headers = Wovnrb::Headers.new(
+        env,
+        Wovnrb.get_settings(settings)
+      )
+      api_translator = ApiTranslator.new(store, headers, REQUEST_UUID)
+      assert_equal(1.0, api_translator.send(:api_timeout))
     end
 
     private
@@ -80,6 +121,8 @@ module Wovnrb
       api_translator, store, _headers = create_sut
       translation_request_stub = stub_translation_api_request(store, original_html, translated_html, response, compress_data: compress_data)
 
+      expected_api_timeout = store.settings['api_timeout_seconds']
+      assert_equal(expected_api_timeout, api_translator.send(:api_timeout))
       actual_translated_html = api_translator.translate(original_html)
       assert_requested(translation_request_stub, times: 1) if translation_request_stub
       actual_translated_html
@@ -152,6 +195,7 @@ module Wovnrb
         'lang_code' => 'fr',
         'url_pattern' => 'subdomain',
         'lang_param_name' => 'lang',
+        'translate_canonical_tag' => true,
         'product' => 'WOVN.rb',
         'version' => VERSION,
         'body' => original_html,

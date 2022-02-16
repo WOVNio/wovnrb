@@ -1,9 +1,10 @@
 module Wovnrb
   class HtmlConverter
-    def initialize(dom, store, headers)
+    def initialize(dom, store, headers, url_lang_switcher)
       @dom = dom
       @headers = headers
       @store = store
+      @url_lang_switcher = url_lang_switcher
     end
 
     def build
@@ -32,6 +33,7 @@ module Wovnrb
       replace_snippet
       replace_hreflangs
       inject_lang_html_tag
+      translate_canonical_tag if @store.settings['translate_canonical_tag']
     end
 
     def replace_snippet
@@ -48,6 +50,7 @@ module Wovnrb
       insert_snippet(adds_backend_error_mark: true)
       insert_hreflang_tags
       inject_lang_html_tag
+      translate_canonical_tag if @store.settings['translate_canonical_tag']
 
       html
     end
@@ -141,6 +144,19 @@ module Wovnrb
 
         parent_node.add_child(insert_node.to_s)
       end
+    end
+
+    def translate_canonical_tag
+      canonical_node = @dom.at_css('link[rel="canonical"]')
+      return unless canonical_node
+
+      lang_code = @headers.lang_code
+      return if lang_code == @store.settings['default_lang'] && @store.settings['custom_lang_aliases'][lang_code].nil?
+
+      canonical_url = canonical_node['href']
+
+      translated_canonical_url = @url_lang_switcher.add_lang_code(canonical_url, lang_code, @headers)
+      canonical_node['href'] = translated_canonical_url
     end
 
     # Remove wovn snippet code from dom
