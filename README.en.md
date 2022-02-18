@@ -74,19 +74,22 @@ After completing setup, start the Ruby Application, and make sure the WOVN.io li
 
 The following is a list of the WOVN.io Ruby Library's valid parameters.
 
-Parameter Name        | Required | Default Setting
-----------------------| -------- | ----------------
-project_token         | yes      | ''
-default_lang          | yes      | 'ja'
-supported_langs       | yes      | ['ja', 'en']
-url_pattern           | yes      | 'path'
-lang_param_name       |          | 'wovn'
-query                 |          | []
-ignore_class          |          | []
-translate_fragment    |          | true
-ignore_paths          |          | []
-install_middleware    |          | true
-compress_api_requests |          | true
+Parameter Name                 | Required | Default Setting
+-------------------------------| -------- | ----------------
+project_token                  | yes      | ''
+default_lang                   | yes      | 'ja'
+supported_langs                | yes      | ['ja', 'en']
+url_pattern                    | yes      | 'path'
+lang_param_name                |          | 'wovn'
+query                          |          | []
+ignore_class                   |          | []
+translate_fragment             |          | true
+ignore_paths                   |          | []
+install_middleware             |          | true
+compress_api_requests          |          | true
+api_timeout_seconds            |          | 1.0
+api_timeout_search_engine_bots |          | 5.0
+translate_canonical_tag        |          | true
 
 ### 2.1. project_token
 
@@ -201,3 +204,17 @@ WOVN.rb needs to be added after any compression middleware.
 ### 2.11 compress_api_requests
 
 By default, requests to the translation API will be sent with gzip compression. Set to false to disable compression.
+
+### 2.12 api_timeout_seconds
+Configures the amount of time in seconds wovnrb will wait for the translation API for a response before the 
+request is considered timed-out. This setting defaults to `1.0`.
+
+### 2.13 api_timeout_search_engine_bots
+Similar to `api_timeout_seconds`, this timeout setting is applied when handling requests made by search engine bots.
+Currently, bots from Google, Yahoo, Bing, Yandex, DuckDuckGo and Baidu are supported. This setting
+defaults to `5.0`.
+
+### 2.14 translate_canonical_tag
+Configures if wovnrb should automatically translate existing canonical tag in the HTML. When set to `true`, wovnrb
+will translate the canonical URL with the current language code according to your `url_pattern` setting.
+This setting defaults to `true`.
