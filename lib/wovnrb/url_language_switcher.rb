@@ -9,7 +9,7 @@ module Wovnrb
 
     # Adds language code to URL in "href" variable by "pattern" variable and own lang_code.
     #  When lang_code is 'ja', add_lang_code('https://wovn.io', 'path', url) returns 'https://wovn.io/ja/'.
-    # @param  [String] href original URL.
+    # @param  [String] href original URL. (This condition is not validated against)
     # @param  [String] to_lang_code language code.
     def add_lang_code(href, to_lang_code, headers)
       return nil if href.nil?
@@ -23,6 +23,30 @@ module Wovnrb
         add_lang_code_absolute_url(href, code_to_add, headers)
       else
         add_lang_code_relative_url(href, code_to_add, headers)
+      end
+    end
+
+    # Removes language code from a URI component (path, hostname, query etc), and returns it.
+    #
+    # @param uri  [String] original URI component
+    # @param lang [String] language code
+    # @return     [String] removed URI
+    def remove_lang_from_uri_component(uri, lang)
+      lang_code = @store.settings['custom_lang_aliases'][lang] || lang
+
+      return uri if lang_code.nil? || lang_code.empty?
+
+      case @store.settings['url_pattern']
+      when 'query'
+        lang_param_name = @store.settings['lang_param_name']
+        uri.sub(/(^|\?|&)#{lang_param_name}=#{lang_code}(&|$)/, '\1').gsub(/(\?|&)$/, '')
+      when 'subdomain'
+        rp = Regexp.new("(^|(//))#{lang_code}\\.", 'i')
+        uri.sub(rp, '\1')
+      when 'path'
+        uri.sub(/\/#{lang_code}(\/|$)/, '/')
+      else
+        raise RuntimeError("Invalid URL pattern: #{@store.settings['url_pattern']}")
       end
     end
 
