@@ -75,6 +75,13 @@ module Wovnrb
     Wovnrb::Settings.new.merge(settings.merge(options))
   end
 
+  def get_store(options = {})
+    settings = get_settings(options)
+    store = Store.instance
+    store.update_settings(settings)
+    store
+  end
+
   def get_env(options = {})
     env = {}
     env['rack.url_scheme'] = 'http'
@@ -116,7 +123,7 @@ module Wovnrb
     to_dom("<html><body>#{inner_html}</body></html>")
   end
 
-  module_function :get_env, :get_settings, :to_dom, :get_dom
+  module_function :get_env, :get_settings, :to_dom, :get_dom, :get_store
 
   def build_api_data(custom_page_values: {}, custom_project_data: {})
     page_values = default_page_values.merge(custom_page_values)

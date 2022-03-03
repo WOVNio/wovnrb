@@ -281,7 +281,8 @@ HTML
 
     headers = Wovnrb::Headers.new(
       Wovnrb.get_env('url' => "http://#{subdomain}page.com"),
-      Wovnrb.get_settings(settings)
+      Wovnrb.get_settings(settings),
+      Wovnrb::UrlLanguageSwitcher.new(store)
     )
 
     [store, headers]

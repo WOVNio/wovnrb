@@ -113,24 +113,24 @@ module Wovnrb
       @env['wovnrb.target_lang'] = lang_code
       case @settings['url_pattern']
       when 'query'
-        @env['REQUEST_URI'] = remove_lang(@env['REQUEST_URI']) if @env.key?('REQUEST_URI')
-        @env['QUERY_STRING'] = remove_lang(@env['QUERY_STRING']) if @env.key?('QUERY_STRING')
-        @env['ORIGINAL_FULLPATH'] = remove_lang(@env['ORIGINAL_FULLPATH']) if @env.key?('ORIGINAL_FULLPATH')
+        @env['REQUEST_URI'] = @url_lang_switcher.remove_lang_from_uri_component(@env['REQUEST_URI'], lang_code) if @env.key?('REQUEST_URI')
+        @env['QUERY_STRING'] = @url_lang_switcher.remove_lang_from_uri_component(@env['QUERY_STRING'], lang_code) if @env.key?('QUERY_STRING')
+        @env['ORIGINAL_FULLPATH'] = @url_lang_switcher.remove_lang_from_uri_component(@env['ORIGINAL_FULLPATH'], lang_code) if @env.key?('ORIGINAL_FULLPATH')
       when 'subdomain'
         if @settings['use_proxy'] && @env.key?('HTTP_X_FORWARDED_HOST')
-          @env['HTTP_X_FORWARDED_HOST'] = remove_lang(@env['HTTP_X_FORWARDED_HOST'])
+          @env['HTTP_X_FORWARDED_HOST'] = @url_lang_switcher.remove_lang_from_uri_component(@env['HTTP_X_FORWARDED_HOST'], lang_code)
         else
-          @env['HTTP_HOST'] = remove_lang(@env['HTTP_HOST'])
-          @env['SERVER_NAME'] = remove_lang(@env['SERVER_NAME'])
+          @env['HTTP_HOST'] = @url_lang_switcher.remove_lang_from_uri_component(@env['HTTP_HOST'], lang_code)
+          @env['SERVER_NAME'] = @url_lang_switcher.remove_lang_from_uri_component(@env['SERVER_NAME'], lang_code)
         end
-        @env['HTTP_REFERER'] = remove_lang(@env['HTTP_REFERER']) if @env.key?('HTTP_REFERER')
+        @env['HTTP_REFERER'] = @url_lang_switcher.remove_lang_from_uri_component(@env['HTTP_REFERER'], lang_code) if @env.key?('HTTP_REFERER')
       # when 'path'
       else
-        @env['REQUEST_URI'] = remove_lang(@env['REQUEST_URI'])
-        @env['REQUEST_PATH'] = remove_lang(@env['REQUEST_PATH']) if @env.key?('REQUEST_PATH')
-        @env['PATH_INFO'] = remove_lang(@env['PATH_INFO'])
-        @env['ORIGINAL_FULLPATH'] = remove_lang(@env['ORIGINAL_FULLPATH']) if @env.key?('ORIGINAL_FULLPATH')
-        @env['HTTP_REFERER'] = remove_lang(@env['HTTP_REFERER']) if @env.key?('HTTP_REFERER')
+        @env['REQUEST_URI'] = @url_lang_switcher.remove_lang_from_uri_component(@env['REQUEST_URI'], lang_code)
+        @env['REQUEST_PATH'] = @url_lang_switcher.remove_lang_from_uri_component(@env['REQUEST_PATH'], lang_code) if @env.key?('REQUEST_PATH')
+        @env['PATH_INFO'] = @url_lang_switcher.remove_lang_from_uri_component(@env['PATH_INFO'], lang_code)
+        @env['ORIGINAL_FULLPATH'] = @url_lang_switcher.remove_lang_from_uri_component(@env['ORIGINAL_FULLPATH'], lang_code) if @env.key?('ORIGINAL_FULLPATH')
+        @env['HTTP_REFERER'] = @url_lang_switcher.remove_lang_from_uri_component(@env['HTTP_REFERER'], lang_code) if @env.key?('HTTP_REFERER')
       end
       @env
     end

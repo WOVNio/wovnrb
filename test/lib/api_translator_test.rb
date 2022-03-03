@@ -76,7 +76,8 @@ module Wovnrb
       store.update_settings(settings)
       headers = Wovnrb::Headers.new(
         Wovnrb.get_env('url' => 'http://fr.wovn.io/test', 'HTTP_USER_AGENT' => 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'),
-        Wovnrb.get_settings(settings)
+        Wovnrb.get_settings(settings),
+        UrlLanguageSwitcher.new(store)
       )
       api_translator = ApiTranslator.new(store, headers, REQUEST_UUID)
       assert_equal(5.0, api_translator.send(:api_timeout))
@@ -97,7 +98,8 @@ module Wovnrb
       env.delete('HTTP_USER_AGENT')
       headers = Wovnrb::Headers.new(
         env,
-        Wovnrb.get_settings(settings)
+        Wovnrb.get_settings(settings),
+        UrlLanguageSwitcher.new(store)
       )
       api_translator = ApiTranslator.new(store, headers, REQUEST_UUID)
       assert_equal(1.0, api_translator.send(:api_timeout))
@@ -141,7 +143,8 @@ module Wovnrb
       store.update_settings(settings)
       headers = Wovnrb::Headers.new(
         Wovnrb.get_env('url' => 'http://fr.wovn.io/test'),
-        Wovnrb.get_settings(settings)
+        Wovnrb.get_settings(settings),
+        UrlLanguageSwitcher.new(store)
       )
       api_translator = ApiTranslator.new(store, headers, REQUEST_UUID)
 
