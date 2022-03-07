@@ -34,7 +34,7 @@ module Wovnrb
     def remove_lang_from_uri_component(uri, lang)
       lang_code = @store.settings['custom_lang_aliases'][lang] || lang
 
-      return uri if lang_code.nil? || lang_code.empty?
+      return uri if lang_code.blank?
 
       case @store.settings['url_pattern']
       when 'query'
