@@ -5,9 +5,9 @@ module Wovnrb
     # Generates new instance of Wovnrb::Headers.
     # Its parameters are set by parsing env variable.
 
-    def initialize(env, settings)
+    def initialize(env, settings, url_lang_switcher)
       request = Rack::Request.new(env)
-
+      @url_lang_switcher = url_lang_switcher
       @env = env
       @settings = settings
       @protocol = request.scheme
@@ -31,11 +31,11 @@ module Wovnrb
               else
                 @env['HTTP_HOST']
               end
-      @host = settings['url_pattern'] == 'subdomain' ? remove_lang(@host, lang_code) : @host
+      @host = settings['url_pattern'] == 'subdomain' ? @url_lang_switcher.remove_lang_from_uri_component(@host, lang_code) : @host
       @pathname, @query = @env['REQUEST_URI'].split('?')
-      @pathname = settings['url_pattern'] == 'path' ? remove_lang(@pathname, lang_code) : @pathname
+      @pathname = settings['url_pattern'] == 'path' ? @url_lang_switcher.remove_lang_from_uri_component(@pathname, lang_code) : @pathname
       @query ||= ''
-      @url = "#{@host}#{@pathname}#{(@query.empty? ? '' : '?') + remove_lang(@query, lang_code)}"
+      @url = "#{@host}#{@pathname}#{(@query.empty? ? '' : '?') + @url_lang_switcher.remove_lang_from_uri_component(@query, lang_code)}"
       if settings['query'].empty?
         @query = ''
       else
@@ -51,7 +51,7 @@ module Wovnrb
                    "?#{query_vals.sort.join('&')}"
                  end
       end
-      @query = remove_lang(@query, lang_code)
+      @query = @url_lang_switcher.remove_lang_from_uri_component(@query, lang_code)
       @pathname_with_trailing_slash_if_present = @pathname
       @pathname = @pathname.gsub(/\/$/, '')
     end
@@ -103,79 +103,36 @@ module Wovnrb
     def redirect_location(lang)
       if lang == @settings['default_lang']
         # IS THIS RIGHT??
-        "#{protocol}://#{url}"
-        # return remove_lang("#{@env['HTTP_HOST']}#{@env['REQUEST_URI']}", lang)
-      else
-        # TODO test
-        lang_code = Store.instance.settings['custom_lang_aliases'][lang] || lang
-        location = url
-        case @settings['url_pattern']
-        when 'query'
-          lang_param_name = @settings['lang_param_name']
-          location = if /\?/.match?(location)
-                       "#{location}&#{lang_param_name}=#{lang_code}"
-                     else
-                       "#{location}?#{lang_param_name}=#{lang_code}"
-                     end
-        when 'subdomain'
-          location = "#{lang_code.downcase}.#{location}"
-        # when 'path'
-        else
-          location = location.sub(/(\/|$)/, "/#{lang_code}/")
-        end
-        "#{protocol}://#{location}"
+        return url_with_scheme
       end
+
+      @url_lang_switcher.add_lang_code(url_with_scheme, lang, self)
     end
 
     def request_out(_def_lang = @settings['default_lang'])
       @env['wovnrb.target_lang'] = lang_code
       case @settings['url_pattern']
       when 'query'
-        @env['REQUEST_URI'] = remove_lang(@env['REQUEST_URI']) if @env.key?('REQUEST_URI')
-        @env['QUERY_STRING'] = remove_lang(@env['QUERY_STRING']) if @env.key?('QUERY_STRING')
-        @env['ORIGINAL_FULLPATH'] = remove_lang(@env['ORIGINAL_FULLPATH']) if @env.key?('ORIGINAL_FULLPATH')
+        @env['REQUEST_URI'] = @url_lang_switcher.remove_lang_from_uri_component(@env['REQUEST_URI'], lang_code) if @env.key?('REQUEST_URI')
+        @env['QUERY_STRING'] = @url_lang_switcher.remove_lang_from_uri_component(@env['QUERY_STRING'], lang_code) if @env.key?('QUERY_STRING')
+        @env['ORIGINAL_FULLPATH'] = @url_lang_switcher.remove_lang_from_uri_component(@env['ORIGINAL_FULLPATH'], lang_code) if @env.key?('ORIGINAL_FULLPATH')
       when 'subdomain'
         if @settings['use_proxy'] && @env.key?('HTTP_X_FORWARDED_HOST')
-          @env['HTTP_X_FORWARDED_HOST'] = remove_lang(@env['HTTP_X_FORWARDED_HOST'])
+          @env['HTTP_X_FORWARDED_HOST'] = @url_lang_switcher.remove_lang_from_uri_component(@env['HTTP_X_FORWARDED_HOST'], lang_code)
         else
-          @env['HTTP_HOST'] = remove_lang(@env['HTTP_HOST'])
-          @env['SERVER_NAME'] = remove_lang(@env['SERVER_NAME'])
+          @env['HTTP_HOST'] = @url_lang_switcher.remove_lang_from_uri_component(@env['HTTP_HOST'], lang_code)
+          @env['SERVER_NAME'] = @url_lang_switcher.remove_lang_from_uri_component(@env['SERVER_NAME'], lang_code)
         end
-        @env['HTTP_REFERER'] = remove_lang(@env['HTTP_REFERER']) if @env.key?('HTTP_REFERER')
+        @env['HTTP_REFERER'] = @url_lang_switcher.remove_lang_from_uri_component(@env['HTTP_REFERER'], lang_code) if @env.key?('HTTP_REFERER')
       # when 'path'
       else
-        @env['REQUEST_URI'] = remove_lang(@env['REQUEST_URI'])
-        @env['REQUEST_PATH'] = remove_lang(@env['REQUEST_PATH']) if @env.key?('REQUEST_PATH')
-        @env['PATH_INFO'] = remove_lang(@env['PATH_INFO'])
-        @env['ORIGINAL_FULLPATH'] = remove_lang(@env['ORIGINAL_FULLPATH']) if @env.key?('ORIGINAL_FULLPATH')
-        @env['HTTP_REFERER'] = remove_lang(@env['HTTP_REFERER']) if @env.key?('HTTP_REFERER')
+        @env['REQUEST_URI'] = @url_lang_switcher.remove_lang_from_uri_component(@env['REQUEST_URI'], lang_code)
+        @env['REQUEST_PATH'] = @url_lang_switcher.remove_lang_from_uri_component(@env['REQUEST_PATH'], lang_code) if @env.key?('REQUEST_PATH')
+        @env['PATH_INFO'] = @url_lang_switcher.remove_lang_from_uri_component(@env['PATH_INFO'], lang_code)
+        @env['ORIGINAL_FULLPATH'] = @url_lang_switcher.remove_lang_from_uri_component(@env['ORIGINAL_FULLPATH'], lang_code) if @env.key?('ORIGINAL_FULLPATH')
+        @env['HTTP_REFERER'] = @url_lang_switcher.remove_lang_from_uri_component(@env['HTTP_REFERER'], lang_code) if @env.key?('HTTP_REFERER')
       end
       @env
-    end
-
-    # TODO: this should be in Lang for reusability
-    # Remove language code from the URI.
-    #
-    # @param uri  [String] original URI
-    # @param lang_code [String] language code
-    # @return     [String] removed URI
-    def remove_lang(uri, lang = path_lang)
-      lang_code = Store.instance.settings['custom_lang_aliases'][lang] || lang
-
-      # Do nothing if lang is empty.
-      return uri if lang_code.nil? || lang_code.empty?
-
-      case @settings['url_pattern']
-      when 'query'
-        lang_param_name = @settings['lang_param_name']
-        uri.sub(/(^|\?|&)#{lang_param_name}=#{lang_code}(&|$)/, '\1').gsub(/(\?|&)$/, '')
-      when 'subdomain'
-        rp = Regexp.new("(^|(//))#{lang_code}\\.", 'i')
-        uri.sub(rp, '\1')
-      # when 'path'
-      else
-        uri.sub(/\/#{lang_code}(\/|$)/, '/')
-      end
     end
 
     def out(headers)
