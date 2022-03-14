@@ -1,9 +1,14 @@
 require 'test_helper'
+require 'wovnrb/services/time'
 
 module Wovnrb
   REQUEST_UUID = 'ABCD'.freeze
 
   class ApiTranslatorTest < WovnMiniTest
+    def teardown
+      WebMock.reset!
+    end
+
     def test_translate
       assert_translation('test.html', 'test_translated.html', true)
     end
@@ -58,9 +63,51 @@ module Wovnrb
                          'product' => 'WOVN.rb',
                          'version' => VERSION,
                          'body' => 'foo',
+                         'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36',
                          'custom_lang_aliases' => { 'ja' => 'Japanese' }.to_json
                        }.to_json,
                        times: 1
+    end
+
+    def test_translate_is_search_engine_bot
+      settings = {
+        'project_token' => '123456',
+        'custom_lang_aliases' => { 'ja' => 'Japanese' },
+        'default_lang' => 'en',
+        'url_pattern' => 'subdomain',
+        'url_pattern_reg' => '^(?<lang>[^.]+).',
+        'lang_param_name' => 'lang',
+        'compress_api_requests' => false
+      }
+      store = Wovnrb::Store.instance
+      store.update_settings(settings)
+      env = Wovnrb.get_env('url' => 'http://fr.wovn.io/test')
+      env['HTTP_USER_AGENT'] = 'Googlebot/'
+      headers = Wovnrb::Headers.new(
+        env,
+        Wovnrb.get_settings(settings),
+        UrlLanguageSwitcher.new(store)
+      )
+      html_body = 'foo'
+
+      time_proc = -> { return 25_000_000 }
+      api_translator = ApiTranslator.new(store, headers, REQUEST_UUID, time_proc)
+      stub_request(:post, %r{http://wovn\.global\.ssl\.fastly\.net/v0/translation\?cache_key=.*timestamp=1970-10-17T08:20:00%2B00:00.*})
+        .to_return(status: 200, body: { 'body' => 'translated_body' }.to_json)
+
+      api_translator.translate(html_body)
+
+      time_proc = -> { return 25_000_300 }
+      api_translator = ApiTranslator.new(store, headers, REQUEST_UUID, time_proc)
+      api_translator.translate(html_body)
+
+      WebMock.reset!
+
+      time_proc = -> { return 25_001_200 }
+      api_translator = ApiTranslator.new(store, headers, REQUEST_UUID, time_proc)
+      stub_request(:post, %r{http://wovn\.global\.ssl\.fastly\.net/v0/translation\?cache_key=.*timestamp=1970-10-17T08:40:00%2B00:00.*})
+        .to_return(status: 200, body: { 'body' => 'translated_body' }.to_json)
+      api_translator.translate(html_body)
     end
 
     def test_api_timeout_is_search_engine_user_higher_default
@@ -202,6 +249,7 @@ module Wovnrb
         'product' => 'WOVN.rb',
         'version' => VERSION,
         'body' => original_html,
+        'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36',
         'custom_lang_aliases' => '{"ja":"Japanese"}'
       }
 

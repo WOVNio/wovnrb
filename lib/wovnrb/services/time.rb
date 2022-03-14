@@ -1,0 +1,14 @@
+module Wovnrb
+  # Provides utilities related to Time
+  class TimeUtil
+    class << self
+      def round_down_time(time, unit)
+        time - (time % unit)
+      end
+
+      def time_proc
+        -> { return Time.new.sec }
+      end
+    end
+  end
+end
