@@ -12,7 +12,7 @@ module Wovnrb
     end
 
     def test_time_proc
-      current_time = Time.new.sec
+      current_time = Time.now.utc.sec
       assert((TimeUtil.time_proc.call - current_time) < 2.0)
     end
   end

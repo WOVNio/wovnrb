@@ -177,7 +177,7 @@ module Wovnrb
     def search_engine_bot_timestamp(time_proc)
       twenty_minutes = 20 * 60
       cache_time = TimeUtil.round_down_time(time_proc.call, twenty_minutes)
-      datetime = Time.at(cache_time, { in: 'UTC' }).to_datetime
+      datetime = Time.at(cache_time).utc.to_datetime
       datetime.iso8601
     end
   end

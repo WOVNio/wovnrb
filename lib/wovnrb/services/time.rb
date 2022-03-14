@@ -7,7 +7,7 @@ module Wovnrb
       end
 
       def time_proc
-        -> { return Time.new.sec }
+        -> { return Time.now.utc.sec }
       end
     end
   end
