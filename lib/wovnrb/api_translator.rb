@@ -5,11 +5,10 @@ require 'zlib'
 
 module Wovnrb
   class ApiTranslator
-    def initialize(store, headers, uuid, time_proc = nil)
+    def initialize(store, headers, uuid)
       @store = store
       @headers = headers
       @uuid = uuid
-      @time_proc = time_proc.nil? ? TimeUtil.time_proc : time_proc
     end
 
     def translate(body)
@@ -101,7 +100,7 @@ module Wovnrb
         'lang' => lang_code,
         'version' => "wovnrb_#{VERSION}"
       }
-      cache_key_components['timestamp'] = search_engine_bot_timestamp(@time_proc) if @headers.search_engine_bot?
+      cache_key_components['timestamp'] = search_engine_bot_timestamp if @headers.search_engine_bot?
       cache_key_components = cache_key_components.map { |k, v| "#{k}=#{v}" }.join('&')
 
       CGI.escape("(#{cache_key_components})")
@@ -174,9 +173,10 @@ module Wovnrb
       @headers.pathname_with_trailing_slash_if_present
     end
 
-    def search_engine_bot_timestamp(time_proc)
+    def search_engine_bot_timestamp
       twenty_minutes = 20 * 60
-      cache_time = TimeUtil.round_down_time(time_proc.call, twenty_minutes)
+      time_now_sec = Time.now.utc.to_i
+      cache_time = TimeUtil.round_down_time(time_now_sec, twenty_minutes)
       datetime = Time.at(cache_time).utc.to_datetime
       datetime.iso8601
     end

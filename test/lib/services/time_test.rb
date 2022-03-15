@@ -10,10 +10,5 @@ module Wovnrb
       assert_equal(30, TimeUtil.round_down_time(30, 15))
       assert_equal(100, TimeUtil.round_down_time(100, 10))
     end
-
-    def test_time_proc
-      current_time = Time.now.utc.sec
-      assert((TimeUtil.time_proc.call - current_time) < 2.0)
-    end
   end
 end

@@ -1,5 +1,6 @@
 require 'test_helper'
 require 'wovnrb/services/time'
+require 'timecop'
 
 module Wovnrb
   REQUEST_UUID = 'ABCD'.freeze
@@ -90,24 +91,28 @@ module Wovnrb
       )
       html_body = 'foo'
 
-      time_proc = -> { return 25_000_000 }
-      api_translator = ApiTranslator.new(store, headers, REQUEST_UUID, time_proc)
+      api_translator = ApiTranslator.new(store, headers, REQUEST_UUID)
       stub_request(:post, %r{http://wovn\.global\.ssl\.fastly\.net/v0/translation\?cache_key=.*timestamp=1970-10-17T08:20:00%2B00:00.*})
         .to_return(status: 200, body: { 'body' => 'translated_body' }.to_json)
 
-      api_translator.translate(html_body)
+      time1 = Time.utc(1970, 10, 17, 8, 20, 0)
+      Timecop.freeze(time1) do
+        api_translator.translate(html_body)
+      end
 
-      time_proc = -> { return 25_000_300 }
-      api_translator = ApiTranslator.new(store, headers, REQUEST_UUID, time_proc)
-      api_translator.translate(html_body)
+      time2 = Time.at(25_000_300).utc
+      Timecop.freeze(time2) do
+        api_translator.translate(html_body)
+      end
 
       WebMock.reset!
-
-      time_proc = -> { return 25_001_200 }
-      api_translator = ApiTranslator.new(store, headers, REQUEST_UUID, time_proc)
       stub_request(:post, %r{http://wovn\.global\.ssl\.fastly\.net/v0/translation\?cache_key=.*timestamp=1970-10-17T08:40:00%2B00:00.*})
         .to_return(status: 200, body: { 'body' => 'translated_body' }.to_json)
-      api_translator.translate(html_body)
+
+      time3 = Time.at(25_001_200).utc
+      Timecop.freeze(time3) do
+        api_translator.translate(html_body)
+      end
     end
 
     def test_api_timeout_is_search_engine_user_higher_default
