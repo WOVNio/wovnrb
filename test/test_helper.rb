@@ -2,8 +2,9 @@ require 'simplecov'
 require 'pry'
 
 # save to CircleCI's artifacts directory if we're on CircleCI
-if ENV['CIRCLE_ARTIFACTS']
-  dir = File.join(ENV['CIRCLE_ARTIFACTS'], 'coverage')
+circle_artifacts = ENV.fetch('CIRCLE_ARTIFACTS', nil)
+if circle_artifacts
+  dir = File.join(circle_artifacts, 'coverage')
   SimpleCov.coverage_dir(dir)
 end
 
