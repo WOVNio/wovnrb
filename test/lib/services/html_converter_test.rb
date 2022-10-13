@@ -295,7 +295,8 @@ module Wovnrb
 
       headers = Wovnrb::Headers.new(
         Wovnrb.get_env('url' => 'http://my-site.com/'),
-        Wovnrb.get_settings(settings)
+        Wovnrb.get_settings(settings),
+        UrlLanguageSwitcher.new(store)
       )
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
       converter = HtmlConverter.new(get_dom('<html><body>hello</body></html>'), store, headers, url_lang_switcher)
@@ -311,7 +312,8 @@ module Wovnrb
 
       headers = Wovnrb::Headers.new(
         Wovnrb.get_env('url' => 'http://my-site.com/'),
-        Wovnrb.get_settings(settings)
+        Wovnrb.get_settings(settings),
+        UrlLanguageSwitcher.new(store)
       )
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
       converter = HtmlConverter.new(get_dom('<html lang="th"><body>hello</body></html>'), store, headers, url_lang_switcher)
@@ -327,7 +329,8 @@ module Wovnrb
 
       headers = Wovnrb::Headers.new(
         Wovnrb.get_env('url' => 'http://my-site.com/?wovn=fr'),
-        store.settings
+        store.settings,
+        UrlLanguageSwitcher.new(store)
       )
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
       converter = HtmlConverter.new(get_dom('<html lang="th"><head><link rel="canonical" href="http://my-site.com" /></head><body>hello</body></html>'), store, headers, url_lang_switcher)
@@ -346,7 +349,8 @@ module Wovnrb
 
       headers = Wovnrb::Headers.new(
         Wovnrb.get_env('url' => 'http://my-site.com/fr/'),
-        store.settings
+        store.settings,
+        UrlLanguageSwitcher.new(store)
       )
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
       converter = HtmlConverter.new(get_dom('<html lang="th"><head><link rel="canonical" href="http://my-site.com/" /></head><body>hello</body></html>'), store, headers, url_lang_switcher)
@@ -366,7 +370,8 @@ module Wovnrb
 
       headers = Wovnrb::Headers.new(
         Wovnrb.get_env('url' => 'http://my-site.com/fr/'),
-        store.settings
+        store.settings,
+        UrlLanguageSwitcher.new(store)
       )
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
       converter = HtmlConverter.new(get_dom('<html lang="th"><head><link rel="canonical" href="http://my-site.com/fr/" /></head><body>hello</body></html>'), store, headers, url_lang_switcher)
@@ -392,7 +397,8 @@ module Wovnrb
 
       headers = Wovnrb::Headers.new(
         Wovnrb.get_env('url' => url),
-        store.settings
+        store.settings,
+        UrlLanguageSwitcher.new(store)
       )
 
       [store, headers]

@@ -20,6 +20,7 @@ module Wovnrb
       @store = Store.instance
       opts = opts.transform_keys(&:to_s)
       @store.update_settings(opts)
+      @url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(@store)
     end
 
     def call(env)
@@ -30,7 +31,7 @@ module Wovnrb
       return @app.call(env) unless Store.instance.valid_settings?
 
       @env = env
-      headers = Headers.new(env, @store.settings)
+      headers = Headers.new(env, @store.settings, @url_lang_switcher)
       default_lang = @store.settings['default_lang']
       return @app.call(env) if @store.settings['test_mode'] && @store.settings['test_url'] != headers.url
 
@@ -77,8 +78,8 @@ module Wovnrb
       html_body = Helpers::NokogumboHelper.parse_html(string_body)
 
       if !wovn_ignored?(html_body) && !amp_page?(html_body)
-        url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(@store)
-        html_converter = HtmlConverter.new(html_body, @store, headers, url_lang_switcher)
+
+        html_converter = HtmlConverter.new(html_body, @store, headers, @url_lang_switcher)
 
         if needs_api?(html_body, headers)
           converted_html, marker = html_converter.build_api_compatible_html
