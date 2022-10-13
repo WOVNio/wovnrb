@@ -148,6 +148,8 @@ HTML
       'rack.input' => '',
       'rack.request.query_string' => '',
       'rack.request.query_hash' => {},
+      'rack.request.form_input' => '',
+      'rack.request.form_hash' => {},
       'HTTP_HOST' => 'test.com',
       'REQUEST_URI' => '/en/not_ignored',
       'PATH_INFO' => '/en/not_ignored'
@@ -168,6 +170,8 @@ HTML
       'rack.input' => '',
       'rack.request.query_string' => '',
       'rack.request.query_hash' => {},
+      'rack.request.form_input' => '',
+      'rack.request.form_hash' => {},
       'HTTP_HOST' => 'test.com',
       'REQUEST_URI' => '/ignored',
       'PATH_INFO' => '/ignored'
@@ -188,6 +192,8 @@ HTML
       'rack.input' => '',
       'rack.request.query_string' => '',
       'rack.request.query_hash' => {},
+      'rack.request.form_input' => '',
+      'rack.request.form_hash' => {},
       'HTTP_HOST' => 'test.com',
       'REQUEST_URI' => '/en/ignored',
       'PATH_INFO' => '/en/ignored'
@@ -208,6 +214,8 @@ HTML
       'rack.input' => '',
       'rack.request.query_string' => '',
       'rack.request.query_hash' => {},
+      'rack.request.form_input' => '',
+      'rack.request.form_hash' => {},
       'HTTP_HOST' => 'test.com',
       'REQUEST_URI' => '/ignored',
       'PATH_INFO' => '/ignored'
@@ -228,6 +236,8 @@ HTML
       'rack.input' => '',
       'rack.request.query_string' => '',
       'rack.request.query_hash' => {},
+      'rack.request.form_input' => '',
+      'rack.request.form_hash' => {},
       'HTTP_HOST' => 'test.com',
       'REQUEST_URI' => '/en/ignored',
       'PATH_INFO' => '/en/ignored'
