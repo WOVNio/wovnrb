@@ -771,14 +771,162 @@ module Wovnrb
       assert_equal('/th/', url_lang_switcher.add_lang_code(href_trailing_slash, 'th', headers))
     end
 
+    def test_remove_lang_query_with_lang_param_name
+      settings = Wovnrb.get_settings('url_pattern' => 'query', 'lang_param_name' => 'lang')
+      store = Wovnrb.get_store(settings)
+      url_lang_switcher = UrlLanguageSwitcher.new(store)
+
+      keys = Wovnrb::Lang::LANG.keys
+      assert_equal(77, keys.size)
+
+      keys.each do |key|
+        uri_without_custom_lang_param = "wovn.io/?wovn=#{key}"
+        unchanged_uri = url_lang_switcher.remove_lang_from_uri_component(uri_without_custom_lang_param, key)
+        assert_equal(uri_without_custom_lang_param, unchanged_uri)
+
+        uri_without_scheme = url_lang_switcher.remove_lang_from_uri_component("wovn.io/?lang=#{key}", key)
+        assert_equal('wovn.io/', uri_without_scheme)
+
+        uri_with_scheme = url_lang_switcher.remove_lang_from_uri_component("https://wovn.io?lang=#{key}", key)
+        assert_equal('https://wovn.io', uri_with_scheme)
+      end
+    end
+
+    def test_remove_lang_query_with_nil_lang
+      settings = Wovnrb.get_settings('url_pattern' => 'query')
+      store = Wovnrb.get_store(settings)
+      url_lang_switcher = UrlLanguageSwitcher.new(store)
+
+      keys = Wovnrb::Lang::LANG.keys
+      assert_equal(77, keys.size)
+
+      uri_without_scheme = url_lang_switcher.remove_lang_from_uri_component('wovn.io', nil)
+      assert_equal('wovn.io', uri_without_scheme)
+
+      uri_with_scheme = url_lang_switcher.remove_lang_from_uri_component('https://wovn.io/', nil)
+      assert_equal('https://wovn.io/', uri_with_scheme)
+    end
+
+    def test_remove_lang_query_with_empty_lang
+      settings = Wovnrb.get_settings('url_pattern' => 'query')
+      store = Wovnrb.get_store(settings)
+      url_lang_switcher = UrlLanguageSwitcher.new(store)
+
+      uri_without_scheme = url_lang_switcher.remove_lang_from_uri_component('wovn.io', '')
+      assert_equal('wovn.io', uri_without_scheme)
+
+      uri_with_scheme = url_lang_switcher.remove_lang_from_uri_component('https://wovn.io/', '')
+      assert_equal('https://wovn.io/', uri_with_scheme)
+    end
+
+    def test_remove_lang_subdomain
+      settings = Wovnrb.get_settings('url_pattern' => 'subdomain')
+      store = Wovnrb.get_store(settings)
+      url_lang_switcher = UrlLanguageSwitcher.new(store)
+
+      keys = Wovnrb::Lang::LANG.keys
+      assert_equal(77, keys.size)
+
+      keys.each do |key|
+        uri_without_scheme = url_lang_switcher.remove_lang_from_uri_component("#{key.downcase}.wovn.io/", key)
+        assert_equal('wovn.io/', uri_without_scheme)
+
+        uri_with_scheme = url_lang_switcher.remove_lang_from_uri_component("https://#{key.downcase}.wovn.io", key)
+        assert_equal('https://wovn.io', uri_with_scheme)
+      end
+    end
+
+    def test_remove_lang_subdomain_with_nil_lang
+      settings = Wovnrb.get_settings('url_pattern' => 'subdomain')
+      store = Wovnrb.get_store(settings)
+      url_lang_switcher = UrlLanguageSwitcher.new(store)
+      keys = Wovnrb::Lang::LANG.keys
+      assert_equal(77, keys.size)
+
+      uri_without_scheme = url_lang_switcher.remove_lang_from_uri_component('wovn.io', nil)
+      assert_equal('wovn.io', uri_without_scheme)
+
+      uri_with_scheme = url_lang_switcher.remove_lang_from_uri_component('https://wovn.io/', nil)
+      assert_equal('https://wovn.io/', uri_with_scheme)
+    end
+
+    def test_remove_lang_subdomain_with_empty_lang
+      settings = Wovnrb.get_settings('url_pattern' => 'subdomain')
+      store = Wovnrb.get_store(settings)
+      url_lang_switcher = UrlLanguageSwitcher.new(store)
+
+      uri_without_scheme = url_lang_switcher.remove_lang_from_uri_component('wovn.io', '')
+      assert_equal('wovn.io', uri_without_scheme)
+
+      uri_with_scheme = url_lang_switcher.remove_lang_from_uri_component('https://wovn.io/', '')
+      assert_equal('https://wovn.io/', uri_with_scheme)
+    end
+
+    def test_remove_lang_subdomain_with_custom_lang_alias
+      Store.instance.update_settings('custom_lang_aliases' => { 'fr' => 'staging-fr' }, 'url_pattern' => 'subdomain')
+      url_lang_switcher = UrlLanguageSwitcher.new(Store.instance)
+
+      uri_without_scheme = url_lang_switcher.remove_lang_from_uri_component('staging-fr.wovn.io/', 'fr')
+      assert_equal('wovn.io/', uri_without_scheme)
+
+      uri_with_scheme = url_lang_switcher.remove_lang_from_uri_component('https://staging-fr.wovn.io', 'fr')
+      assert_equal('https://wovn.io', uri_with_scheme)
+    end
+
+    def test_remove_lang_path
+      settings = Wovnrb.get_settings
+      store = Wovnrb.get_store(settings)
+      url_lang_switcher = UrlLanguageSwitcher.new(store)
+
+      keys = Wovnrb::Lang::LANG.keys
+      assert_equal(77, keys.size)
+
+      keys.each do |key|
+        uri_without_scheme = url_lang_switcher.remove_lang_from_uri_component("wovn.io/#{key}", key)
+        assert_equal('wovn.io/', uri_without_scheme)
+
+        uri_with_scheme = url_lang_switcher.remove_lang_from_uri_component("https://wovn.io/#{key}/", key)
+        assert_equal('https://wovn.io/', uri_with_scheme)
+      end
+    end
+
+    def test_remove_lang_path_with_nil_lang
+      settings = Wovnrb.get_settings
+      store = Wovnrb.get_store(settings)
+      url_lang_switcher = UrlLanguageSwitcher.new(store)
+
+      keys = Wovnrb::Lang::LANG.keys
+      assert_equal(77, keys.size)
+
+      uri_without_scheme = url_lang_switcher.remove_lang_from_uri_component('wovn.io', nil)
+      assert_equal('wovn.io', uri_without_scheme)
+
+      uri_with_scheme = url_lang_switcher.remove_lang_from_uri_component('https://wovn.io/', nil)
+      assert_equal('https://wovn.io/', uri_with_scheme)
+    end
+
+    def test_remove_lang_path_with_empty_lang
+      settings = Wovnrb.get_settings
+      store = Wovnrb.get_store(settings)
+      url_lang_switcher = UrlLanguageSwitcher.new(store)
+
+      uri_without_scheme = url_lang_switcher.remove_lang_from_uri_component('wovn.io', '')
+      assert_equal('wovn.io', uri_without_scheme)
+
+      uri_with_scheme = url_lang_switcher.remove_lang_from_uri_component('https://wovn.io/', '')
+      assert_equal('https://wovn.io/', uri_with_scheme)
+    end
+
     def store_headers_factory(setting_opts = {}, url = 'http://my-site.com')
       settings = default_store_settings.merge(setting_opts)
       store = Wovnrb::Store.instance
       store.update_settings(settings)
+      url_lang_switcher = UrlLanguageSwitcher.new(store)
 
       headers = Wovnrb::Headers.new(
         Wovnrb.get_env('url' => url),
-        store.settings
+        store.settings,
+        url_lang_switcher
       )
 
       [store, headers]
