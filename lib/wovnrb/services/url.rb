@@ -84,7 +84,7 @@ module Wovnrb
       paths.inject('') do |left, right|
         case [left.end_with?('/'), right.start_with?('/')]
         when [true, true]
-          left + right[1..-1]
+          left + right[1..]
         when [false, false]
           left + (right.blank? ? right : "/#{right}")
         else
