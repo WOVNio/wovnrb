@@ -44,7 +44,7 @@ module Wovnrb
     def test_settings_url_pattern_subdomain
       s = Wovnrb::Store.instance
       s.update_settings('url_pattern' => 'subdomain')
-      assert_equal("^(?<lang>[^.]+)\.", s.settings['url_pattern_reg'])
+      assert_equal("^(?<lang>[^.]+).", s.settings['url_pattern_reg'])
       assert_equal('subdomain', s.settings['url_pattern'])
     end
 
