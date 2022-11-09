@@ -283,7 +283,7 @@ HTML
       'custom_lang_aliases' => {},
       'default_lang' => original_lang,
       'url_pattern' => 'subdomain',
-      'url_pattern_reg' => '^(?<lang>[^.]+).'
+      'url_pattern_reg' => '^(?<lang>[^.]+)\.'
     }
 
     store = Wovnrb::Store.instance

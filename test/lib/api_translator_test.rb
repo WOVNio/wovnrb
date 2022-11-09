@@ -69,7 +69,7 @@ module Wovnrb
         'custom_lang_aliases' => { 'ja' => 'Japanese' },
         'default_lang' => 'en',
         'url_pattern' => 'subdomain',
-        'url_pattern_reg' => '^(?<lang>[^.]+).',
+        'url_pattern_reg' => '^(?<lang>[^.]+)\.',
         'lang_param_name' => 'lang'
       }
       store = Wovnrb::Store.instance
@@ -89,7 +89,7 @@ module Wovnrb
         'custom_lang_aliases' => { 'ja' => 'Japanese' },
         'default_lang' => 'en',
         'url_pattern' => 'subdomain',
-        'url_pattern_reg' => '^(?<lang>[^.]+).',
+        'url_pattern_reg' => '^(?<lang>[^.]+)\.',
         'lang_param_name' => 'lang'
       }
       store = Wovnrb::Store.instance
@@ -136,7 +136,7 @@ module Wovnrb
         'custom_lang_aliases' => { 'ja' => 'Japanese' },
         'default_lang' => 'en',
         'url_pattern' => 'subdomain',
-        'url_pattern_reg' => '^(?<lang>[^.]+).',
+        'url_pattern_reg' => '^(?<lang>[^.]+)\.',
         'lang_param_name' => 'lang'
       }
       store = Wovnrb::Store.instance

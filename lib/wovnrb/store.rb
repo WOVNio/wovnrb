@@ -151,7 +151,7 @@ module Wovnrb
       when 'query'
         @settings['url_pattern_reg'] = "((\\?.*&)|\\?)#{@settings['lang_param_name']}=(?<lang>[^&]+)(&|$)"
       when 'subdomain'
-        @settings['url_pattern_reg'] = "^(?<lang>[^.]+)."
+        @settings['url_pattern_reg'] = '^(?<lang>[^.]+)\.'
       end
 
       @settings['test_mode'] = !(@settings['test_mode'] != true || @settings['test_mode'] != 'on')

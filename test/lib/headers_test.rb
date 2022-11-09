@@ -168,7 +168,7 @@ module Wovnrb
       },
       {
         'env' => { 'REQUEST_URI' => 'http://ja.page.com/test/' },
-        'setting' => { 'url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).' },
+        'setting' => { 'url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+)\.' },
         'name' => 'test_pathname_with_trailing_slash_if_present_with_subdomain_lang_when_trailing_slash_is_present',
         'expected' => {
           'pathname_with_trailing_slash_if_present' => '/test/'
@@ -234,7 +234,7 @@ module Wovnrb
     REDIRECT_LOCATION_TESTS = [
       {
         'env' => { 'url' => 'http://wovn.io/contact', 'HTTP_X_FORWARDED_HOST' => 'wovn.io' },
-        'setting' => { 'url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).' },
+        'setting' => { 'url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+)\.' },
         'name' => 'test_redirect_location_without_custom_lang_code',
         'expected' => {
           'redirect_location' => {
@@ -244,7 +244,7 @@ module Wovnrb
       },
       {
         'env' => { 'url' => 'http://wovn.io/contact', 'HTTP_X_FORWARDED_HOST' => 'wovn.io' },
-        'setting' => { 'url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+).', 'custom_lang_aliases' => { 'ja' => 'staging-ja' } },
+        'setting' => { 'url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+)\.', 'custom_lang_aliases' => { 'ja' => 'staging-ja' } },
         'name' => 'test_redirect_location_with_custom_lang_code',
         'expected' => {
           'redirect_location' => {
@@ -297,7 +297,7 @@ module Wovnrb
     def test_request_out_with_wovn_target_lang_header_using_subdomain
       settings = Wovnrb.get_settings({
                                        'url_pattern' => 'subdomain',
-                                       'url_pattern_reg' => '^(?<lang>[^.]+).'
+                                       'url_pattern_reg' => '^(?<lang>[^.]+)\.'
                                      })
       store = Wovnrb.get_store(settings)
       env = Wovnrb.get_env({
@@ -345,7 +345,7 @@ module Wovnrb
     def test_request_out_with_use_proxy_false
       settings = Wovnrb.get_settings({
                                        'url_pattern' => 'subdomain',
-                                       'url_pattern_reg' => '^(?<lang>[^.]+).'
+                                       'url_pattern_reg' => '^(?<lang>[^.]+)\.'
                                      })
       store = Wovnrb.get_store(settings)
       env = Wovnrb.get_env({
@@ -362,7 +362,7 @@ module Wovnrb
     def test_request_out_with_use_proxy_true
       settings = Wovnrb.get_settings({
                                        'url_pattern' => 'subdomain',
-                                       'url_pattern_reg' => '^(?<lang>[^.]+).',
+                                       'url_pattern_reg' => '^(?<lang>[^.]+)\.',
                                        'use_proxy' => true
                                      })
       store = Wovnrb.get_store(settings)
@@ -380,7 +380,7 @@ module Wovnrb
     def test_request_out_http_referer_subdomain
       settings = Wovnrb.get_settings({
                                        'url_pattern' => 'subdomain',
-                                       'url_pattern_reg' => '^(?<lang>[^.]+).'
+                                       'url_pattern_reg' => '^(?<lang>[^.]+)\.'
                                      })
       store = Wovnrb.get_store(settings)
       env = Wovnrb.get_env({
@@ -413,7 +413,7 @@ module Wovnrb
       settings = Wovnrb.get_settings({
                                        'custom_lang_aliases' => { 'ja' => 'staging-ja' },
                                        'url_pattern' => 'subdomain',
-                                       'url_pattern_reg' => '^(?<lang>[^.]+).'
+                                       'url_pattern_reg' => '^(?<lang>[^.]+)\.'
                                      })
       store = Wovnrb.get_store(settings)
       env = Wovnrb.get_env({
@@ -475,7 +475,7 @@ module Wovnrb
       settings = Wovnrb.get_settings({
                                        'custom_lang_aliases' => { 'ja' => 'staging-ja' },
                                        'url_pattern' => 'subdomain',
-                                       'url_pattern_reg' => '^(?<lang>[^.]+).'
+                                       'url_pattern_reg' => '^(?<lang>[^.]+)\.'
                                      })
       store = Wovnrb.get_store(settings)
       env = Wovnrb.get_env({
@@ -494,7 +494,7 @@ module Wovnrb
     def test_out_original_lang_with_subdomain_url_pattern
       settings = Wovnrb.get_settings({
                                        'url_pattern' => 'subdomain',
-                                       'url_pattern_reg' => '^(?<lang>[^.]+).'
+                                       'url_pattern_reg' => '^(?<lang>[^.]+)\.'
                                      })
       store = Wovnrb.get_store(settings)
       env = Wovnrb.get_env({
@@ -551,7 +551,7 @@ module Wovnrb
     def test_out_with_wovn_target_lang_header_using_subdomain
       settings = Wovnrb.get_settings({
                                        'url_pattern' => 'subdomain',
-                                       'url_pattern_reg' => '^(?<lang>[^.]+).'
+                                       'url_pattern_reg' => '^(?<lang>[^.]+)\.'
                                      })
       store = Wovnrb.get_store(settings)
       env = Wovnrb.get_env({
@@ -759,7 +759,7 @@ module Wovnrb
     def test_path_lang_sudomain_with_use_proxy_false
       settings = Wovnrb.get_settings({
                                        'url_pattern' => 'subdomain',
-                                       'url_pattern_reg' => '^(?<lang>[^.]+).'
+                                       'url_pattern_reg' => '^(?<lang>[^.]+)\.'
                                      })
       store = Wovnrb.get_store(settings)
       env = Wovnrb.get_env({
@@ -774,7 +774,7 @@ module Wovnrb
     def test_path_lang_sudomain_with_use_proxy_true
       settings = Wovnrb.get_settings({
                                        'url_pattern' => 'subdomain',
-                                       'url_pattern_reg' => '^(?<lang>[^.]+).',
+                                       'url_pattern_reg' => '^(?<lang>[^.]+)\.',
                                        'use_proxy' => true
                                      })
       store = Wovnrb.get_store(settings)
