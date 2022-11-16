@@ -884,7 +884,7 @@ module Wovnrb
       keys.each do |key|
         assert_equal('/', sut.remove_lang_from_uri_component("/#{key}", key))
         assert_equal("/dir/#{key}/page.html", sut.remove_lang_from_uri_component("/#{key}/dir/#{key}/page.html", key))
-        assert_equal('?query', sut.remove_lang_from_uri_component("?query", key))
+        assert_equal('?query', sut.remove_lang_from_uri_component('?query', key))
         assert_equal('wovn.io/', sut.remove_lang_from_uri_component("wovn.io/#{key}", key))
         assert_equal("wovn.io/dir/#{key}/page.html", sut.remove_lang_from_uri_component("wovn.io/#{key}/dir/#{key}/page.html", key))
         assert_equal("wovn.io:5000/dir/#{key}/page.html", sut.remove_lang_from_uri_component("wovn.io:5000/#{key}/dir/#{key}/page.html", key))
