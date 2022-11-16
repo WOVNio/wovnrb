@@ -44,7 +44,15 @@ module Wovnrb
         rp = Regexp.new("(^|(//))#{lang_code}\\.", 'i')
         uri.sub(rp, '\1')
       when 'path'
-        uri.sub(%r{/#{lang_code}(/|$)}, '/')
+        protocol_match = uri.match(%r{^([^/]+//)})
+        protocol = ''
+        if protocol_match
+          protocol = protocol_match[1]
+          uri = uri.sub(protocol, '')
+        end
+        lang_code_pattern = %r{(^/|[^/]+/)#{lang_code}(/|$)}
+        uri = uri.sub(lang_code_pattern, '\1')
+        protocol + uri
       else
         raise RuntimeError("Invalid URL pattern: #{@store.settings['url_pattern']}")
       end

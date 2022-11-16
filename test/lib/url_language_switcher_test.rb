@@ -876,17 +876,20 @@ module Wovnrb
     def test_remove_lang_path
       settings = Wovnrb.get_settings
       store = Wovnrb.get_store(settings)
-      url_lang_switcher = UrlLanguageSwitcher.new(store)
+      sut = UrlLanguageSwitcher.new(store)
 
       keys = Wovnrb::Lang::LANG.keys
       assert_equal(77, keys.size)
 
       keys.each do |key|
-        uri_without_scheme = url_lang_switcher.remove_lang_from_uri_component("wovn.io/#{key}", key)
-        assert_equal('wovn.io/', uri_without_scheme)
-
-        uri_with_scheme = url_lang_switcher.remove_lang_from_uri_component("https://wovn.io/#{key}/", key)
-        assert_equal('https://wovn.io/', uri_with_scheme)
+        assert_equal('/', sut.remove_lang_from_uri_component("/#{key}", key))
+        assert_equal("/dir/#{key}/page.html", sut.remove_lang_from_uri_component("/#{key}/dir/#{key}/page.html", key))
+        assert_equal('?query', sut.remove_lang_from_uri_component("?query", key))
+        assert_equal('wovn.io/', sut.remove_lang_from_uri_component("wovn.io/#{key}", key))
+        assert_equal("wovn.io/dir/#{key}/page.html", sut.remove_lang_from_uri_component("wovn.io/#{key}/dir/#{key}/page.html", key))
+        assert_equal("wovn.io:5000/dir/#{key}/page.html", sut.remove_lang_from_uri_component("wovn.io:5000/#{key}/dir/#{key}/page.html", key))
+        assert_equal('https://wovn.io/', sut.remove_lang_from_uri_component("https://wovn.io/#{key}/", key))
+        assert_equal("https://wovn.io/dir/#{key}/page.html", sut.remove_lang_from_uri_component("https://wovn.io/#{key}/dir/#{key}/page.html", key))
       end
     end
 
