@@ -44,15 +44,11 @@ module Wovnrb
         rp = Regexp.new("(^|(//))#{lang_code}\\.", 'i')
         uri.sub(rp, '\1')
       when 'path'
-        protocol_match = uri.match(%r{^([^/]+//)})
-        protocol = ''
-        if protocol_match
-          protocol = protocol_match[1]
-          uri = uri.sub(protocol, '')
-        end
-        lang_code_pattern = %r{(^/|[^/]+/)#{lang_code}(/|$)}
-        uri = uri.sub(lang_code_pattern, '\1')
-        protocol + uri
+        # ^(.*://|//)?  1: schema (optional) like https://
+        # ([^/]*/)?     2: host (optional) like wovn.io, with trailing '/' (mandatory)
+        # (/|$)         3: path or end-of-string
+        lang_code_pattern = %r{^(.*://|//)?([^/]*/)?#{lang_code}(/|$)}
+        uri.sub(lang_code_pattern, '\1\2')
       else
         raise RuntimeError("Invalid URL pattern: #{@store.settings['url_pattern']}")
       end
