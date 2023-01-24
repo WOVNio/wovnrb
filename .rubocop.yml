@@ -5,3 +5,6 @@ inherit_from: .rubocop_todo.yml
 AllCops:
   SuggestExtensions: false
   TargetRubyVersion: 2.5
+
+Gemspec/DevelopmentDependencies:
+  EnforcedStyle: gemspec
