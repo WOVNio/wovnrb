@@ -56,7 +56,7 @@ module Wovnrb
       'pt-PT' => { name: 'Português (Portugal)',     code: 'pt-PT',      en: 'Portuguese (Portugal)' },
       'ru' => { name: 'Русский',                  code: 'ru',         en: 'Russian' },
       'es' => { name: 'Español',                  code: 'es',         en: 'Spanish' },
-      'es-RA' => { name: 'Español (Argentina)',      code: 'es-RA',      en: 'Spanish (Argentina)' },
+      'es-AR' => { name: 'Español (Argentina)',      code: 'es-AR',      en: 'Spanish (Argentina)' },
       'es-CL' => { name: 'Español (Chile)',          code: 'es-CL',      en: 'Spanish (Chile)' },
       'es-CO' => { name: 'Español (Colombia)',       code: 'es-CO',      en: 'Spanish (Colombia)' },
       'es-CR' => { name: 'Español (Costa Rica)',     code: 'es-CR',      en: 'Spanish (Costa Rica)' },
