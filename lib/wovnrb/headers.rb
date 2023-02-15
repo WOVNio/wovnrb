@@ -172,6 +172,10 @@ module Wovnrb
       bots.any? { |bot| @env['HTTP_USER_AGENT'].include?(bot) }
     end
 
+    def user_agent
+      @env.key?('HTTP_USER_AGENT') ? @env['HTTP_USER_AGENT'] : ''
+    end
+
     def to_absolute_path(path)
       absolute_path = path.blank? ? '/' : path
       absolute_path = absolute_path.starts_with?('/') ? absolute_path : URL.join_paths(dirname, absolute_path)

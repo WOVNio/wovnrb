@@ -99,7 +99,9 @@ module Wovnrb
         'path' => page_pathname,
         'lang' => lang_code,
         'version' => "wovnrb_#{VERSION}"
-      }.map { |k, v| "#{k}=#{v}" }.join('&')
+      }
+      cache_key_components['timestamp'] = search_engine_bot_timestamp if @headers.search_engine_bot?
+      cache_key_components = cache_key_components.map { |k, v| "#{k}=#{v}" }.join('&')
 
       CGI.escape("(#{cache_key_components})")
     end
@@ -114,7 +116,8 @@ module Wovnrb
         'translate_canonical_tag' => translate_canonical_tag,
         'product' => 'WOVN.rb',
         'version' => VERSION,
-        'body' => body
+        'body' => body,
+        'user_agent' => @headers.user_agent
       }
 
       result['custom_lang_aliases'] = JSON.dump(custom_lang_aliases) unless custom_lang_aliases.empty?
@@ -168,6 +171,14 @@ module Wovnrb
 
     def page_pathname
       @headers.pathname_with_trailing_slash_if_present
+    end
+
+    def search_engine_bot_timestamp
+      twenty_minutes = 20 * 60
+      time_now_sec = Time.now.utc.to_i
+      cache_time = TimeUtil.round_down_time(time_now_sec, twenty_minutes)
+      datetime = Time.at(cache_time).utc.to_datetime
+      datetime.iso8601
     end
   end
 end
