@@ -141,7 +141,7 @@ module Wovnrb
       if lang_code != @settings['default_lang'] && headers.key?('Location') && headers['Location'] =~ r && !@settings['ignore_globs'].ignore?(headers['Location'])
         case @settings['url_pattern']
         when 'query'
-          headers['Location'] += if /\?/.match?(headers['Location'])
+          headers['Location'] += if headers['Location'].include?('?')
                                    '&'
                                  else
                                    '?'
