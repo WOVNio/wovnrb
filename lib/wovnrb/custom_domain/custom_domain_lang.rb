@@ -25,8 +25,8 @@ module Wovnrb
 
     def path_is_equal_or_subset_of(orig_path, test_path)
       # split by delimiter and remove spaces and empty strings
-      orig_segments = orig_path.split('/').map(&:strip).filter(&:present?)
-      test_segments = test_path.split('/').map(&:strip).filter(&:present?)
+      orig_segments = orig_path.split('/').map(&:strip).select(&:present?)
+      test_segments = test_path.split('/').map(&:strip).select(&:present?)
 
       length = orig_segments.length
       diff = orig_segments.slice(0, length) <=> test_segments.slice(0, length)
