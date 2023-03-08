@@ -428,6 +428,25 @@ module Wovnrb
       assert_equal('http://wovn.io/test', request_out_env['HTTP_REFERER'])
     end
 
+    def test_request_out_custom_domain_pattern
+      settings = Wovnrb.get_settings({
+                                       'url_pattern' => 'custom_domain',
+                                       'custom_domain_langs' => { 'en' => { 'url' => 'wovn.io' }, 'ja' => { 'url' => 'ja.wovn.io' } }
+                                     })
+      store = Wovnrb.get_store(settings)
+      env = Wovnrb.get_env({
+                             'SERVER_NAME' => 'ja.wovn.io',
+                             'REQUEST_URI' => '/test',
+                             'HTTP_REFERER' => 'http://ja.wovn.io/test'
+                           })
+      url_lang_switcher = UrlLanguageSwitcher.new(store)
+      header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
+
+      request_out_env = header.request_out('ja')
+      assert_equal('http://ja.wovn.io/test', request_out_env['HTTP_REFERER'])
+      assert_equal('ja.wovn.io', request_out_env['SERVER_NAME'])
+    end
+
     def test_out_should_add_lang_code_to_redirection
       settings = Wovnrb.get_settings({
                                        'default_lang' => 'en',
