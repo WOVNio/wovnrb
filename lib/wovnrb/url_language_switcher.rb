@@ -1,3 +1,4 @@
+require 'wovnrb/custom_domain/custom_domain_lang_url_handler'
 require 'wovnrb/services/url'
 
 module Wovnrb
@@ -28,10 +29,11 @@ module Wovnrb
 
     # Removes language code from a URI component (path, hostname, query etc), and returns it.
     #
-    # @param uri  [String] original URI component
-    # @param lang [String] language code
-    # @return     [String] removed URI
-    def remove_lang_from_uri_component(uri, lang)
+    # @param uri     [String] original URI component
+    # @param lang    [String] language code
+    # @param headers [Header] headers
+    # @return        [String] removed URI
+    def remove_lang_from_uri_component(uri, lang, headers = nil)
       lang_code = @store.settings['custom_lang_aliases'][lang] || lang
 
       return uri if lang_code.blank?
@@ -49,6 +51,25 @@ module Wovnrb
         # (/|$)         3: path or end-of-string
         lang_code_pattern = %r{^(.*://|//)?([^/]*/)?#{lang_code}(/|$)}
         uri.sub(lang_code_pattern, '\1\2')
+      when 'custom_domain'
+        custom_domain_langs = @store.custom_domain_langs
+        custom_domain_lang_to_remove = custom_domain_langs.custom_domain_lang_by_lang(lang_code)
+        default_custom_domain_lang = custom_domain_langs.custom_domain_lang_by_lang(@store.default_lang)
+        new_uri = uri
+        if Wovnrb::URL.absolute_url?(uri)
+          new_uri = CustomDomainLangUrlHandler.change_to_new_custom_domain_lang(uri, custom_domain_lang_to_remove, default_custom_domain_lang)
+        elsif Wovnrb::URL.absolute_path?(uri)
+          absolute_url = "#{headers.protocol}://#{headers.unmasked_host}#{uri}"
+          absolute_url_with_lang = CustomDomainLangUrlHandler.change_to_new_custom_domain_lang(absolute_url, custom_domain_lang_to_remove, default_custom_domain_lang)
+          segments = make_segments_from_absolute_url(absolute_url_with_lang)
+          new_uri = segments['others']
+        elsif uri == custom_domain_lang_to_remove.host
+          absolute_url = "#{headers.protocol}://#{headers.unmasked_host}#{uri}"
+          absolute_url_with_lang = CustomDomainLangUrlHandler.change_to_new_custom_domain_lang(absolute_url, custom_domain_lang_to_remove, default_custom_domain_lang)
+          segments = make_segments_from_absolute_url(absolute_url_with_lang)
+          new_uri = segments['host']
+        end
+        new_uri
       else
         raise RuntimeError("Invalid URL pattern: #{@store.settings['url_pattern']}")
       end
@@ -80,6 +101,8 @@ module Wovnrb
                  end
                when 'query'
                  add_query_lang_code(href, code_to_add)
+               when 'custom_domain'
+                 CustomDomainLangUrlHandler.add_custom_domain_lang_to_absolute_url(href, code_to_add, @store.custom_domain_langs)
                else # path
                  href_uri.path = add_lang_code_for_path(href_uri.path, code_to_add, headers)
                  href_uri.to_s
@@ -105,6 +128,15 @@ module Wovnrb
         "#{headers.protocol}://#{code_to_add.downcase}.#{headers.host}#{abs_path}"
       when 'query'
         add_query_lang_code(href, code_to_add)
+      when 'custom_domain'
+        if Wovnrb::URL.absolute_path?(href)
+          absolute_url = "#{headers.protocol}://#{headers.unmasked_host}#{href}"
+          absolute_url_with_lang = CustomDomainLangUrlHandler.add_custom_domain_lang_to_absolute_url(absolute_url, code_to_add, @store.custom_domain_langs)
+          segments = make_segments_from_absolute_url(absolute_url_with_lang)
+          segments['others']
+        else
+          href
+        end
       else # path
         add_lang_code_for_path(href, code_to_add, headers)
       end
@@ -147,6 +179,20 @@ module Wovnrb
 
     def build_lang_path(lang_code)
       lang_code.blank? ? '' : URL.prepend_path_slash(lang_code)
+    end
+
+    def make_segments_from_absolute_url(absolute_uri)
+      # 1: schema (optional) like https://
+      # 2: host (optional) like wovn.io
+      # 3: path with query or hash
+      regex = %r{^(.*://|//)?([^/?]*)?((?:/|\?|#).*)?$}
+      matches = regex.match(absolute_uri)
+
+      {
+        'schema' => matches[1],
+        'host' => matches[2],
+        'others' => matches[3]
+      }
     end
   end
 end

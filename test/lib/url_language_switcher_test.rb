@@ -771,6 +771,74 @@ module Wovnrb
       assert_equal('/th/', url_lang_switcher.add_lang_code(href_trailing_slash, 'th', headers))
     end
 
+    def test_add_lang_code_with_custom_domain_langs
+      custom_domain_langs = {
+        'en' => { 'url' => 'my-site.com' },
+        'en-US' => { 'url' => 'en-us.my-site.com' },
+        'ja' => { 'url' => 'my-site.com/ja' },
+        'zh-CHS' => { 'url' => 'my-site.com/zh/chs' },
+        'zh-Hant-HK' => { 'url' => 'zh-hant-hk.com/zh' }
+      }
+      test_cases = [
+        # no_lang_url, lang_code, expected_url
+        # absolute URL
+        ['https://my-site.com', 'en', 'https://my-site.com'],
+        ['https://my-site.com', 'ja', 'https://my-site.com/ja'],
+        ['https://my-site.com/index.php', 'ja', 'https://my-site.com/ja/index.php'],
+        ['https://my-site.com/a/b/', 'ja', 'https://my-site.com/ja/a/b/'],
+        ['https://my-site.com/a/b/index.php', 'ja', 'https://my-site.com/ja/a/b/index.php'],
+        ['https://my-site.com/index.php', 'en-US', 'https://en-us.my-site.com/index.php'],
+        ['https://my-site.com/index.php', 'zh-CHS', 'https://my-site.com/zh/chs/index.php'],
+        ['https://my-site.com/index.php', 'zh-Hant-HK', 'https://zh-hant-hk.com/zh/index.php'],
+        ['https://my-site.com/index.php?a=1&b=2', 'zh-Hant-HK', 'https://zh-hant-hk.com/zh/index.php?a=1&b=2'],
+        ['https://my-site.com/index.php#hash', 'zh-Hant-HK', 'https://zh-hant-hk.com/zh/index.php#hash'],
+        ['https://my-site.com/index.php?a=1&b=2#hash', 'zh-Hant-HK', 'https://zh-hant-hk.com/zh/index.php?a=1&b=2#hash'],
+
+        # absolute path
+        ['/', 'en', '/'],
+        ['/', 'ja', '/ja/'],
+        ['/index.php', 'ja', '/ja/index.php'],
+        ['/a/b/', 'ja', '/ja/a/b/'],
+        ['/a/b/index.php', 'ja', '/ja/a/b/index.php'],
+        ['/index.php', 'en-US', '/index.php'],
+        ['/index.php', 'zh-CHS', '/zh/chs/index.php'],
+        ['/index.php', 'zh-Hant-HK', '/zh/index.php'],
+        ['/index.php?a=1&b=2', 'zh-Hant-HK', '/zh/index.php?a=1&b=2'],
+        ['/index.php#hash', 'zh-Hant-HK', '/zh/index.php#hash'],
+        ['/index.php?a=1&b=2#hash', 'zh-Hant-HK', '/zh/index.php?a=1&b=2#hash'],
+
+        # other patterns should be keep original
+        ['a=1&b=2', 'zh-Hant-HK', 'a=1&b=2'],
+        ['#hash', 'zh-Hant-HK', '#hash']
+      ]
+
+      settings = {
+        'project_token' => 'T0k3N',
+        'default_lang' => 'en',
+        'supported_langs' => ['en'],
+        'url_pattern' => 'custom_domain',
+        'custom_domain_langs' => custom_domain_langs
+      }
+      additional_env = {
+        'HTTP_HOST' => 'my-site.com',
+        'REQUEST_URI' => '/req_uri/'
+      }
+
+      test_cases.each do |test_case|
+        target_uri, lang, expected_uri = test_case
+        store = Wovnrb::Store.instance
+        store.update_settings(settings)
+        url_lang_switcher = UrlLanguageSwitcher.new(store)
+        headers = Wovnrb::Headers.new(
+          Wovnrb.get_env(additional_env),
+          store.settings,
+          url_lang_switcher
+        )
+
+        assert_equal(expected_uri, url_lang_switcher.add_lang_code(target_uri, lang, headers))
+      end
+    end
+
     def test_remove_lang_query_with_lang_param_name
       settings = Wovnrb.get_settings('url_pattern' => 'query', 'lang_param_name' => 'lang')
       store = Wovnrb.get_store(settings)
@@ -918,6 +986,75 @@ module Wovnrb
 
       uri_with_scheme = url_lang_switcher.remove_lang_from_uri_component('https://wovn.io/', '')
       assert_equal('https://wovn.io/', uri_with_scheme)
+    end
+
+    def test_remove_lang_custom_domain
+      custom_domain_langs = {
+        'en' => { 'url' => 'my-site.com' },
+        'en-US' => { 'url' => 'en-us.my-site.com' },
+        'ja' => { 'url' => 'my-site.com/ja' },
+        'zh-CHS' => { 'url' => 'my-site.com/zh/chs' },
+        'zh-Hant-HK' => { 'url' => 'zh-hant-hk.com/zh' }
+      }
+      test_cases = [
+        # target_uri, lang, expected_uri, env
+        # absolute URL
+        ['https://my-site.com', 'en', 'https://my-site.com', {}],
+        ['https://my-site.com/ja', 'ja', 'https://my-site.com', { 'REQUEST_URI' => '/ja' }],
+        ['https://my-site.com/ja/index.php', 'ja', 'https://my-site.com/index.php', { 'REQUEST_URI' => '/ja/index.php' }],
+        ['https://my-site.com/ja/a/b/', 'ja', 'https://my-site.com/a/b/', { 'REQUEST_URI' => '/ja/a/b/' }],
+        ['https://my-site.com/ja/a/b/index.php', 'ja', 'https://my-site.com/a/b/index.php', { 'REQUEST_URI' => '/ja/a/b/index.php' }],
+        ['https://en-us.my-site.com/index.php', 'en-US', 'https://my-site.com/index.php', { 'HTTP_HOST' => 'en-us.my-site.com', 'SERVER_NAME' => 'en-us.my-site.com', 'REQUEST_URI' => '/index.php' }],
+        ['https://my-site.com/zh/chs/index.php', 'zh-CHS', 'https://my-site.com/index.php', { 'REQUEST_URI' => '/zh/chs/index.php' }],
+        ['https://zh-hant-hk.com/zh/index.php', 'zh-Hant-HK', 'https://my-site.com/index.php', { 'HTTP_HOST' => 'zh-hant-hk.com', 'SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/index.php' }],
+        ['https://zh-hant-hk.com/zh/index.php?a=1&b=2', 'zh-Hant-HK', 'https://my-site.com/index.php?a=1&b=2', { 'HTTP_HOST' => 'zh-hant-hk.com', 'SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/index.php' }],
+        ['https://zh-hant-hk.com/zh/index.php#hash', 'zh-Hant-HK', 'https://my-site.com/index.php#hash', { 'HTTP_HOST' => 'zh-hant-hk.com', 'SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/index.php' }],
+        ['https://zh-hant-hk.com/zh/index.php?a=1&b=2#hash', 'zh-Hant-HK', 'https://my-site.com/index.php?a=1&b=2#hash', { 'HTTP_HOST' => 'zh-hant-hk.com', 'SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/index.php' }],
+
+        # absolute path
+        ['/', 'en', '/', {}],
+        ['/ja/', 'ja', '/', { 'REQUEST_URI' => '/ja' }],
+        ['/ja/index.php', 'ja', '/index.php', { 'REQUEST_URI' => '/ja/index.php' }],
+        ['/ja/a/b/', 'ja', '/a/b/', { 'REQUEST_URI' => '/ja/a/b/' }],
+        ['/ja/a/b/index.php', 'ja', '/a/b/index.php', { 'REQUEST_URI' => '/ja/a/b/index.php' }],
+        ['/index.php', 'en-US', '/index.php', { 'HTTP_HOST' => 'en-us.my-site.com', 'SERVER_NAME' => 'en-us.my-site.com', 'REQUEST_URI' => '/index.php' }],
+        ['/zh/chs/index.php', 'zh-CHS', '/index.php', { 'REQUEST_URI' => '/zh/chs/index.php' }],
+        ['/zh/index.php', 'zh-Hant-HK', '/index.php', { 'HTTP_HOST' => 'zh-hant-hk.com', 'SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/index.php' }],
+        ['/zh/index.php?a=1&b=2', 'zh-Hant-HK', '/index.php?a=1&b=2', { 'HTTP_HOST' => 'zh-hant-hk.com', 'SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/index.php' }],
+        ['/zh/index.php#hash', 'zh-Hant-HK', '/index.php#hash', { 'HTTP_HOST' => 'zh-hant-hk.com', 'SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/index.php' }],
+        ['/zh/index.php?a=1&b=2#hash', 'zh-Hant-HK', '/index.php?a=1&b=2#hash', { 'HTTP_HOST' => 'zh-hant-hk.com', 'SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/index.php' }],
+
+        # other patterns should be keep original
+        ['a=1&b=2', 'en-US', 'a=1&b=2', { 'HTTP_HOST' => 'en-us.my-site.com', 'SERVER_NAME' => 'en-us.my-site.com', 'REQUEST_URI' => '/' }],
+        ['#hash', 'en-US', '#hash', { 'HTTP_HOST' => 'en-us.my-site.com', 'SERVER_NAME' => 'en-us.my-site.com', 'REQUEST_URI' => '/' }]
+      ]
+
+      settings = {
+        'project_token' => 'T0k3N',
+        'default_lang' => 'en',
+        'supported_langs' => %w[en en-US ja zh-CHS zh-Hant-HK],
+        'url_pattern' => 'custom_domain',
+        'custom_domain_langs' => custom_domain_langs
+      }
+      base_env = {
+        'HTTP_HOST' => 'my-site.com',
+        'REQUEST_URI' => '/req_uri/'
+      }
+
+      test_cases.each do |test_case|
+        target_uri, lang, expected_uri, env = test_case
+        additional_env = base_env.merge(env)
+        store = Wovnrb::Store.instance
+        store.update_settings(settings)
+        url_lang_switcher = UrlLanguageSwitcher.new(store)
+        headers = Wovnrb::Headers.new(
+          Wovnrb.get_env(additional_env),
+          store.settings,
+          url_lang_switcher
+        )
+
+        assert_equal(expected_uri, url_lang_switcher.remove_lang_from_uri_component(target_uri, lang, headers))
+      end
     end
 
     def store_headers_factory(setting_opts = {}, url = 'http://my-site.com')

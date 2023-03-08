@@ -2,6 +2,7 @@ require 'net/http'
 require 'uri'
 require 'cgi'
 require 'singleton'
+require 'wovnrb/custom_domain/custom_domain_langs'
 require 'wovnrb/services/wovn_logger'
 require 'wovnrb/services/glob'
 require 'wovnrb/settings'
@@ -38,7 +39,8 @@ module Wovnrb
         'widget_url' => 'https://j.wovn.io/1',
         'wovn_dev_mode' => false,
         'compress_api_requests' => true,
-        'translate_canonical_tag' => true
+        'translate_canonical_tag' => true,
+        'custom_domain_langs' => {}
       )
     end
 
@@ -152,6 +154,8 @@ module Wovnrb
         @settings['url_pattern_reg'] = "((\\?.*&)|\\?)#{@settings['lang_param_name']}=(?<lang>[^&]+)(&|$)"
       when 'subdomain'
         @settings['url_pattern_reg'] = '^(?<lang>[^.]+)\.'
+      when 'custom_domain'
+        # Do not use regex
       end
 
       @settings['test_mode'] = !(@settings['test_mode'] != true || @settings['test_mode'] != 'on')
@@ -198,6 +202,10 @@ module Wovnrb
 
     def url_pattern
       @settings['url_pattern']
+    end
+
+    def custom_domain_langs
+      CustomDomainLangs.new(@settings['custom_domain_langs'])
     end
 
     private
