@@ -241,6 +241,23 @@ module Wovnrb
       assert_equal(expected_html, translated_html)
     end
 
+    test 'Transform HTML - custom domain langs' do
+      dom = get_dom('<html><body><a>hello</a></body></html>')
+      settings = {
+        'default_lang' => 'en',
+        'supported_langs' => %w[en fr],
+        'custom_domain_langs' => { 'en' => { 'url' => 'my-site.com' }, 'fr' => { 'url' => 'my-site.com/fr' } },
+        'url_pattern' => 'custom_domain'
+      }
+      store, headers = store_headers_factory(settings)
+      url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
+      converter = HtmlConverter.new(dom, store, headers, url_lang_switcher)
+      translated_html = converter.build
+
+      expected_html = "<html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"https://j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=custom_domain&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=WOVN.rb_#{VERSION}&amp;customDomainLangs={&quot;my-site.com&quot;:&quot;en&quot;,&quot;my-site.com/fr&quot;:&quot;fr&quot;}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"fr\" href=\"http://my-site.com/fr/\"></head><body><a>hello</a></body></html>"
+      assert_equal(expected_html, translated_html)
+    end
+
     test 'replace_snippet' do
       converter = prepare_html_converter('<html><head>
         <script src="/a"></script>
