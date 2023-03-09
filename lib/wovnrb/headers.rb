@@ -1,3 +1,5 @@
+require 'wovnrb/custom_domain/custom_domain_lang_url_handler'
+
 module Wovnrb
   class Headers
     attr_reader :unmasked_url, :url, :protocol, :unmasked_host, :host, :unmasked_pathname, :pathname, :pathname_with_trailing_slash_if_present
@@ -140,6 +142,9 @@ module Wovnrb
           headers['Location'] += "#{@settings['lang_param_name']}=#{lang_code}"
         when 'subdomain'
           headers['Location'] = headers['Location'].sub(/\/\/([^.]+)/, "//#{lang_code}.\\1")
+        when 'custom_domain'
+          custom_domain_langs = Store.instance.custom_domain_langs
+          headers['Location'] = CustomDomainLangUrlHandler.add_custom_domain_lang_to_absolute_url(headers['Location'], lang_code, custom_domain_langs)
         # when 'path'
         else
           headers['Location'] = headers['Location'].sub(/(\/\/[^\/]+)/, "\\1/#{lang_code}")
