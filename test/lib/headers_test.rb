@@ -431,7 +431,10 @@ module Wovnrb
     def test_request_out_custom_domain_pattern
       settings = Wovnrb.get_settings({
                                        'url_pattern' => 'custom_domain',
-                                       'custom_domain_langs' => { 'en' => { 'url' => 'wovn.io' }, 'ja' => { 'url' => 'ja.wovn.io' } }
+                                       'custom_domain_langs' => {
+                                         'en' => { 'url' => 'wovn.io' },
+                                         'ja' => { 'url' => 'ja.wovn.io' }
+                                       }
                                      })
       store = Wovnrb.get_store(settings)
       env = Wovnrb.get_env({
@@ -567,29 +570,6 @@ module Wovnrb
       assert_equal('http://wovn.io/test', header.out(headers)['Location'])
     end
 
-    def test_out_with_custom_domain
-      settings = Wovnrb.get_settings({
-                                       'default_lang' => 'en',
-                                       'url_pattern' => 'custom_domain',
-                                       'custom_domain_langs' => {
-                                         'en' => { 'url' => 'wovn.io' },
-                                         'ja' => { 'url' => 'wovn.io/ja' }
-                                       }
-                                     })
-      store = Wovnrb.get_store(settings)
-      env = Wovnrb.get_env({
-                             'SERVER_NAME' => 'wovn.io',
-                             'REQUEST_URI' => '/ja/test',
-                             'HTTP_REFERER' => 'http://wovn.io/ja/test'
-                           })
-      url_lang_switcher = UrlLanguageSwitcher.new(store)
-      header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
-      headers = {
-        'Location' => 'http://wovn.io/'
-      }
-      assert_equal('http://wovn.io/ja/', header.out(headers)['Location'])
-    end
-
     def test_out_with_wovn_target_lang_header_using_subdomain
       settings = Wovnrb.get_settings({
                                        'url_pattern' => 'subdomain',
@@ -651,6 +631,29 @@ module Wovnrb
       header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
       headers = header.out(header.request_out('ja'))
       assert_equal('ja', headers['wovnrb.target_lang'])
+    end
+
+    def test_out_with_custom_domain
+      settings = Wovnrb.get_settings({
+                                       'default_lang' => 'en',
+                                       'url_pattern' => 'custom_domain',
+                                       'custom_domain_langs' => {
+                                         'en' => { 'url' => 'wovn.io' },
+                                         'ja' => { 'url' => 'wovn.io/ja' }
+                                       }
+                                     })
+      store = Wovnrb.get_store(settings)
+      env = Wovnrb.get_env({
+                             'SERVER_NAME' => 'wovn.io',
+                             'REQUEST_URI' => '/ja/test',
+                             'HTTP_REFERER' => 'http://wovn.io/ja/test'
+                           })
+      url_lang_switcher = UrlLanguageSwitcher.new(store)
+      header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
+      headers = {
+        'Location' => 'http://wovn.io/'
+      }
+      assert_equal('http://wovn.io/ja/', header.out(headers)['Location'])
     end
 
     def test_get_settings_valid
