@@ -238,6 +238,7 @@ HTML
       'rack.request.query_hash' => {},
       'rack.request.form_input' => '',
       'rack.request.form_hash' => {},
+      'rack.request.form_pairs' => [],
       'HTTP_HOST' => 'test.com',
       'REQUEST_URI' => '/en/ignored',
       'PATH_INFO' => '/en/ignored'
