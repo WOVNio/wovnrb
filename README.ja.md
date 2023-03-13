@@ -131,7 +131,7 @@ urlの種類は `url_pattern` パラメータで設定できます。設定で�
 'path'          | https://wovn.io/ja/contact        | デフォルト値、何も設定されていない場合、 `url_pattern` のデフォルト値はこの値になります
 'subdomain'     | https://ja.wovn.io/contact        | DNSの設定が必要です
 'query'         | https://wovn.io/contact?wovn=ja   | セットアップを完了するために必要なアプリケーションへの変更の最小量
-'custom_domain' | `custom_domain_langs`に設定された値 | [2.10.項]を参照してください。
+'custom_domain' | `custom_domain_langs`に設定された値 | [2.10.項](#210-custom_domain_langs)を参照してください。
 
 ※ 上記は、以下のURLを使用してライブラリが翻訳したURLの例です。
 
