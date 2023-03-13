@@ -53,6 +53,7 @@ module Wovnrb
     # @return [nil]
     def reset
       @settings = Store.default_settings
+      @custom_domain_langs = nil
       # When Store is initialized, the Rails.configuration object is not yet initialized
       @config_loaded = false
     end
@@ -205,7 +206,7 @@ module Wovnrb
     end
 
     def custom_domain_langs
-      CustomDomainLangs.new(@settings['custom_domain_langs'])
+      @custom_domain_langs ||= CustomDomainLangs.new(@settings['custom_domain_langs'])
     end
 
     private
