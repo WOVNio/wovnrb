@@ -137,7 +137,7 @@ urlの種類は `url_pattern` パラメータで設定できます。設定で�
 
 	https://wovn.io/contact
 
-### 2.5 lang_param_name
+### 2.5. lang_param_name
 
 このパラメータは `url_pattern` が `query` に設定されている場合のみ有効です。
 
@@ -171,7 +171,7 @@ WOVN.ioは翻訳されたページを検索する際にクエリパラメータ�
 デフォルトでは、部分的なHTMLコンテンツは翻訳されますが、ウィジェットのスニペットは追加されません。
 `translate_fragment` を `false` に設定すると、HTMLの一部が翻訳されないようになります。
 
-### 2.9 ignore_paths
+### 2.9. ignore_paths
 
 このパラメータは、WOVN.rbが指定されたディレクトリ内のコンテンツをローカライズしないように指示します。
 指定されたディレクトリは、URLパスの先頭にのみマッチします。
