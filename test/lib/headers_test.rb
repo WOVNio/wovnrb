@@ -428,8 +428,9 @@ module Wovnrb
       assert_equal('http://wovn.io/test', request_out_env['HTTP_REFERER'])
     end
 
-    def test_request_out_custom_domain_pattern
+    def test_request_out_custom_domain
       settings = Wovnrb.get_settings({
+                                       'default_lang' => 'ja',
                                        'url_pattern' => 'custom_domain',
                                        'custom_domain_langs' => {
                                          'en' => { 'url' => 'wovn.io' },

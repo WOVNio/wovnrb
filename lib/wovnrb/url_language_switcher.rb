@@ -64,7 +64,7 @@ module Wovnrb
           segments = make_segments_from_absolute_url(absolute_url_with_lang)
           new_uri = segments['others']
         elsif uri == custom_domain_lang_to_remove.host
-          absolute_url = "#{headers.protocol}://#{headers.unmasked_host}#{uri}"
+          absolute_url = "#{headers.protocol}://#{uri}#{headers.unmasked_pathname}"
           absolute_url_with_lang = CustomDomainLangUrlHandler.change_to_new_custom_domain_lang(absolute_url, custom_domain_lang_to_remove, default_custom_domain_lang)
           segments = make_segments_from_absolute_url(absolute_url_with_lang)
           new_uri = segments['host']
