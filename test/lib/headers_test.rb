@@ -430,7 +430,6 @@ module Wovnrb
 
     def test_request_out_custom_domain
       settings = Wovnrb.get_settings({
-                                       'default_lang' => 'ja',
                                        'url_pattern' => 'custom_domain',
                                        'custom_domain_langs' => {
                                          'en' => { 'url' => 'wovn.io' },
@@ -439,16 +438,16 @@ module Wovnrb
                                      })
       store = Wovnrb.get_store(settings)
       env = Wovnrb.get_env({
+                             'HTTP_REFERER' => 'ja.wovn.io',
                              'SERVER_NAME' => 'ja.wovn.io',
-                             'REQUEST_URI' => '/test',
-                             'HTTP_REFERER' => 'http://ja.wovn.io/test'
+                             'REQUEST_URI' => '/dummy'
                            })
       url_lang_switcher = UrlLanguageSwitcher.new(store)
       header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
 
       request_out_env = header.request_out('ja')
-      assert_equal('http://ja.wovn.io/test', request_out_env['HTTP_REFERER'])
-      assert_equal('ja.wovn.io', request_out_env['SERVER_NAME'])
+      assert_equal('wovn.io', request_out_env['HTTP_REFERER'])
+      assert_equal('wovn.io', request_out_env['SERVER_NAME'])
     end
 
     def test_out_should_add_lang_code_to_redirection
@@ -831,6 +830,53 @@ module Wovnrb
       url_lang_switcher = UrlLanguageSwitcher.new(store)
       header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
       assert_equal('zh-CHT', header.path_lang)
+    end
+
+    def test_path_lang_with_custom_domain
+      custom_domain_langs = {
+        'en' => { 'url' => 'my-site.com' },
+        'en-US' => { 'url' => 'en-us.my-site.com' },
+        'ja' => { 'url' => 'my-site.com/ja' },
+        'zh-CHS' => { 'url' => 'my-site.com/zh/chs' },
+        'zh-Hant-HK' => { 'url' => 'zh-hant-hk.com/zh' }
+      }
+      settings = {
+        'url_pattern' => 'custom_domain',
+        'custom_domain_langs' => custom_domain_langs
+      }
+      test_cases = [
+        [{ 'SERVER_NAME' => 'my-site.com', 'REQUEST_URI' => '/' }, 'en'],
+        [{ 'SERVER_NAME' => 'en-us.my-site.com', 'REQUEST_URI' => '/' }, 'en-US'],
+        [{ 'SERVER_NAME' => 'my-site.com', 'REQUEST_URI' => '/ja' }, 'ja'],
+        [{ 'SERVER_NAME' => 'my-site.com', 'REQUEST_URI' => '/zh/chs' }, 'zh-CHS'],
+        [{ 'SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh' }, 'zh-Hant-HK'],
+
+        # request uri pattern
+        [{ 'SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh' }, 'zh-Hant-HK'],
+        [{ 'SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/' }, 'zh-Hant-HK'],
+        [{ 'SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/index.html' }, 'zh-Hant-HK'],
+        [{ 'SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/dir' }, 'zh-Hant-HK'],
+        [{ 'SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/dir/' }, 'zh-Hant-HK'],
+        [{ 'SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/dir/index.html' }, 'zh-Hant-HK'],
+        [{ 'SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh?query=1' }, 'zh-Hant-HK'],
+        [{ 'SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh#hash' }, 'zh-Hant-HK'],
+
+        # should be default lang
+        [{ 'SERVER_NAME' => 'my-site.com', 'REQUEST_URI' => '/japan' }, 'en'],
+        [{ 'SERVER_NAME' => 'my-site.com', 'REQUEST_URI' => '/' }, 'en'],
+        [{ 'SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/' }, '']
+      ]
+
+      test_cases.each do |test_case|
+        env_hash, expected_lang_code = test_case
+        settings = Wovnrb.get_settings(settings)
+        store = Wovnrb.get_store(settings)
+        env = Wovnrb.get_env(env_hash)
+        url_lang_switcher = UrlLanguageSwitcher.new(store)
+        header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
+
+        assert_equal(expected_lang_code, header.path_lang)
+      end
     end
   end
 end

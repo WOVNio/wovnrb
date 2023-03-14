@@ -80,17 +80,23 @@ module Wovnrb
     # @return [String] language code in requrested URL.
     def path_lang
       if @path_lang.nil?
-        rp = Regexp.new(@settings['url_pattern_reg'])
-        match = if @settings['use_proxy'] && @env.key?('HTTP_X_FORWARDED_HOST')
-                  "#{@env['HTTP_X_FORWARDED_HOST']}#{@env['REQUEST_URI']}".match(rp)
-                else
-                  "#{@env['SERVER_NAME']}#{@env['REQUEST_URI']}".match(rp)
-                end
-        @path_lang = if match && match[:lang] && Lang.get_lang(match[:lang])
-                       Lang.get_code(match[:lang])
-                     else
-                       ''
-                     end
+        full_url = if @settings['use_proxy'] && @env.key?('HTTP_X_FORWARDED_HOST')
+                     "#{@env['HTTP_X_FORWARDED_HOST']}#{@env['REQUEST_URI']}"
+                   else
+                     "#{@env['SERVER_NAME']}#{@env['REQUEST_URI']}"
+                   end
+
+        new_lang_code = nil
+        if @settings['url_pattern'] == 'custom_domain'
+          custom_domain_langs = Store.instance.custom_domain_langs
+          custom_domain = custom_domain_langs.custom_domain_lang_by_url(full_url)
+          new_lang_code = custom_domain.lang if custom_domain.present?
+        else
+          rp = Regexp.new(@settings['url_pattern_reg'])
+          match = full_url.match(rp)
+          new_lang_code = Lang.get_code(match[:lang]) if match && match[:lang] && Lang.get_lang(match[:lang])
+        end
+        @path_lang = new_lang_code.presence || ''
       end
       @path_lang
     end
