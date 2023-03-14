@@ -222,7 +222,7 @@ will translate the canonical URL with the current language code according to you
 This setting defaults to `true`.
 
 ### 2.15. custom_domain_langs
-This parameter is valid and required, when `url_pattern_name` is `custom_domain`.
+This parameter is valid and required, when `url_pattern` is `custom_domain`.
 Set `custom_domain_langs` for all languages declared in `supported_langs`.
 
 ```ruby
@@ -241,7 +241,7 @@ All request URLs other than the above that match `ja.wovn.io/*` will be consider
 And, request URLs that match `fr.wovn.co.jp/*` will be considered as requests in French langauge.
 With the above example configuration, the page `http://ja.wovn.io/about.html` in Japanese language will have the URL `http://wovn.io/en/about.html` as English language.
 
-`custom_domain_langs` setting may only be used together with the `url_pattern_name = custom_domain` setting.
+`custom_domain_langs` setting may only be used together with the `url_pattern = custom_domain` setting.
 
 If this setting is used, each language declared in `supported_langs` must be given a custom domain.
 

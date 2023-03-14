@@ -183,7 +183,7 @@ WOVN.ioは翻訳されたページを検索する際にクエリパラメータ�
 
 ### 2.10. custom_domain_langs
 
-このパラメータは、カスタムドメイン言語パターンの場合（`url_pattern_name = custom_domain` が設定されている場合）のみ有効です。
+このパラメータは、カスタムドメイン言語パターンの場合（`url_pattern = custom_domain` が設定されている場合）のみ有効です。
 カスタムドメイン言語パターン使用時は必須パラメータです。
 `supported_langs` で設定した全ての言語と元言語に、必ず `custom_domain_langs` を設定してください。
 
@@ -203,7 +203,7 @@ config.wovnrb = {
 また、 `fr.wovn.co.jp/*` にマッチするリクエストはフランス語のリクエストとして扱われます。
 例えば、`http://ja.wovn.io/about.html` の日本語ページは、`http://wovn.io/en/about.html` という英語ページのURLを持つことになります。
 
-必ず `url_pattern_name = custom_domain`と`custom_domain_langs` は一緒に使用してください。
+必ず `url_pattern = custom_domain`と`custom_domain_langs` は一緒に使用してください。
 
 `supported_langs` で宣言された各言語に `custom_domain_langs` を与えなければなりません。
 
