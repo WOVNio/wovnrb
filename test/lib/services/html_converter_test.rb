@@ -382,6 +382,59 @@ module Wovnrb
       assert_equal('http://my-site.com/fr/fr/', canonical_tag['href'])
     end
 
+    test 'convert_to - backend-wovn-ignore comment - is removed' do
+      store = Wovnrb::Store.instance
+      url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
+      headers = Wovnrb::Headers.new(
+        Wovnrb.get_env('url' => 'http://my-site.com/'),
+        store.settings,
+        url_lang_switcher
+      )
+
+      html = "<html><body>hello<!-- backend-wovn-ignore    -->ignored<!--/backend-wovn-ignore-->  world</body></html>"
+      dom = get_dom(html)
+      sut = HtmlConverter.new(dom, store, headers, url_lang_switcher)
+
+      translated_html, marker = sut.build_api_compatible_html
+
+      assert_equal(1, marker.keys.count)
+      assert(translated_html.include?("hello<!-- backend-wovn-ignore    -->#{marker.keys[0]}<!--/backend-wovn-ignore-->  world</body></html>"))
+    end
+
+    test 'convert_to - multiple backend-wovn-ignore comments - are removed' do
+      store = Wovnrb::Store.instance
+      url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
+      headers = Wovnrb::Headers.new(
+        Wovnrb.get_env('url' => 'http://my-site.com/'),
+        store.settings,
+        url_lang_switcher
+      )
+
+      html = <<~HTML
+<html><body>hello<!-- backend-wovn-ignore    -->ignored <!--/backend-wovn-ignore-->  world
+    line break
+    <!-- backend-wovn-ignore    -->
+    ignored2
+    <!--/backend-wovn-ignore-->
+bye
+</body></html>
+HTML
+      dom = get_dom(html)
+      sut = HtmlConverter.new(dom, store, headers, url_lang_switcher)
+
+      translated_html, marker = sut.build_api_compatible_html
+
+      expected_html = <<~HTML
+hello<!-- backend-wovn-ignore    -->#{marker.keys[0]}<!--/backend-wovn-ignore-->  world
+    line break
+    <!-- backend-wovn-ignore    -->#{marker.keys[1]}<!--/backend-wovn-ignore-->
+bye
+HTML
+
+      assert_equal(2, marker.keys.count)
+      assert(translated_html.include?(expected_html))
+    end
+
     private
 
     def prepare_html_converter(input_html, store_options = {})

@@ -15,11 +15,22 @@ module Wovnrb
     def build_api_compatible_html
       marker = HtmlReplaceMarker.new
       converted_html = replace_dom(marker)
-
+      converted_html = remove_backend_wovn_ignore_comments(converted_html, marker)
       [converted_html, marker]
     end
 
     private
+
+    def remove_backend_wovn_ignore_comments(html, marker)
+      backend_ignore_regex = /(<!--\s*backend-wovn-ignore\s*-->)(.+?)(<!--\s*\/backend-wovn-ignore\s*-->)/m
+      html.gsub(backend_ignore_regex) do |match|
+        comment_start = Regexp.last_match(1)
+        ignored_content = Regexp.last_match(2)
+        comment_end = Regexp.last_match(3)
+        key = marker.add_comment_value(ignored_content)
+        comment_start + key + comment_end
+      end
+    end
 
     def html
       # Ensure a Content-Type declaration in the header. This mimics Nokogumbo
