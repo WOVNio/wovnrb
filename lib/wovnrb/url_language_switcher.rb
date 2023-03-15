@@ -130,7 +130,7 @@ module Wovnrb
         add_query_lang_code(href, code_to_add)
       when 'custom_domain'
         if Wovnrb::URL.absolute_path?(href)
-          absolute_url = "#{headers.protocol}://#{headers.unmasked_host}#{href}"
+          absolute_url = "#{headers.protocol}://#{headers.host}#{href}"
           absolute_url_with_lang = CustomDomainLangUrlHandler.add_custom_domain_lang_to_absolute_url(absolute_url, code_to_add, @store.custom_domain_langs)
           segments = make_segments_from_absolute_url(absolute_url_with_lang)
           segments['others']
