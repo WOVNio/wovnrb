@@ -23,7 +23,7 @@ module Wovnrb
 
     def remove_backend_wovn_ignore_comments(html, marker)
       backend_ignore_regex = /(<!--\s*backend-wovn-ignore\s*-->)(.+?)(<!--\s*\/backend-wovn-ignore\s*-->)/m
-      html.gsub(backend_ignore_regex) do |match|
+      html.gsub(backend_ignore_regex) do |_match|
         comment_start = Regexp.last_match(1)
         ignored_content = Regexp.last_match(2)
         comment_end = Regexp.last_match(3)

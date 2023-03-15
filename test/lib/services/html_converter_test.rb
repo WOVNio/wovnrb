@@ -391,7 +391,7 @@ module Wovnrb
         url_lang_switcher
       )
 
-      html = "<html><body>hello<!-- backend-wovn-ignore    -->ignored<!--/backend-wovn-ignore-->  world</body></html>"
+      html = '<html><body>hello<!-- backend-wovn-ignore    -->ignored<!--/backend-wovn-ignore-->  world</body></html>'
       dom = get_dom(html)
       sut = HtmlConverter.new(dom, store, headers, url_lang_switcher)
 
@@ -411,25 +411,25 @@ module Wovnrb
       )
 
       html = <<~HTML
-<html><body>hello<!-- backend-wovn-ignore    -->ignored <!--/backend-wovn-ignore-->  world
-    line break
-    <!-- backend-wovn-ignore    -->
-    ignored2
-    <!--/backend-wovn-ignore-->
-bye
-</body></html>
-HTML
+        <html><body>hello<!-- backend-wovn-ignore    -->ignored <!--/backend-wovn-ignore-->  world
+            line break
+            <!-- backend-wovn-ignore    -->
+            ignored2
+            <!--/backend-wovn-ignore-->
+        bye
+        </body></html>
+      HTML
       dom = get_dom(html)
       sut = HtmlConverter.new(dom, store, headers, url_lang_switcher)
 
       translated_html, marker = sut.build_api_compatible_html
 
       expected_html = <<~HTML
-hello<!-- backend-wovn-ignore    -->#{marker.keys[0]}<!--/backend-wovn-ignore-->  world
-    line break
-    <!-- backend-wovn-ignore    -->#{marker.keys[1]}<!--/backend-wovn-ignore-->
-bye
-HTML
+        hello<!-- backend-wovn-ignore    -->#{marker.keys[0]}<!--/backend-wovn-ignore-->  world
+            line break
+            <!-- backend-wovn-ignore    -->#{marker.keys[1]}<!--/backend-wovn-ignore-->
+        bye
+      HTML
 
       assert_equal(2, marker.keys.count)
       assert(translated_html.include?(expected_html))
