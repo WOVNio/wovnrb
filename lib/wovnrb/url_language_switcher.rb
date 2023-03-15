@@ -192,7 +192,7 @@ module Wovnrb
         'schema' => matches[1],
         'host' => matches[2],
         'others' => matches[3]
-      }
+      }.transform_values(&:to_s)
     end
   end
 end
