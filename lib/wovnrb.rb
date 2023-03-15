@@ -36,7 +36,7 @@ module Wovnrb
       return @app.call(env) if @store.settings['test_mode'] && @store.settings['test_url'] != headers.url
 
       # redirect if the path is set to the default language (for SEO purposes)
-      if headers.path_lang == default_lang
+      if explicit_default_lang?(headers)
         redirect_headers = headers.redirect(default_lang)
         return [307, redirect_headers, ['']]
       end
@@ -128,6 +128,11 @@ module Wovnrb
       html_attributes = html_body.xpath('//html')[0].try(:attributes) || {}
 
       !!(html_attributes['amp'] || html_attributes["\u26A1"])
+    end
+
+    def explicit_default_lang?(headers)
+      default_lang, url_pattern = @store.settings.values_at('default_lang', 'url_pattern')
+      default_lang == headers.path_lang && url_pattern != 'custom_domain'
     end
   end
 end
