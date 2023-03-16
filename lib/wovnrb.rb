@@ -51,7 +51,7 @@ module Wovnrb
       status, res_headers, body = @app.call(headers.request_out)
 
       # disabled by next Rack middleware
-      return output(headers, status, res_headers, body) unless /html/.match?(res_headers['Content-Type'])
+      return output(headers, status, res_headers, body) unless res_headers['Content-Type']&.include?('html')
 
       request = Rack::Request.new(env)
 

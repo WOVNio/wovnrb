@@ -250,7 +250,7 @@ module Wovnrb
     end
 
     def add_query_lang_code(href, lang_code, lang_param_name)
-      query_separator = /\?/.match?(href) ? '&' : '?'
+      query_separator = href.include?('?') ? '&' : '?'
 
       href.sub(/(#|$)/, "#{query_separator}#{lang_param_name}=#{lang_code}\\1")
     end
