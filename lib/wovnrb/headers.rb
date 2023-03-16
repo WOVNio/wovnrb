@@ -35,7 +35,7 @@ module Wovnrb
               end
       @host = %w[subdomain custom_domain].include?(settings['url_pattern']) ? @url_lang_switcher.remove_lang_from_uri_component(@host, lang_code, self) : @host
       @pathname, @query = @env['REQUEST_URI'].split('?')
-      @pathname = settings['url_pattern'] == 'path' ? @url_lang_switcher.remove_lang_from_uri_component(@pathname, lang_code) : @pathname
+      @pathname = %w[path custom_domain].include?(settings['url_pattern']) ? @url_lang_switcher.remove_lang_from_uri_component(@pathname, lang_code, self) : @pathname
       @query ||= ''
       @url = "#{@host}#{@pathname}#{(@query.empty? ? '' : '?') + @url_lang_switcher.remove_lang_from_uri_component(@query, lang_code)}"
       if settings['query'].empty?
