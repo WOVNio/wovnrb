@@ -75,10 +75,6 @@ module Wovnrb
       custom_domain_lang.lang
     end
 
-    def host_and_path_without_trailing_slash_for(custom_domain_lang)
-      custom_domain_lang.host_and_path_without_trailing_slash
-    end
-
     def hash_equals(orig_hash, test_hash)
       (orig_hash <=> test_hash) == 0
     end
