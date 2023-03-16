@@ -32,6 +32,10 @@ module Wovnrb
       marked_html
     end
 
+    def keys
+      @mapped_values.map { |v| v[0] }
+    end
+
     private
 
     def generate_key
