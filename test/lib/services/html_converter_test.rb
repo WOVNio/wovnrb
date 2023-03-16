@@ -382,7 +382,7 @@ module Wovnrb
       assert_equal('http://my-site.com/fr/fr/', canonical_tag['href'])
     end
 
-    test 'convert_to - backend-wovn-ignore comment - is removed' do
+    test 'build_api_compatible_html - backend-wovn-ignore comment - should be removed' do
       store = Wovnrb::Store.instance
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
       headers = Wovnrb::Headers.new(
@@ -401,7 +401,7 @@ module Wovnrb
       assert(translated_html.include?("hello<!-- backend-wovn-ignore    -->#{marker.keys[0]}<!--/backend-wovn-ignore-->  world</body></html>"))
     end
 
-    test 'convert_to - multiple backend-wovn-ignore comments - are removed' do
+    test 'build_api_compatible_html - multiple backend-wovn-ignore comments - should be removed' do
       store = Wovnrb::Store.instance
       url_lang_switcher = Wovnrb::UrlLanguageSwitcher.new(store)
       headers = Wovnrb::Headers.new(
