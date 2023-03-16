@@ -308,7 +308,7 @@ module Wovnrb
       url_lang_switcher = UrlLanguageSwitcher.new(store)
       header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
 
-      request_out_env = header.request_out('ja')
+      request_out_env = header.request_out
       assert_equal('ja', request_out_env['wovnrb.target_lang'])
     end
 
@@ -321,7 +321,7 @@ module Wovnrb
       url_lang_switcher = UrlLanguageSwitcher.new(store)
       header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
 
-      request_out_env = header.request_out('ja')
+      request_out_env = header.request_out
       assert_equal('ja', request_out_env['wovnrb.target_lang'])
     end
 
@@ -338,7 +338,7 @@ module Wovnrb
       url_lang_switcher = UrlLanguageSwitcher.new(store)
       header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
 
-      request_out_env = header.request_out('ja')
+      request_out_env = header.request_out
       assert_equal('ja', request_out_env['wovnrb.target_lang'])
     end
 
@@ -355,7 +355,7 @@ module Wovnrb
       url_lang_switcher = UrlLanguageSwitcher.new(store)
       header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
 
-      request_out_env = header.request_out('ja')
+      request_out_env = header.request_out
       assert_equal('ja.wovn.io', request_out_env['HTTP_X_FORWARDED_HOST'])
     end
 
@@ -373,7 +373,7 @@ module Wovnrb
       url_lang_switcher = UrlLanguageSwitcher.new(store)
       header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
 
-      request_out_env = header.request_out('ja')
+      request_out_env = header.request_out
       assert_equal('wovn.io', request_out_env['HTTP_X_FORWARDED_HOST'])
     end
 
@@ -391,7 +391,7 @@ module Wovnrb
       url_lang_switcher = UrlLanguageSwitcher.new(store)
       header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
 
-      request_out_env = header.request_out('ja')
+      request_out_env = header.request_out
       assert_equal('http://wovn.io/test', request_out_env['HTTP_REFERER'])
     end
 
@@ -405,7 +405,7 @@ module Wovnrb
       url_lang_switcher = UrlLanguageSwitcher.new(store)
       header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
 
-      request_out_env = header.request_out('ja')
+      request_out_env = header.request_out
       assert_equal('http://wovn.io/test', request_out_env['HTTP_REFERER'])
     end
 
@@ -424,7 +424,7 @@ module Wovnrb
       url_lang_switcher = UrlLanguageSwitcher.new(store)
       header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
 
-      request_out_env = header.request_out('ja')
+      request_out_env = header.request_out
       assert_equal('http://wovn.io/test', request_out_env['HTTP_REFERER'])
     end
 
@@ -445,7 +445,7 @@ module Wovnrb
       url_lang_switcher = UrlLanguageSwitcher.new(store)
       header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
 
-      request_out_env = header.request_out('ja')
+      request_out_env = header.request_out
       assert_equal('wovn.io', request_out_env['HTTP_REFERER'])
       assert_equal('wovn.io', request_out_env['SERVER_NAME'])
     end
@@ -507,7 +507,7 @@ module Wovnrb
                            })
       url_lang_switcher = UrlLanguageSwitcher.new(store)
       header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
-      headers = header.request_out('ja')
+      headers = header.request_out
       assert_equal('http://wovn.io/test', headers['HTTP_REFERER'])
       headers['Location'] = headers['HTTP_REFERER']
       assert_equal('http://staging-ja.wovn.io/test', header.out(headers)['Location'])
@@ -526,7 +526,7 @@ module Wovnrb
                            })
       url_lang_switcher = UrlLanguageSwitcher.new(store)
       header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
-      headers = header.request_out(header.lang_code)
+      headers = header.request_out
       assert_equal('http://wovn.io/test', headers['HTTP_REFERER'])
       headers['Location'] = headers['HTTP_REFERER']
       assert_equal('http://wovn.io/test', header.out(headers)['Location'])
@@ -545,7 +545,7 @@ module Wovnrb
                            })
       url_lang_switcher = UrlLanguageSwitcher.new(store)
       header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
-      headers = header.request_out(header.lang_code)
+      headers = header.request_out
       assert_equal('http://wovn.io/test', headers['HTTP_REFERER'])
       headers['Location'] = headers['HTTP_REFERER']
       assert_equal('http://wovn.io/test', header.out(headers)['Location'])
@@ -564,7 +564,7 @@ module Wovnrb
                            })
       url_lang_switcher = UrlLanguageSwitcher.new(store)
       header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
-      headers = header.request_out(header.lang_code)
+      headers = header.request_out
       assert_equal('http://wovn.io/test', headers['HTTP_REFERER'])
       headers['Location'] = headers['HTTP_REFERER']
       assert_equal('http://wovn.io/test', header.out(headers)['Location'])
@@ -583,7 +583,7 @@ module Wovnrb
                            })
       url_lang_switcher = UrlLanguageSwitcher.new(store)
       header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
-      headers = header.out(header.request_out('ja'))
+      headers = header.out(header.request_out)
       assert_equal('ja', headers['wovnrb.target_lang'])
     end
 
@@ -596,7 +596,7 @@ module Wovnrb
                            })
       url_lang_switcher = UrlLanguageSwitcher.new(store)
       header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
-      headers = header.out(header.request_out('ja'))
+      headers = header.out(header.request_out)
       assert_equal('ja', headers['wovnrb.target_lang'])
     end
 
@@ -612,7 +612,7 @@ module Wovnrb
                            })
       url_lang_switcher = UrlLanguageSwitcher.new(store)
       header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
-      headers = header.out(header.request_out('ja'))
+      headers = header.out(header.request_out)
       assert_equal('ja', headers['wovnrb.target_lang'])
     end
 
@@ -629,7 +629,7 @@ module Wovnrb
                            })
       url_lang_switcher = UrlLanguageSwitcher.new(store)
       header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
-      headers = header.out(header.request_out('ja'))
+      headers = header.out(header.request_out)
       assert_equal('ja', headers['wovnrb.target_lang'])
     end
 

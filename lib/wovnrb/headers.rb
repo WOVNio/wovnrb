@@ -117,7 +117,7 @@ module Wovnrb
       @url_lang_switcher.add_lang_code(url_with_scheme, lang, self)
     end
 
-    def request_out(_def_lang = @settings['default_lang'])
+    def request_out
       @env['wovnrb.target_lang'] = lang_code
       case @settings['url_pattern']
       when 'query'
