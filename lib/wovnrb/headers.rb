@@ -137,7 +137,8 @@ module Wovnrb
     def out(headers)
       r = Regexp.new("//#{@host}")
       lang_code = Store.instance.settings['custom_lang_aliases'][self.lang_code] || self.lang_code
-      should_add_lang_code = lang_code != @settings['default_lang'] && headers.key?('Location') && headers['Location'] =~ r && !@settings['ignore_globs'].ignore?(headers['Location'])
+      same_host = @settings['url_pattern'] == 'custom_domain' ? true : headers['Location'] =~ r
+      should_add_lang_code = lang_code != @settings['default_lang'] && headers.key?('Location') && same_host && !@settings['ignore_globs'].ignore?(headers['Location'])
 
       headers['Location'] = @url_lang_switcher.add_lang_code(headers['Location'], lang_code, self) if should_add_lang_code
       headers
