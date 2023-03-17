@@ -817,7 +817,7 @@ module Wovnrb
         ['index.php?a=1&b=2', 'zh-Hant-HK', 'http://zh-hant-hk.com/zh/req_uri/index.php?a=1&b=2'],
         ['index.php#hash', 'zh-Hant-HK', 'http://zh-hant-hk.com/zh/req_uri/index.php#hash'],
         ['index.php?a=1&b=2#hash', 'zh-Hant-HK', 'http://zh-hant-hk.com/zh/req_uri/index.php?a=1&b=2#hash'],
-        ['a=1&b=2', 'zh-Hant-HK', 'http://zh-hant-hk.com/zh/req_uri/a=1&b=2'],
+        ['?a=1&b=2', 'zh-Hant-HK', 'http://zh-hant-hk.com/zh/req_uri/?a=1&b=2'],
 
         # anchor links should keep original
         ['#hash', 'zh-Hant-HK', '#hash']
