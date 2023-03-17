@@ -207,8 +207,9 @@ module Wovnrb
       url_pattern = @store.settings['url_pattern']
       lang_code_aliases_json = JSON.generate(@store.settings['custom_lang_aliases'])
       lang_param_name = @store.settings['lang_param_name']
+      custom_domain_langs = @store.custom_domain_langs.to_html_swapper_hash
 
-      [
+      result = [
         "key=#{token}",
         'backend=true',
         "currentLang=#{current_lang}",
@@ -217,7 +218,9 @@ module Wovnrb
         "langCodeAliases=#{lang_code_aliases_json}",
         "langParamName=#{lang_param_name}",
         "version=WOVN.rb_#{VERSION}"
-      ].join('&')
+      ]
+      result << "customDomainLangs=#{JSON.generate(custom_domain_langs)}" unless custom_domain_langs.empty?
+      result.join('&')
     end
   end
 end

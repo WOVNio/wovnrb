@@ -1,3 +1,5 @@
+require 'wovnrb/custom_domain/custom_domain_lang_url_handler'
+
 module Wovnrb
   class Headers
     attr_reader :unmasked_url, :url, :protocol, :unmasked_host, :host, :unmasked_pathname, :pathname, :pathname_with_trailing_slash_if_present
@@ -31,9 +33,9 @@ module Wovnrb
               else
                 @env['HTTP_HOST']
               end
-      @host = settings['url_pattern'] == 'subdomain' ? @url_lang_switcher.remove_lang_from_uri_component(@host, lang_code) : @host
+      @host = %w[subdomain custom_domain].include?(settings['url_pattern']) ? @url_lang_switcher.remove_lang_from_uri_component(@host, lang_code, self) : @host
       @pathname, @query = @env['REQUEST_URI'].split('?')
-      @pathname = settings['url_pattern'] == 'path' ? @url_lang_switcher.remove_lang_from_uri_component(@pathname, lang_code) : @pathname
+      @pathname = %w[path custom_domain].include?(settings['url_pattern']) ? @url_lang_switcher.remove_lang_from_uri_component(@pathname, lang_code, self) : @pathname
       @query ||= ''
       @url = "#{@host}#{@pathname}#{(@query.empty? ? '' : '?') + @url_lang_switcher.remove_lang_from_uri_component(@query, lang_code)}"
       if settings['query'].empty?
@@ -78,17 +80,23 @@ module Wovnrb
     # @return [String] language code in requrested URL.
     def path_lang
       if @path_lang.nil?
-        rp = Regexp.new(@settings['url_pattern_reg'])
-        match = if @settings['use_proxy'] && @env.key?('HTTP_X_FORWARDED_HOST')
-                  "#{@env['HTTP_X_FORWARDED_HOST']}#{@env['REQUEST_URI']}".match(rp)
-                else
-                  "#{@env['SERVER_NAME']}#{@env['REQUEST_URI']}".match(rp)
-                end
-        @path_lang = if match && match[:lang] && Lang.get_lang(match[:lang])
-                       Lang.get_code(match[:lang])
-                     else
-                       ''
-                     end
+        full_url = if @settings['use_proxy'] && @env.key?('HTTP_X_FORWARDED_HOST')
+                     "#{@env['HTTP_X_FORWARDED_HOST']}#{@env['REQUEST_URI']}"
+                   else
+                     "#{@env['SERVER_NAME']}#{@env['REQUEST_URI']}"
+                   end
+
+        new_lang_code = nil
+        if @settings['url_pattern'] == 'custom_domain'
+          custom_domain_langs = Store.instance.custom_domain_langs
+          custom_domain = custom_domain_langs.custom_domain_lang_by_url(full_url)
+          new_lang_code = custom_domain.lang if custom_domain.present?
+        else
+          rp = Regexp.new(@settings['url_pattern_reg'])
+          match = full_url.match(rp)
+          new_lang_code = Lang.get_code(match[:lang]) if match && match[:lang] && Lang.get_lang(match[:lang])
+        end
+        @path_lang = new_lang_code.presence || ''
       end
       @path_lang
     end
@@ -109,51 +117,28 @@ module Wovnrb
       @url_lang_switcher.add_lang_code(url_with_scheme, lang, self)
     end
 
-    def request_out(_def_lang = @settings['default_lang'])
+    def request_out
       @env['wovnrb.target_lang'] = lang_code
       case @settings['url_pattern']
       when 'query'
-        @env['REQUEST_URI'] = @url_lang_switcher.remove_lang_from_uri_component(@env['REQUEST_URI'], lang_code) if @env.key?('REQUEST_URI')
-        @env['QUERY_STRING'] = @url_lang_switcher.remove_lang_from_uri_component(@env['QUERY_STRING'], lang_code) if @env.key?('QUERY_STRING')
-        @env['ORIGINAL_FULLPATH'] = @url_lang_switcher.remove_lang_from_uri_component(@env['ORIGINAL_FULLPATH'], lang_code) if @env.key?('ORIGINAL_FULLPATH')
+        remove_lang_from_query
       when 'subdomain'
-        if @settings['use_proxy'] && @env.key?('HTTP_X_FORWARDED_HOST')
-          @env['HTTP_X_FORWARDED_HOST'] = @url_lang_switcher.remove_lang_from_uri_component(@env['HTTP_X_FORWARDED_HOST'], lang_code)
-        else
-          @env['HTTP_HOST'] = @url_lang_switcher.remove_lang_from_uri_component(@env['HTTP_HOST'], lang_code)
-          @env['SERVER_NAME'] = @url_lang_switcher.remove_lang_from_uri_component(@env['SERVER_NAME'], lang_code)
-        end
-        @env['HTTP_REFERER'] = @url_lang_switcher.remove_lang_from_uri_component(@env['HTTP_REFERER'], lang_code) if @env.key?('HTTP_REFERER')
-      # when 'path'
+        remove_lang_from_host
+      when 'custom_domain'
+        remove_lang_from_host
+        remove_lang_from_path
+        # when 'path'
       else
-        @env['REQUEST_URI'] = @url_lang_switcher.remove_lang_from_uri_component(@env['REQUEST_URI'], lang_code)
-        @env['REQUEST_PATH'] = @url_lang_switcher.remove_lang_from_uri_component(@env['REQUEST_PATH'], lang_code) if @env.key?('REQUEST_PATH')
-        @env['PATH_INFO'] = @url_lang_switcher.remove_lang_from_uri_component(@env['PATH_INFO'], lang_code)
-        @env['ORIGINAL_FULLPATH'] = @url_lang_switcher.remove_lang_from_uri_component(@env['ORIGINAL_FULLPATH'], lang_code) if @env.key?('ORIGINAL_FULLPATH')
-        @env['HTTP_REFERER'] = @url_lang_switcher.remove_lang_from_uri_component(@env['HTTP_REFERER'], lang_code) if @env.key?('HTTP_REFERER')
+        remove_lang_from_path
       end
       @env
     end
 
     def out(headers)
-      r = Regexp.new("//#{@host}")
       lang_code = Store.instance.settings['custom_lang_aliases'][self.lang_code] || self.lang_code
-      if lang_code != @settings['default_lang'] && headers.key?('Location') && headers['Location'] =~ r && !@settings['ignore_globs'].ignore?(headers['Location'])
-        case @settings['url_pattern']
-        when 'query'
-          headers['Location'] += if headers['Location'].include?('?')
-                                   '&'
-                                 else
-                                   '?'
-                                 end
-          headers['Location'] += "#{@settings['lang_param_name']}=#{lang_code}"
-        when 'subdomain'
-          headers['Location'] = headers['Location'].sub(/\/\/([^.]+)/, "//#{lang_code}.\\1")
-        # when 'path'
-        else
-          headers['Location'] = headers['Location'].sub(/(\/\/[^\/]+)/, "\\1/#{lang_code}")
-        end
-      end
+      should_add_lang_code = lang_code != @settings['default_lang'] && headers.key?('Location') && !@settings['ignore_globs'].ignore?(headers['Location'])
+
+      headers['Location'] = @url_lang_switcher.add_lang_code(headers['Location'], lang_code, self) if should_add_lang_code
       headers
     end
 
@@ -176,6 +161,32 @@ module Wovnrb
       absolute_path = path.blank? ? '/' : path
       absolute_path = absolute_path.starts_with?('/') ? absolute_path : URL.join_paths(dirname, absolute_path)
       URL.normalize_path_slash(path, absolute_path)
+    end
+
+    private
+
+    def remove_lang_from_query
+      @env['REQUEST_URI'] = @url_lang_switcher.remove_lang_from_uri_component(@env['REQUEST_URI'], lang_code) if @env.key?('REQUEST_URI')
+      @env['QUERY_STRING'] = @url_lang_switcher.remove_lang_from_uri_component(@env['QUERY_STRING'], lang_code) if @env.key?('QUERY_STRING')
+      @env['ORIGINAL_FULLPATH'] = @url_lang_switcher.remove_lang_from_uri_component(@env['ORIGINAL_FULLPATH'], lang_code) if @env.key?('ORIGINAL_FULLPATH')
+    end
+
+    def remove_lang_from_host
+      if @settings['use_proxy'] && @env.key?('HTTP_X_FORWARDED_HOST')
+        @env['HTTP_X_FORWARDED_HOST'] = @url_lang_switcher.remove_lang_from_uri_component(@env['HTTP_X_FORWARDED_HOST'], lang_code, self)
+      else
+        @env['HTTP_HOST'] = @url_lang_switcher.remove_lang_from_uri_component(@env['HTTP_HOST'], lang_code, self)
+        @env['SERVER_NAME'] = @url_lang_switcher.remove_lang_from_uri_component(@env['SERVER_NAME'], lang_code, self)
+      end
+      @env['HTTP_REFERER'] = @url_lang_switcher.remove_lang_from_uri_component(@env['HTTP_REFERER'], lang_code, self) if @env.key?('HTTP_REFERER')
+    end
+
+    def remove_lang_from_path
+      @env['REQUEST_URI'] = @url_lang_switcher.remove_lang_from_uri_component(@env['REQUEST_URI'], lang_code, self)
+      @env['REQUEST_PATH'] = @url_lang_switcher.remove_lang_from_uri_component(@env['REQUEST_PATH'], lang_code, self) if @env.key?('REQUEST_PATH')
+      @env['PATH_INFO'] = @url_lang_switcher.remove_lang_from_uri_component(@env['PATH_INFO'], lang_code, self)
+      @env['ORIGINAL_FULLPATH'] = @url_lang_switcher.remove_lang_from_uri_component(@env['ORIGINAL_FULLPATH'], lang_code, self) if @env.key?('ORIGINAL_FULLPATH')
+      @env['HTTP_REFERER'] = @url_lang_switcher.remove_lang_from_uri_component(@env['HTTP_REFERER'], lang_code, self) if @env.key?('HTTP_REFERER')
     end
   end
 end

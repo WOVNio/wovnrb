@@ -118,6 +118,7 @@ module Wovnrb
       }
 
       result['custom_lang_aliases'] = JSON.dump(custom_lang_aliases) unless custom_lang_aliases.empty?
+      result['custom_domain_langs'] = JSON.dump(custom_domain_langs) unless custom_domain_langs.empty?
 
       result
     end
@@ -160,6 +161,10 @@ module Wovnrb
 
     def translate_canonical_tag
       @store.settings['translate_canonical_tag']
+    end
+
+    def custom_domain_langs
+      @store.custom_domain_langs.to_html_swapper_hash
     end
 
     def page_url

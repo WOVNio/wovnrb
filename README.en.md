@@ -90,6 +90,7 @@ compress_api_requests          |          | true
 api_timeout_seconds            |          | 1.0
 api_timeout_search_engine_bots |          | 5.0
 translate_canonical_tag        |          | true
+custom_domain_langs            |          | {}
 
 ### 2.1. project_token
 
@@ -123,19 +124,20 @@ Japanese, then you should use the following setting:
 
 ### 2.4. url_pattern
 
-The Library works in the Ruby Application by adding new URLs to be translated. You can set the type of url with the `url_pattern` parameter. There are 3 types that can be set.
+The Library works in the Ruby Application by adding new URLs to be translated. You can set the type of url with the `url_pattern` parameter. There are 4 types that can be set.
 
-parameters  | Translated page's URL           | Notes
------------ | ------------------------------- | -------
-'path'      | https://wovn.io/ja/contact      | Default Value. If no settings have been set, url_pattern defaults to this value.
-'subdomain' | https://ja.wovn.io/contact      | DNS settings must be set.
-'query'     | https://wovn.io/contact?wovn=ja | The least amount of changes to the application required to complete setup.
+parameters      | Translated page's URL            | Notes
+--------------- | -------------------------------- | -------
+'path'          | https://wovn.io/ja/contact       | Default Value. If no settings have been set, url_pattern defaults to this value.
+'subdomain'     | https://ja.wovn.io/contact       | DNS settings must be set.
+'query'         | https://wovn.io/contact?wovn=ja  | The least amount of changes to the application required to complete setup.
+'custom_domain' | Depends on `custom_domain_langs` | See [Section 2.15.](#215-custom_domain_langs).
 
 ※ The following is an example of a URL that has been translated by the library using the above URLs.
 
 	https://wovn.io/contact
 
-### 2.5 lang_param_name
+### 2.5. lang_param_name
 This parameter is only valid for when `url_pattern` is set to `'query'`.
 
 It allows you to set the query parameter name for declaring the language of the
@@ -169,7 +171,7 @@ This option allows to disable translating partial HTML content. By default,
 partial HTML content is translated but no widget snippet is added. Set
 `translate_fragment` to `false` to prevent translating partial HTML content.
 
-### 2.9 ignore_paths
+### 2.9. ignore_paths
 
 This parameter tells WOVN.rb to not localize content withing given directories.
 
@@ -180,7 +182,7 @@ For instance, if you want to not localize the admin directory of your website, y
 'ignore_paths' => ['/admin/']
 ```
 
-### 2.10 install_middleware
+### 2.10. install_middleware
 
 When using WOVN.rb in a Rails environment, this parameter controls whether the WOVN.rb middleware will be automatically installed or not.
 
@@ -201,20 +203,47 @@ WOVN.rb needs to be added after any compression middleware.
   }
 ```
 
-### 2.11 compress_api_requests
+### 2.11. compress_api_requests
 
 By default, requests to the translation API will be sent with gzip compression. Set to false to disable compression.
 
-### 2.12 api_timeout_seconds
-Configures the amount of time in seconds wovnrb will wait for the translation API for a response before the 
+### 2.12. api_timeout_seconds
+Configures the amount of time in seconds wovnrb will wait for the translation API for a response before the
 request is considered timed-out. This setting defaults to `1.0`.
 
-### 2.13 api_timeout_search_engine_bots
+### 2.13. api_timeout_search_engine_bots
 Similar to `api_timeout_seconds`, this timeout setting is applied when handling requests made by search engine bots.
 Currently, bots from Google, Yahoo, Bing, Yandex, DuckDuckGo and Baidu are supported. This setting
 defaults to `5.0`.
 
-### 2.14 translate_canonical_tag
+### 2.14. translate_canonical_tag
 Configures if wovnrb should automatically translate existing canonical tag in the HTML. When set to `true`, wovnrb
 will translate the canonical URL with the current language code according to your `url_pattern` setting.
 This setting defaults to `true`.
+
+### 2.15. custom_domain_langs
+This parameter is valid and required, when `url_pattern` is `custom_domain`.
+Set `custom_domain_langs` for all languages declared in `supported_langs`.
+
+```ruby
+config.wovnrb = {
+  # ...
+  :custom_domain_langs => {
+    'en' => { 'url' => 'wovn.io/en' },
+    'ja' => { 'url' => 'ja.wovn.io' },
+    'fr' => { 'url' => 'fr.wovn.co.jp' }
+  }
+}
+```
+
+For the example above, all request URLs that match `wovn.io/en/*` will be considered as requests in English language.
+All request URLs other than the above that match `ja.wovn.io/*` will be considered as requests in Japanese langauge.
+And, request URLs that match `fr.wovn.co.jp/*` will be considered as requests in French langauge.
+With the above example configuration, the page `http://ja.wovn.io/about.html` in Japanese language will have the URL `http://wovn.io/en/about.html` as English language.
+
+`custom_domain_langs` setting may only be used together with the `url_pattern = custom_domain` setting.
+
+If this setting is used, each language declared in `supported_langs` must be given a custom domain.
+
+The path declared for your original language must match the structure of the actual web server.
+In other words, you cannot use this setting to change the request path of your content in original language.
