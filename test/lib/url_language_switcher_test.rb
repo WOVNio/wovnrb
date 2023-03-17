@@ -819,7 +819,7 @@ module Wovnrb
         ['index.php?a=1&b=2#hash', 'zh-Hant-HK', 'http://zh-hant-hk.com/zh/req_uri/index.php?a=1&b=2#hash'],
         ['?a=1&b=2', 'zh-Hant-HK', 'http://zh-hant-hk.com/zh/req_uri/?a=1&b=2'],
 
-        # anchor links should keep original
+        # anchor links should not be changed
         ['#hash', 'zh-Hant-HK', '#hash']
       ]
 
@@ -1035,8 +1035,8 @@ module Wovnrb
         ['/zh/index.php#hash', 'zh-Hant-HK', '/index.php#hash', { 'HTTP_HOST' => 'zh-hant-hk.com', 'SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/index.php' }],
         ['/zh/index.php?a=1&b=2#hash', 'zh-Hant-HK', '/index.php?a=1&b=2#hash', { 'HTTP_HOST' => 'zh-hant-hk.com', 'SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/index.php' }],
 
-        # other patterns should be keep original
-        ['a=1&b=2', 'en-US', 'a=1&b=2', { 'HTTP_HOST' => 'en-us.my-site.com', 'SERVER_NAME' => 'en-us.my-site.com', 'REQUEST_URI' => '/' }],
+        # other patterns should not be changed
+        ['?a=1&b=2', 'en-US', '?a=1&b=2', { 'HTTP_HOST' => 'en-us.my-site.com', 'SERVER_NAME' => 'en-us.my-site.com', 'REQUEST_URI' => '/' }],
         ['#hash', 'en-US', '#hash', { 'HTTP_HOST' => 'en-us.my-site.com', 'SERVER_NAME' => 'en-us.my-site.com', 'REQUEST_URI' => '/' }]
       ]
 
