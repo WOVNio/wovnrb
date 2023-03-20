@@ -132,7 +132,7 @@ module Wovnrb
 
     def explicit_default_lang?(headers)
       default_lang, url_pattern = @store.settings.values_at('default_lang', 'url_pattern')
-      default_lang == headers.path_lang && url_pattern != 'custom_domain'
+      default_lang == headers.url_language && url_pattern != 'custom_domain'
     end
   end
 end

@@ -55,7 +55,7 @@ module Wovnrb
       {
         'env' => { 'url' => 'https://wovn.io/en' },
         'setting' => { 'url_pattern' => 'path' },
-        'name' => 'test_initialize_with_path_language',
+        'name' => 'test_initialize_with_url_language',
         'expected' => {
           'url' => 'wovn.io/'
         }
@@ -71,7 +71,7 @@ module Wovnrb
       {
         'env' => { 'url' => 'https://wovn.io/en/?wovn=zh-CHS' },
         'setting' => { 'url_pattern' => 'path' },
-        'name' => 'test_initialize_with_path_language_with_query',
+        'name' => 'test_initialize_with_url_language_with_query',
         'expected' => {
           'url' => 'wovn.io/?wovn=zh-CHS'
         }
@@ -87,7 +87,7 @@ module Wovnrb
       {
         'env' => { 'url' => 'https://wovn.io/en?wovn=zh-CHS' },
         'setting' => { 'url_pattern' => 'path' },
-        'name' => 'test_initialize_with_path_language_with_query_without_slash',
+        'name' => 'test_initialize_with_url_language_with_query_without_slash',
         'expected' => {
           'url' => 'wovn.io/?wovn=zh-CHS'
         }
@@ -177,7 +177,7 @@ module Wovnrb
       {
         'env' => { 'REQUEST_URI' => 'http://page.com/ja/test/' },
         'setting' => { 'url_pattern' => 'path', 'url_pattern_reg' => '/(?<lang>[^/.?]+)' },
-        'name' => 'test_pathname_with_trailing_slash_if_present_with_path_lang_when_trailing_slash_is_present',
+        'name' => 'test_pathname_with_trailing_slash_if_present_with_url_language_when_trailing_slash_is_present',
         'expected' => {
           'pathname_with_trailing_slash_if_present' => '/test/'
         }
@@ -741,42 +741,42 @@ module Wovnrb
         name = "test path lang subdomain #{lang}"
         env = { 'url' => "https://#{subdomain}.wovn.io" }
         settings = { 'url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+)\.' }
-        utility_universal_assertion(env, settings, { 'path_lang' => lang }, name)
+        utility_universal_assertion(env, settings, { 'url_language' => lang }, name)
 
         name = "test path lang subdomain #{lang} with slash"
         env = { 'url' => "https://#{subdomain}.wovn.io/" }
         settings = { 'url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+)\.' }
-        utility_universal_assertion(env, settings, { 'path_lang' => lang }, name)
+        utility_universal_assertion(env, settings, { 'url_language' => lang }, name)
 
         name = "test path lang subdomain #{lang} with port"
         env = { 'url' => "https://#{subdomain}.wovn.io:1234" }
         settings = { 'url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+)\.' }
-        utility_universal_assertion(env, settings, { 'path_lang' => lang }, name)
+        utility_universal_assertion(env, settings, { 'url_language' => lang }, name)
 
         name = "test path lang subdomain #{lang} with slash and port"
         env = { 'url' => "https://#{subdomain}.wovn.io:1234/" }
         settings = { 'url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+)\.' }
-        utility_universal_assertion(env, settings, { 'path_lang' => lang }, name)
+        utility_universal_assertion(env, settings, { 'url_language' => lang }, name)
 
         name = "test path lang subdomain #{lang} insecure"
         env = { 'url' => "http://#{subdomain}.wovn.io" }
         settings = { 'url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+)\.' }
-        utility_universal_assertion(env, settings, { 'path_lang' => lang }, name)
+        utility_universal_assertion(env, settings, { 'url_language' => lang }, name)
 
         name = "test path lang subdomain #{lang} insecure with slash"
         env = { 'url' => "http://#{subdomain}.wovn.io/" }
         settings = { 'url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+)\.' }
-        utility_universal_assertion(env, settings, { 'path_lang' => lang }, name)
+        utility_universal_assertion(env, settings, { 'url_language' => lang }, name)
 
         name = "test path lang subdomain #{lang} insecure with port"
         env = { 'url' => "http://#{subdomain}.wovn.io:1234" }
         settings = { 'url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+)\.' }
-        utility_universal_assertion(env, settings, { 'path_lang' => lang }, name)
+        utility_universal_assertion(env, settings, { 'url_language' => lang }, name)
 
         name = "test path lang subdomain #{lang} insecure with port and slash"
         env = { 'url' => "http://#{subdomain}.wovn.io:1234/" }
         settings = { 'url_pattern' => 'subdomain', 'url_pattern_reg' => '^(?<lang>[^.]+)\.' }
-        utility_universal_assertion(env, settings, { 'path_lang' => lang }, name)
+        utility_universal_assertion(env, settings, { 'url_language' => lang }, name)
       end
     end
 
@@ -786,42 +786,42 @@ module Wovnrb
         name = "test path lang query #{lang}"
         env = { 'url' => "https://wovn.io?wovn=#{query}" }
         settings = { 'url_pattern' => 'query', 'url_pattern_reg' => '((\?.*&)|\?)wovn=(?<lang>[^&]+)(&|$)' }
-        utility_universal_assertion(env, settings, { 'path_lang' => lang }, name)
+        utility_universal_assertion(env, settings, { 'url_language' => lang }, name)
 
         name = "test path lang query #{lang} with slash"
         env = { 'url' => "https://wovn.io/?wovn=#{query}" }
         settings = { 'url_pattern' => 'query', 'url_pattern_reg' => '((\?.*&)|\?)wovn=(?<lang>[^&]+)(&|$)' }
-        utility_universal_assertion(env, settings, { 'path_lang' => lang }, name)
+        utility_universal_assertion(env, settings, { 'url_language' => lang }, name)
 
         name = "test path lang query #{lang} with port"
         env = { 'url' => "https://wovn.io:1234?wovn=#{query}" }
         settings = { 'url_pattern' => 'query', 'url_pattern_reg' => '((\?.*&)|\?)wovn=(?<lang>[^&]+)(&|$)' }
-        utility_universal_assertion(env, settings, { 'path_lang' => lang }, name)
+        utility_universal_assertion(env, settings, { 'url_language' => lang }, name)
 
         name = "test path lang query #{lang} with port and slash"
         env = { 'url' => "https://wovn.io:1234/?wovn=#{query}" }
         settings = { 'url_pattern' => 'query', 'url_pattern_reg' => '((\?.*&)|\?)wovn=(?<lang>[^&]+)(&|$)' }
-        utility_universal_assertion(env, settings, { 'path_lang' => lang }, name)
+        utility_universal_assertion(env, settings, { 'url_language' => lang }, name)
 
         name = "test path lang query #{lang} insecure"
         env = { 'url' => "http://wovn.io?wovn=#{query}" }
         settings = { 'url_pattern' => 'query', 'url_pattern_reg' => '((\?.*&)|\?)wovn=(?<lang>[^&]+)(&|$)' }
-        utility_universal_assertion(env, settings, { 'path_lang' => lang }, name)
+        utility_universal_assertion(env, settings, { 'url_language' => lang }, name)
 
         name = "test path lang query #{lang} with slash insecure"
         env = { 'url' => "http://wovn.io/?wovn=#{query}" }
         settings = { 'url_pattern' => 'query', 'url_pattern_reg' => '((\?.*&)|\?)wovn=(?<lang>[^&]+)(&|$)' }
-        utility_universal_assertion(env, settings, { 'path_lang' => lang }, name)
+        utility_universal_assertion(env, settings, { 'url_language' => lang }, name)
 
         name = "test path lang query #{lang} with port insecure"
         env = { 'url' => "http://wovn.io:1234?wovn=#{query}" }
         settings = { 'url_pattern' => 'query', 'url_pattern_reg' => '((\?.*&)|\?)wovn=(?<lang>[^&]+)(&|$)' }
-        utility_universal_assertion(env, settings, { 'path_lang' => lang }, name)
+        utility_universal_assertion(env, settings, { 'url_language' => lang }, name)
 
         name = "test path lang query #{lang} with port and slash insecure"
         env = { 'url' => "http://wovn.io:1234/?wovn=#{query}" }
         settings = { 'url_pattern' => 'query', 'url_pattern_reg' => '((\?.*&)|\?)wovn=(?<lang>[^&]+)(&|$)' }
-        utility_universal_assertion(env, settings, { 'path_lang' => lang }, name)
+        utility_universal_assertion(env, settings, { 'url_language' => lang }, name)
       end
     end
 
@@ -831,46 +831,46 @@ module Wovnrb
         name = "test path lang path #{lang}"
         env = { 'url' => "https://wovn.io/#{query}" }
         settings = { 'url_pattern' => 'path' }
-        utility_universal_assertion(env, settings, { 'path_lang' => lang }, name)
+        utility_universal_assertion(env, settings, { 'url_language' => lang }, name)
 
         name = "test path lang path #{lang} with slash"
         env = { 'url' => "https://wovn.io/#{query}/" }
         settings = { 'url_pattern' => 'path' }
-        utility_universal_assertion(env, settings, { 'path_lang' => lang }, name)
+        utility_universal_assertion(env, settings, { 'url_language' => lang }, name)
 
         name = "test path lang path #{lang} with port"
         env = { 'url' => "https://wovn.io:1234/#{query}" }
         settings = { 'url_pattern' => 'path' }
-        utility_universal_assertion(env, settings, { 'path_lang' => lang }, name)
+        utility_universal_assertion(env, settings, { 'url_language' => lang }, name)
 
         name = "test path lang path #{lang} with port and slash"
         env = { 'url' => "https://wovn.io:1234/#{query}/" }
         settings = { 'url_pattern' => 'path' }
-        utility_universal_assertion(env, settings, { 'path_lang' => lang }, name)
+        utility_universal_assertion(env, settings, { 'url_language' => lang }, name)
 
         name = "test path lang path #{lang} insecure"
         env = { 'url' => "http://wovn.io/#{query}" }
         settings = { 'url_pattern' => 'path' }
-        utility_universal_assertion(env, settings, { 'path_lang' => lang }, name)
+        utility_universal_assertion(env, settings, { 'url_language' => lang }, name)
 
         name = "test path lang path #{lang} with slash insecure"
         env = { 'url' => "http://wovn.io/#{query}/" }
         settings = { 'url_pattern' => 'path' }
-        utility_universal_assertion(env, settings, { 'path_lang' => lang }, name)
+        utility_universal_assertion(env, settings, { 'url_language' => lang }, name)
 
         name = "test path lang path #{lang} with port insecure"
         env = { 'url' => "http://wovn.io:1234/#{query}" }
         settings = { 'url_pattern' => 'path' }
-        utility_universal_assertion(env, settings, { 'path_lang' => lang }, name)
+        utility_universal_assertion(env, settings, { 'url_language' => lang }, name)
 
         name = "test path lang path #{lang} with port and slash insecure"
         env = { 'url' => "http://wovn.io:1234/#{query}/" }
         settings = { 'url_pattern' => 'path' }
-        utility_universal_assertion(env, settings, { 'path_lang' => lang }, name)
+        utility_universal_assertion(env, settings, { 'url_language' => lang }, name)
       end
     end
 
-    def test_path_lang_sudomain_with_use_proxy_false
+    def test_url_language_sudomain_with_use_proxy_false
       settings = Wovnrb.get_settings({
                                        'url_pattern' => 'subdomain',
                                        'url_pattern_reg' => '^(?<lang>[^.]+)\.'
@@ -882,10 +882,10 @@ module Wovnrb
                            })
       url_lang_switcher = UrlLanguageSwitcher.new(store)
       header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
-      assert_equal('', header.path_lang)
+      assert_equal('', header.url_language)
     end
 
-    def test_path_lang_sudomain_with_use_proxy_true
+    def test_url_language_sudomain_with_use_proxy_true
       settings = Wovnrb.get_settings({
                                        'url_pattern' => 'subdomain',
                                        'url_pattern_reg' => '^(?<lang>[^.]+)\.',
@@ -898,10 +898,10 @@ module Wovnrb
                            })
       url_lang_switcher = UrlLanguageSwitcher.new(store)
       header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
-      assert_equal('zh-CHT', header.path_lang)
+      assert_equal('zh-CHT', header.url_language)
     end
 
-    def test_path_lang_with_custom_domain
+    def test_url_language_with_custom_domain
       custom_domain_langs = {
         'en' => { 'url' => 'my-site.com' },
         'en-US' => { 'url' => 'en-us.my-site.com' },
@@ -944,7 +944,7 @@ module Wovnrb
         url_lang_switcher = UrlLanguageSwitcher.new(store)
         header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
 
-        assert_equal(expected_lang_code, header.path_lang)
+        assert_equal(expected_lang_code, header.url_language)
       end
     end
   end

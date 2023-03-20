@@ -70,7 +70,7 @@ module Wovnrb
     #
     # @return [String] The lang code of the current page
     def lang_code
-      path_lang && !path_lang.empty? ? path_lang : @settings['default_lang']
+      url_language && !url_language.empty? ? url_language : @settings['default_lang']
     end
 
     # picks up language code from requested URL by using url_pattern_reg setting.
@@ -78,8 +78,8 @@ module Wovnrb
     # if you want examples, please see test/lib/headers_test.rb.
     #
     # @return [String] language code in requrested URL.
-    def path_lang
-      if @path_lang.nil?
+    def url_language
+      if @url_language.nil?
         full_url = if @settings['use_proxy'] && @env.key?('HTTP_X_FORWARDED_HOST')
                      "#{@env['HTTP_X_FORWARDED_HOST']}#{@env['REQUEST_URI']}"
                    else
@@ -96,9 +96,9 @@ module Wovnrb
           match = full_url.match(rp)
           new_lang_code = Lang.get_code(match[:lang]) if match && match[:lang] && Lang.get_lang(match[:lang])
         end
-        @path_lang = new_lang_code.presence || ''
+        @url_language = new_lang_code.presence || ''
       end
-      @path_lang
+      @url_language
     end
 
     def redirect(lang)
