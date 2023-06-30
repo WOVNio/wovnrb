@@ -159,7 +159,7 @@ module Wovnrb
 
     def to_absolute_path(path)
       absolute_path = path.blank? ? '/' : path
-      absolute_path = absolute_path.starts_with?('/') ? absolute_path : URL.join_paths(dirname, absolute_path)
+      absolute_path = URL.join_paths(dirname, absolute_path) unless absolute_path.starts_with?('/')
       URL.normalize_path_slash(path, absolute_path)
     end
 
