@@ -73,19 +73,17 @@ module Wovnrb
 
     def test_revert_multiple_input
       marker = HtmlReplaceMarker.new
-      original_html = [
-        '<html><body>',
-        '<input type="hidden" value="please_revert1"></body></html>',
-        '<input type="hidden" value="please_revert2"></body></html>',
-        '<input type="hidden" value=""></body></html>'
-      ].join
-      new_html = [
-        '<html><body>',
-        "<input type=\"hidden\" value=\"#{marker.add_value('please_revert1')}\"></body></html>",
-        "<input type=\"hidden\" value=\"#{marker.add_value('please_revert2')}\"></body></html>",
-        "<input type=\"hidden\" value=\"#{marker.add_value('')}\">",
-        '</body></html>'
-      ].join
+      original_html = '<html><body>'
+      new_html = '<html><body>'
+
+      50.times do |i|
+        original_html += "<input type=\"hidden\" value=\"#{i}\"></body></html>"
+        new_html += "<input type=\"hidden\" value=\"#{marker.add_value(i.to_s)}\"></body></html>"
+      end
+
+      original_html += '</body></html>'
+      new_html += '</body></html>'
+
       assert_equal(original_html, marker.revert(new_html))
     end
 
