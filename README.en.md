@@ -47,7 +47,7 @@ config.wovnrb = {
 ...
 ```
 
-The wovnrb Rails middleware must also be installed. See [2.10 - install_middleware](#210-install_middleware)
+The WOVN.rb Rails middleware must also be installed. See [2.10 - install_middleware](#2.10-install_middleware)
 
 * If you're using Sinatra
 
@@ -174,22 +174,22 @@ partial HTML content is translated but no widget snippet is added. Set
 
 ### 2.9. ignore_paths
 
-This parameter tells wovnrb to not localize content withing given directories.
+This parameter tells WOVN.rb to not localize content withing given directories.
 
 The directories given will only be matched against the beginning of the URL path.
 
-For instance, if you want to not localize the admin directory of your website, you should add the following to you wovnrb configuration.
+For instance, if you want to not localize the admin directory of your website, you should add the following to you WOVN.rb configuration.
 ```
 'ignore_paths' => ['/admin/']
 ```
 
 ### 2.10. install_middleware
 
-When using wovnrb in a Rails environment, this parameter controls whether the wovnrb middleware will be automatically installed or not.
+When using WOVN.rb in a Rails environment, this parameter controls whether the WOVN.rb middleware will be automatically installed or not.
 
-By default, wovnrb is automatically installed as the first middleware.
+By default, WOVN.rb is automatically installed as the first middleware.
 If you are using Rack::Deflater or other middleware that needs to be executed first, set this parameter to `false` and manually insert the middleware appropriately.
-wovnrb needs to be added after any compression middleware.
+WOVN.rb needs to be added after any compression middleware.
 
 ```ruby
   config.middleware.use Rack::Deflater
