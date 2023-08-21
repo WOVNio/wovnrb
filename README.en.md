@@ -91,6 +91,7 @@ api_timeout_seconds            |          | 1.0
 api_timeout_search_engine_bots |          | 5.0
 translate_canonical_tag        |          | true
 custom_domain_langs            |          | {}
+insert_hreflangs               |          | true
 
 ### 2.1. project_token
 
@@ -247,3 +248,9 @@ If this setting is used, each language declared in `supported_langs` must be giv
 
 The path declared for your original language must match the structure of the actual web server.
 In other words, you cannot use this setting to change the request path of your content in original language.
+
+### 2.16. `insert_hreflangs`
+This parameter tells wovnrb to insert link tag with hreflang.
+If setting is on, the tag like `<link rel="alternate" hreflang="en" href="https://my-website.com/en/">` will be inserted for published languages.
+
+If setting is off, wovnrb doesn't add any change to link tag with hreflang.
