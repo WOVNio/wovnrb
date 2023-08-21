@@ -474,7 +474,7 @@ module Wovnrb
       [store, headers]
     end
 
-    test 'build API compatible html - with insert_hreflang: false' do
+    test 'build API compatible html - with insert_hreflangs: false' do
       settings = { insert_hreflangs: false }
       converter = prepare_html_converter('<html><body><a class="test">hello</a></body></html>', settings)
       converted_html, = converter.build_api_compatible_html
