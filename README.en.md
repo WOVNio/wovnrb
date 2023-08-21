@@ -47,7 +47,7 @@ config.wovnrb = {
 ...
 ```
 
-The WOVN.rb Rails middleware must also be installed. See [2.10 - install_middleware](#2.10-install_middleware)
+The WOVN.rb Rails middleware must also be installed. See [2.10 - install_middleware](#210-install_middleware)
 
 * If you're using Sinatra
 
@@ -91,6 +91,7 @@ api_timeout_seconds            |          | 1.0
 api_timeout_search_engine_bots |          | 5.0
 translate_canonical_tag        |          | true
 custom_domain_langs            |          | {}
+insert_hreflangs               |          | true
 
 ### 2.1. project_token
 
@@ -208,7 +209,7 @@ WOVN.rb needs to be added after any compression middleware.
 By default, requests to the translation API will be sent with gzip compression. Set to false to disable compression.
 
 ### 2.12. api_timeout_seconds
-Configures the amount of time in seconds wovnrb will wait for the translation API for a response before the
+Configures the amount of time in seconds WOVN.rb will wait for the translation API for a response before the
 request is considered timed-out. This setting defaults to `1.0`.
 
 ### 2.13. api_timeout_search_engine_bots
@@ -217,7 +218,7 @@ Currently, bots from Google, Yahoo, Bing, Yandex, DuckDuckGo and Baidu are suppo
 defaults to `5.0`.
 
 ### 2.14. translate_canonical_tag
-Configures if wovnrb should automatically translate existing canonical tag in the HTML. When set to `true`, wovnrb
+Configures if WOVN.rb should automatically translate existing canonical tag in the HTML. When set to `true`, WOVN.rb
 will translate the canonical URL with the current language code according to your `url_pattern` setting.
 This setting defaults to `true`.
 
@@ -247,3 +248,9 @@ If this setting is used, each language declared in `supported_langs` must be giv
 
 The path declared for your original language must match the structure of the actual web server.
 In other words, you cannot use this setting to change the request path of your content in original language.
+
+### 2.16. `insert_hreflangs`
+This parameter tells WOVN.rb to insert link tag with hreflang.
+If setting is on, the tag like `<link rel="alternate" hreflang="en" href="https://my-website.com/en/">` will be inserted for published languages.
+
+If setting is off, WOVN.rb doesn't add any change to link tag with hreflang.

@@ -89,6 +89,7 @@ ignore_class       |          | []
 translate_fragment |          | true
 ignore_paths       |          | []
 custom_domain_langs|          | {}
+insert_hreflangs   |          | true
 
 ### 2.1. project_token
 
@@ -209,3 +210,9 @@ config.wovnrb = {
 
 オリジナル言語のために宣言されたパスは、実際のウェブサーバーの構造と一致していなければなりません。
 この設定を使用して、オリジナル言語のリクエストパスを変更することはできません。
+
+### 2.11. insert_hreflangs
+このパラメータはhreflang属性を持つlinkタグを挿入するかどうかを指定します。
+例えば設定が有効の場合、`<link rel="alternate" hreflang="en" href="https://my-website.com/en/">`のように、公開されている言語のタグを挿入します。
+
+設定が無効の場合はタグは挿入せず、元からあるhreflang属性を持ったタグに変更は加えません。

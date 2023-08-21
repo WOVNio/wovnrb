@@ -112,6 +112,7 @@ module Wovnrb
         'url_pattern' => url_pattern,
         'lang_param_name' => lang_param_name,
         'translate_canonical_tag' => translate_canonical_tag,
+        'insert_hreflangs' => insert_hreflangs,
         'product' => 'WOVN.rb',
         'version' => VERSION,
         'body' => body
@@ -161,6 +162,10 @@ module Wovnrb
 
     def translate_canonical_tag
       @store.settings['translate_canonical_tag']
+    end
+
+    def insert_hreflangs
+      @store.settings['insert_hreflangs']
     end
 
     def custom_domain_langs

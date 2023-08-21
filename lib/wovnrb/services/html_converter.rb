@@ -59,7 +59,7 @@ module Wovnrb
       @dom.traverse { |node| transform_node(node, marker) }
 
       insert_snippet(adds_backend_error_mark: true)
-      insert_hreflang_tags
+      insert_hreflang_tags if @store.settings['insert_hreflangs']
       inject_lang_html_tag
       translate_canonical_tag if @store.settings['translate_canonical_tag']
 

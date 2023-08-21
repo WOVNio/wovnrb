@@ -40,7 +40,8 @@ module Wovnrb
         'wovn_dev_mode' => false,
         'compress_api_requests' => true,
         'translate_canonical_tag' => true,
-        'custom_domain_langs' => {}
+        'custom_domain_langs' => {},
+        'insert_hreflangs' => true
       )
     end
 
