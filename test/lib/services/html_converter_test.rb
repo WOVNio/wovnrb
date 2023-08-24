@@ -452,6 +452,26 @@ module Wovnrb
       assert(translated_html.include?(expected_html))
     end
 
+    test 'build API compatible html - with insert_hreflangs: false - hreflangs are not added' do
+      settings = default_store_settings
+      settings['insert_hreflangs'] = false
+      converter = prepare_html_converter('<html><body><a>hello</a></body></html>', settings)
+      converted_html, = converter.build_api_compatible_html
+
+      expected_html = "<html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"https://j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script></head><body><a>hello</a></body></html>"
+      assert_equal(expected_html, converted_html)
+    end
+
+    test 'Transform HTML - with insert_hreflangs: false - hreflangs are not added' do
+      settings = default_store_settings
+      settings['insert_hreflangs'] = false
+      converter = prepare_html_converter('<html><body><a>hello</a></body></html>', settings)
+      translated_html = converter.build
+
+      expected_html = "<html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"https://j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script></head><body><a>hello</a></body></html>"
+      assert_equal(expected_html, translated_html)
+    end
+
     private
 
     def prepare_html_converter(input_html, store_options = {})
@@ -472,15 +492,6 @@ module Wovnrb
       )
 
       [store, headers]
-    end
-
-    test 'build API compatible html - with insert_hreflangs: false' do
-      settings = { insert_hreflangs: false }
-      converter = prepare_html_converter('<html><body><a class="test">hello</a></body></html>', settings)
-      converted_html, = converter.build_api_compatible_html
-
-      expected_html = "<html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"https://j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script></head><body><a class=\"test\">hello</a></body></html>"
-      assert_equal(expected_html, converted_html)
     end
 
     def default_store_settings

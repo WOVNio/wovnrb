@@ -134,7 +134,7 @@ module Wovnrb
 
     def replace_hreflangs
       strip_hreflang_tags
-      insert_hreflang_tags
+      insert_hreflang_tags if @store.settings['insert_hreflangs']
     end
 
     def strip_hreflang_tags
