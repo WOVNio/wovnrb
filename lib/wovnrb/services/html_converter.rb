@@ -54,7 +54,7 @@ module Wovnrb
 
     def replace_dom(marker)
       strip_snippet
-      strip_hreflangs if add_hreflang && @store.settings['insert_hreflangs']
+      strip_hreflangs if @store.settings['insert_hreflangs']
 
       @dom.traverse { |node| transform_node(node, marker) }
 
@@ -118,10 +118,6 @@ module Wovnrb
       @dom.xpath('//link') do |node|
         node.remove if node['hreflang'] && supported_langs.include?(Lang.iso_639_1_normalization(node['hreflang']))
       end
-    end
-
-    def add_hreflang
-      !!(@store && @headers)
     end
 
     def inject_lang_html_tag
