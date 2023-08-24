@@ -42,7 +42,7 @@ module Wovnrb
 
     def transform_html
       replace_snippet
-      replace_hreflangs
+      replace_hreflangs if @store.settings['insert_hreflangs']
       inject_lang_html_tag
       translate_canonical_tag if @store.settings['translate_canonical_tag']
     end
@@ -54,7 +54,7 @@ module Wovnrb
 
     def replace_dom(marker)
       strip_snippet
-      strip_hreflangs if add_hreflang
+      strip_hreflangs if add_hreflang && @store.settings['insert_hreflangs']
 
       @dom.traverse { |node| transform_node(node, marker) }
 
@@ -134,7 +134,7 @@ module Wovnrb
 
     def replace_hreflangs
       strip_hreflang_tags
-      insert_hreflang_tags if @store.settings['insert_hreflangs']
+      insert_hreflang_tags
     end
 
     def strip_hreflang_tags
