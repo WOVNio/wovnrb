@@ -856,7 +856,7 @@ module Wovnrb
       url_lang_switcher = UrlLanguageSwitcher.new(store)
 
       keys = Wovnrb::Lang::LANG.keys
-      assert(keys.size > 0)
+      assert(!keys.empty?)
 
       keys.each do |key|
         uri_without_custom_lang_param = "wovn.io/?wovn=#{key}"
@@ -877,7 +877,7 @@ module Wovnrb
       url_lang_switcher = UrlLanguageSwitcher.new(store)
 
       keys = Wovnrb::Lang::LANG.keys
-      assert(keys.size > 0)
+      assert(!keys.empty?)
 
       uri_without_scheme = url_lang_switcher.remove_lang_from_uri_component('wovn.io', nil)
       assert_equal('wovn.io', uri_without_scheme)
@@ -904,7 +904,7 @@ module Wovnrb
       url_lang_switcher = UrlLanguageSwitcher.new(store)
 
       keys = Wovnrb::Lang::LANG.keys
-      assert(keys.size > 0)
+      assert(!keys.empty?)
 
       keys.each do |key|
         uri_without_scheme = url_lang_switcher.remove_lang_from_uri_component("#{key.downcase}.wovn.io/", key)
@@ -920,7 +920,7 @@ module Wovnrb
       store = Wovnrb.get_store(settings)
       url_lang_switcher = UrlLanguageSwitcher.new(store)
       keys = Wovnrb::Lang::LANG.keys
-      assert(keys.size > 0)
+      assert(!keys.empty?)
 
       uri_without_scheme = url_lang_switcher.remove_lang_from_uri_component('wovn.io', nil)
       assert_equal('wovn.io', uri_without_scheme)
@@ -958,7 +958,7 @@ module Wovnrb
       sut = UrlLanguageSwitcher.new(store)
 
       keys = Wovnrb::Lang::LANG.keys
-      assert(keys.size > 0)
+      assert(!keys.empty?)
 
       keys.each do |key|
         assert_equal('/', sut.remove_lang_from_uri_component("/#{key}", key))
@@ -978,7 +978,7 @@ module Wovnrb
       url_lang_switcher = UrlLanguageSwitcher.new(store)
 
       keys = Wovnrb::Lang::LANG.keys
-      assert(keys.size > 0)
+      assert(!keys.empty?)
 
       uri_without_scheme = url_lang_switcher.remove_lang_from_uri_component('wovn.io', nil)
       assert_equal('wovn.io', uri_without_scheme)
