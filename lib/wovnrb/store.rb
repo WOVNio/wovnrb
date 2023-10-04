@@ -42,7 +42,7 @@ module Wovnrb
         'translate_canonical_tag' => true,
         'custom_domain_langs' => {},
         'insert_hreflangs' => true,
-        'use_cookie_lang' => false,
+        'use_cookie_lang' => false
       )
     end
 

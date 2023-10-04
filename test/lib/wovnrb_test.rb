@@ -256,10 +256,12 @@ HTML
       'supported_langs' => %w[ja en],
       'use_cookie_lang' => true
     }
-    env = Wovnrb.get_env({
-      'url' => 'http://test.com/foo',
-      'HTTP_COOKIE' => 'wovn_selected_lang=en'
-    })
+    env = Wovnrb.get_env(
+      {
+        'url' => 'http://test.com/foo',
+        'HTTP_COOKIE' => 'wovn_selected_lang=en'
+      }
+    )
 
     sut = Wovnrb::Interceptor.new(get_app, settings)
     status, res_headers, _body = sut.call(env)
@@ -276,10 +278,12 @@ HTML
       'supported_langs' => %w[ja en],
       'use_cookie_lang' => true
     }
-    env = Wovnrb.get_env({
-      'url' => 'http://test.com/foo',
-      'HTTP_COOKIE' => 'wovn_selected_lang=ja'
-    })
+    env = Wovnrb.get_env(
+      {
+        'url' => 'http://test.com/foo',
+        'HTTP_COOKIE' => 'wovn_selected_lang=ja'
+      }
+    )
 
     sut = Wovnrb::Interceptor.new(get_app, settings)
     status, res_headers, _body = sut.call(env)
