@@ -35,6 +35,13 @@ module Wovnrb
       default_lang = @store.settings['default_lang']
       return @app.call(env) if @store.settings['test_mode'] && @store.settings['test_url'] != headers.url
 
+      cookie_lang = Rack::Request.new(env).cookies['wovn_selected_lang']
+      request_lang = headers.lang_code
+      if @store.settings['use_cookie_lang'] && request_lang != cookie_lang && request_lang == @store.default_lang
+        redirect_headers = headers.redirect(cookie_lang)
+        return [302, redirect_headers, ['']]
+      end
+
       # redirect if the path is set to the default language (for SEO purposes)
       if explicit_default_lang?(headers)
         redirect_headers = headers.redirect(default_lang)

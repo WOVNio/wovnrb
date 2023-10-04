@@ -41,7 +41,8 @@ module Wovnrb
         'compress_api_requests' => true,
         'translate_canonical_tag' => true,
         'custom_domain_langs' => {},
-        'insert_hreflangs' => true
+        'insert_hreflangs' => true,
+        'use_cookie_lang' => false,
       )
     end
 
