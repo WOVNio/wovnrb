@@ -1,3 +1,3 @@
 module Wovnrb
-  VERSION = '3.10.3'.freeze
+  VERSION = '3.11.0'.freeze
 end
