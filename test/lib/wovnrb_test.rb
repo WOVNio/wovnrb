@@ -292,6 +292,28 @@ HTML
     assert_nil(res_headers['location'])
   end
 
+  def test_call__with_use_cookie_lang_true__cookie_lang_is_empty__should_not_redirect
+    settings = {
+      'project_token' => '123456',
+      'url_pattern' => 'path',
+      'default_lang' => 'ja',
+      'supported_langs' => %w[ja en],
+      'use_cookie_lang' => true
+    }
+    env = Wovnrb.get_env(
+      {
+        'url' => 'http://test.com/foo',
+        'HTTP_COOKIE' => ''
+      }
+    )
+
+    sut = Wovnrb::Interceptor.new(get_app, settings)
+    status, res_headers, _body = sut.call(env)
+
+    assert_equal(200, status)
+    assert_nil(res_headers['location'])
+  end
+
   private
 
   def assert_call_affects_env(settings, env, mock_api:, affected:)

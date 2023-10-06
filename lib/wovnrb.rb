@@ -37,7 +37,7 @@ module Wovnrb
 
       cookie_lang = Rack::Request.new(env).cookies['wovn_selected_lang']
       request_lang = headers.lang_code
-      if @store.settings['use_cookie_lang'] && request_lang != cookie_lang && request_lang == @store.default_lang
+      if @store.settings['use_cookie_lang'] && cookie_lang.present? && request_lang != cookie_lang && request_lang == @store.default_lang
         redirect_headers = headers.redirect(cookie_lang)
         return [302, redirect_headers, ['']]
       end
