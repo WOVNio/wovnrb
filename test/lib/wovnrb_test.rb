@@ -239,12 +239,124 @@ HTML
       'rack.request.form_input' => '',
       'rack.request.form_hash' => {},
       'rack.request.form_pairs' => [],
+      'rack.request.cookie_hash' => {},
       'HTTP_HOST' => 'test.com',
       'REQUEST_URI' => '/en/ignored',
       'PATH_INFO' => '/en/ignored'
     }
 
     assert_call_affects_env(settings, env, mock_api: false, affected: false)
+  end
+
+  def test_call__with_use_cookie_lang_true__cookie_lang_is_target_lang__should_redirect
+    settings = {
+      'project_token' => '123456',
+      'url_pattern' => 'path',
+      'default_lang' => 'ja',
+      'supported_langs' => %w[ja en],
+      'use_cookie_lang' => true
+    }
+    env = Wovnrb.get_env(
+      {
+        'url' => 'http://test.com/foo',
+        'HTTP_COOKIE' => 'wovn_selected_lang=en'
+      }
+    )
+
+    sut = Wovnrb::Interceptor.new(get_app, settings)
+    status, res_headers, _body = sut.call(env)
+
+    assert_equal(302, status)
+    assert_equal('http://test.com/en/foo', res_headers['location'])
+  end
+
+  def test_call__with_use_cookie_lang_true__cookie_lang_is_default_lang__should_not_redirect
+    settings = {
+      'project_token' => '123456',
+      'url_pattern' => 'path',
+      'default_lang' => 'ja',
+      'supported_langs' => %w[ja en],
+      'use_cookie_lang' => true
+    }
+    env = Wovnrb.get_env(
+      {
+        'url' => 'http://test.com/foo',
+        'HTTP_COOKIE' => 'wovn_selected_lang=ja'
+      }
+    )
+
+    sut = Wovnrb::Interceptor.new(get_app, settings)
+    status, res_headers, _body = sut.call(env)
+
+    assert_equal(200, status)
+    assert_nil(res_headers['location'])
+  end
+
+  def test_call__with_use_cookie_lang_true__cookie_lang_is_different_target_lang__should_not_redirect
+    settings = {
+      'project_token' => '123456',
+      'url_pattern' => 'path',
+      'default_lang' => 'ja',
+      'supported_langs' => %w[ja en fr],
+      'use_cookie_lang' => true
+    }
+    env = Wovnrb.get_env(
+      {
+        'url' => 'http://test.com/en/foo',
+        'HTTP_COOKIE' => 'wovn_selected_lang=fr'
+      }
+    )
+
+    mock_translation_api_response('', '')
+    sut = Wovnrb::Interceptor.new(get_app, settings)
+    status, res_headers, _body = sut.call(env)
+
+    assert_equal(200, status)
+    assert_nil(res_headers['location'])
+  end
+
+  def test_call__with_use_cookie_lang_true__cookie_lang_is_empty__should_not_redirect
+    settings = {
+      'project_token' => '123456',
+      'url_pattern' => 'path',
+      'default_lang' => 'ja',
+      'supported_langs' => %w[ja en],
+      'use_cookie_lang' => true
+    }
+    env = Wovnrb.get_env(
+      {
+        'url' => 'http://test.com/foo',
+        'HTTP_COOKIE' => ''
+      }
+    )
+
+    sut = Wovnrb::Interceptor.new(get_app, settings)
+    status, res_headers, _body = sut.call(env)
+
+    assert_equal(200, status)
+    assert_nil(res_headers['location'])
+  end
+
+  def test_call__with_use_cookie_lang_false__should_not_redirect
+    settings = {
+      'project_token' => '123456',
+      'url_pattern' => 'path',
+      'default_lang' => 'ja',
+      'supported_langs' => %w[ja en],
+      'use_cookie_lang' => false
+    }
+    env = Wovnrb.get_env(
+      {
+        'url' => 'http://test.com/foo',
+        'HTTP_COOKIE' => 'wovn_selected_lang=en'
+      }
+    )
+
+    sut = Wovnrb::Interceptor.new(get_app, settings)
+    status, res_headers, _body = sut.call(env)
+
+    assert_equal(200, status)
+    assert_nil(res_headers['location'])
   end
 
   private
