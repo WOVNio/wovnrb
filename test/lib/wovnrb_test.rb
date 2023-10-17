@@ -259,7 +259,7 @@ HTML
     env = Wovnrb.get_env(
       {
         'url' => 'http://test.com/foo',
-        'HTTP_COOKIE' => 'wovn_selected_lang=en'
+        'HTTP_COOKIE' => 'wovn_selected_lang=en',
       }
     )
 
@@ -268,6 +268,29 @@ HTML
 
     assert_equal(302, status)
     assert_equal('http://test.com/en/foo', res_headers['location'])
+  end
+
+  def test_call__with_use_cookie_lang_true__request_method_is_post__should_not_redirect
+    settings = {
+      'project_token' => '123456',
+      'url_pattern' => 'path',
+      'default_lang' => 'ja',
+      'supported_langs' => %w[ja en],
+      'use_cookie_lang' => true
+    }
+    env = Wovnrb.get_env(
+      {
+        'url' => 'http://test.com/foo',
+        'HTTP_COOKIE' => 'wovn_selected_lang=en',
+        'REQUEST_METHOD' => 'POST'
+      }
+    )
+
+    sut = Wovnrb::Interceptor.new(get_app, settings)
+    status, res_headers, _body = sut.call(env)
+
+    assert_equal(200, status)
+    assert_nil(res_headers['location'])
   end
 
   def test_call__with_use_cookie_lang_true__cookie_lang_is_default_lang__should_not_redirect
