@@ -259,7 +259,7 @@ HTML
     env = Wovnrb.get_env(
       {
         'url' => 'http://test.com/foo',
-        'HTTP_COOKIE' => 'wovn_selected_lang=en',
+        'HTTP_COOKIE' => 'wovn_selected_lang=en'
       }
     )
 
