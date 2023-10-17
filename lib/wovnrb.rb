@@ -25,7 +25,8 @@ module Wovnrb
 
     def call(env)
       # disabled by previous Rack middleware
-      return @app.call(env) if Rack::Request.new(env).params['wovn_disable'] == true
+      request = Rack::Request.new(env)
+      return @app.call(env) if request.params['wovn_disable'] == true
 
       @store.settings.clear_dynamic_settings!
       return @app.call(env) unless Store.instance.valid_settings?
@@ -35,9 +36,9 @@ module Wovnrb
       default_lang = @store.settings['default_lang']
       return @app.call(env) if @store.settings['test_mode'] && @store.settings['test_url'] != headers.url
 
-      cookie_lang = Rack::Request.new(env).cookies['wovn_selected_lang']
+      cookie_lang = request.cookies['wovn_selected_lang']
       request_lang = headers.lang_code
-      is_get_request = Rack::Request.new(env).get?
+      is_get_request = request.get?
 
       if @store.settings['use_cookie_lang'] && cookie_lang.present? && request_lang != cookie_lang && request_lang == @store.default_lang && is_get_request
         redirect_headers = headers.redirect(cookie_lang)
@@ -45,7 +46,7 @@ module Wovnrb
       end
 
       # redirect if the path is set to the default language (for SEO purposes)
-      if explicit_default_lang?(headers)
+      if explicit_default_lang?(headers) && is_get_request
         redirect_headers = headers.redirect(default_lang)
         return [307, redirect_headers, ['']]
       end
@@ -61,8 +62,6 @@ module Wovnrb
 
       # disabled by next Rack middleware
       return output(headers, status, res_headers, body) unless res_headers['Content-Type']&.include?('html')
-
-      request = Rack::Request.new(env)
 
       return output(headers, status, res_headers, body) if request.params['wovn_disable'] == true
 
