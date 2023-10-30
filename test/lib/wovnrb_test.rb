@@ -158,72 +158,6 @@ HTML
     assert_call_affects_env(settings, env, mock_api: true, affected: true)
   end
 
-  def test_call_with_path_ignored_with_language_code_should_change_environment
-    settings = {
-      'project_token' => '123456',
-      'url_pattern' => 'path',
-      'default_lang' => 'ja',
-      'supported_langs' => %w[ja en],
-      'ignore_paths' => ['/en/ignored']
-    }
-    env = {
-      'rack.input' => '',
-      'rack.request.query_string' => '',
-      'rack.request.query_hash' => {},
-      'rack.request.form_input' => '',
-      'rack.request.form_hash' => {},
-      'HTTP_HOST' => 'test.com',
-      'REQUEST_URI' => '/ignored',
-      'PATH_INFO' => '/ignored'
-    }
-
-    assert_call_affects_env(settings, env, mock_api: false, affected: true)
-  end
-
-  def test_call_with_path_ignored_without_language_code_should_change_environment
-    settings = {
-      'project_token' => '123456',
-      'url_pattern' => 'path',
-      'default_lang' => 'ja',
-      'supported_langs' => %w[ja en],
-      'ignore_paths' => ['/ignored']
-    }
-    env = {
-      'rack.input' => '',
-      'rack.request.query_string' => '',
-      'rack.request.query_hash' => {},
-      'rack.request.form_input' => '',
-      'rack.request.form_hash' => {},
-      'HTTP_HOST' => 'test.com',
-      'REQUEST_URI' => '/en/ignored',
-      'PATH_INFO' => '/en/ignored'
-    }
-
-    assert_call_affects_env(settings, env, mock_api: false, affected: true)
-  end
-
-  def test_call_with_path_ignored_without_language_code_in_original_language_should_change_environment
-    settings = {
-      'project_token' => '123456',
-      'url_pattern' => 'path',
-      'default_lang' => 'ja',
-      'supported_langs' => %w[ja en],
-      'ignore_paths' => ['/ignored']
-    }
-    env = {
-      'rack.input' => '',
-      'rack.request.query_string' => '',
-      'rack.request.query_hash' => {},
-      'rack.request.form_input' => '',
-      'rack.request.form_hash' => {},
-      'HTTP_HOST' => 'test.com',
-      'REQUEST_URI' => '/ignored',
-      'PATH_INFO' => '/ignored'
-    }
-
-    assert_call_affects_env(settings, env, mock_api: false, affected: true)
-  end
-
   def test_call_with_path_ignored_should_not_change_environment
     settings = {
       'project_token' => '123456',
@@ -246,6 +180,29 @@ HTML
     }
 
     assert_call_affects_env(settings, env, mock_api: false, affected: false)
+  end
+
+  def test_call__with_use_cookie_lang_true__is_ignored_path__does_nothing
+    settings = {
+      'project_token' => '123456',
+      'url_pattern' => 'path',
+      'default_lang' => 'ja',
+      'supported_langs' => %w[ja en],
+      'ignore_paths' => %w[/ignored/**],
+      'use_cookie_lang' => true
+    }
+    env = Wovnrb.get_env(
+      {
+        'url' => 'http://test.com/ignored/foo',
+        'HTTP_COOKIE' => 'wovn_selected_lang=en'
+      }
+    )
+
+    sut = Wovnrb::Interceptor.new(get_app, settings)
+    status, res_headers, _body = sut.call(env)
+
+    assert_equal(200, status)
+    assert_nil(res_headers['Location'])
   end
 
   def test_call__with_use_cookie_lang_true__cookie_lang_is_target_lang__should_redirect

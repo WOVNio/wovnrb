@@ -156,7 +156,7 @@ module Wovnrb
       if response
         cache_key = generate_cache_key(store, original_html)
         api_host = if store.dev_mode?
-                     'dev-wovn.io:3001'
+                     'dev-wovn.io'
                    else
                      'wovn.global.ssl.fastly.net'
                    end

@@ -40,6 +40,13 @@ module Wovnrb
       request_lang = headers.lang_code
       is_get_request = request.get?
 
+      # if path is ignored, do nothing
+      if ignore_path?(headers.unmasked_pathname_without_trailing_slash)
+        status, res_headers, body = @app.call(env)
+
+        return output(headers, status, res_headers, body)
+      end
+
       if @store.settings['use_cookie_lang'] && cookie_lang.present? && request_lang != cookie_lang && request_lang == @store.default_lang && is_get_request
         redirect_headers = headers.redirect(cookie_lang)
         return [302, redirect_headers, ['']]
@@ -51,12 +58,6 @@ module Wovnrb
         return [307, redirect_headers, ['']]
       end
 
-      # if path containing language code is ignored, do nothing
-      if headers.lang_code != default_lang && ignore_path?(headers.unmasked_pathname_without_trailing_slash)
-        status, res_headers, body = @app.call(env)
-
-        return output(headers, status, res_headers, body)
-      end
       # pass to application
       status, res_headers, body = @app.call(headers.request_out)
 
