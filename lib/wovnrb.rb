@@ -40,8 +40,8 @@ module Wovnrb
       request_lang = headers.lang_code
       is_get_request = request.get?
 
-      # if path is ignored, do nothing
-      if ignore_path?(headers.unmasked_pathname_without_trailing_slash)
+      # if request is ignored, do nothing
+      if ignore_request?(headers)
         status, res_headers, body = @app.call(env)
 
         return output(headers, status, res_headers, body)
@@ -121,6 +121,10 @@ module Wovnrb
 
     def wovn_ignored?(html_body)
       !html_body.xpath('//html[@wovn-ignore or @data-wovn-ignore]').empty?
+    end
+
+    def ignore_request?(headers)
+      headers.widget_request? || ignore_path?(headers.unmasked_pathname_without_trailing_slash)
     end
 
     def ignore_path?(path)
