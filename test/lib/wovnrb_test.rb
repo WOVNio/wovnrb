@@ -158,31 +158,6 @@ HTML
     assert_call_affects_env(settings, env, mock_api: true, affected: true)
   end
 
-  def test_call_from_wovn_widget_should_be_ignored
-    settings = {
-      'project_token' => '123456',
-      'url_pattern' => 'path',
-      'default_lang' => 'ja',
-      'supported_langs' => %w[ja en],
-      'ignore_paths' => []
-    }
-    env = {
-      'rack.input' => '',
-      'rack.request.query_string' => '',
-      'rack.request.query_hash' => {},
-      'rack.request.form_input' => '',
-      'rack.request.form_hash' => {},
-      'rack.request.form_pairs' => [],
-      'rack.request.cookie_hash' => {},
-      'HTTP_HOST' => 'test.com',
-      'HTTP_X_WOVN_WIDGET' => 'buildhash',
-      'REQUEST_URI' => '/widget_session_auth',
-      'PATH_INFO' => '/widget_session_auth'
-    }
-
-    assert_call_affects_env(settings, env, mock_api: false, affected: false)
-  end
-
   def test_call_with_path_ignored_should_not_change_environment
     settings = {
       'project_token' => '123456',

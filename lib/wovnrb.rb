@@ -40,8 +40,8 @@ module Wovnrb
       request_lang = headers.lang_code
       is_get_request = request.get?
 
-      # if request is ignored, do nothing
-      if ignore_request?(headers)
+      # if path is ignored, do nothing
+      if ignore_path?(headers.unmasked_pathname_without_trailing_slash)
         status, res_headers, body = @app.call(env)
 
         return output(headers, status, res_headers, body)
@@ -49,7 +49,6 @@ module Wovnrb
 
       if @store.settings['use_cookie_lang'] && cookie_lang.present? && request_lang != cookie_lang && request_lang == @store.default_lang && is_get_request
         redirect_headers = headers.redirect(cookie_lang)
-        redirect_headers['Access-Control-Allow-Origin'] = 'nginx.test'
         return [302, redirect_headers, ['']]
       end
 
@@ -121,10 +120,6 @@ module Wovnrb
 
     def wovn_ignored?(html_body)
       !html_body.xpath('//html[@wovn-ignore or @data-wovn-ignore]').empty?
-    end
-
-    def ignore_request?(headers)
-      headers.widget_request? || ignore_path?(headers.unmasked_pathname_without_trailing_slash)
     end
 
     def ignore_path?(path)
