@@ -65,7 +65,10 @@ module Wovnrb
 
       return output(headers, status, res_headers, body) if request.params['wovn_disable'] == true
 
+      # Force updating request.params['wovn_timestamp'] to prevent caching, in case the app modifies the Rack's request.params
+      request.update_param('wovn_timestamp', Time.now.to_i.to_s)
       @store.settings.update_dynamic_settings!(request.params)
+
       return output(headers, status, res_headers, body) if ignore_path?(headers.pathname)
 
       body = switch_lang(headers, body) unless /^1|302/.match?(status.to_s)
