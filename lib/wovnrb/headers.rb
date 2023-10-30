@@ -157,10 +157,6 @@ module Wovnrb
       bots.any? { |bot| @env['HTTP_USER_AGENT'].include?(bot) }
     end
 
-    def widget_request?
-      @env.key?('HTTP_X_WOVN_WIDGET')
-    end
-
     def to_absolute_path(path)
       absolute_path = path.blank? ? '/' : path
       absolute_path = URL.join_paths(dirname, absolute_path) unless absolute_path.starts_with?('/')
