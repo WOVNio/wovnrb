@@ -165,7 +165,11 @@ module Wovnrb
 
       if @settings['wovn_dev_mode']
         if @settings['api_url'] == self.class.default_settings['api_url']
-          @settings['api_url'] = 'http://dev-wovn.io:3001'
+          @settings['api_url'] = 'https://dev-wovn.io'
+        end
+
+        if @settings['widget_url'] == self.class.default_settings['widget_url']
+          @settings['widget_url'] = 'https://j.dev-wovn.io/1'
         end
 
         if @settings['api_timeout_seconds'] == self.class.default_settings['api_timeout_seconds']
