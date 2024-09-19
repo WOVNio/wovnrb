@@ -243,7 +243,7 @@ module Wovnrb
 
     def get_langs(values)
       langs = Set.new
-      (values['text_vals'] || {}).merge(values['img_vals'] || {}).each_value do | index|
+      (values['text_vals'] || {}).merge(values['img_vals'] || {}).each_value do |index|
         index.each do |l, _val|
           langs.add(l)
         end
