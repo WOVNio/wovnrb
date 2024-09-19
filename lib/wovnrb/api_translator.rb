@@ -5,10 +5,11 @@ require 'zlib'
 
 module Wovnrb
   class ApiTranslator
-    def initialize(store, headers, uuid)
+    def initialize(store, headers, uuid, status)
       @store = store
       @headers = headers
       @uuid = uuid
+      @status = status
     end
 
     def translate(body)
@@ -115,6 +116,7 @@ module Wovnrb
         'insert_hreflangs' => insert_hreflangs,
         'product' => 'WOVN.rb',
         'version' => VERSION,
+        'page_status_code' => @status,
         'body' => body
       }
 
