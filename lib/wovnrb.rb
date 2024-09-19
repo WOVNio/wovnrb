@@ -77,7 +77,7 @@ module Wovnrb
       output(headers, status, res_headers, body)
     end
 
-    def switch_lang(headers, body, status)
+    def switch_lang(headers, body, response_status_code)
       translated_body = []
 
       # Must use `.each` for to support multiple-chunks in Sinatra
@@ -91,7 +91,7 @@ module Wovnrb
 
         if needs_api?(html_body, headers)
           converted_html, marker = html_converter.build_api_compatible_html
-          translated_content = ApiTranslator.new(@store, headers, WovnLogger.uuid, status).translate(converted_html)
+          translated_content = ApiTranslator.new(@store, headers, WovnLogger.uuid, response_status_code).translate(converted_html)
           translated_body.push(marker.revert(translated_content))
         else
           string_body = html_converter.build if html_body.html?
