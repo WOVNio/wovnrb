@@ -102,7 +102,7 @@ module Wovnrb
       custom_lang = LANG[custom_lang_aliases.invert[lang_name]]
       return custom_lang[:code] if custom_lang
 
-      LANG.each do |_k, l|
+      LANG.each_value do |l|
         return l[:code] if lang_name.casecmp(l[:name]).zero? || lang_name.casecmp(l[:en]).zero? || lang_name.casecmp(l[:code]).zero?
       end
       nil
@@ -243,7 +243,7 @@ module Wovnrb
 
     def get_langs(values)
       langs = Set.new
-      (values['text_vals'] || {}).merge(values['img_vals'] || {}).each do |_key, index|
+      (values['text_vals'] || {}).merge(values['img_vals'] || {}).each_value do | index|
         index.each do |l, _val|
           langs.add(l)
         end
