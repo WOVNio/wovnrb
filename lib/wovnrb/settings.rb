@@ -1,7 +1,7 @@
 module Wovnrb
   class Settings < Hash
     def initialize(*args, **kwargs)
-      super(*args, **kwargs)
+      super
       @dynamic_settings = {}
     end
 
@@ -9,7 +9,7 @@ module Wovnrb
       return @dynamic_settings[key] if @dynamic_settings.key?(key)
       return IgnoreGlobsWrapper.new(ignore_globs) if key == 'ignore_globs'
 
-      super(key)
+      super
     end
 
     def ignore_globs

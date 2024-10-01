@@ -68,7 +68,7 @@ module Wovnrb
       @store.settings.update_dynamic_settings!(request.params)
       return output(headers, status, res_headers, body) if ignore_path?(headers.pathname)
 
-      body = switch_lang(headers, body) unless /^1|302/.match?(status.to_s)
+      body = switch_lang(headers, body, status) unless /^1|302/.match?(status.to_s)
 
       content_length = 0
       body.each { |b| content_length += b.respond_to?(:bytesize) ? b.bytesize : 0 }
@@ -77,7 +77,7 @@ module Wovnrb
       output(headers, status, res_headers, body)
     end
 
-    def switch_lang(headers, body)
+    def switch_lang(headers, body, response_status_code)
       translated_body = []
 
       # Must use `.each` for to support multiple-chunks in Sinatra
@@ -91,7 +91,7 @@ module Wovnrb
 
         if needs_api?(html_body, headers)
           converted_html, marker = html_converter.build_api_compatible_html
-          translated_content = ApiTranslator.new(@store, headers, WovnLogger.uuid).translate(converted_html)
+          translated_content = ApiTranslator.new(@store, headers, WovnLogger.uuid, response_status_code).translate(converted_html)
           translated_body.push(marker.revert(translated_content))
         else
           string_body = html_converter.build if html_body.html?

@@ -16,7 +16,7 @@ module Wovnrb
     end
 
     def test_iso_639_1_normalization
-      Wovnrb::Lang::LANG.each do |_, l|
+      Wovnrb::Lang::LANG.each_value do |l|
         case l[:code]
         when 'zh-CHS'
           assert_equal('zh-Hans',  Lang.iso_639_1_normalization('zh-CHS'))

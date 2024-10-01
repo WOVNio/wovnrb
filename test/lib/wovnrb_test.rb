@@ -395,7 +395,7 @@ HTML
     assert_equal(unaffected_env != app_mock.env, affected)
   end
 
-  def assert_switch_lang(original_lang, target_lang, body, expected_body, api_expected: true)
+  def assert_switch_lang(original_lang, target_lang, body, expected_body, api_expected: true, expected_status_code: 200)
     subdomain = target_lang == original_lang ? '' : "#{target_lang}."
     interceptor = Wovnrb::Interceptor.new(get_app)
 
@@ -408,7 +408,7 @@ HTML
       mock_translation_api_response(apified_body, expected_body)
     end
 
-    actual_bodies = interceptor.switch_lang(headers, [body])
+    actual_bodies = interceptor.switch_lang(headers, [body], expected_status_code)
 
     assert_same_elements([expected_body], actual_bodies)
   end

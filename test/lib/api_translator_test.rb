@@ -10,29 +10,30 @@ module Wovnrb
 
     def test_translate_falls_back_to_original_body_if_exception
       Net::HTTP.any_instance.expects(:request).raises
-      assert_translation('test.html', 'test_translated.html', false, response: nil)
+      assert_translation('test.html', 'test_translated.html', false, api_response: nil)
     end
 
     def test_translate_falls_back_to_original_body_if_api_error
-      assert_translation('test.html', 'test_translated.html', false, response: { encoding: 'text/json', status_code: 500 })
+      assert_translation('test.html', 'test_translated.html', false, api_response: { encoding: 'text/json', status: 500 })
     end
 
     def test_translate_continues_if_api_response_is_not_compressed
-      assert_translation('test.html', 'test_translated.html', true, response: { encoding: 'unknown', status: 200 }, compress_data: false)
+      assert_translation('test.html', 'test_translated.html', true, api_response: { encoding: 'unknown', status: 200 }, compress_data: false)
     end
 
     def test_translate_continues_if_api_response_is_compressed
-      assert_translation('test.html', 'test_translated.html', true, response: { encoding: 'unknown', status: 200 })
+      assert_translation('test.html', 'test_translated.html', true, api_response: { encoding: 'unknown', status: 200 })
     end
 
     def test_translate_accepts_uncompressed_response_from_api_in_dev_mode
       Wovnrb::Store.instance.update_settings('wovn_dev_mode' => true)
-      assert_translation('test.html', 'test_translated.html', true, response: { encoding: 'text/json', status: 200 }, compress_data: false)
+      assert_translation('test.html', 'test_translated.html', true, api_response: { encoding: 'text/json', status: 200 }, compress_data: false)
     end
 
     def test_translate_without_api_compression_sends_json
       Wovnrb::Store.instance.update_settings('compress_api_requests' => false)
-      sut, _store, _headers = create_sut
+      original_status_code = 201
+      sut, _store, _headers = create_sut(status: original_status_code)
       html_body = 'foo'
 
       stub_request(:post, %r{http://wovn\.global\.ssl\.fastly\.net/v0/translation\?cache_key=.*})
@@ -58,6 +59,7 @@ module Wovnrb
                          'insert_hreflangs' => true,
                          'product' => 'WOVN.rb',
                          'version' => VERSION,
+                         'page_status_code' => original_status_code,
                          'body' => 'foo',
                          'custom_lang_aliases' => { 'ja' => 'Japanese' }.to_json
                        }.to_json,
@@ -80,7 +82,7 @@ module Wovnrb
         Wovnrb.get_settings(settings),
         UrlLanguageSwitcher.new(store)
       )
-      api_translator = ApiTranslator.new(store, headers, REQUEST_UUID)
+      api_translator = ApiTranslator.new(store, headers, REQUEST_UUID, 200)
       assert_equal(5.0, api_translator.send(:api_timeout))
     end
 
@@ -102,16 +104,16 @@ module Wovnrb
         Wovnrb.get_settings(settings),
         UrlLanguageSwitcher.new(store)
       )
-      api_translator = ApiTranslator.new(store, headers, REQUEST_UUID)
+      api_translator = ApiTranslator.new(store, headers, REQUEST_UUID, 200)
       assert_equal(1.0, api_translator.send(:api_timeout))
     end
 
     private
 
-    def assert_translation(original_html_fixture, translated_html_fixture, success_expected, response: { encoding: 'gzip', status_code: 200 }, compress_data: true)
+    def assert_translation(original_html_fixture, translated_html_fixture, success_expected, original_response: { status: 200 }, api_response: { encoding: 'gzip', status: 200 }, compress_data: true)
       original_html = File.read("test/fixtures/html/#{original_html_fixture}")
       translated_html = File.read("test/fixtures/html/#{translated_html_fixture}")
-      actual_translated_html = translate(original_html, translated_html, response, compress_data: compress_data)
+      actual_translated_html = translate(original_html, translated_html, original_response, api_response, compress_data: compress_data)
 
       if success_expected
         assert_equal(actual_translated_html, translated_html)
@@ -120,9 +122,9 @@ module Wovnrb
       end
     end
 
-    def translate(original_html, translated_html, response, compress_data: true)
-      api_translator, store, _headers = create_sut
-      translation_request_stub = stub_translation_api_request(store, original_html, translated_html, response, compress_data: compress_data)
+    def translate(original_html, translated_html, original_response, api_response, compress_data: true)
+      api_translator, store, _headers = create_sut(original_response)
+      translation_request_stub = stub_translation_api_request(store, original_html, translated_html, original_response, api_response, compress_data: compress_data)
 
       expected_api_timeout = store.settings['api_timeout_seconds']
       assert_equal(expected_api_timeout, api_translator.send(:api_timeout))
@@ -131,7 +133,7 @@ module Wovnrb
       actual_translated_html
     end
 
-    def create_sut
+    def create_sut(response)
       settings = {
         'project_token' => '123456',
         'custom_lang_aliases' => { 'ja' => 'Japanese' },
@@ -147,13 +149,18 @@ module Wovnrb
         Wovnrb.get_settings(settings),
         UrlLanguageSwitcher.new(store)
       )
-      api_translator = ApiTranslator.new(store, headers, REQUEST_UUID)
+      status = if response
+                 response[:status]
+               else
+                 200
+               end
+      api_translator = ApiTranslator.new(store, headers, REQUEST_UUID, status)
 
       [api_translator, store, headers]
     end
 
-    def stub_translation_api_request(store, original_html, translated_html, response, compress_data: true)
-      if response
+    def stub_translation_api_request(store, original_html, translated_html, original_response, api_response, compress_data: true)
+      if api_response
         cache_key = generate_cache_key(store, original_html)
         api_host = if store.dev_mode?
                      'dev-wovn.io:3001'
@@ -161,7 +168,8 @@ module Wovnrb
                      'wovn.global.ssl.fastly.net'
                    end
         api_url = "http://#{api_host}/v0/translation?cache_key=#{cache_key}"
-        compressed_data = compress(generate_data(original_html))
+        expected_data = generate_data(original_html, original_response[:status])
+        compressed_data = compress(expected_data)
         headers = {
           'Accept' => '*/*',
           'Accept-Encoding' => 'gzip',
@@ -176,10 +184,10 @@ module Wovnrb
                         else
                           stub_response_json
                         end
-        response_headers = { 'Content-Encoding' => response[:encoding] || 'gzip' }
+        response_headers = { 'Content-Encoding' => api_response[:encoding] || 'gzip' }
         stub_request(:post, api_url)
           .with(body: compressed_data, headers: headers)
-          .to_return(status: response[:status_code] || 200, body: stub_response, headers: response_headers)
+          .to_return(status: api_response[:status] || 200, body: stub_response, headers: response_headers)
 
       end
     end
@@ -192,7 +200,7 @@ module Wovnrb
       "(#{escaped_key})"
     end
 
-    def generate_data(original_html)
+    def generate_data(original_html, expected_status)
       data = {
         'url' => 'http://wovn.io/test',
         'token' => '123456',
@@ -203,6 +211,7 @@ module Wovnrb
         'insert_hreflangs' => true,
         'product' => 'WOVN.rb',
         'version' => VERSION,
+        'page_status_code' => expected_status,
         'body' => original_html,
         'custom_lang_aliases' => '{"ja":"Japanese"}'
       }
