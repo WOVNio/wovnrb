@@ -151,6 +151,14 @@ module Wovnrb
 
         parent_node.add_child(insert_node.to_s)
       end
+
+      insert_node = Nokogiri::XML::Node.new('link', @dom)
+      insert_node['rel'] = 'alternate'
+      insert_node['hreflang'] = 'x-default'
+      x_default_lang_code = @store.hreflang_x_default_lang_or_default
+      insert_node['href'] = @headers.redirect_location(x_default_lang_code)
+
+      parent_node.add_child(insert_node.to_s)
     end
 
     def translate_canonical_tag
