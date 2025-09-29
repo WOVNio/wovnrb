@@ -215,7 +215,7 @@ module Wovnrb
         'version' => VERSION,
         'page_status_code' => expected_status,
         'body' => original_html,
-        'custom_lang_aliases' => '{"ja":"Japanese"}',
+        'custom_lang_aliases' => '{"ja":"Japanese"}'
       }
 
       data.to_json
