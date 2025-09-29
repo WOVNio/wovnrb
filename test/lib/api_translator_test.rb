@@ -57,6 +57,7 @@ module Wovnrb
                          'lang_param_name' => 'lang',
                          'translate_canonical_tag' => true,
                          'insert_hreflangs' => true,
+                         'hreflang_x_default_lang' => nil,
                          'product' => 'WOVN.rb',
                          'version' => VERSION,
                          'page_status_code' => original_status_code,
@@ -209,11 +210,12 @@ module Wovnrb
         'lang_param_name' => 'lang',
         'translate_canonical_tag' => true,
         'insert_hreflangs' => true,
+        'hreflang_x_default_lang' => nil,
         'product' => 'WOVN.rb',
         'version' => VERSION,
         'page_status_code' => expected_status,
         'body' => original_html,
-        'custom_lang_aliases' => '{"ja":"Japanese"}'
+        'custom_lang_aliases' => '{"ja":"Japanese"}',
       }
 
       data.to_json

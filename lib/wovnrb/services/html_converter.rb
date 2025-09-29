@@ -155,6 +155,7 @@ module Wovnrb
       insert_node = Nokogiri::XML::Node.new('link', @dom)
       insert_node['rel'] = 'alternate'
       insert_node['hreflang'] = 'x-default'
+      insert_node['data-wovn'] = 'true'
       x_default_lang_code = @store.hreflang_x_default_lang_or_default
       insert_node['href'] = @headers.redirect_location(x_default_lang_code)
 
