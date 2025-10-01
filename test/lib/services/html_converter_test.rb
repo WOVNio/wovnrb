@@ -501,6 +501,35 @@ module Wovnrb
       assert_equal(expected_html, translated_html)
     end
 
+    test 'Transform HTML - no x-default hreflang - no config - generates using default lang' do
+      settings = default_store_settings
+      converter = prepare_html_converter('<html><head></head></html>', settings)
+      translated_html = converter.build
+
+      expected_html = "<html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"https://j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"fr\" href=\"http://my-site.com/?wovn=fr\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/?wovn=ja\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"><link rel=\"alternate\" hreflang=\"x-default\" data-wovn=\"true\" href=\"http://my-site.com/\"></head><body></body></html>"
+      assert_equal(expected_html, translated_html)
+    end
+
+    test 'Transform HTML - no x-default hreflang - has config - generates using specified lang' do
+      settings = default_store_settings
+      settings['hreflang_x_default_lang'] = 'fr'
+      converter = prepare_html_converter('<html><head></head></html>', settings)
+      translated_html = converter.build
+
+      expected_html = "<html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"https://j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"fr\" href=\"http://my-site.com/?wovn=fr\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/?wovn=ja\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"><link rel=\"alternate\" hreflang=\"x-default\" data-wovn=\"true\" href=\"http://my-site.com/?wovn=fr\"></head><body></body></html>"
+      assert_equal(expected_html, translated_html)
+    end
+
+    test 'Transform HTML - has x-default hreflang - does not modify' do
+      settings = default_store_settings
+      settings['hreflang_x_default_lang'] = 'fr'
+      converter = prepare_html_converter('<html><head><link rel="alternate" hreflang="X-Default" href="https://my-site.com/?from=customer"></head></html>', settings)
+      translated_html = converter.build
+
+      expected_html = "<html lang=\"en\"><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><script src=\"https://j.wovn.io/1\" async=\"true\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=WOVN.rb_#{VERSION}\" data-wovnio-type=\"fallback_snippet\"></script><link rel=\"alternate\" hreflang=\"X-Default\" href=\"https://my-site.com/?from=customer\"><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"fr\" href=\"http://my-site.com/?wovn=fr\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/?wovn=ja\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"></head><body></body></html>"
+      assert_equal(expected_html, translated_html)
+    end
+
     private
 
     def prepare_html_converter(input_html, store_options = {})
