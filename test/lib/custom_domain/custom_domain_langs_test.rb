@@ -66,7 +66,7 @@ module Wovnrb
         'english.foo.com' => 'en'
       }
 
-      assert(hash_equals(expected, @custom_domain_langs.to_html_swapper_hash))
+      assert(hash_equals?(expected, @custom_domain_langs.to_html_swapper_hash))
     end
 
     private
@@ -75,7 +75,7 @@ module Wovnrb
       custom_domain_lang.lang
     end
 
-    def hash_equals(orig_hash, test_hash)
+    def hash_equals?(orig_hash, test_hash)
       (orig_hash <=> test_hash) == 0
     end
   end

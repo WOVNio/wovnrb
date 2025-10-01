@@ -65,7 +65,7 @@ module Wovnrb
     #
     # @return [Boolean] Returns true if the token is valid, and false if it is not
     def valid_token?(token)
-      !token.nil? && (token.length == 5 || token.length == 6)
+      !token.nil? && [5, 6].include?(token.length)
     end
 
     # Returns true or false based on whether the settings are valid or not, logs any invalid settings to ../error.log
