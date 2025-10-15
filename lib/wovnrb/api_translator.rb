@@ -114,6 +114,7 @@ module Wovnrb
         'lang_param_name' => lang_param_name,
         'translate_canonical_tag' => translate_canonical_tag,
         'insert_hreflangs' => insert_hreflangs,
+        'hreflang_x_default_lang' => @store.settings['hreflang_x_default_lang'], # should not use fallback, so html swapper can calculate the default lang from js_data
         'product' => 'WOVN.rb',
         'version' => VERSION,
         'page_status_code' => @response_status_code,

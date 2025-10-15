@@ -32,6 +32,7 @@ module Wovnrb
         'test_mode' => false,
         'test_url' => '',
         'cache_megabytes' => nil,
+        'hreflang_x_default_lang' => nil,
         'ttl_seconds' => nil,
         'use_proxy' => false, # use env['HTTP_X_FORWARDED_HOST'] instead of env['HTTP_HOST'] and env['SERVER_NAME'] when this setting is true.
         'custom_lang_aliases' => {},
@@ -64,7 +65,7 @@ module Wovnrb
     #
     # @return [Boolean] Returns true if the token is valid, and false if it is not
     def valid_token?(token)
-      !token.nil? && (token.length == 5 || token.length == 6)
+      !token.nil? && [5, 6].include?(token.length)
     end
 
     # Returns true or false based on whether the settings are valid or not, logs any invalid settings to ../error.log
@@ -141,6 +142,7 @@ module Wovnrb
       end
 
       @settings['default_lang'] = Lang.get_code(@settings['default_lang'])
+
       if !@settings.has_key?('supported_langs')
         @settings['supported_langs'] = [@settings['default_lang']]
       end
@@ -172,10 +174,16 @@ module Wovnrb
           @settings['api_timeout_seconds'] = 3.0
         end
       end
+
+      @settings['hreflang_x_default_lang'] = Lang.get_code(@settings['hreflang_x_default_lang'])
     end
 
     def custom_lang_aliases
       @settings['custom_lang_aliases'] || {}
+    end
+
+    def hreflang_x_default_lang_or_default
+      @settings['hreflang_x_default_lang'] || default_lang
     end
 
     def default_lang
