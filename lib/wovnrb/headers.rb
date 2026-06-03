@@ -14,7 +14,7 @@ module Wovnrb
       @settings = settings
       @protocol = request.scheme
       @unmasked_host = if settings['use_proxy'] && @env.key?('HTTP_X_FORWARDED_HOST')
-                         @env['HTTP_X_FORWARDED_HOST']
+                         first_header_value(@env['HTTP_X_FORWARDED_HOST'])
                        else
                          @env['HTTP_HOST']
                        end
@@ -29,7 +29,7 @@ module Wovnrb
       @unmasked_pathname += '/' unless @unmasked_pathname =~ /\/$/ || @unmasked_pathname =~ /\/[^\/.]+\.[^\/.]+$/
       @unmasked_url = "#{@protocol}://#{@unmasked_host}#{@unmasked_pathname}"
       @host = if settings['use_proxy'] && @env.key?('HTTP_X_FORWARDED_HOST')
-                @env['HTTP_X_FORWARDED_HOST']
+                first_header_value(@env['HTTP_X_FORWARDED_HOST'])
               else
                 @env['HTTP_HOST']
               end
@@ -81,7 +81,7 @@ module Wovnrb
     def url_language
       if @url_language.nil?
         full_url = if @settings['use_proxy'] && @env.key?('HTTP_X_FORWARDED_HOST')
-                     "#{@env['HTTP_X_FORWARDED_HOST']}#{@env['REQUEST_URI']}"
+                     "#{first_header_value(@env['HTTP_X_FORWARDED_HOST'])}#{@env['REQUEST_URI']}"
                    else
                      "#{@env['SERVER_NAME']}#{@env['REQUEST_URI']}"
                    end
@@ -173,7 +173,7 @@ module Wovnrb
 
     def remove_lang_from_host
       if @settings['use_proxy'] && @env.key?('HTTP_X_FORWARDED_HOST')
-        @env['HTTP_X_FORWARDED_HOST'] = @url_lang_switcher.remove_lang_from_uri_component(@env['HTTP_X_FORWARDED_HOST'], lang_code, self)
+        @env['HTTP_X_FORWARDED_HOST'] = @url_lang_switcher.remove_lang_from_uri_component(first_header_value(@env['HTTP_X_FORWARDED_HOST']), lang_code, self)
       else
         @env['HTTP_HOST'] = @url_lang_switcher.remove_lang_from_uri_component(@env['HTTP_HOST'], lang_code, self)
         @env['SERVER_NAME'] = @url_lang_switcher.remove_lang_from_uri_component(@env['SERVER_NAME'], lang_code, self)
@@ -187,6 +187,12 @@ module Wovnrb
       @env['PATH_INFO'] = @url_lang_switcher.remove_lang_from_uri_component(@env['PATH_INFO'], lang_code, self)
       @env['ORIGINAL_FULLPATH'] = @url_lang_switcher.remove_lang_from_uri_component(@env['ORIGINAL_FULLPATH'], lang_code, self) if @env.key?('ORIGINAL_FULLPATH')
       @env['HTTP_REFERER'] = @url_lang_switcher.remove_lang_from_uri_component(@env['HTTP_REFERER'], lang_code, self) if @env.key?('HTTP_REFERER')
+    end
+
+    # X-Forwarded-Host can contain multiple comma-separated values when
+    # the request passes through more than one proxy (RFC 7230 §3.2.2).
+    def first_header_value(value)
+      value.include?(',') ? value.split(',', 2).first.strip : value
     end
   end
 end
