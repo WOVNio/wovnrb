@@ -24,5 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'addressable'
   spec.add_dependency 'lz4-ruby'
   spec.add_dependency 'nokogiri', '>= 1.12', '<2'
-  spec.add_dependency 'rack'
+  # Rack 3 drops Ruby 2.5 compatibility; keep the gem on Rack 2.x for the
+  # supported Ruby matrix.
+  spec.add_dependency 'rack', '< 3'
 end
