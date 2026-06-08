@@ -947,5 +947,81 @@ module Wovnrb
         assert_equal(expected_lang_code, header.url_language)
       end
     end
+
+    def test_multi_value_x_forwarded_host_uses_first_value
+      settings = Wovnrb.get_settings({ 'use_proxy' => true })
+      store = Wovnrb.get_store(settings)
+      env = Wovnrb.get_env({
+                             'HTTP_X_FORWARDED_HOST' => 'www.example.com, www.example.com',
+                             'REQUEST_URI' => '/en/page'
+                           })
+      url_lang_switcher = UrlLanguageSwitcher.new(store)
+      header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
+
+      assert_equal('www.example.com', header.unmasked_host)
+      assert_equal('www.example.com', header.host)
+    end
+
+    def test_multi_value_x_forwarded_host_with_spaces
+      settings = Wovnrb.get_settings({ 'use_proxy' => true })
+      store = Wovnrb.get_store(settings)
+      env = Wovnrb.get_env({
+                             'HTTP_X_FORWARDED_HOST' => '  www.example.com , proxy.internal ',
+                             'REQUEST_URI' => '/page'
+                           })
+      url_lang_switcher = UrlLanguageSwitcher.new(store)
+      header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
+
+      assert_equal('www.example.com', header.unmasked_host)
+    end
+
+    def test_single_value_x_forwarded_host_unchanged
+      settings = Wovnrb.get_settings({ 'use_proxy' => true })
+      store = Wovnrb.get_store(settings)
+      env = Wovnrb.get_env({
+                             'HTTP_X_FORWARDED_HOST' => 'www.example.com',
+                             'REQUEST_URI' => '/page'
+                           })
+      url_lang_switcher = UrlLanguageSwitcher.new(store)
+      header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
+
+      assert_equal('www.example.com', header.unmasked_host)
+      assert_equal('www.example.com', header.host)
+    end
+
+    def test_multi_value_x_forwarded_host_subdomain_url_language
+      settings = Wovnrb.get_settings({
+                                       'use_proxy' => true,
+                                       'url_pattern' => 'subdomain',
+                                       'url_pattern_reg' => '^(?<lang>[^.]+)\.'
+                                     })
+      store = Wovnrb.get_store(settings)
+      env = Wovnrb.get_env({
+                             'HTTP_X_FORWARDED_HOST' => 'ja.wovn.io, proxy.internal',
+                             'REQUEST_URI' => '/page'
+                           })
+      url_lang_switcher = UrlLanguageSwitcher.new(store)
+      header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
+
+      assert_equal('ja', header.url_language)
+    end
+
+    def test_multi_value_x_forwarded_host_request_out
+      settings = Wovnrb.get_settings({
+                                       'url_pattern' => 'subdomain',
+                                       'url_pattern_reg' => '^(?<lang>[^.]+)\.',
+                                       'use_proxy' => true
+                                     })
+      store = Wovnrb.get_store(settings)
+      env = Wovnrb.get_env({
+                             'url' => 'http://localhost/contact',
+                             'HTTP_X_FORWARDED_HOST' => 'ja.wovn.io, proxy.internal'
+                           })
+      url_lang_switcher = UrlLanguageSwitcher.new(store)
+      header = Wovnrb::Headers.new(env, settings, url_lang_switcher)
+
+      request_out_env = header.request_out
+      assert_equal('wovn.io', request_out_env['HTTP_X_FORWARDED_HOST'])
+    end
   end
 end
